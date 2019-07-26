@@ -95,7 +95,7 @@ export const constantRoutes: RouteConfig[] = [
   //   children: [
   //     {
   //       path: 'index',
-  //       component: () => import(/* webpackChunkName: "documentation" */ '@/views/documentation/index.vue'),
+  //       component: () => import(/* webpackChunkName: "documentation" */ '@/views/documentation/query.vue'),
   //       name: 'Documentation',
   //       meta: { title: 'documentation', icon: 'documentation', affix: true }
   //     }
