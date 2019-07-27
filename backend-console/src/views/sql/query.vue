@@ -1,6 +1,6 @@
 <template>
-  <div class="app-container">
-    <el-row :gutter="20" style="margin-top:20px;">
+  <div class="sql-query-container">
+    <el-row :gutter="20">
       <el-col :span="8"
               :lg="10">
         <el-card class="box-card">
@@ -9,7 +9,8 @@
             class="clearfix">
             <span>SQL查询</span>
           </div>
-          <div class="component-item" style="height:500px;">
+          <div class="component-item"
+               style="height:500px;">
             <el-select
               v-model="model.database"
               @change="choseSchema()"
@@ -124,3 +125,13 @@ export default class extends Vue {
 }
 
 </script>
+
+<style>
+
+.sql-query-container {
+  background-color: #f0f2f5;
+  padding: 30px;
+  min-height: calc(100vh - 84px);
+}
+
+</style>

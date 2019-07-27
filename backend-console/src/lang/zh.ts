@@ -124,7 +124,7 @@ export default {
   spider: {
     id: '标识',
     startTime: '启动时间',
-    publish: '状态',
+    publish: '发布状态',
     rate: '周期',
     rate2: {
       num: '周期数',
@@ -140,10 +140,7 @@ export default {
       taskInterval: '线程单次消费睡眠量',
       executeTime: '执行时间(0表示不限时)',
       retryCount: 'http调用重试次数',
-      retryDelays: 'http调用重试睡眠量',
-      batchSize: '结果单次批处理量',
-      fetchSize: 'JDBC拉取量',
-      batchInterval: '结果单次处理睡眠量'
+      retryDelays: 'http调用重试睡眠量'
     }
   },
   table: {
@@ -168,6 +165,7 @@ export default {
     edit: '编辑',
     publish: '发布',
     draft: '草稿',
+    test: '测试',
     delete: '删除',
     cancel: '取 消',
     confirm: '确 定'

@@ -1,5 +1,5 @@
 import request from '@/utils/request2'
-import { ListResp } from './response'
+import { ListResp, SingleResp } from './response'
 
 export const getJobs = (params: any): ListResp | any =>
   request({
@@ -25,5 +25,24 @@ export const update = (id: string, data: any) =>
   request({
     url: `/api/spider/jobs/${id}`,
     method: 'put',
+    data
+  })
+
+export const deleteJob = (id: string) =>
+  request({
+    url: `/api/spider/jobs/${id}`,
+    method: 'delete'
+  })
+
+export const publish = (id: string) =>
+  request({
+    url: `/api/spider/jobs/publish/${id}`,
+    method: 'put'
+  })
+
+export const testJob = (data: any): SingleResp | any =>
+  request({
+    url: `/api/spider/jobs/test`,
+    method: 'post',
     data
   })
