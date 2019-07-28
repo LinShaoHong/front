@@ -5,7 +5,6 @@
   >
     <el-tabs
       v-model="choseDataTab"
-      type="card"
     >
       <el-tab-pane
         label="基础参数"
@@ -27,14 +26,13 @@
               v-model="spiderJobData.group"
               class="filter-item"
               clearable
-              style="width: 150px"
+              style="width: 220px"
             >
               <el-option
                 v-for="item in groups"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
-                style="font-size: 16px;"
               />
             </el-select>
           </el-form-item>
@@ -56,7 +54,7 @@
             <el-input-number
               v-model="spiderJobData.rate.num"
               :min="0"
-              class="input-with-radio"
+              style="width: 220px"
             />
           </el-form-item>
           <el-form-item
@@ -120,6 +118,7 @@
             <el-input-number
               v-model="spiderJobData.setting.parallelism"
               :min="1"
+              style="width: 150px"
             />
           </el-form-item>
           <el-form-item
@@ -129,6 +128,7 @@
             <el-input-number
               v-model="spiderJobData.setting.poolSize"
               :min="1"
+              style="width: 150px"
             />
           </el-form-item>
           <el-form-item
@@ -138,6 +138,7 @@
             <el-input-number
               v-model="spiderJobData.setting.monitorInterval"
               :min="1"
+              style="width: 150px"
             />
           </el-form-item>
           <el-form-item
@@ -147,6 +148,7 @@
             <el-input-number
               v-model="spiderJobData.setting.taskInterval"
               :min="0"
+              style="width: 150px"
             />
           </el-form-item>
           <el-form-item
@@ -156,6 +158,7 @@
             <el-input-number
               v-model="spiderJobData.setting.executeTime"
               :min="0"
+              style="width: 150px"
             />
           </el-form-item>
           <el-form-item
@@ -165,6 +168,7 @@
             <el-input-number
               v-model="spiderJobData.setting.retryCount"
               :min="1"
+              style="width: 150px"
             />
           </el-form-item>
           <el-form-item
@@ -174,6 +178,7 @@
             <el-input-number
               v-model="spiderJobData.setting.retryDelays"
               :min="0"
+              style="width: 150px"
             />
           </el-form-item>
         </el-form>
@@ -227,7 +232,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { cloneDeep } from 'lodash'
 import { Form } from 'element-ui'
 import { ISpiderJob } from '@/api/types'
-import { create, update } from '@/api/spider'
+import { create, update } from '@/api/spiderApi'
 
 @Component({
   name: 'SpiderJobDialogForm'

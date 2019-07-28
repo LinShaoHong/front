@@ -5,7 +5,9 @@
         <el-col :xs="24"
                 :sm="24"
                 :lg="80">
-          <el-card class="box-card">
+          <el-card
+            class="box-card"
+          >
             <div class="component-item"
                  style="height:550px;">
               <div class="filter-container">
@@ -22,7 +24,6 @@
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
-                    style="font-size: 16px;"
                   />
                 </el-select>
                 <el-button
@@ -42,8 +43,8 @@
                 border
                 fit
                 highlight-current-row
-                style="cursor: pointer; width: 100%; border-top-width: 1px; border-left-width: 1px;"
                 tooltip-effect="dark"
+                style="cursor: pointer;"
                 @row-click="handleDetails"
               >
                 <el-table-column
@@ -101,11 +102,19 @@
                       {{ $t('table.edit') }}
                     </el-button>
                     <el-button
+                      v-if="!row.publish"
                       size="mini"
                       type="success"
                       @click="handlePublish(row.id)"
                     >
                       {{ $t('table.publish') }}
+                    </el-button>
+                    <el-button
+                      v-if="row.publish"
+                      size="mini"
+                      @click="handleUnPublish(row.id)"
+                    >
+                      {{ $t('table.unPublish') }}
                     </el-button>
                     <el-button
                       size="mini"
@@ -145,7 +154,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { getJobs, getGroups, create, update, deleteJob, publish } from '@/api/spider'
+import { getJobs, getGroups, create, update, deleteJob, publish, unPublish } from '@/api/spiderApi'
 import { ISpiderJob } from '@/api/types'
 import { formatJson } from '@/utils'
 import { Guid } from "guid-typescript";
@@ -268,9 +277,18 @@ export default class extends Vue {
       .catch(_ => {})
   }
 
+  private handleUnPublish(id: string) {
+    this.$confirm('确认停用？')
+      .then(async _ => {
+        await unPublish(id)
+        this.getList()
+      })
+      .catch(_ => {})
+  }
+
   private handleTest(row: any) {
     let guid = Guid.create().toString();
-    (this.$refs.jobTest as JobTest).handleTest(row, guid, true)
+    (this.$refs.jobTest as JobTest).handleTest(row, guid)
   }
 
   private handleDetails(row: any, cell: any) {

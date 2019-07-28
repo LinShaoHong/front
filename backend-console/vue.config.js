@@ -19,20 +19,12 @@ module.exports = {
       errors: true
     },
     proxy: {
-      [process.env.VUE_APP_BASE_API + '/api/admin/consoles']: {
-        target: `http://localhost:9729/api/admin/consoles`,
+      [process.env.VUE_APP_BASE_API + '/api/consoles']: {
+        target: `http://localhost:9729/api/consoles`,
         changeOrigin: true,
         ws: true,
         pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API + '/api/admin/consoles']: ''
-        }
-      },
-      [process.env.VUE_APP_BASE_API + '/api/spider/jobs']: {
-        target: `http://localhost:1488/api/spider/jobs`,
-        changeOrigin: true,
-        ws: true,
-        pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API + '/api/spider/jobs']: ''
+          ['^' + process.env.VUE_APP_BASE_API + '/api/consoles']: ''
         }
       },
       [process.env.VUE_APP_BASE_API]: {

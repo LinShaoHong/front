@@ -20,7 +20,6 @@
               class="filter-item">
               <el-option
                 v-for="item in schemas"
-                style="font-size: 16px;"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -34,7 +33,6 @@
               class="filter-item">
               <el-option
                 v-for="item in tables"
-                style="font-size: 16px;"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -44,7 +42,7 @@
               v-model="model.sql"
               :autosize="{minRows: 2, maxRows: 18}"
               type="textarea"
-              style="font-size: 16px; margin-top: 20px;"
+              style="margin-top: 20px;"
               placeholder="Enter SQL"
             />
             <br/><br/>
@@ -70,9 +68,8 @@
                style="height:500px;">
             <el-input
               v-model="result"
-              :autosize="{minRows: 2, maxRows: 21}"
+              :autosize="{minRows: 2, maxRows: 27}"
               type="textarea"
-              style="font-size: 16px;"
               :readonly="true"
             />
           </div>
@@ -84,7 +81,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { update, getTables } from '../../api/sql'
+import { update, getTables } from '../../api/sqlApi'
 
 @Component({
   name: 'SqlWriter'

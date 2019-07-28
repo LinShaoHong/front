@@ -164,6 +164,7 @@ export default {
     actions: '操作',
     edit: '编辑',
     publish: '发布',
+    unPublish: '停用',
     draft: '草稿',
     test: '测试',
     delete: '删除',

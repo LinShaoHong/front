@@ -8,7 +8,7 @@
       :direction="rtl">
       <el-tabs
         v-model="choseDataTab"
-        type="card"
+        style="margin-left: 7px; margin-right: 5px;"
       >
         <el-tab-pane
           label="抓取结果"
@@ -42,7 +42,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ISpiderJob } from '@/api/types'
-import { create, update } from '@/api/spider'
+import { create, update } from '@/api/spiderApi'
 
 @Component({
   name: 'JobDetails'
