@@ -1,154 +1,156 @@
 <template>
-  <div class="spider-container">
-    <div style="display: flex; justify-content: center; margin-top: 10px;">
-      <el-row :gutter="10">
-        <el-col :xs="24"
-                :sm="24"
-                :lg="80">
-          <el-card
-            class="box-card"
-          >
-            <div class="component-item"
-                 style="height:550px;">
-              <div class="filter-container">
-                <el-select
-                  v-model="listQuery.group"
-                  class="filter-item"
-                  :placeholder="$t('spider.group')"
-                  clearable
-                  style="width: 150px;"
-                  @change="choseGroup()"
-                >
-                  <el-option
-                    v-for="item in groups"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-                <el-button
-                  class="filter-item"
-                  style="margin-left: 10px;"
-                  type="primary"
-                  icon="el-icon-edit"
-                  @click="handleCreate"
-                >
-                  {{ $t('table.add') }}
-                </el-button>
-              </div>
-
-              <el-table
-                v-loading="listLoading"
-                :data="list"
-                border
-                fit
-                highlight-current-row
-                tooltip-effect="dark"
-                style="cursor: pointer;"
-                @row-click="handleDetails"
+  <div class="app-container">
+    <el-row
+      type="flex"
+      justify="center"
+      :gutter="10"
+    >
+      <el-col :xs="24"
+              :sm="24"
+              :lg="18">
+        <el-card
+          class="box-card"
+        >
+          <div class="component-item"
+               style="height:550px;">
+            <div class="filter-container">
+              <el-select
+                v-model="listQuery.group"
+                class="filter-item"
+                :placeholder="$t('spider.group')"
+                clearable
+                style="width: 150px;"
+                @change="choseGroup()"
               >
-                <el-table-column
-                  :label="$t('spider.id')"
-                  prop="id"
-                  sortable="custom"
-                  align="center"
-                  width="150px;"
-                >
-                  <template slot-scope="scope">
-                    <span>{{ scope.row.id }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  :label="$t('spider.startTime')"
-                  width="180px"
-                  align="center"
-                >
-                  <template slot-scope="scope">
-                    <span>{{ scope.row.startTime }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  :label="$t('spider.rate')"
-                  align="center"
-                  width="90px"
-                >
-                  <template slot-scope="{row}">
-                    <span>{{ row.rate | rateFilter }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  :label="$t('spider.publish')"
-                  align="center"
-                  width="90px"
-                >
-                  <template slot-scope="{row}">
-                    <el-tag :type="row.publish | publishFilter">
-                      {{ row.publish? '已发布' : '未发布' }}
-                    </el-tag>
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  :label="$t('table.actions')"
-                  align="center"
-                  width="300"
-                  class-name="fixed-width"
-                >
-                  <template slot-scope="{row}">
-                    <el-button
-                      type="primary"
-                      size="mini"
-                      @click="handleUpdate(row)"
-                    >
-                      {{ $t('table.edit') }}
-                    </el-button>
-                    <el-button
-                      v-if="!row.publish"
-                      size="mini"
-                      type="success"
-                      @click="handlePublish(row.id)"
-                    >
-                      {{ $t('table.publish') }}
-                    </el-button>
-                    <el-button
-                      v-if="row.publish"
-                      size="mini"
-                      @click="handleUnPublish(row.id)"
-                    >
-                      {{ $t('table.unPublish') }}
-                    </el-button>
-                    <el-button
-                      size="mini"
-                      type="success"
-                      @click="handleTest(row)"
-                    >
-                      {{ $t('table.test') }}
-                    </el-button>
-                    <el-button
-                      size="mini"
-                      type="danger"
-                      @click="handleDelete(row.id)"
-                    >
-                      {{ $t('table.delete') }}
-                    </el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-
-              <pagination
-                v-show="total>0"
-                :total="total"
-                :page.sync="listQuery.page"
-                :limit.sync="listQuery.limit"
-                @pagination="getList"
-              />
-              <job-details ref="jobDetails"/>
-              <spider-job-dialog-form ref="dialogForm" :groups="groups" @getList="getList"/>
-              <job-test ref="jobTest"/>
+                <el-option
+                  v-for="item in groups"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+              <el-button
+                class="filter-item"
+                style="margin-left: 10px;"
+                type="primary"
+                icon="el-icon-edit"
+                @click="handleCreate"
+              >
+                {{ $t('table.add') }}
+              </el-button>
             </div>
-          </el-card>
-        </el-col>
-      </el-row>
-    </div>
+
+            <el-table
+              v-loading="listLoading"
+              :data="list"
+              border
+              fit
+              highlight-current-row
+              tooltip-effect="dark"
+              style="cursor: pointer; box-shadow: 2px 2px 8px #888888;"
+              @row-click="handleDetails"
+            >
+              <el-table-column
+                :label="$t('spider.id')"
+                prop="id"
+                sortable="custom"
+                align="center"
+                min-width="159px;"
+              >
+                <template slot-scope="scope">
+                  <span>{{ scope.row.id }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                :label="$t('spider.startTime')"
+                min-width="180px"
+                align="center"
+              >
+                <template slot-scope="scope">
+                  <span>{{ scope.row.startTime }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                :label="$t('spider.rate')"
+                align="center"
+                width="90px"
+              >
+                <template slot-scope="{row}">
+                  <span>{{ row.rate | rateFilter }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                :label="$t('spider.publish')"
+                align="center"
+                width="90px"
+              >
+                <template slot-scope="{row}">
+                  <el-tag :type="row.publish | publishFilter">
+                    {{ row.publish? '已发布' : '未发布' }}
+                  </el-tag>
+                </template>
+              </el-table-column>
+              <el-table-column
+                :label="$t('table.actions')"
+                align="center"
+                min-width="300"
+                class-name="fixed-width"
+              >
+                <template slot-scope="{row}">
+                  <el-button
+                    type="primary"
+                    size="mini"
+                    @click="handleUpdate(row)"
+                  >
+                    {{ $t('table.edit') }}
+                  </el-button>
+                  <el-button
+                    v-if="!row.publish"
+                    size="mini"
+                    type="success"
+                    @click="handlePublish(row.id)"
+                  >
+                    {{ $t('table.publish') }}
+                  </el-button>
+                  <el-button
+                    v-if="row.publish"
+                    size="mini"
+                    @click="handleUnPublish(row.id)"
+                  >
+                    {{ $t('table.unPublish') }}
+                  </el-button>
+                  <el-button
+                    size="mini"
+                    type="success"
+                    @click="handleTest(row)"
+                  >
+                    {{ $t('table.test') }}
+                  </el-button>
+                  <el-button
+                    size="mini"
+                    type="danger"
+                    @click="handleDelete(row.id)"
+                  >
+                    {{ $t('table.delete') }}
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+
+            <pagination
+              v-show="total>0"
+              :total="total"
+              :page.sync="listQuery.page"
+              :limit.sync="listQuery.limit"
+              @pagination="getList"
+            />
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+  <job-test ref="jobTest"/>
+  <job-details ref="jobDetails"/>
+  <spider-job-dialog-form ref="dialogForm" :groups="groups" @getList="getList"/>
   </div>
 </template>
 
@@ -157,15 +159,15 @@ import { Component, Vue } from 'vue-property-decorator'
 import { getJobs, getGroups, create, update, deleteJob, publish, unPublish } from '@/api/spiderApi'
 import { ISpiderJob } from '@/api/types'
 import { formatJson } from '@/utils'
-import { Guid } from "guid-typescript";
+import { Guid } from 'guid-typescript'
 import Pagination from '@/components/Pagination/index.vue'
 import SpiderJobDialogForm from './components/DialogForm.vue'
 import JobDetails from './components/JobDetails.vue'
-import JobTest from "./components/JobTest.vue";
+import JobTest from './components/JobTest.vue'
 
 const reformatRate = (rate: string): string => {
   if (rate != null) {
-    let len = rate.length;
+    let len = rate.length
     let num = rate.substr(0, len - 1)
     let unit = rate.substr(len - 1, len)
     let zhUnit = ''
@@ -229,8 +231,8 @@ export default class extends Vue {
 
   private async initGroups() {
     let data = await getGroups()
-    data.values.forEach((v: string) => {
-      this.groups.push({id: v, label: v, value: v})
+    data.values.forEach((v: any) => {
+      this.groups.push({ id: v.value, label: v.label, value: v.value })
     })
   }
 
@@ -243,7 +245,7 @@ export default class extends Vue {
 
   private async getList() {
     this.listLoading = true
-    let data = await getJobs({group: this.listQuery.group})
+    let data = await getJobs({ group: this.listQuery.group })
     this.list = data.values
     this.total = data.values.length
     setTimeout(() => {
@@ -292,19 +294,9 @@ export default class extends Vue {
   }
 
   private handleDetails(row: any, cell: any) {
-    if (cell.label != '操作') {
+    if (cell.label !== '操作') {
       (this.$refs.jobDetails as JobDetails).handleDetails(row)
     }
   }
 }
 </script>
-
-<style>
-
-.spider-container {
-  background-color: #f0f2f5;
-  padding: 30px;
-  min-height: calc(100vh - 84px);
-}
-
-</style>

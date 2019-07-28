@@ -26,7 +26,6 @@
             v-model="values"
             :autosize="{minRows: 2, maxRows: 31}"
             type="textarea"
-            style="overflow-x: scroll; margin-bottom: 10px;"
             :readonly="true"
           />
         </el-tab-pane>
@@ -38,7 +37,6 @@
             v-model="errors"
             :autosize="{minRows: 2, maxRows: 31}"
             type="textarea"
-            style="overflow-x: scroll; margin-bottom: 10px;"
             :readonly="true"
           />
         </el-tab-pane>

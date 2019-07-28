@@ -47,7 +47,25 @@ label {
 }
 
 .app-container {
-  padding: 20px;
+  background-color: #f0f2f5;
+  padding: 39px;
+  input {
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
+  }
+  textarea {
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    resize: none
+  }
+}
+
+.el-tabs {
+  input {
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
+  }
+  textarea {
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    resize: none
+  }
 }
 
 .components-container {

@@ -1,5 +1,5 @@
 <template>
-  <div class="sql-write-container">
+  <div class="app-container">
     <el-row :gutter="20">
       <el-col :span="8"
               :lg="10">
@@ -10,7 +10,7 @@
             <span>SQL更新</span>
           </div>
           <div class="component-item"
-               style="height:500px;">
+               style="height:495px;">
             <el-select
               v-model="model.database"
               :placeholder="$t('sql.schema')"
@@ -65,7 +65,7 @@
             <span>{{ $t('sql.writeResult') }}</span>
           </div>
           <div class="component-item"
-               style="height:500px;">
+               style="height:495px;">
             <el-input
               v-model="result"
               :autosize="{minRows: 2, maxRows: 27}"
@@ -123,13 +123,3 @@ export default class extends Vue {
 }
 
 </script>
-
-<style>
-
-.sql-write-container {
-  background-color: #f0f2f5;
-  padding: 30px;
-  min-height: calc(100vh - 84px);
-}
-
-</style>

@@ -1,8 +1,13 @@
 <template>
-  <div class="sql-query-container">
+  <div class="app-container">
     <el-row :gutter="20">
       <el-col :span="8"
-              :lg="10">
+              :xs="{span: 24}"
+              :sm="{span: 24}"
+              :md="{span: 24}"
+              :lg="{span: 10}"
+              :xl="{span: 10}"
+      >
         <el-card class="box-card">
           <div
             slot="header"
@@ -10,7 +15,7 @@
             <span>SQL查询</span>
           </div>
           <div class="component-item"
-               style="height:500px;">
+               style="height:495px;">
             <el-select
               v-model="model.database"
               @change="choseSchema()"
@@ -56,20 +61,21 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :xs="24"
-              :sm="24"
-              :lg="14">
+      <el-col :xs="{span: 24}"
+              :sm="{span: 24}"
+              :md="{span: 24}"
+              :lg="{span: 14}"
+              :xl="{span: 14}">
         <el-card class="box-card">
           <div slot="header" class="clearfix">
             <span>{{ $t('sql.queryResult') }}</span>
           </div>
           <div class="component-item"
-               style="height:500px;">
+               style="height:495px;">
             <el-input
               v-model="result"
               :autosize="{minRows: 2, maxRows: 27}"
               type="textarea"
-              style="overflow-x: scroll; margin-bottom: 10px;"
               :readonly="true"
             />
           </div>
@@ -123,13 +129,3 @@ export default class extends Vue {
 }
 
 </script>
-
-<style>
-
-.sql-query-container {
-  background-color: #f0f2f5;
-  padding: 30px;
-  min-height: calc(100vh - 84px);
-}
-
-</style>
