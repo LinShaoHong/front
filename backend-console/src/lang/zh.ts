@@ -124,7 +124,7 @@ export default {
   spider: {
     id: '标识',
     startTime: '启动时间',
-    publish: '发布状态',
+    publish: '起用状态',
     rate: '周期',
     rate2: {
       num: '周期数',
@@ -163,7 +163,7 @@ export default {
     status: '状态',
     actions: '操作',
     edit: '编辑',
-    publish: '发布',
+    publish: '起用',
     unPublish: '停用',
     draft: '草稿',
     test: '测试',

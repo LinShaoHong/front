@@ -67,7 +67,7 @@
                 align="center"
               >
                 <template slot-scope="scope">
-                  <span>{{ scope.row.startTime }}</span>
+                  <span>{{ scope.row.startTime | parseTime }}</span>
                 </template>
               </el-table-column>
               <el-table-column
@@ -86,7 +86,7 @@
               >
                 <template slot-scope="{row}">
                   <el-tag :type="row.publish | publishFilter">
-                    {{ row.publish? '已发布' : '未发布' }}
+                    {{ row.publish? '已起用' : '已停用' }}
                   </el-tag>
                 </template>
               </el-table-column>
@@ -158,43 +158,12 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { getJobs, getGroups, create, update, deleteJob, publish, unPublish } from '@/api/spiderApi'
 import { ISpiderJob } from '@/api/types'
-import { formatJson } from '@/utils'
+import { reformatRate } from '@/utils/spider-job'
 import { Guid } from 'guid-typescript'
 import Pagination from '@/components/Pagination/index.vue'
 import SpiderJobDialogForm from './components/DialogForm.vue'
 import JobDetails from './components/JobDetails.vue'
 import JobTest from './components/JobTest.vue'
-
-const reformatRate = (rate: string): string => {
-  if (rate != null) {
-    let len = rate.length
-    let num = rate.substr(0, len - 1)
-    let unit = rate.substr(len - 1, len)
-    let zhUnit = ''
-    switch (unit) {
-      case 's':
-        zhUnit = '秒'
-        break
-      case 'm':
-        zhUnit = '分'
-        break
-      case 'h':
-      case 'H':
-        zhUnit = '小时'
-        break
-      case 'M':
-        zhUnit = '个月'
-        break
-      case 'y':
-      case 'Y':
-        zhUnit = '年'
-        break
-      default:
-    }
-    return num + zhUnit
-  }
-  return rate
-}
 
 @Component({
   name: 'ComplexTable',
@@ -271,7 +240,7 @@ export default class extends Vue {
   }
 
   private handlePublish(id: string) {
-    this.$confirm('确认发布？')
+    this.$confirm('确认起用？')
       .then(async _ => {
         await publish(id)
         this.getList()
@@ -295,7 +264,7 @@ export default class extends Vue {
 
   private handleDetails(row: any, cell: any) {
     if (cell.label !== '操作') {
-      (this.$refs.jobDetails as JobDetails).handleDetails(row)
+      (this.$refs.jobDetails as JobDetails).handleDetails(this.groups.find(g => g.value === row.group)!.label.toString(), row)
     }
   }
 }

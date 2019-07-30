@@ -47,7 +47,7 @@ export interface ISpiderJob {
   id: string
   group: string
   publish: boolean
-  startTime: string
+  startTime: number
   rate: string
   setting: {
     parallelism: number,
@@ -64,4 +64,16 @@ export interface ISpiderJob {
   schema: object
   createTime: string
   updateTime: string
+}
+
+export interface ISpiderProgress {
+  parallelism: number,
+  total: number,
+  running: boolean,
+  finished: number,
+  remainTime: string,
+  startTime: string,
+  endTime: string,
+  usedTime: string,
+  errors: string[]
 }

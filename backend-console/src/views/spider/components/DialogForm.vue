@@ -43,7 +43,7 @@
             <el-date-picker
               v-model="spiderJobData.startTime"
               type="datetime"
-              value-format="yyyy-MM-dd hh:mm:ss"
+              value-format="timestamp"
               placeholder="选择启动时间"
             />
           </el-form-item>
@@ -253,7 +253,7 @@ export default class extends Vue {
   private dialogFormVisible = false
   private spiderJobData = {
     group: '',
-    startTime: '',
+    startTime: 0,
     rate: {
       num: 0,
       unit: 'h'

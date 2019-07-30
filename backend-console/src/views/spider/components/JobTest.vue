@@ -1,7 +1,7 @@
 <template>
   <el-drawer
     title="测试结果"
-    size="40%"
+    size="50%"
     :visible.sync="drawer"
     :before-close="handleClose"
     :direction="rtl">
@@ -130,7 +130,7 @@ export default class extends Vue {
 
 <style>
   .icon-item {
-    margin-left: 220px;
+    margin-left: 280px;
     margin-top: 220px;
     height: 85px;
     text-align: center;

@@ -1,5 +1,5 @@
 import request from '@/utils/request2'
-import { ListResp, SingleResp } from './response'
+import {ListResp, SingleResp} from './response'
 
 export const getJobs = (params: any): ListResp | any =>
   request({
@@ -57,4 +57,16 @@ export const deleteTest = (requestId: string) =>
   request({
     url: `/api/consoles/spider/jobs/test/${requestId}`,
     method: 'delete'
+  })
+
+export const getProgress = (id: string): ListResp | any =>
+  request({
+    url: `/api/consoles/spider/jobs/progress/${id}`,
+    method: 'get'
+  })
+
+export const getLatestProgresses = (id: string): SingleResp | any =>
+  request({
+    url: `/api/consoles/spider/jobs/progress/latest/${id}`,
+    method: 'get'
   })
