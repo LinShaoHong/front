@@ -1,17 +1,15 @@
 {
-  "name": "vue-typescript-admin-template",
+  "name": "sun-console",
   "version": "0.1.0",
   "private": true,
-  "author": "Chong Guo <armourcy@gmail.com>",
+  "author": "LinShaoHong",
   "scripts": {
     "serve": "concurrently \"npm:mock\" \"vue-cli-service serve\"",
     "build:prod": "vue-cli-service build",
     "build:stage": "vue-cli-service build --mode staging",
     "lint": "vue-cli-service lint",
     "mock": "cd mock && ts-node-dev mock-server.ts",
-    "svg": "vsvg -s ./src/icons/svg -t ./src/icons/components --ext ts --es6",
-    "test:e2e": "vue-cli-service test:e2e",
-    "test:unit": "jest --clearCache && vue-cli-service test:unit"
+    "svg": "vsvg -s ./src/icons/svg -t ./src/icons/components --ext ts --es6"
   },
   "dependencies": {
     "@tinymce/tinymce-vue": "^2.1.0",
@@ -106,27 +104,13 @@
     "vue-template-compiler": "^2.6.10",
     "webpack": "^4.35.2"
   },
-  "bugs": {
-    "url": "https://github.com/armour/vue-typescript-admin-template/issues"
-  },
   "gitHooks": {
     "pre-commit": "lint-staged"
   },
-  "keywords": [
-    "vue",
-    "typescript",
-    "admin",
-    "template",
-    "element-ui"
-  ],
   "lint-staged": {
     "*.{js,vue}": [
       "vue-cli-service lint",
       "git add"
     ]
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/armour/vue-typescript-admin-template.git"
   }
 }

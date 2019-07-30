@@ -9,7 +9,7 @@ export const reformatRate = (rate: string): string => {
         zhUnit = '秒'
         break
       case 'm':
-        zhUnit = '分'
+        zhUnit = '分钟'
         break
       case 'h':
       case 'H':
@@ -28,7 +28,7 @@ export const reformatRate = (rate: string): string => {
         break
       default:
     }
-    return num + zhUnit
+    return num + ' ' + zhUnit
   }
   return rate
 }

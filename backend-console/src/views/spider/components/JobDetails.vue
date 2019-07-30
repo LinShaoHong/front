@@ -17,30 +17,62 @@
         name="first"
       >
         <el-row
-          :gutter="24"
+          :gutter="20"
         >
           <el-col
-            :offset="1"
-            :lg="{span: 11}"
+            :offset="4"
+            :lg="{span: 8}"
           >
-            <draggable-kanban
-              :key="1"
-              :list="baseList"
-              :group="group"
-              class="kanban base"
-              header-text="基础参数"
-            />
+            <div
+              class="detail-table"
+            >
+              <div
+                class="detail-header"
+                style="text-align: center; line-height: 10px;"
+              >
+                <p style="color: black; font-family: 'Songti SC',serif;">
+                  基础参数
+                </p>
+              </div>
+              <div
+                class="detail-content"
+                style="padding: 1px;"
+              >
+                <p
+                  v-for="n in baseList"
+                  :key="n.name"
+                  class="p-base"
+                  style="line-height: 32px;"
+                >
+                  {{ n.name }}
+                </p>
+              </div>
+            </div>
           </el-col>
           <el-col
-            :lg="{span: 11}"
+            :lg="{span: 12}"
           >
-            <draggable-kanban
-              :key="1"
-              :list="paramList"
-              :group="group"
-              class="kanban param"
-              header-text="运行参数"
-            />
+            <div
+              class="detail-table"
+            >
+              <div
+                class="detail-header"
+                style="text-align: center; line-height: 10px;"
+              >
+                <p style="color: black; font-family: 'Songti SC',serif;">
+                  运行参数
+                </p>
+              </div>
+              <div class="detail-content">
+                <p
+                  v-for="n in paramList"
+                  :key="n.name"
+                  class="p-base"
+                >
+                  {{ n.name }}
+                </p>
+              </div>
+            </div>
           </el-col>
         </el-row>
       </el-tab-pane>
@@ -48,12 +80,14 @@
         label="爬取规则"
         name="second"
       >
-        <el-input
-          v-model="schema"
-          :autosize="{minRows: 2, maxRows: 31}"
-          type="textarea"
-          :readonly="true"
-        />
+        <div class="schema">
+          <el-input
+            v-model="schema"
+            :autosize="{minRows: 2, maxRows: 31}"
+            type="textarea"
+            :readonly="true"
+          />
+        </div>
       </el-tab-pane>
       <el-tab-pane
         label="运行状态"
@@ -66,34 +100,40 @@
             :lg="{span: 8}"
             :xl="{span: 10}"
           >
-            <div class="detail-table">
-              <div class="detail-header">
+            <div
+              class="detail-table"
+              @click="showErrors(0)"
+            >
+              <div
+                class="detail-header"
+                :style="(curr.errors.length > 0 && curr.running) ? 'background: indianred' : '' "
+              >
                 <i
                   v-if="curr.running"
                   class="el-icon-loading"
-                  style="font-size: 30px; margin-left: 1px; color: #1EB7CD;"
+                  style="font-size: 30px; color: #13ce66;;"
                 />
                 <i
                   v-if="!curr.running"
                   class="el-icon-video-pause"
-                  style="font-size: 30px; margin-left: 1px; color: indianred;"
+                  style="font-size: 30px; color: indianred;"
                 />
               </div>
               <div v-if="!publish">
-                <p style="margin-left: 55px; margin-top: 20px;">
+                <p style="margin-left: 55px; margin-top: 20px; font-family: 'Songti SC',serif;">
                   任务已停用
                 </p>
               </div>
               <div v-else-if="!curr.running">
                 <p
                   v-if="curr.remainTime === null"
-                  style="margin-left: 55px; margin-top: 10px;"
+                  style="margin-left: 55px; margin-top: 10px; font-family: 'Songti SC',serif;"
                 >
                   任务已暂停
                 </p>
                 <p
                   v-else
-                  style="margin-left: 10px; margin-top: 30px;"
+                  style="margin-left: 10px; margin-top: 30px; font-family: 'Songti SC',serif;"
                 >
                   剩余时间：{{ curr.remainTime }}
                 </p>
@@ -125,15 +165,15 @@
             :xl="{span: 14}"
           >
             <div
-              v-if="curr.errors.length > 0 && curr.running"
-              class="detail-errors"
+              :class="(errorsFlag[0] && curr.running && curr.errors.length > 0) ? 'detail-errors-after' : 'detail-errors-before'"
             >
               <el-input
+                v-show="errorsFlag[0] && curr.running && curr.errors.length > 0"
                 v-model="curr.errors"
                 :autosize="{minRows: 2, maxRows: 9}"
                 type="textarea"
                 :readonly="true"
-                style="margin: 4px;"
+                style="margin-top: 2px; margin-left: 2px;"
               />
             </div>
           </el-col>
@@ -159,10 +199,13 @@
                     :lg="{span: 8}"
                     :xl="{span: 10}"
                   >
-                    <div class="detail-table">
+                    <div
+                      class="detail-table"
+                      @click="showErrors(index + 1)"
+                    >
                       <div
                         class="detail-header"
-                        style="height: 20px;"
+                        :style="item.errors.length > 0 ? 'height: 20px; background: indianred' : 'height: 20px; background: #13ce66;' "
                       />
                       <div class="detail-content">
                         <p class="p-latest">
@@ -185,15 +228,15 @@
                     :xl="{span: 14}"
                   >
                     <div
-                      v-if="item.errors.length > 0"
-                      class="detail-errors-latest"
+                      :class="(errorsFlag[index + 1] && item.errors.length > 0) ? 'detail-latest-errors-after' : 'detail-latest-errors-before'"
                     >
                       <el-input
+                        v-show="errorsFlag[index + 1] && item.errors.length > 0"
                         v-model="item.errors"
                         :autosize="{minRows: 2, maxRows: 6}"
                         type="textarea"
                         :readonly="true"
-                        style="margin: 2px;"
+                        style="margin-bottom: 10px;"
                       />
                     </div>
                   </el-col>
@@ -212,15 +255,11 @@ import { Component, Vue } from 'vue-property-decorator'
 import { cloneDeep } from 'lodash'
 import { reformatRate } from '@/utils/spider-job'
 import { parseTime } from '@/utils'
-import DraggableKanban from '@/components/DraggableKanban/index.vue'
 import { ISpiderProgress } from '@/api/types'
 import { getProgress, getLatestProgresses } from '@/api/spiderApi'
 
 @Component({
-  name: 'JobDetails',
-  components: {
-    DraggableKanban
-  }
+  name: 'JobDetails'
 })
 export default class extends Vue {
   private choseDataTab = 'first'
@@ -229,6 +268,7 @@ export default class extends Vue {
   private publish = false
   private prevRun = false
   private schema = ''
+  private errorsFlag:boolean [] = []
   private baseList: { name: string } [] = []
   private paramList: { name: string } [] = []
   private curr: ISpiderProgress = {
@@ -246,8 +286,19 @@ export default class extends Vue {
   private latest: ISpiderProgress [] = []
   private currIntervalHandler: any = null
 
+  private showErrors(num: number) {
+    this.$nextTick(() => {
+      if (num === 0 && this.curr.running && this.curr.errors.length > 0) {
+        this.errorsFlag[num] = true
+      } else if (num > 0) {
+        this.errorsFlag[num] = true
+      }
+    })
+  }
+
   public handleDetails(gp: string, row: any) {
     this.drawer = true
+    this.errorsFlag = []
     this.publish = row.publish
     this.schema = JSON.stringify(row.schema, null, 2)
     this.handleBase(gp, row)
@@ -311,11 +362,37 @@ export default class extends Vue {
 </script>
 
 <style lang="scss">
+  .schema {
+    border: 1px solid #ebebeb;
+    padding: 2px;
+    border-radius: 0;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1)
+  }
+
+  .schema:hover {
+    box-shadow: 0 4px 4px rgba(10,16,20,.24), 0 0 4px rgba(10,16,20,.12);
+    background: #1EB7CD;
+    border-color: #1EB7CD;
+  }
+
+  .schema textarea {
+    border-style: hidden;
+    border-radius: 0;
+  }
+
+  .p-base {
+    font-size: 13px;
+    font-family: 'Songti SC',serif;
+    margin-left: 4px;
+    line-height: 13px;
+  }
+
   .p-cur {
     font-size: 13px;
     margin-left: 10px;
     margin-top: 8px;
     margin-bottom: 8px;
+    font-family: 'Songti SC',serif;
   }
 
   .p-latest {
@@ -323,6 +400,11 @@ export default class extends Vue {
     margin-left: 10px;
     margin-top: 2px;
     margin-bottom: 2px;
+    font-family: 'Songti SC',serif;
+  }
+
+  .detail-table:hover {
+    box-shadow: 0 4px 4px rgba(10,16,20,.24), 0 0 4px rgba(10,16,20,.12);
   }
 
   .detail-table {
@@ -334,6 +416,9 @@ export default class extends Vue {
     border-radius: 3px;
     border: 1px solid #ebebeb;
     margin-bottom: 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 2px rgba(10,16,20,.24), 0 0 2px rgba(10,16,20,.12);
+    transition: box-shadow .5s;
 
     .detail-header {
       height: 40px;
@@ -347,19 +432,48 @@ export default class extends Vue {
     }
   }
 
-  .detail-errors {
-    min-width: 120px;
-    max-width: 465px;
+  .detail-errors-before {
+    min-width: 0;
+    max-width: 0;
     height: 180px;
-    border: 1px solid #ebebeb;
+    border: 1px #ebebeb;
+    transition: 1s;
   }
 
-  .detail-errors-latest {
+  .detail-errors-after {
     min-width: 120px;
     max-width: 465px;
+    height: 183px;
+    border: 1px solid indianred;
+    padding: 2px 6px 2px 2px;
+    background: indianred;
+    transition: .5s;
+  }
+
+  .detail-errors-after textarea {
+    border-style: hidden;
+    border-radius: 0;
+  }
+
+  .detail-latest-errors-before {
+    min-width: 0;
+    max-width: 0;
     height: 122px;
-    border: 1px solid #ebebeb;
+    border: 1px #ebebeb;
+    transition: .5s;
+  }
+  .detail-latest-errors-after {
+    max-width: 465px;
+    height: 126px;
+    border: 1px solid indianred;
     padding: 2px;
+    background: indianred;
+    transition: .5s;
+  }
+
+  .detail-latest-errors-after textarea {
+    border-style: hidden;
+    border-radius: 0;
   }
 
   .latest-list {

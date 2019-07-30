@@ -46,12 +46,12 @@
 
             <el-table
               v-loading="listLoading"
+              class="spider-table"
               :data="list"
               border
               fit
               highlight-current-row
               tooltip-effect="dark"
-              style="cursor: pointer; box-shadow: 2px 2px 8px #888888;"
               @row-click="handleDetails"
             >
               <el-table-column
@@ -277,3 +277,15 @@ export default class extends Vue {
   }
 }
 </script>
+
+<style>
+  .spider-table {
+    cursor: pointer;
+    box-shadow: 0 2px 2px rgba(10,16,20,.24), 0 0 2px rgba(10,16,20,.12);
+    transition: box-shadow .5s;
+  }
+
+  .spider-table:hover {
+    box-shadow: 2px 2px 8px #888888;
+  }
+</style>
