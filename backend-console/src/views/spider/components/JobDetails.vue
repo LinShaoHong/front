@@ -162,6 +162,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { cloneDeep } from 'lodash'
 import { reformatRate } from '@/utils/spider-job'
+import { parseTime } from '@/utils'
 import DraggableKanban from '@/components/DraggableKanban/index.vue'
 import { ISpiderProgress } from '@/api/types'
 import { getProgress, getLatestProgresses } from '@/api/spiderApi'
@@ -209,9 +210,9 @@ export default class extends Vue {
     this.choseDataTab = 'first'
     this.baseList = []
     this.baseList.push({ name: '爬取类型：' + gp })
-    this.baseList.push({ name: '爬取时间：' + row.startTime })
+    this.baseList.push({ name: '爬取时间：' + parseTime(row.startTime) })
     this.baseList.push({ name: '爬取周期：' + (row.rate === null ? '执行一次' : reformatRate(row.rate)) })
-    this.baseList.push({ name: '是否发布：' + (row.publish ? '已起用' : '已停用') })
+    this.baseList.push({ name: '是否起用：' + (row.publish ? '已起用' : '已停用') })
   }
 
   private handleParam(row: any) {
