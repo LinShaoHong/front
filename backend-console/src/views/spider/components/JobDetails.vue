@@ -6,7 +6,8 @@
     :visible.sync="drawer"
     :modal="false"
     :before-close="handleClose"
-    :direction="rtl">
+    :direction="rtl"
+  >
     <el-tabs
       v-model="choseDataTab"
       style="margin-left: 9px; margin-right: 5px;"
@@ -67,25 +68,55 @@
           >
             <div class="detail-table">
               <div class="detail-header">
-                <i v-if="curr.running" class="el-icon-loading"
-                   style="font-size: 30px; margin-left: 1px; color: #1EB7CD;"></i>
-                <i v-if="!curr.running" class="el-icon-video-pause"
-                   style="font-size: 30px; margin-left: 1px; color: indianred;"></i>
+                <i
+                  v-if="curr.running"
+                  class="el-icon-loading"
+                  style="font-size: 30px; margin-left: 1px; color: #1EB7CD;"
+                />
+                <i
+                  v-if="!curr.running"
+                  class="el-icon-video-pause"
+                  style="font-size: 30px; margin-left: 1px; color: indianred;"
+                />
               </div>
               <div v-if="!publish">
-                <p style="margin-left: 55px; margin-top: 20px;">任务已停用</p>
+                <p style="margin-left: 55px; margin-top: 20px;">
+                  任务已停用
+                </p>
               </div>
               <div v-else-if="!curr.running">
-                <p v-if="curr.remainTime === null" style="margin-left: 55px; margin-top: 10px;">任务已暂停</p>
-                <p v-else style="margin-left: 10px; margin-top: 30px;">剩余时间：{{ curr.remainTime }}</p>
+                <p
+                  v-if="curr.remainTime === null"
+                  style="margin-left: 55px; margin-top: 10px;"
+                >
+                  任务已暂停
+                </p>
+                <p
+                  v-else
+                  style="margin-left: 10px; margin-top: 30px;"
+                >
+                  剩余时间：{{ curr.remainTime }}
+                </p>
               </div>
               <div v-else>
-                <p class="p-cur">并行量：{{ curr.parallelism }}</p>
-                <p class="p-cur">实体总数：{{ curr.total }}</p>
-                <p class="p-cur">已完成量：{{ curr.finished }}</p>
-                <p class="p-cur">开始时间：{{ curr.startTime }}</p>
-                <p class="p-cur">结束时间：{{ curr.endTime }}</p>
-                <p class="p-cur">总耗时：{{ curr.usedTime }}</p>
+                <p class="p-cur">
+                  并行量：{{ curr.parallelism }}
+                </p>
+                <p class="p-cur">
+                  实体总数：{{ curr.total }}
+                </p>
+                <p class="p-cur">
+                  已完成量：{{ curr.finished }}
+                </p>
+                <p class="p-cur">
+                  开始时间：{{ curr.startTime }}
+                </p>
+                <p class="p-cur">
+                  结束时间：{{ curr.endTime }}
+                </p>
+                <p class="p-cur">
+                  总耗时：{{ curr.usedTime }}
+                </p>
               </div>
             </div>
           </el-col>
@@ -93,7 +124,10 @@
             :lg="{span: 16}"
             :xl="{span: 14}"
           >
-            <div v-if="curr.errors.length > 0 && curr.running" class="detail-errors">
+            <div
+              v-if="curr.errors.length > 0 && curr.running"
+              class="detail-errors"
+            >
               <el-input
                 v-model="curr.errors"
                 :autosize="{minRows: 2, maxRows: 9}"
@@ -106,15 +140,17 @@
         </el-row>
         <div>
           <div v-show="showLatest">
-            <el-divider content-position="left">最近</el-divider>
+            <el-divider content-position="left">
+              最近
+            </el-divider>
           </div>
           <div class="latest-list">
             <el-collapse accordion>
               <el-collapse-item
                 v-for="(item, index) in latest"
+                :key="index"
                 :title="item.startTime"
                 :name="item.startTime"
-                :key="index"
               >
                 <el-row
                   :gutter="8"
@@ -124,13 +160,23 @@
                     :xl="{span: 10}"
                   >
                     <div class="detail-table">
-                      <div class="detail-header" style="height: 20px;">
-                      </div>
+                      <div
+                        class="detail-header"
+                        style="height: 20px;"
+                      />
                       <div class="detail-content">
-                        <p class="p-latest">实体总数：{{ item.total }}</p>
-                        <p class="p-latest">已完成量：{{ item.finished }}</p>
-                        <p class="p-latest">结束时间：{{ item.endTime }}</p>
-                        <p class="p-latest">总耗时：{{ item.usedTime }}</p>
+                        <p class="p-latest">
+                          实体总数：{{ item.total }}
+                        </p>
+                        <p class="p-latest">
+                          已完成量：{{ item.finished }}
+                        </p>
+                        <p class="p-latest">
+                          结束时间：{{ item.endTime }}
+                        </p>
+                        <p class="p-latest">
+                          总耗时：{{ item.usedTime }}
+                        </p>
                       </div>
                     </div>
                   </el-col>
@@ -138,7 +184,10 @@
                     :lg="{span: 16}"
                     :xl="{span: 14}"
                   >
-                    <div v-if="item.errors.length > 0" class="detail-errors-latest">
+                    <div
+                      v-if="item.errors.length > 0"
+                      class="detail-errors-latest"
+                    >
                       <el-input
                         v-model="item.errors"
                         :autosize="{minRows: 2, maxRows: 6}"

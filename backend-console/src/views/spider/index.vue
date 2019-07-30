@@ -5,14 +5,18 @@
       justify="center"
       :gutter="10"
     >
-      <el-col :xs="24"
-              :sm="24"
-              :lg="18">
+      <el-col
+        :xs="24"
+        :sm="24"
+        :lg="18"
+      >
         <el-card
           class="box-card"
         >
-          <div class="component-item"
-               style="height:550px;">
+          <div
+            class="component-item"
+            style="height:550px;"
+          >
             <div class="filter-container">
               <el-select
                 v-model="listQuery.group"
@@ -148,9 +152,13 @@
         </el-card>
       </el-col>
     </el-row>
-  <job-test ref="jobTest"/>
-  <job-details ref="jobDetails"/>
-  <spider-job-dialog-form ref="dialogForm" :groups="groups" @getList="getList"/>
+    <job-test ref="jobTest" />
+    <job-details ref="jobDetails" />
+    <spider-job-dialog-form
+      ref="dialogForm"
+      :groups="groups"
+      @getList="getList"
+    />
   </div>
 </template>
 

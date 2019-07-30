@@ -1,5 +1,5 @@
 import request from '@/utils/request2'
-import {ListResp, SingleResp} from './response'
+import { ListResp, SingleResp } from './response'
 
 export const getJobs = (params: any): ListResp | any =>
   request({

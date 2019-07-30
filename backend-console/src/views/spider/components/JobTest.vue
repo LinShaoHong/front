@@ -4,10 +4,14 @@
     size="50%"
     :visible.sync="drawer"
     :before-close="handleClose"
-    :direction="rtl">
-    <div class="icon-item" v-show="showLoading">
+    :direction="rtl"
+  >
+    <div
+      v-show="showLoading"
+      class="icon-item"
+    >
       <div>
-        <i class="el-icon-loading"></i>
+        <i class="el-icon-loading" />
       </div>
       <span style="font-size: 13px;">正在获取爬取结果....</span>
     </div>
@@ -81,7 +85,7 @@ export default class extends Vue {
     let data = await testJob(params)
     if (data.value.code !== 200) {
       await setTimeout(() => {
-        if(this.drawer) {
+        if (this.drawer) {
           this.handle(row, this.requestId, true)
         }
       }, 5000)

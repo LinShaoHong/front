@@ -1,23 +1,29 @@
 <template>
   <div class="app-container">
     <el-row :gutter="20">
-      <el-col :span="8"
-              :lg="10">
+      <el-col
+        :span="8"
+        :lg="10"
+      >
         <el-card class="box-card">
           <div
             slot="header"
-            class="clearfix">
+            class="clearfix"
+          >
             <span>SQL更新</span>
           </div>
-          <div class="component-item"
-               style="height:495px;">
+          <div
+            class="component-item"
+            style="height:495px;"
+          >
             <el-select
               v-model="model.database"
               :placeholder="$t('sql.schema')"
               clearable
-              @change="choseSchema"
               style="width: 150px"
-              class="filter-item">
+              class="filter-item"
+              @change="choseSchema"
+            >
               <el-option
                 v-for="item in schemas"
                 :key="item.value"
@@ -30,7 +36,8 @@
               :placeholder="$t('sql.table')"
               clearable
               style="width: 180px; margin-left: 10px;"
-              class="filter-item">
+              class="filter-item"
+            >
               <el-option
                 v-for="item in tables"
                 :key="item.value"
@@ -45,27 +52,35 @@
               style="margin-top: 20px;"
               placeholder="Enter SQL"
             />
-            <br/><br/>
+            <br><br>
             <div style="display: flex; justify-content: center">
               <el-button
                 style="text-align: center"
                 type="primary"
-                @click="update()">
+                @click="update()"
+              >
                 {{ $t('sql.write') }}
               </el-button>
             </div>
           </div>
         </el-card>
       </el-col>
-      <el-col :xs="24"
-              :sm="24"
-              :lg="14">
+      <el-col
+        :xs="24"
+        :sm="24"
+        :lg="14"
+      >
         <el-card class="box-card">
-          <div slot="header" class="clearfix">
+          <div
+            slot="header"
+            class="clearfix"
+          >
             <span>{{ $t('sql.writeResult') }}</span>
           </div>
-          <div class="component-item"
-               style="height:495px;">
+          <div
+            class="component-item"
+            style="height:495px;"
+          >
             <el-input
               v-model="result"
               :autosize="{minRows: 2, maxRows: 27}"
