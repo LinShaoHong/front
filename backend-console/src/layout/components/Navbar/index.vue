@@ -9,7 +9,6 @@
     <div class="right-menu">
       <template v-if="device!=='mobile'">
         <error-log class="errLog-container right-menu-item hover-effect" />
-        <screenfull class="right-menu-item hover-effect" />
         <el-tooltip
           :content="$t('navbar.size')"
           effect="dark"
@@ -44,24 +43,16 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { AppModule } from '@/store/modules/app'
 import { UserModule } from '@/store/modules/user'
-import Breadcrumb from '@/components/Breadcrumb/index.vue'
 import ErrorLog from '@/components/ErrorLog/index.vue'
 import Hamburger from '@/components/Hamburger/index.vue'
-import HeaderSearch from '@/components/HeaderSearch/index.vue'
 import LangSelect from '@/components/LangSelect/index.vue'
-import Screenfull from '@/components/Screenfull/index.vue'
-import SizeSelect from '@/components/SizeSelect/index.vue'
 
 @Component({
   name: 'Navbar',
   components: {
-    Breadcrumb,
     ErrorLog,
     Hamburger,
-    HeaderSearch,
-    LangSelect,
-    Screenfull,
-    SizeSelect
+    LangSelect
   }
 })
 export default class extends Vue {

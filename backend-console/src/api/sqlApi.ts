@@ -1,4 +1,4 @@
-import request from '@/utils/request2'
+import request from '@/utils/request'
 import { ListResp, SingleResp } from './response'
 
 export const getResult = (data: any):ListResp|any =>
