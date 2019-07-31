@@ -8,7 +8,7 @@
       <el-col
         :xs="24"
         :sm="24"
-        :lg="18"
+        :lg="21"
       >
         <el-card
           class="box-card"
@@ -67,7 +67,7 @@
               </el-table-column>
               <el-table-column
                 :label="$t('spider.startTime')"
-                min-width="180px"
+                min-width="150px"
                 align="center"
               >
                 <template slot-scope="scope">
@@ -81,6 +81,15 @@
               >
                 <template slot-scope="{row}">
                   <span>{{ row.rate | rateFilter }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                :label="$t('spider.nextTime')"
+                align="center"
+                min-width="150px"
+              >
+                <template slot-scope="scope">
+                  <span>{{ scope.row.nextTime }}</span>
                 </template>
               </el-table-column>
               <el-table-column

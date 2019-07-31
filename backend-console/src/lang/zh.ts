@@ -126,6 +126,7 @@ export default {
     startTime: '启动时间',
     publish: '起用状态',
     rate: '周期',
+    nextTime: '下次启动',
     rate2: {
       num: '周期数',
       unit: '周期单位'

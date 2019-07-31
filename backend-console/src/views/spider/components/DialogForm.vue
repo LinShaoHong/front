@@ -140,6 +140,7 @@
               :min="1"
               style="width: 150px"
             />
+            &nbsp;ms
           </el-form-item>
           <el-form-item
             :label="$t('spider.setting2.taskInterval')"
@@ -150,6 +151,7 @@
               :min="0"
               style="width: 150px"
             />
+            &nbsp;ms
           </el-form-item>
           <el-form-item
             :label="$t('spider.setting2.executeTime')"
@@ -160,6 +162,7 @@
               :min="0"
               style="width: 150px"
             />
+            &nbsp;ms
           </el-form-item>
           <el-form-item
             :label="$t('spider.setting2.retryCount')"
@@ -180,6 +183,7 @@
               :min="0"
               style="width: 150px"
             />
+            &nbsp;ms
           </el-form-item>
         </el-form>
       </el-tab-pane>

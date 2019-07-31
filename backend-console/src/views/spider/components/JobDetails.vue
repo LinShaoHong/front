@@ -197,7 +197,7 @@
                 >
                   <el-col
                     :lg="{span: 8}"
-                    :xl="{span: 10}"
+                    :xl="{span: 8}"
                   >
                     <div
                       class="detail-table"
@@ -262,7 +262,7 @@ import { getProgress, getLatestProgresses } from '@/api/spiderApi'
   name: 'JobDetails'
 })
 export default class extends Vue {
-  private choseDataTab = 'first'
+  private choseDataTab = 'third'
   private drawer = false
   private showLatest = false
   private publish = false
@@ -289,9 +289,9 @@ export default class extends Vue {
   private showErrors(num: number) {
     this.$nextTick(() => {
       if (num === 0 && this.curr.running && this.curr.errors.length > 0) {
-        this.errorsFlag[num] = true
+        this.errorsFlag[num] = !this.errorsFlag[num]
       } else if (num > 0) {
-        this.errorsFlag[num] = true
+        this.errorsFlag[num] = !this.errorsFlag[num]
       }
     })
   }
@@ -307,7 +307,6 @@ export default class extends Vue {
   }
 
   private handleBase(gp: string, row: any) {
-    this.choseDataTab = 'first'
     this.baseList = []
     this.baseList.push({ name: '爬取类型：' + gp })
     this.baseList.push({ name: '爬取时间：' + parseTime(row.startTime) })

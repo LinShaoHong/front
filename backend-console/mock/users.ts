@@ -6,11 +6,11 @@ const userList: IUserData[] = [
   {
     id: 0,
     username: 'admin',
-    password: 'any',
+    password: 'lin1234',
     name: 'Super Admin',
-    avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
+    avatar: '../../../assets/avatar.jpeg',
     introduction: 'I am a super administrator',
-    email: 'admin@test.com',
+    email: 'shaohonglin0411@gmail.com',
     phone: '1234567890',
     roles: ['admin'],
   }
@@ -38,9 +38,9 @@ export const register = (req: Request, res: Response) => {
 }
 
 export const login = (req: Request, res: Response) => {
-  const { username } = req.body
+  const { username, password } = req.body
   for (const user of userList) {
-    if (user.username === username) {
+    if (user.username === username && user.password === password) {
       return res.json({
         code: 20000,
         data: {

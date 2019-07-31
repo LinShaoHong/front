@@ -52,18 +52,18 @@ import LangSelect from '@/components/LangSelect/index.vue'
 import Screenfull from '@/components/Screenfull/index.vue'
 import SizeSelect from '@/components/SizeSelect/index.vue'
 
-  @Component({
-    name: 'Navbar',
-    components: {
-      Breadcrumb,
-      ErrorLog,
-      Hamburger,
-      HeaderSearch,
-      LangSelect,
-      Screenfull,
-      SizeSelect
-    }
-  })
+@Component({
+  name: 'Navbar',
+  components: {
+    Breadcrumb,
+    ErrorLog,
+    Hamburger,
+    HeaderSearch,
+    LangSelect,
+    Screenfull,
+    SizeSelect
+  }
+})
 export default class extends Vue {
   get sidebar() {
     return AppModule.sidebar
@@ -74,7 +74,7 @@ export default class extends Vue {
   }
 
   get avatar() {
-    return UserModule.avatar
+    return require('../../../assets/avatar.jpeg')
   }
 
   private toggleSideBar() {
