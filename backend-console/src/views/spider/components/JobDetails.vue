@@ -111,20 +111,35 @@
                 <i
                   v-if="curr.running"
                   class="el-icon-loading"
-                  style="font-size: 30px; color: #13ce66;;"
+                  style="font-size: 30px; color: #13ce66;"
                 />
                 <i
                   v-if="!curr.running"
                   class="el-icon-video-pause"
                   style="font-size: 30px; color: indianred;"
                 />
+                <p
+                  v-if="!curr.running"
+                  style="font-size: 10px; float: right; line-height: 30px; color: indianred"
+                >
+                  剩余时间
+                </p>
+              </div>
+              <div
+                v-if="curr.running"
+                class="progress-container"
+              >
+                <div :style="progressStyle" />
               </div>
               <div v-if="!publish">
                 <p style="margin-left: 55px; margin-top: 20px; font-family: 'Songti SC',serif;">
                   任务已停用
                 </p>
               </div>
-              <div v-else-if="!curr.running">
+              <div
+                v-else-if="!curr.running"
+                style="text-align: center"
+              >
                 <p
                   v-if="curr.remainTime === null"
                   style="margin-left: 55px; margin-top: 10px; font-family: 'Songti SC',serif;"
@@ -133,12 +148,15 @@
                 </p>
                 <p
                   v-else
-                  style="margin-left: 10px; margin-top: 30px; font-family: 'Songti SC',serif;"
+                  style="font-size: 23px; line-height: 30px; color: indianred; font-family: 'Songti SC',serif;"
                 >
-                  剩余时间：{{ curr.remainTime }}
+                  {{ curr.remainTime }}
                 </p>
               </div>
-              <div v-else>
+              <div
+                v-else
+                style="line-height: 18px; max-height: 417px;"
+              >
                 <p class="p-cur">
                   并行量：{{ curr.parallelism }}
                 </p>
@@ -150,9 +168,6 @@
                 </p>
                 <p class="p-cur">
                   开始时间：{{ curr.startTime }}
-                </p>
-                <p class="p-cur">
-                  结束时间：{{ curr.endTime }}
                 </p>
                 <p class="p-cur">
                   总耗时：{{ curr.usedTime }}
@@ -268,6 +283,12 @@ export default class extends Vue {
   private publish = false
   private prevRun = false
   private schema = ''
+  private progressStyle = {
+    height: '100%',
+    width: '0%',
+    backgroundColor: '#13ce66',
+    transition: '1s'
+  }
   private errorsFlag:boolean [] = []
   private baseList: { name: string } [] = []
   private paramList: { name: string } [] = []
@@ -301,6 +322,7 @@ export default class extends Vue {
     this.errorsFlag = []
     this.publish = row.publish
     this.schema = JSON.stringify(row.schema, null, 2)
+    this.progressStyle.width = '0%'
     this.handleBase(gp, row)
     this.handleParam(row)
     this.handleRunState(row.id)
@@ -338,9 +360,15 @@ export default class extends Vue {
   private async setCurr(id: string) {
     let data = await getProgress(id)
     this.curr = data.value
+    const total = this.curr.total
+    const finished = this.curr.finished
+    if (total !== 0) {
+      this.progressStyle.width = (finished / total) * 100 + '%'
+    }
     if (this.prevRun !== this.curr.running) {
       this.prevRun = this.curr.running
       this.handleLatest(id)
+      this.progressStyle.width = '0%'
     }
   }
 
@@ -423,12 +451,16 @@ export default class extends Vue {
       height: 40px;
       line-height: 50px;
       overflow: hidden;
-      padding: 0 20px;
+      padding: 0 10px;
       text-align: left;
       background: #F4F4F4;
       color: #fff;
-      border-radius: 3px 3px 0 0;
     }
+  }
+
+  .progress-container {
+    height: 2px;
+    background: white;
   }
 
   .detail-errors-before {
