@@ -42,6 +42,15 @@
               >
                 {{ $t('table.add') }}
               </el-button>
+              <el-button
+                class="filter-item"
+                style="margin-left: 10px;"
+                type="primary"
+                icon="el-icon-refresh"
+                @click="getList"
+              >
+                {{ $t('table.refresh') }}
+              </el-button>
             </div>
 
             <el-table
