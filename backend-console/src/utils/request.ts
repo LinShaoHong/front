@@ -53,7 +53,6 @@ service.interceptors.response.use(
   },
   (error) => {
     const res = error.response
-    console.log(JSON.stringify(res,null,2))
     if (res.status === 500) {
       Message({
         message: '内部错误',
