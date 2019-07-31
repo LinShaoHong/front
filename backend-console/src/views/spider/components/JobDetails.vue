@@ -479,34 +479,4 @@ export default class extends Vue {
     overflow-y: scroll;
     max-height: 340px;
   }
-
-  .kanban {
-    &.base {
-      .board-column-header {
-        background: #1EB7CD;
-      }
-
-      .board-column-content {
-        .board-item {
-          height: 48px;
-          font-size: 13px;
-          padding: 0 15px;
-        }
-      }
-    }
-
-    &.param {
-      .board-column-header {
-        background: #1EB7CD;
-      }
-
-      .board-column-content {
-        .board-item {
-          height: 48px;
-          font-size: 13px;
-          padding: 0 15px;
-        }
-      }
-    }
-  }
 </style>
