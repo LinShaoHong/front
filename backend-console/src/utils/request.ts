@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { Message, MessageBox } from 'element-ui'
-import { UserModule } from '@/store/modules/user'
+import {Message, MessageBox} from 'element-ui'
+import {UserModule} from '@/store/modules/user'
 
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -29,8 +29,8 @@ service.interceptors.response.use(
     if (res.code < 200 || res.code >= 300) {
       Message({
         message: res.message || 'Error',
-        type: 'error',
-        duration: 5 * 1000
+        type: 'info',
+        duration: 500
       })
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
         MessageBox.confirm(
@@ -52,11 +52,21 @@ service.interceptors.response.use(
     }
   },
   (error) => {
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    })
+    const res = error.response
+    console.log(JSON.stringify(res,null,2))
+    if (res.status === 500) {
+      Message({
+        message: '内部错误',
+        type: 'error',
+        duration: 1000
+      })
+    } else {
+      Message({
+        message: res.data,
+        type: 'info',
+        duration: 1000
+      })
+    }
     return Promise.reject(error)
   }
 )
