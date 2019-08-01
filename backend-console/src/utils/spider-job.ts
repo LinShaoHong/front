@@ -30,5 +30,5 @@ export const reformatRate = (rate: string): string => {
     }
     return num + ' ' + zhUnit
   }
-  return rate
+  return '-'
 }

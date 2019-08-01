@@ -98,7 +98,26 @@
                 min-width="150px"
               >
                 <template slot-scope="scope">
-                  <span>{{ scope.row.nextTime }}</span>
+                  <span>{{ scope.row.nextTime === null ? '-' : scope.row.nextTime }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                :label="$t('spider.checkpointCategory')"
+                align="center"
+                min-width="130px"
+                :show-tooltip-when-overflow="true"
+              >
+                <template slot-scope="scope">
+                  <span>{{ scope.row.checkpoint === null ? '-' : (scope.row.checkpoint.categoryUrl === null ? '-' : scope.row.checkpoint.categoryUrl) }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                :label="$t('spider.checkpointPage')"
+                align="center"
+                width="70px"
+              >
+                <template slot-scope="scope">
+                  <span>{{ scope.row.checkpoint === null ? '-' : (scope.row.checkpoint.pageNum === null ? '-' : scope.row.checkpoint.pageNum) }}</span>
                 </template>
               </el-table-column>
               <el-table-column
@@ -114,51 +133,76 @@
               </el-table-column>
               <el-table-column
                 :label="$t('table.actions')"
+                style="align-content: center"
                 align="center"
-                min-width="300"
-                class-name="fixed-width"
+                width="120"
               >
                 <template slot-scope="{row}">
-                  <el-button
+                  <el-link
+                    :underline="false"
                     type="primary"
-                    size="mini"
+                    style="font-size: 10px; margin-right: 5px;"
                     @click="handleUpdate(row)"
                   >
                     {{ $t('table.edit') }}
-                  </el-button>
-                  <el-button
-                    v-if="!row.publish"
-                    size="mini"
-                    type="success"
-                    @click="handlePublish(row.id)"
+                  </el-link>
+                  <el-link
+                    :underline="false"
+                    type="primary"
+                    style="font-size: 10px; margin-right: 5px;"
+                    @click="handleClear(row.id)"
                   >
-                    {{ $t('table.publish') }}
-                  </el-button>
-                  <el-button
-                    v-if="row.publish"
-                    size="mini"
-                    @click="handleUnPublish(row.id)"
-                  >
-                    {{ $t('table.unPublish') }}
-                  </el-button>
-                  <el-button
-                    size="mini"
-                    type="success"
-                    @click="handleTest(row)"
-                  >
-                    {{ $t('table.test') }}
-                  </el-button>
-                  <el-button
-                    size="mini"
-                    type="danger"
-                    @click="handleDelete(row.id)"
-                  >
-                    {{ $t('table.delete') }}
-                  </el-button>
+                    {{ $t('table.clear') }}
+                  </el-link>
+                  <el-dropdown trigger="click">
+                    <span style="cursor: pointer;">
+                      <i
+                        style="font-size: 2px; color: #5d5d5d;"
+                        class="el-icon-more"
+                      />
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item>
+                        <el-link
+                          :underline="false"
+                          style="font-size: 10px; color: #5d5d5d"
+                          @click="handlePublish(row.id)"
+                        >
+                          {{ $t('table.publish') }}
+                        </el-link>
+                      </el-dropdown-item>
+                      <el-dropdown-item>
+                        <el-link
+                          :underline="false"
+                          style="font-size: 10px; color: #5d5d5d"
+                          @click="handleTest(row)"
+                        >
+                          {{ $t('table.test') }}
+                        </el-link>
+                      </el-dropdown-item>
+                      <el-dropdown-item divided>
+                        <el-link
+                          :underline="false"
+                          style="font-size: 10px; color: #5d5d5d"
+                          @click="handleUnPublish(row.id)"
+                        >
+                          {{ $t('table.unPublish') }}
+                        </el-link>
+                      </el-dropdown-item>
+                      <el-dropdown-item>
+                        <el-link
+                          :underline="false"
+                          style="font-size: 10px; color: #5d5d5d"
+                          @click="handleDelete(row.id)"
+                        >
+                          {{ $t('table.delete') }}
+                        </el-link>
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
                 </template>
               </el-table-column>
             </el-table>
-
             <pagination
               v-show="total>0"
               :total="total"
@@ -182,7 +226,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { getJobs, getGroups, create, update, deleteJob, publish, unPublish } from '@/api/spiderApi'
+import { getJobs, getGroups, create, update, deleteJob, publish, unPublish, clearCheckpoint } from '@/api/spiderApi'
 import { ISpiderJob } from '@/api/types'
 import { reformatRate } from '@/utils/spider-job'
 import { Guid } from 'guid-typescript'
@@ -252,6 +296,10 @@ export default class extends Vue {
     (this.$refs.dialogForm as SpiderJobDialogForm).handleCreate()
   }
 
+  private handleAction(command: string) {
+    alert(command)
+  }
+
   private handleUpdate(row: any) {
     (this.$refs.dialogForm as SpiderJobDialogForm).handleUpdate(row)
   }
@@ -260,6 +308,15 @@ export default class extends Vue {
     this.$confirm('确认删除？')
       .then(async _ => {
         await deleteJob(id)
+        this.getList()
+      })
+      .catch(_ => {})
+  }
+
+  private handleClear(id: string) {
+    this.$confirm('确认清除快照？')
+      .then(async _ => {
+        await clearCheckpoint(id)
         this.getList()
       })
       .catch(_ => {})

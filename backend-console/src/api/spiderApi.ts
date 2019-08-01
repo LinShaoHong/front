@@ -34,6 +34,12 @@ export const deleteJob = (id: string) =>
     method: 'delete'
   })
 
+export const clearCheckpoint = (id: string) =>
+  request({
+    url: `/api/consoles/spider/jobs/checkpoint/${id}`,
+    method: 'delete'
+  })
+
 export const publish = (id: string) =>
   request({
     url: `/api/consoles/spider/jobs/publish/${id}`,

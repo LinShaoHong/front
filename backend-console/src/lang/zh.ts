@@ -134,6 +134,8 @@ export default {
     setting: '运行参数',
     schema: '爬取规则',
     group: '爬取类型',
+    checkpointCategory: '快照类别',
+    checkpointPage: '快照页码',
     setting2: {
       parallelism: '并行量',
       poolSize: '线程池容量',
@@ -166,6 +168,7 @@ export default {
     edit: '编辑',
     publish: '起用',
     unPublish: '停用',
+    clear: '清除快照',
     draft: '草稿',
     test: '测试',
     delete: '删除',

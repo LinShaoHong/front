@@ -106,20 +106,26 @@
             >
               <div
                 class="detail-header"
-                :style="(curr.errors.length > 0 && curr.running) ? 'background: indianred' : '' "
+                :style="(curr.errors.length > 0 && curr.running) ? 'background: indianred; transition: 2s;' : '' "
               >
                 <i
                   v-if="curr.running"
                   class="el-icon-loading"
                   style="font-size: 30px; color: #13ce66;"
                 />
+                <p
+                  v-if="curr.running"
+                  style="font-size: 10px; float: right; line-height: 30px; color: black; font-family: 'Songti SC',serif;"
+                >
+                  实时进度
+                </p>
                 <i
                   v-if="!curr.running"
                   class="el-icon-video-pause"
                   style="font-size: 30px; color: indianred;"
                 />
                 <p
-                  v-if="!curr.running"
+                  v-if="!curr.running && curr.publish"
                   style="font-size: 10px; float: right; line-height: 30px; color: indianred"
                 >
                   剩余时间
@@ -176,6 +182,59 @@
             </div>
           </el-col>
           <el-col
+            :lg="{span: 8}"
+            :xl="{span: 10}"
+          >
+            <div
+              v-show="curr.running && !errorsFlag[0]"
+              class="detail-table"
+            >
+              <div
+                class="detail-header"
+                :style="(curr.errors.length > 0 && curr.running) ? 'background: indianred; transition: 2s;' : '' "
+              >
+                <i
+                  class="el-icon-camera"
+                  style="font-size: 30px; color: #13ce66;"
+                />
+                <p
+                  style="font-size: 10px; float: right; line-height: 30px; color: black; font-family: 'Songti SC',serif;"
+                >
+                  实时快照
+                </p>
+              </div>
+              <div
+                class="progress-container"
+              />
+              <div
+                style="line-height: 18px; max-height: 417px;"
+              >
+                <div class="divider">
+                  启动快照
+                </div>
+                <p
+                  class="p-cur"
+                  style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                >
+                  类别：{{ curr.checkpoint.categoryUrl === null ? '-' : curr.checkpoint.categoryUrl }}
+                </p>
+                <p class="p-cur">
+                  页码：{{ curr.checkpoint.pageNum === null ? '-' : curr.checkpoint.pageNum }}
+                </p>
+                <div class="divider">
+                  最新快照
+                </div>
+                <p class="p-cur">
+                  类别：{{ curr.checkPointing.categoryUrl === null ? '-' : curr.checkPointing.categoryUrl }}
+                </p>
+                <p class="p-cur">
+                  页码：{{ curr.checkPointing.pageNum === null ? '-' : curr.checkPointing.pageNum }}
+                </p>
+              </div>
+            </div>
+          </el-col>
+          <el-col
+            v-show="errorsFlag[0] && curr.running && curr.errors.length > 0"
             :lg="{span: 16}"
             :xl="{span: 14}"
           >
@@ -301,6 +360,14 @@ export default class extends Vue {
     startTime: '',
     endTime: '',
     usedTime: '',
+    checkpoint: {
+      categoryUrl: '-',
+      pageNum: '-'
+    },
+    checkPointing: {
+      categoryUrl: '-',
+      pageNum: '-'
+    },
     errors: []
   }
   private defaultData = cloneDeep(this.curr)
@@ -456,6 +523,15 @@ export default class extends Vue {
       background: #F4F4F4;
       color: #fff;
     }
+  }
+
+  .divider {
+    margin-top: 11px;
+    height: 2px;
+    line-height: 1px;
+    text-align: center;
+    font-size: 10px;
+    background: #F4F4F4;
   }
 
   .progress-container {

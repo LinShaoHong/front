@@ -49,5 +49,13 @@ export interface ISpiderProgress {
   startTime: string,
   endTime: string,
   usedTime: string,
+  checkpoint: {
+    categoryUrl: string,
+    pageNum: number | string
+  },
+  checkPointing: {
+    categoryUrl: string,
+    pageNum: number | string
+  }
   errors: string[]
 }
