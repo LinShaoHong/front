@@ -125,7 +125,7 @@
                   style="font-size: 30px; color: indianred;"
                 />
                 <p
-                  v-if="!curr.running && curr.publish"
+                  v-if="!curr.running && publish"
                   style="font-size: 10px; float: right; line-height: 30px; color: indianred"
                 >
                   剩余时间

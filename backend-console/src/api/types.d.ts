@@ -35,7 +35,11 @@ export interface ISpiderJob {
     fetchSize: number,
     batchInterval: number
   }
-  schema: object
+  schema: object,
+  checkpoint: {
+    categoryUrl: any,
+    pageNum: any
+  },
   createTime: string
   updateTime: string
 }

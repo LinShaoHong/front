@@ -213,6 +213,38 @@
           </el-form-item>
         </el-form>
       </el-tab-pane>
+      <el-tab-pane
+        label="快照"
+        name="fourth"
+      >
+        <el-form
+          ref="dataForm4"
+          :rules="rules"
+          :model="spiderJobData"
+          label-position="right"
+          label-width="160px"
+          style="width: 580px; margin-left:50px;"
+        >
+          <el-form-item
+            :label="$t('spider.checkpointCategory')"
+            prop="checkpoint.categoryUrl"
+          >
+            <el-input
+              v-model="spiderJobData.checkpoint.categoryUrl"
+              style="width: 220px;"
+            />
+          </el-form-item>
+          <el-form-item
+            :label="$t('spider.checkpointPage')"
+            prop="checkpoint.pageNum"
+          >
+            <el-input
+              v-model="spiderJobData.checkpoint.pageNum"
+              style="width: 220px;"
+            />
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
     </el-tabs>
     <div
       slot="footer"
@@ -261,6 +293,10 @@ export default class extends Vue {
     rate: {
       num: 0,
       unit: 'h'
+    },
+    checkpoint: {
+      categoryUrl: null,
+      pageNum: ''
     },
     setting: {
       parallelism: 1,
@@ -312,6 +348,12 @@ export default class extends Vue {
     this.spiderJobData.rate.num = num
     this.spiderJobData.rate.unit = unit
     this.spiderJobData.setting = tmp.setting
+    if (tmp.checkpoint !== null) {
+      this.spiderJobData.checkpoint = tmp.checkpoint
+    } else {
+      this.spiderJobData.checkpoint.categoryUrl = null
+      this.spiderJobData.checkpoint.pageNum = ''
+    }
     this.spiderJobData.schema = JSON.stringify(tmp.schema, null, 2)
     this.dialogStatus = 'update'
     this.dialogFormVisible = true
@@ -331,8 +373,21 @@ export default class extends Vue {
           group: this.spiderJobData.group,
           startTime: this.spiderJobData.startTime,
           rate: rate,
+          checkpoint: {
+            categoryUrl: null,
+            pageNum: 0
+          },
           setting: this.spiderJobData.setting,
           schema: JSON.parse(this.spiderJobData.schema)
+        }
+        if (this.spiderJobData.checkpoint.pageNum !== null) {
+          params.checkpoint.pageNum = parseInt(this.spiderJobData.checkpoint.pageNum)
+        }
+        params.checkpoint.categoryUrl = this.spiderJobData.checkpoint.categoryUrl
+        if ((params.checkpoint.categoryUrl === null || String(params.checkpoint.categoryUrl).trim().length === 0) &&
+          (params.checkpoint.pageNum === null || isNaN(params.checkpoint.pageNum))) {
+          delete this.spiderJobData.checkpoint.pageNum
+          delete params.checkpoint
         }
         if (this.spiderJobData.rate.num === 0) {
           delete params.rate
@@ -352,8 +407,21 @@ export default class extends Vue {
           group: this.spiderJobData.group,
           startTime: this.spiderJobData.startTime,
           rate: rate,
+          checkpoint: {
+            categoryUrl: null,
+            pageNum: 0
+          },
           setting: this.spiderJobData.setting,
           schema: JSON.parse(this.spiderJobData.schema)
+        }
+        if (this.spiderJobData.checkpoint.pageNum !== null) {
+          params.checkpoint.pageNum = parseInt(this.spiderJobData.checkpoint.pageNum)
+        }
+        params.checkpoint.categoryUrl = this.spiderJobData.checkpoint.categoryUrl
+        if ((params.checkpoint.categoryUrl === null || String(params.checkpoint.categoryUrl).trim().length === 0) &&
+          (params.checkpoint.pageNum === null || isNaN(params.checkpoint.pageNum))) {
+          delete this.spiderJobData.checkpoint.pageNum
+          delete params.checkpoint
         }
         if (this.spiderJobData.rate.num === 0) {
           delete params.rate
