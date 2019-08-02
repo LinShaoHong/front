@@ -191,7 +191,6 @@
             >
               <div
                 class="detail-header"
-                :style="(curr.errors.length > 0 && curr.running) ? 'background: indianred; transition: 2s;' : '' "
               >
                 <i
                   class="el-icon-camera"
