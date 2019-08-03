@@ -85,12 +85,10 @@ export default class extends mixins(ResizeMixin) {
   top: 0;
   right: 0;
   z-index: 9;
-  width: calc(100% - #{$sideBarWidth});
+  width: calc(100%);
   transition: width 0.28s;
 }
 
-
-/* for mobile response 适配移动端 */
 .mobile {
   .main-container {
     margin-left: 0px;
