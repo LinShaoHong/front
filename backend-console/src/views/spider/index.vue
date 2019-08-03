@@ -216,7 +216,7 @@
     </el-row>
     <job-test ref="jobTest" />
     <job-details ref="jobDetails" />
-    <spider-job-dialog-form
+    <job-form
       ref="dialogForm"
       :groups="groups"
       @getList="getList"
@@ -231,17 +231,17 @@ import { ISpiderJob } from '@/api/types'
 import { reformatRate } from '@/utils/spider-job'
 import { Guid } from 'guid-typescript'
 import Pagination from '@/components/Pagination/index.vue'
-import SpiderJobDialogForm from './components/DialogForm.vue'
+import JobForm from './components/JobForm.vue'
 import JobDetails from './components/JobDetails.vue'
 import JobTest from './components/JobTest.vue'
 
 @Component({
   name: 'ComplexTable',
   components: {
+    JobForm,
     JobTest,
-    Pagination,
     JobDetails,
-    SpiderJobDialogForm
+    Pagination
   },
   filters: {
     rateFilter: (rate: string) => {

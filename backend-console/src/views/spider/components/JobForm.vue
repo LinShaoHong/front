@@ -271,7 +271,7 @@ import { ISpiderJob } from '@/api/types'
 import { create, update } from '@/api/spiderApi'
 
 @Component({
-  name: 'SpiderJobDialogForm'
+  name: 'JobForm'
 })
 export default class extends Vue {
   @Prop({ default: { } }) private groups!: { id: string, label: string, value: string }[]
