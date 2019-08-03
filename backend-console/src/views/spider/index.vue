@@ -293,7 +293,7 @@ export default class extends Vue {
   }
 
   private handleCreate() {
-    (this.$refs.dialogForm as SpiderJobDialogForm).handleCreate()
+    (this.$refs.dialogForm as JobForm).handleCreate()
   }
 
   private handleAction(command: string) {
@@ -301,7 +301,7 @@ export default class extends Vue {
   }
 
   private handleUpdate(row: any) {
-    (this.$refs.dialogForm as SpiderJobDialogForm).handleUpdate(row)
+    (this.$refs.dialogForm as JobForm).handleUpdate(row)
   }
 
   private handleDelete(id: string) {
