@@ -1,6 +1,29 @@
 <template>
-  <div class="body">
-    <div class="Hole" />
+  <div class="app-container">
+    <span style="color: white">hello world 1 hello world 1 hello world 1 hello world 1 hello world 1 hello world 1 hello world 1 hello world 1 hello world 1 hello world 1 hello world 1 hello world 1 hello world 1 hello world 1 hello world 1 hello world 1 hello world 1</span>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <h1 style="color: white">hello world 2</h1>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <h1 style="color: white">hello world 3</h1>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <h1 style="color: white">hello world 4</h1>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <h1 style="color: white">hello world 5</h1>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <h1 style="color: white">hello world 6</h1>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <h1 style="color: white">hello world 7</h1>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <h1 style="color: white">hello world 8</h1>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <h1 style="color: white">hello world 9</h1>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <h1 style="color: white">hello world 10</h1>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <h1 style="color: white">hello world 11</h1>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    <h1 style="color: white">hello world 12</h1>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
   </div>
 </template>
 
@@ -13,47 +36,9 @@ import { Component, Vue } from 'vue-property-decorator'
 export default class extends Vue {
 }
 </script>
+
 <style>
-  .body {
-    background: #f0f2f5;
-    display: flex;
-    height: 93vh;
-    align-items: center;
-    justify-content: center;
-    filter: blur(3px);
-  }
-
-  .Hole, .Hole:before, .Hole:after {
-    display: flex;
-    border-radius: 50%;
-    animation: anim 7s linear infinite;
-  }
-
-  @keyframes anim {
-    0% {transform: rotate(0deg)}
-    100% {transform: rotate(-360deg)}
-  }
-
-  .Hole{
-    width: 50vh;
-    height: 50vh;
-    box-shadow: 1vh 0 3vh 2vh #f50,
-    inset -2vh 0 3vh 4vh #f80,
-    -1vh -1vh 35vh 0 #f60;
-  }
-
-  .Hole:before, .Hole:after {
-    content: '';
-    background: #fff;
-    position: relative;
-    top: 6vh;
-  }
-
-  .Hole:before {
-    width: 3vmin;
-    height: 3vmin;
-    left: 40vmin;
-    box-shadow: #f4eb42 0 0 2vh 2vh,
-    #f4eb42 2vh 4vh 2vh 0.3vh;
+  .content-container {
+    border: white 2px solid;
   }
 </style>

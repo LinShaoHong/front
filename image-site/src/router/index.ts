@@ -21,6 +21,7 @@ export const constantRoutes: RouteConfig[] = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
+    meta: { hidden: false },
     children: [
       {
         path: 'dashboard',
@@ -34,13 +35,6 @@ export const constantRoutes: RouteConfig[] = [
       }
     ]
   }
-]
-
-/**
- * asyncRoutes
- * the routes that need to be dynamically loaded based on user roles
- */
-export const asyncRoutes: RouteConfig[] = [
 ]
 
 const createRouter = () => new Router({

@@ -7,15 +7,18 @@
       class="drawer-bg"
       @click="handleClickOutside"
     />
-    <div
-      :class="{hasTagsView: showTagsView}"
-      class="main-container"
-    >
-      <div :class="{'fixed-header': fixedHeader}">
+    <div class="main-container">
+      <div class="fixed-header">
         <navbar />
-        <tags-view v-if="showTagsView" />
       </div>
-      <app-main />
+      <div id="content-grid">
+        <div id="side-wrapper">
+          <sidebar/>
+        </div>
+        <div id="app-wrapper">
+          <app-main />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -24,15 +27,15 @@
 import { Component } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
 import { DeviceType, AppModule } from '@/store/modules/app'
-import { SettingsModule } from '@/store/modules/settings'
-import { AppMain, Navbar } from './components'
+import { AppMain, Navbar, Sidebar } from './components'
 import ResizeMixin from './mixin/resize'
 
 @Component({
   name: 'Layout',
   components: {
     AppMain,
-    Navbar
+    Navbar,
+    Sidebar
   }
 })
 export default class extends mixins(ResizeMixin) {
@@ -42,14 +45,6 @@ export default class extends mixins(ResizeMixin) {
     }
   }
 
-  get showTagsView() {
-    return SettingsModule.showTagsView
-  }
-
-  get fixedHeader() {
-    return SettingsModule.fixedHeader
-  }
-
   private handleClickOutside() {
     AppModule.CloseSideBar(false)
   }
@@ -57,11 +52,31 @@ export default class extends mixins(ResizeMixin) {
 </script>
 
 <style lang="scss" scoped>
-.app-wrapper {
-  @include clearfix;
-  position: relative;
-  height: 100%;
+
+#content-grid {
+  margin-left: 10%;
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  grid-gap: 2%;
+}
+
+#side-wrapper {
   width: 100%;
+}
+
+.fixed-header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 9;
+  width: calc(100%);
+  transition: width 0.28s;
+}
+
+.fixed-header+#content-grid {
+  padding-top: 8%;
+  height: 100vh;
+  overflow: auto;
 }
 
 .drawer-bg {
@@ -72,21 +87,6 @@ export default class extends mixins(ResizeMixin) {
   height: 100%;
   position: absolute;
   z-index: 999;
-}
-
-.main-container {
-  min-height: 100%;
-  transition: margin-left .28s;
-  position: relative;
-}
-
-.fixed-header {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 9;
-  width: calc(100%);
-  transition: width 0.28s;
 }
 
 .mobile {
