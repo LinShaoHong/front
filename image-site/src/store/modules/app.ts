@@ -1,5 +1,5 @@
 import { VuexModule, Module, Mutation, Action, getModule } from 'vuex-module-decorators'
-import { getSidebarStatus, getSize, setSidebarStatus, setLanguage, setSize } from '@/utils/cookies'
+import { getSidebarStatus, getNavbarStatus, setNavbarStatus, getSize, setSidebarStatus, setLanguage, setSize } from '@/utils/cookies'
 import { getLocale } from '@/lang'
 import store from '@/store'
 
@@ -10,16 +10,24 @@ export enum DeviceType {
 
 export interface IAppState {
   device: DeviceType
+  navbar: {
+    opened: boolean
+    withoutAnimation: boolean
+  },
   sidebar: {
     opened: boolean
     withoutAnimation: boolean
-  }
+  },
   language: string
   size: string
 }
 
 @Module({ dynamic: true, store, name: 'app' })
 class App extends VuexModule implements IAppState {
+  public navbar = {
+    opened: getNavbarStatus() !== 'closed',
+    withoutAnimation: false
+  }
   public sidebar = {
     opened: getSidebarStatus() !== 'closed',
     withoutAnimation: false
@@ -47,6 +55,24 @@ class App extends VuexModule implements IAppState {
   }
 
   @Mutation
+  private TOGGLE_NAVBAR(withoutAnimation: boolean) {
+    this.navbar.opened = !this.navbar.opened
+    this.navbar.withoutAnimation = withoutAnimation
+    if (this.navbar.opened) {
+      setNavbarStatus('opened')
+    } else {
+      setNavbarStatus('closed')
+    }
+  }
+
+  @Mutation
+  private CLOSE_NAVBAR(withoutAnimation: boolean) {
+    this.navbar.opened = false
+    this.navbar.withoutAnimation = withoutAnimation
+    setNavbarStatus('closed')
+  }
+
+  @Mutation
   private TOGGLE_DEVICE(device: DeviceType) {
     this.device = device
   }
@@ -69,8 +95,18 @@ class App extends VuexModule implements IAppState {
   }
 
   @Action
+  public ToggleNavBar(withoutAnimation: boolean) {
+    this.TOGGLE_NAVBAR(withoutAnimation)
+  }
+
+  @Action
   public CloseSideBar(withoutAnimation: boolean) {
     this.CLOSE_SIDEBAR(withoutAnimation)
+  }
+
+  @Action
+  public CloseNavBar(withoutAnimation: boolean) {
+    this.CLOSE_NAVBAR(withoutAnimation)
   }
 
   @Action

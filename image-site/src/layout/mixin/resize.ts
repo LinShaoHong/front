@@ -15,6 +15,10 @@ export default class extends Vue {
     return AppModule.sidebar
   }
 
+  get navbar() {
+    return AppModule.navbar
+  }
+
   @Watch('$route')
   private onRouteChange() {
     if (this.device === DeviceType.Mobile && this.sidebar.opened) {

@@ -59,8 +59,6 @@ label {
 }
 
 .app-container {
-  width: 80%;
-  border: 1px solid white;
 }
 
 .components-container {
@@ -68,7 +66,6 @@ label {
   position: relative;
 }
 
-// Refine element ui upload
 .upload-container {
   .el-upload {
     width: 100%;
@@ -165,5 +162,9 @@ aside {
 }
 
 .no-padding {
-  padding: 0px !important;
+  padding: 0 !important;
+}
+
+#nprogress .bar {
+  background: #f90 !important;
 }

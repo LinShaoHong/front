@@ -1,14 +1,45 @@
 <template>
-  <div id="header-wrapper">
-    <div id="header-container">
-      <div class="top-header">
+  <div class="navbar">
+    <div v-if="mobile">
+      <div class="mobile-top-header">
+        <hamburger
+          id="hamburger-container"
+          :is-active="sidebar.opened"
+          class="hamburger-container"
+          @toggleClick="toggleSideBar"
+        />
+      </div>
+      <div class="search-svg">
+        <svg-icon
+          name="search"
+          width="25"
+          height="25"
+        />
+      </div>
+    </div>
+    <div v-else>
+      <div class="desk-top-header">
         <div>
-          <a itemprop="url" href="/" onclick="ga('send', 'event', 'Header', 'click', 'Logo');">
-            <img width="150" height="32" src="https://ci.phncdn.com/www-static/images/pornhub_logo_straight.png?cache=2019073102">
+          <a
+            itemprop="url"
+            href="/"
+            onclick="ga('send', 'event', 'Header', 'click', 'Logo');"
+          >
+            <img
+              width="150"
+              height="32"
+              src="https://ci.phncdn.com/www-static/images/pornhub_logo_straight.png?cache=2019073102"
+            >
           </a>
         </div>
         <div class="search">
-          <input class="search-input" placeholder="aa"/>
+          <input
+            class="search-input"
+            placeholder="搜索"
+          >
+          <button class="search-button">
+            <i class="el-icon-search" />
+          </button>
         </div>
       </div>
     </div>
@@ -19,6 +50,8 @@
 import path from 'path'
 import { Component, Vue } from 'vue-property-decorator'
 import { isExternal } from '@/utils/validate'
+import { DeviceType, AppModule } from '@/store/modules/app'
+import Hamburger from '@/components/Hamburger/index.vue'
 import ErrorLog from '@/components/ErrorLog/index.vue'
 import LangSelect from '@/components/LangSelect/index.vue'
 import { constantRoutes } from '@/router'
@@ -27,11 +60,24 @@ import { constantRoutes } from '@/router'
   name: 'Navbar',
   components: {
     ErrorLog,
-    LangSelect
+    LangSelect,
+    Hamburger
   }
 })
 export default class extends Vue {
   private routes = constantRoutes.filter(v => !v.meta.hidden)
+
+  get sidebar() {
+    return AppModule.sidebar
+  }
+
+  get mobile() {
+    return AppModule.device === DeviceType.Mobile
+  }
+
+  private toggleSideBar() {
+    AppModule.ToggleSideBar(false)
+  }
 
   private resolvePath(basePath: string, routePath: string) {
     if (isExternal(routePath)) {
@@ -46,42 +92,95 @@ export default class extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  #header-wrapper {
+  .navbar {
+    height: $NavBarHeight !important;
+    overflow: hidden;
+    position: relative;
     width: 100%;
-    min-height: 110px;
-    background-color: #000;
-  }
-
-  #header-container {
-    width: 100%;
-    min-height: 90px;
     background-color: #1b1b1b;
+  }
 
-    .top-header {
-      width: 100%;
-      min-height: 80px;
-      padding-left: 10%;
-      padding-right: 50%;
-      display: grid;
-      grid-template-columns: 150px 1fr;
-      grid-gap: 10px;
-      justify-items: center;
-      align-items: center;
-    }
+  .mobile-top-header {
+    .hamburger-container {
+      line-height: 46px;
+      float: left;
+      height: 100%;
+      padding: 0 15px;
+      cursor: pointer;
+      transition: background .3s;
+      border-right: 1px solid #000;
+      -webkit-tap-highlight-color: transparent;
 
-    .bottom-header {
-      border-top: 1px solid #f90;
+      &:hover {
+        background: rgba(0, 0, 0, .025)
+      }
     }
   }
 
-  .search {
-    .search-input {
-      margin-left: 0;
-      width: 520px;
-      color: white;
-      background: #363636;
-      border-radius: 3px;
-      outline: none;
+  .search-svg {
+    float: right;
+    cursor: pointer;
+    padding: 0 15px;
+    margin-right: 2px;
+    line-height: 46px;
+    border-left: 1px solid #000;
+  }
+
+  .svg-icon {
+    vertical-align: middle;
+    color: #f90;
+  }
+
+  .desk-top-header {
+    width: 100%;
+    min-height: 80px;
+    padding-left: 4%;
+    padding-right: 50%;
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    grid-gap: 10px;
+    justify-items: center;
+    align-items: center;
+
+    .search-button {
+      height: 28px;
+      width: 60px;
+      cursor: pointer;
+      background: #f90;
+      outline: 0;
+      outline-offset: -2px;
+      border: 0;
+    }
+
+    .search {
+      .search-input {
+        margin-left: 0;
+        display: inline-block;
+        color: #cacaca;
+        background: #363636;
+        border-radius: 3px 0 0 3px;
+        outline: 0;
+        border: none;
+        padding: 2px 5px;
+        vertical-align: top;
+        cursor: text;
+        width: 350px;
+        font-size: 14px;
+        height: 28px;
+      }
+
+      .search-input:focus {
+        outline-offset: -2px;
+        border-left: 1px solid #757575;
+        border-bottom: 1px solid #757575;
+        border-top: 1px solid #757575;
+        transition: .1s;
+        box-shadow: 0 0 0.1rem #c2c2c2;
+      }
+
+      .search-input:focus + .search-button {
+        box-shadow: 0 0 0.1rem #f90;
+      }
     }
   }
 </style>

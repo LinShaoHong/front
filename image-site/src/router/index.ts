@@ -25,7 +25,7 @@ export const constantRoutes: RouteConfig[] = [
     children: [
       {
         path: 'dashboard',
-        component: () => import('@/views/dashboard/index.vue'),
+        component: () => import('@/views/image/index.vue'),
         name: 'Dashboard',
         meta: {
           title: 'dashboard',

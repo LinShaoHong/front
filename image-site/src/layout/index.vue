@@ -1,5 +1,6 @@
 <template>
   <div
+    :class="classObj"
     class="app-wrapper"
   >
     <div
@@ -11,11 +12,25 @@
       <div class="fixed-header">
         <navbar />
       </div>
-      <div id="content-grid">
-        <div id="side-wrapper">
-          <sidebar/>
+      <div
+        v-if="mobile"
+        class="mobile-content-grid"
+      >
+        <div class="mobile-sidebar-wrapper">
+          <sidebar />
         </div>
-        <div id="app-wrapper">
+        <div class="mobile-app-wrapper">
+          <app-main />
+        </div>
+      </div>
+      <div
+        v-else
+        class="desk-content-grid"
+      >
+        <div class="desk-sidebar-wrapper">
+          <sidebar />
+        </div>
+        <div class="desk-app-wrapper">
           <app-main />
         </div>
       </div>
@@ -41,8 +56,17 @@ import ResizeMixin from './mixin/resize'
 export default class extends mixins(ResizeMixin) {
   get classObj() {
     return {
+      hideNavbar: !this.navbar.opened,
+      openNavbar: this.navbar.opened,
+      hideSidebar: !this.sidebar.opened,
+      openSidebar: this.sidebar.opened,
+      withoutAnimation: this.sidebar.withoutAnimation,
       mobile: this.device === DeviceType.Mobile
     }
+  }
+
+  get mobile() {
+    return this.device === DeviceType.Mobile
   }
 
   private handleClickOutside() {
@@ -52,31 +76,40 @@ export default class extends mixins(ResizeMixin) {
 </script>
 
 <style lang="scss" scoped>
-
-#content-grid {
-  margin-left: 10%;
-  display: grid;
-  grid-template-columns: 150px 1fr;
-  grid-gap: 2%;
-}
-
-#side-wrapper {
+.app-wrapper {
+  @include clearfix;
+  position: relative;
+  height: 100%;
   width: 100%;
 }
 
+.main-container {
+  min-height: 100%;
+  position: relative;
+}
+
+.desk-content-grid {
+  margin-left: 2%;
+  display: grid;
+  grid-template-columns: 12rem 1fr;
+  grid-gap: 2%;
+}
+
+.desk-sidebar-wrapper {
+  width: 100%;
+}
+
+.desk-app-wrapper {
+  margin-right: 5%;
+}
+
 .fixed-header {
-  position: fixed;
+  position: relative;
   top: 0;
   right: 0;
   z-index: 9;
   width: calc(100%);
   transition: width 0.28s;
-}
-
-.fixed-header+#content-grid {
-  padding-top: 8%;
-  height: 100vh;
-  overflow: auto;
 }
 
 .drawer-bg {
@@ -87,15 +120,69 @@ export default class extends mixins(ResizeMixin) {
   height: 100%;
   position: absolute;
   z-index: 999;
+  margin-left: $sideBarWidth !important;
+}
+
+.mobile-sidebar-wrapper {
+  position: fixed;
+  z-index: 1001;
+}
+
+.mobile-app-wrapper {
+  padding-left: 2%;
+  padding-right: 2%;
 }
 
 .mobile {
   .main-container {
-    margin-left: 0px;
+    margin-left: 0;
+  }
+
+  .mobile-sidebar-wrapper {
+    transition: transform .28s;
+    width: $sideBarWidth !important;
+    z-index: 1001;
+  }
+
+  &.openNavbar {
+    position: relative;
+    top: 0;
+  }
+
+  &.hideNavbar {
+    .fixed-header {
+      pointer-events: none;
+      transition-duration: 0.6s;
+      transform: translate3d(0, -$MobileNavBarHeight, 0);
+    }
+  }
+
+  &.openSidebar {
+    position: fixed;
+    top: 0;
+  }
+
+  &.hideSidebar {
+    .mobile-sidebar-wrapper {
+      pointer-events: none;
+      transition-duration: 0.6s;
+      transform: translate3d(-$sideBarWidth, 0, 0);
+    }
   }
 
   .fixed-header {
     width: 100%;
+  }
+
+  .navbar {
+    height: $MobileNavBarHeight !important;
+  }
+}
+
+.withoutAnimation {
+  .main-container,
+  .mobile-sidebar-wrapper {
+    transition: none;
   }
 }
 </style>
