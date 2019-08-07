@@ -1,8 +1,10 @@
 <template>
-  <div class="sidebar">
+  <div
+    class="sidebar"
+  >
     <div class="header-container">
       <div class="sidebar-header">
-        <span style="color: white">主题</span>
+        <span style="color: white">专题</span>
       </div>
     </div>
     <div class="sidebar-container">

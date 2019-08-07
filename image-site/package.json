@@ -21,6 +21,7 @@
     "guid-typescript": "^1.0.9",
     "js-cookie": "^2.2.0",
     "jsonlint": "^1.6.3",
+    "jssor-slider": "^27.5.0",
     "lodash": "^4.17.11",
     "morgan": "^1.9.1",
     "normalize.css": "^8.0.1",

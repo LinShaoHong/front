@@ -1,24 +1,31 @@
 <template>
-  <div class="app-container">
-    <div v-show="!mobile" class="carousel-wrapper">
-      <el-carousel :interval="4000" type="card" height="600px">
-        <el-carousel-item v-for="i in 10" :key="item">
+  <div :class="mobile ? 'app-container mobile' : 'app-container'">
+    <div
+      v-show="!mobile"
+      class="carousel-wrapper"
+    >
+      <el-carousel
+        :interval="4000"
+        type="card"
+        height="600px"
+      >
+        <el-carousel-item
+          v-for="i in 10"
+          :key="i"
+        >
           <image-item
-            :carousel="true"
-            :width="540"
-            :height="600"
             :id="'img' + (i + 100)"
+            :carousel="true"
+            :width="500"
+            :height="600"
             :img-src="imgList[i - 1]"
           />
         </el-carousel-item>
       </el-carousel>
     </div>
     <div class="image-list">
-      <el-row :gutter="15">
+      <el-row :gutter="20">
         <el-col
-          :xs="{span: 12}"
-          :sm="{span: 8}"
-          :md="{span: 8}"
           :lg="{span: 8}"
           :xl="{span: 6}"
           style="margin-bottom:10px;"
@@ -29,9 +36,6 @@
           />
         </el-col>
         <el-col
-          :xs="{span: 12}"
-          :sm="{span: 8}"
-          :md="{span: 8}"
           :lg="{span: 8}"
           :xl="{span: 6}"
           style="margin-bottom:10px;"
@@ -42,9 +46,6 @@
           />
         </el-col>
         <el-col
-          :xs="{span: 12}"
-          :sm="{span: 8}"
-          :md="{span: 8}"
           :lg="{span: 8}"
           :xl="{span: 6}"
           style="margin-bottom:10px;"
@@ -57,9 +58,6 @@
       </el-row>
       <el-row :gutter="15">
         <el-col
-          :xs="{span: 12}"
-          :sm="{span: 8}"
-          :md="{span: 8}"
           :lg="{span: 8}"
           :xl="{span: 6}"
           style="margin-bottom:10px;"
@@ -70,9 +68,6 @@
           />
         </el-col>
         <el-col
-          :xs="{span: 12}"
-          :sm="{span: 8}"
-          :md="{span: 8}"
           :lg="{span: 8}"
           :xl="{span: 6}"
           style="margin-bottom:10px;"
@@ -83,9 +78,6 @@
           />
         </el-col>
         <el-col
-          :xs="{span: 12}"
-          :sm="{span: 8}"
-          :md="{span: 8}"
           :lg="{span: 8}"
           :xl="{span: 6}"
           style="margin-bottom:10px;"
@@ -97,11 +89,8 @@
         </el-col>
       </el-row>
 
-      <el-row :gutter="15">
+      <el-row :gutter="20">
         <el-col
-          :xs="{span: 12}"
-          :sm="{span: 8}"
-          :md="{span: 8}"
           :lg="{span: 8}"
           :xl="{span: 6}"
           style="margin-bottom:10px;"
@@ -112,9 +101,6 @@
           />
         </el-col>
         <el-col
-          :xs="{span: 12}"
-          :sm="{span: 8}"
-          :md="{span: 8}"
           :lg="{span: 8}"
           :xl="{span: 6}"
           style="margin-bottom:10px;"
@@ -125,9 +111,6 @@
           />
         </el-col>
         <el-col
-          :xs="{span: 12}"
-          :sm="{span: 8}"
-          :md="{span: 8}"
           :lg="{span: 8}"
           :xl="{span: 6}"
           style="margin-bottom:10px;"
@@ -138,11 +121,8 @@
           />
         </el-col>
       </el-row>
-      <el-row :gutter="15">
+      <el-row :gutter="20">
         <el-col
-          :xs="{span: 12}"
-          :sm="{span: 8}"
-          :md="{span: 8}"
           :lg="{span: 8}"
           :xl="{span: 6}"
           style="margin-bottom:10px;"
@@ -153,9 +133,6 @@
           />
         </el-col>
         <el-col
-          :xs="{span: 12}"
-          :sm="{span: 8}"
-          :md="{span: 8}"
           :lg="{span: 8}"
           :xl="{span: 6}"
           style="margin-bottom:10px;"
@@ -166,9 +143,6 @@
           />
         </el-col>
         <el-col
-          :xs="{span: 12}"
-          :sm="{span: 8}"
-          :md="{span: 8}"
           :lg="{span: 8}"
           :xl="{span: 6}"
           style="margin-bottom:10px;"
@@ -179,6 +153,9 @@
           />
         </el-col>
       </el-row>
+    </div>
+    <div class="image-others">
+      <span style="background: red">aaaaaaaaaaaaaaaaaaaaaaaaa</span>
     </div>
   </div>
 </template>
@@ -197,21 +174,16 @@ import { DeviceType, AppModule } from '@/store/modules/app'
 export default class extends Vue {
   private imgList: string[] = [
     'http://172.20.10.2/images/158514725/1637791670/details/200228125.jpg',
-    'http://172.20.10.2/images/158514725/1856011515/details/91420632.jpg',
     'http://172.20.10.2/images/158514725/1856011515/details/1540541095.jpg',
-    'http://172.20.10.2/images/158514725/1856011515/details/1099784100.jpg',
     'http://172.20.10.2/images/158514725/1856011515/details/864560260.jpg',
     'http://172.20.10.2/images/158514725/1856011515/details/91420632.jpg',
     'http://172.20.10.2/images/158514725/1856011515/details/1540541095.jpg',
-    'http://172.20.10.2/images/158514725/1856011515/details/1099784100.jpg',
     'http://172.20.10.2/images/158514725/1856011515/details/864560260.jpg',
     'http://172.20.10.2/images/158514725/1856011515/details/91420632.jpg',
     'http://172.20.10.2/images/158514725/1856011515/details/1540541095.jpg',
-    'http://172.20.10.2/images/158514725/1856011515/details/1099784100.jpg',
     'http://172.20.10.2/images/158514725/1856011515/details/864560260.jpg',
     'http://172.20.10.2/images/158514725/1856011515/details/91420632.jpg',
-    'http://172.20.10.2/images/158514725/1856011515/details/1540541095.jpg',
-    'http://172.20.10.2/images/158514725/1856011515/details/1099784100.jpg'
+    'http://172.20.10.2/images/158514725/1856011515/details/1540541095.jpg'
   ]
 
   get mobile() {
@@ -220,34 +192,46 @@ export default class extends Vue {
 }
 </script>
 
-<style>
-  .carousel-wrapper {
-    width: 99%;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
+<style lang="scss" scoped>
+.carousel-wrapper {
+  width: 93%;
+  padding-left: 20px;
+  padding-right: 20px;
+}
 
+.image-list {
+  width: 70%;
+  float: left;
+}
+
+.image-others {
+  width: 30%;
+  float: right;
+}
+
+.el-carousel__item h3 {
+  background-color: #000;
+  font-size: 14px;
+  opacity: 0.75;
+  line-height: 200px;
+  margin: 0;
+}
+
+.el-carousel__item {
+  width: 500px;
+}
+
+.el-carousel__item:nth-child(2n) {
+  background-color: #000;
+}
+
+.el-carousel__item:nth-child(2n+1) {
+  background-color: #000;
+}
+
+.mobile {
   .image-list {
-    width: 70%;
+    width: 100%;
   }
-
-  .el-carousel__item h3 {
-    background-color: #000;
-    font-size: 14px;
-    opacity: 0.75;
-    line-height: 200px;
-    margin: 0;
-  }
-
-  .el-carousel__item {
-    width: 540px;
-  }
-
-  .el-carousel__item:nth-child(2n) {
-    background-color: #000;
-  }
-
-  .el-carousel__item:nth-child(2n+1) {
-    background-color: #000;
-  }
+}
 </style>

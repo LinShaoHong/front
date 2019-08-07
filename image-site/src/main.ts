@@ -4,6 +4,7 @@ import 'normalize.css'
 import ElementUI from 'element-ui'
 import SvgIcon from 'vue-svgicon'
 
+import 'jssor-slider/js/jssor.slider.min'
 import '@/styles/element-variables.scss'
 import '@/styles/index.scss'
 

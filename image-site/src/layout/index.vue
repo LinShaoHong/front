@@ -3,18 +3,17 @@
     :class="classObj"
     class="app-wrapper"
   >
-    <div
-      v-if="classObj.mobile && sidebar.opened"
-      class="drawer-bg"
-      @click="handleClickOutside"
-    />
     <div class="main-container">
       <div class="fixed-header">
         <navbar />
       </div>
       <div
+        v-if="classObj.mobile && sidebar.opened"
+        class="drawer-bg"
+        @click="handleClickOutside"
+      />
+      <div
         v-if="mobile"
-        class="mobile-content-grid"
       >
         <div class="mobile-sidebar-wrapper">
           <sidebar />
@@ -89,6 +88,7 @@ export default class extends mixins(ResizeMixin) {
 }
 
 .desk-content-grid {
+  margin-top: 1%;
   margin-left: 2%;
   display: grid;
   grid-template-columns: 12rem 1fr;
@@ -104,7 +104,7 @@ export default class extends mixins(ResizeMixin) {
 }
 
 .fixed-header {
-  position: relative;
+  position: sticky;
   top: 0;
   right: 0;
   z-index: 9;
@@ -120,7 +120,7 @@ export default class extends mixins(ResizeMixin) {
   height: 100%;
   position: absolute;
   z-index: 999;
-  margin-left: $sideBarWidth !important;
+  margin-left: 0 !important;
 }
 
 .mobile-sidebar-wrapper {
@@ -145,7 +145,7 @@ export default class extends mixins(ResizeMixin) {
   }
 
   &.openNavbar {
-    position: relative;
+    position: static;
     top: 0;
   }
 
@@ -158,7 +158,7 @@ export default class extends mixins(ResizeMixin) {
   }
 
   &.openSidebar {
-    position: fixed;
+    position: static;
     top: 0;
   }
 
