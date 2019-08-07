@@ -1,8 +1,6 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { AppModule, DeviceType } from '@/store/modules/app'
 
-const WIDTH = 992
-
 @Component({
   name: 'ResizeMixin'
 })
@@ -43,8 +41,7 @@ export default class extends Vue {
   }
 
   private isMobile() {
-    const rect = document.body.getBoundingClientRect()
-    return rect.width - 1 < WIDTH
+    return /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)
   }
 
   private resizeHandler() {

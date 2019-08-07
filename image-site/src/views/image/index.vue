@@ -1,16 +1,14 @@
 <template>
   <div :class="mobile ? 'app-container mobile' : 'app-container'">
-    <div
-      v-show="!mobile"
-      class="carousel-wrapper"
-    >
+    <div class="image-carousel">
       <el-carousel
+        v-show="!mobile"
         :interval="4000"
         type="card"
         height="600px"
       >
         <el-carousel-item
-          v-for="i in 10"
+          v-for="i in 3"
           :key="i"
         >
           <image-item
@@ -23,139 +21,55 @@
         </el-carousel-item>
       </el-carousel>
     </div>
-    <div class="image-list">
-      <el-row :gutter="20">
-        <el-col
-          :lg="{span: 8}"
-          :xl="{span: 6}"
-          style="margin-bottom:10px;"
-        >
-          <image-item
-            :id="'img1'"
-            :img-src="imgList[0]"
-          />
-        </el-col>
-        <el-col
-          :lg="{span: 8}"
-          :xl="{span: 6}"
-          style="margin-bottom:10px;"
-        >
-          <image-item
-            :id="'img2'"
-            :img-src="imgList[1]"
-          />
-        </el-col>
-        <el-col
-          :lg="{span: 8}"
-          :xl="{span: 6}"
-          style="margin-bottom:10px;"
-        >
-          <image-item
-            :id="'img3'"
-            :img-src="imgList[2]"
-          />
-        </el-col>
-      </el-row>
-      <el-row :gutter="15">
-        <el-col
-          :lg="{span: 8}"
-          :xl="{span: 6}"
-          style="margin-bottom:10px;"
-        >
-          <image-item
-            :id="'img4'"
-            :img-src="imgList[0]"
-          />
-        </el-col>
-        <el-col
-          :lg="{span: 8}"
-          :xl="{span: 6}"
-          style="margin-bottom:10px;"
-        >
-          <image-item
-            :id="'img5'"
-            :img-src="imgList[1]"
-          />
-        </el-col>
-        <el-col
-          :lg="{span: 8}"
-          :xl="{span: 6}"
-          style="margin-bottom:10px;"
-        >
-          <image-item
-            :id="'img6'"
-            :img-src="imgList[2]"
-          />
-        </el-col>
-      </el-row>
-
-      <el-row :gutter="20">
-        <el-col
-          :lg="{span: 8}"
-          :xl="{span: 6}"
-          style="margin-bottom:10px;"
-        >
-          <image-item
-            :id="'img7'"
-            :img-src="imgList[0]"
-          />
-        </el-col>
-        <el-col
-          :lg="{span: 8}"
-          :xl="{span: 6}"
-          style="margin-bottom:10px;"
-        >
-          <image-item
-            :id="'img8'"
-            :img-src="imgList[1]"
-          />
-        </el-col>
-        <el-col
-          :lg="{span: 8}"
-          :xl="{span: 6}"
-          style="margin-bottom:10px;"
-        >
-          <image-item
-            :id="'img9'"
-            :img-src="imgList[2]"
-          />
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col
-          :lg="{span: 8}"
-          :xl="{span: 6}"
-          style="margin-bottom:10px;"
-        >
-          <image-item
-            :id="'img10'"
-            :img-src="imgList[0]"
-          />
-        </el-col>
-        <el-col
-          :lg="{span: 8}"
-          :xl="{span: 6}"
-          style="margin-bottom:10px;"
-        >
-          <image-item
-            :id="'img11'"
-            :img-src="imgList[1]"
-          />
-        </el-col>
-        <el-col
-          :lg="{span: 8}"
-          :xl="{span: 6}"
-          style="margin-bottom:10px;"
-        >
-          <image-item
-            :id="'img12'"
-            :img-src="imgList[2]"
-          />
-        </el-col>
-      </el-row>
-    </div>
-    <div class="image-others">
-      <span style="background: red">aaaaaaaaaaaaaaaaaaaaaaaaa</span>
+    <div class="image-container">
+      <div class="image-list">
+        <ul>
+          <li>
+            <image-item
+              :img-src="imgList[0]"
+              :id="1"
+            >
+            </image-item>
+          </li>
+          <li>
+            <image-item
+              :img-src="imgList[1]"
+              :id="2"
+            >
+            </image-item>
+          </li>
+          <li>
+            <image-item
+              :img-src="imgList[2]"
+              :id="3"
+            >
+            </image-item>
+          </li>
+          <li>
+            <image-item
+              :img-src="imgList[3]"
+              :id="4"
+            >
+            </image-item>
+          </li>
+          <li>
+            <image-item
+              :img-src="imgList[4]"
+              :id="5"
+            >
+            </image-item>
+          </li>
+          <li>
+            <image-item
+              :img-src="imgList[5]"
+              :id="6"
+            >
+            </image-item>
+          </li>
+        </ul>
+      </div>
+      <div v-show="!mobile" class="image-right">
+      </div>
     </div>
   </div>
 </template>
@@ -193,45 +107,68 @@ export default class extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.carousel-wrapper {
-  width: 93%;
-  padding-left: 20px;
-  padding-right: 20px;
+.image-container {
+  margin-top: 1%;
+  width: 100%;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 48rem 1fr;
+
+  .image-list {
+    margin-top: 20px;
+    width: 770px;
+
+    ul {
+      padding: 0;
+      margin-top: 0;
+      li{
+        margin-top: 0;
+        float: left;
+        list-style:none;
+        margin-left: 15px;
+      }
+    }
+  }
+
+  .image-right {
+    width: 350px;
+    height: 1000px;
+    margin-top: 20px;
+    border: 1px #f90 solid;
+  }
 }
 
-.image-list {
-  width: 70%;
-  float: left;
-}
+.image-carousel {
+  width: 85%;
+  margin-left: 50px;
 
-.image-others {
-  width: 30%;
-  float: right;
-}
+  .el-carousel__item h3 {
+    background-color: #000;
+    font-size: 14px;
+    opacity: 0.75;
+    line-height: 200px;
+    margin: 0;
+  }
 
-.el-carousel__item h3 {
-  background-color: #000;
-  font-size: 14px;
-  opacity: 0.75;
-  line-height: 200px;
-  margin: 0;
-}
+  .el-carousel__item {
+    width: 500px;
+  }
 
-.el-carousel__item {
-  width: 500px;
-}
+  .el-carousel__item:nth-child(2n) {
+    background-color: #000;
+  }
 
-.el-carousel__item:nth-child(2n) {
-  background-color: #000;
-}
-
-.el-carousel__item:nth-child(2n+1) {
-  background-color: #000;
+  .el-carousel__item:nth-child(2n+1) {
+    background-color: #000;
+  }
 }
 
 .mobile {
   .image-list {
     width: 100%;
+    ul li {
+      margin-left: 10px;
+    }
   }
 }
 </style>

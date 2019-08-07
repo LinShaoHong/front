@@ -49,23 +49,12 @@ export default class extends Vue {
   private move(e: MouseEvent) {
     const el: HTMLElement | null = window.document.getElementById(this.id)
     if (el !== null && !this.carousel && !this.mobile) {
-      let top = 0
-      let ele: HTMLElement | null = el
-      while (ele != null) {
-        top = ele.offsetTop || 0
-        if (top !== 0) {
-          break
-        }
-        ele = ele.parentElement
-      }
-      if (ele != null) {
-        const cursPosX = e.pageX - el.offsetLeft
-        const cursPosY = e.pageY - top
-        const cursFromCenterX = ele.clientWidth / 2 - cursPosX
-        const cursFromCenterY = ele.clientHeight / 2 - cursPosY
-        el.style.transform = 'perspective(500px) rotateX(' + (cursFromCenterY / 20) + 'deg) rotateY(' + -(cursFromCenterX / 20) + 'deg) translateZ(10px)'
-        el.classList.remove('leave')
-      }
+      const cursPosX = e.pageX - el.offsetLeft
+      const cursPosY = e.pageY - el.offsetTop
+      const cursFromCenterX = el.clientWidth / 2 - cursPosX + 250
+      const cursFromCenterY = el.clientHeight / 2 - cursPosY
+      el.style.transform = 'perspective(500px) rotateX(' + (cursFromCenterY / 20) + 'deg) rotateY(' + -(cursFromCenterX / 20) + 'deg) translateZ(10px)'
+      el.classList.remove('leave')
     }
   }
 

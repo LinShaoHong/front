@@ -75,32 +75,20 @@ export default class extends mixins(ResizeMixin) {
 </script>
 
 <style lang="scss" scoped>
-.app-wrapper {
-  @include clearfix;
-  position: relative;
-  height: 100%;
-  width: 100%;
-}
-
-.main-container {
-  min-height: 100%;
-  position: relative;
-}
-
 .desk-content-grid {
   margin-top: 1%;
   margin-left: 2%;
   display: grid;
   grid-template-columns: 12rem 1fr;
   grid-gap: 2%;
-}
 
-.desk-sidebar-wrapper {
-  width: 100%;
-}
+  .desk-sidebar-wrapper {
+    width: 100%;
+  }
 
-.desk-app-wrapper {
-  margin-right: 5%;
+  .desk-app-wrapper {
+    width: 100%;
+  }
 }
 
 .fixed-header {
