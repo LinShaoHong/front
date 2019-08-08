@@ -276,7 +276,6 @@ export default class extends Vue {
     if (this.showActionTools) {
       this.toggleAction()
     }
-    if (this.mobile) return
     const centerX = window.outerWidth / 2 + this.transform.offsetX
     const offset = e.pageX - centerX
     if (Math.abs(offset) > 40) {
@@ -371,7 +370,7 @@ export default class extends Vue {
   }
 
   mounted() {
-    this.bindSliderEvent()
+    // this.bindSliderEvent()
     this.showImgTimeout()
     this.hideBtnPrevAndNext()
     this.deviceSupportInstall()
