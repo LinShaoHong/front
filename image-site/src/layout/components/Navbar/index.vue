@@ -1,5 +1,7 @@
 <template>
-  <div class="navbar">
+  <div class="navbar"
+       :style="mobile ? '' : 'width: ' + width + 'px;'"
+  >
     <div v-if="mobile">
       <div class="mobile-top-header">
         <hamburger
@@ -65,6 +67,7 @@ import { constantRoutes } from '@/router'
   }
 })
 export default class extends Vue {
+  private width = 0
   private routes = constantRoutes.filter(v => !v.meta.hidden)
 
   get sidebar() {
@@ -87,6 +90,19 @@ export default class extends Vue {
       return basePath
     }
     return path.resolve(basePath, routePath)
+  }
+
+  private resize() {
+    if(!this.mobile) {
+      this.width = window.document.body.scrollWidth
+    }
+  }
+
+  mounted() {
+    this.resize()
+    window.addEventListener('resize', (e: Event) => {
+      this.resize()
+    })
   }
 }
 </script>
@@ -135,12 +151,12 @@ export default class extends Vue {
     width: 100%;
     min-height: 80px;
     padding-left: 4%;
-    padding-right: 50%;
-    display: grid;
-    grid-template-columns: 150px 1fr;
-    grid-gap: 10px;
+    display: inline-grid;
+    grid-template-columns: 200px 1fr 250px;
+    grid-column-gap: 10px;
     justify-items: center;
     align-items: center;
+    margin: auto;
 
     .search-button {
       height: 28px;
