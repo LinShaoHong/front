@@ -8,9 +8,9 @@
         :height="carouselHeight + 'px'"
       >
         <el-carousel-item
-          :style="'width: ' + carouselWidth + 'px'"
           v-for="i in 3"
           :key="i"
+          :style="'width: ' + carouselWidth + 'px'"
         >
           <image-item
             :id="'img' + (i + 100)"
@@ -31,7 +31,7 @@
           <li v-for="(item, index) in imgList">
             <image-item
               :id="index"
-              :key="index"
+              :key="item"
               :img-src="item"
             />
           </li>
@@ -40,18 +40,17 @@
       <div
         v-if="!mobile"
         class="image-right"
-      >
-      </div>
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-  import { Component, Vue } from 'vue-property-decorator'
-  import ImageItem from './components/ImageItem.vue'
-  import { DeviceType, AppModule } from '@/store/modules/app'
-  import { deviceResizeSupporter } from '@/utils/mixin'
-  import { V_IMAGE } from '@/constant/image'
+import { Component, Vue } from 'vue-property-decorator'
+import ImageItem from './components/ImageItem.vue'
+import { DeviceType, AppModule } from '@/store/modules/app'
+import { deviceResizeSupporter } from '@/utils/mixin'
+import { V_IMAGE } from '@/constant/image'
 
   @Component({
     name: 'Dashboard',
@@ -59,7 +58,7 @@
       ImageItem
     }
   })
-  export default class extends Vue {
+export default class extends Vue {
     private mobileImagesWidth = 0
     private carouselWidth = V_IMAGE.carousel.width
     private carouselHeight= V_IMAGE.carousel.height
@@ -104,7 +103,7 @@
       this.resize()
       deviceResizeSupporter(this.resize)
     }
-  }
+}
 </script>
 
 <style lang="scss" scoped>

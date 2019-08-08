@@ -110,6 +110,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { isFirefox, off, on, rafThrottle } from '@/utils/image'
+import { slider } from '@/utils/mobile'
 import { AppModule, DeviceType } from '@/store/modules/app'
 
 const mousewheelEventName = isFirefox() ? 'DOMMouseScroll' : 'mousewheel'
@@ -275,9 +276,10 @@ export default class extends Vue {
     if (this.showActionTools) {
       this.toggleAction()
     }
+    if (this.mobile) return
     const centerX = window.outerWidth / 2 + this.transform.offsetX
     const offset = e.pageX - centerX
-    if (Math.abs(offset) > 20) {
+    if (Math.abs(offset) > 40) {
       if (offset > 0) {
         this.next()
       } else {
@@ -333,6 +335,17 @@ export default class extends Vue {
     transform.enableTransition = enableTransition
   }
 
+  private bindSliderEvent() {
+    const el: Node = window.document.getElementById('imgId')
+    slider(el, (x, y) => {
+      if (x < -5) {
+        this.prev()
+      } else if (x > 5) {
+        this.next()
+      }
+    })
+  }
+
   private showImgTimeout() {
     setTimeout(() => {
       this.transform.scale = 1
@@ -358,6 +371,7 @@ export default class extends Vue {
   }
 
   mounted() {
+    this.bindSliderEvent()
     this.showImgTimeout()
     this.hideBtnPrevAndNext()
     this.deviceSupportInstall()

@@ -1,6 +1,7 @@
 <template>
-  <div class="navbar"
-       :style="mobile ? '' : 'width: ' + width + 'px;'"
+  <div
+    :class="mobile? 'navbar mobile' : 'navbar'"
+    :style="mobile ? '' : 'width: ' + width + 'px;'"
   >
     <div v-if="mobile">
       <div class="mobile-top-header">
@@ -11,11 +12,29 @@
           @toggleClick="toggleSideBar"
         />
       </div>
-      <div class="search-svg">
+      <div
+        v-if="showMobileSearch"
+        class="search-wrapper"
+      >
+        <div class="search">
+          <input
+            class="search-input"
+            placeholder="搜索"
+          >
+          <button class="search-button">
+            <i class="el-icon-search" />
+          </button>
+        </div>
+      </div>
+      <div
+        v-if="!showMobileSearch"
+        class="search-svg"
+      >
         <svg-icon
           name="search"
           width="25"
           height="25"
+          @click="showSearchBtn"
         />
       </div>
     </div>
@@ -68,6 +87,7 @@ import { constantRoutes } from '@/router'
 })
 export default class extends Vue {
   private width = 0
+  private showMobileSearch = false
   private routes = constantRoutes.filter(v => !v.meta.hidden)
 
   get sidebar() {
@@ -76,6 +96,10 @@ export default class extends Vue {
 
   get mobile() {
     return AppModule.device === DeviceType.Mobile
+  }
+
+  private showSearchBtn() {
+    this.showMobileSearch = true
   }
 
   private toggleSideBar() {
@@ -93,7 +117,7 @@ export default class extends Vue {
   }
 
   private resize() {
-    if(!this.mobile) {
+    if (!this.mobile) {
       this.width = window.document.body.scrollWidth
     }
   }
@@ -103,23 +127,85 @@ export default class extends Vue {
     window.addEventListener('resize', (e: Event) => {
       this.resize()
     })
+    window.addEventListener('touchmove', (e: Event) => {
+      if (this.showMobileSearch) {
+        this.showMobileSearch = false
+      }
+    })
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .navbar {
-    height: $NavBarHeight !important;
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-    background-color: #1b1b1b;
+.navbar {
+  height: $NavBarHeight !important;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  background-color: #1b1b1b;
+}
+
+.search {
+  .search-input {
+    margin-left: 0;
+    display: inline-block;
+    color: #cacaca;
+    background: #363636;
+    border-radius: 3px 0 0 3px;
+    outline: 0;
+    border: none;
+    padding: 2px 5px;
+    vertical-align: top;
+    cursor: text;
+    width: 350px;
+    font-size: 14px;
+    height: 30px;
+    border-left: 1px solid #757575;
+    border-bottom: 1px solid #757575;
+    border-top: 1px solid #757575;
   }
 
+  .search-input:focus {
+    outline-offset: -2px;
+    transition: .1s;
+    box-shadow: 0 0 0.1rem #c2c2c2;
+  }
+
+  .search-input:focus + .search-button {
+    box-shadow: 0 0 0.1rem #f90;
+  }
+
+  .el-icon-search {
+  }
+
+  .search-button {
+    height: 30px;
+    width: 60px;
+    cursor: pointer;
+    background: #f90;
+    outline: 0;
+    outline-offset: -2px;
+    border: 0;
+  }
+}
+
+.desk-top-header {
+  width: 100%;
+  min-height: 80px;
+  padding-left: 4%;
+  display: inline-grid;
+  grid-template-columns: 200px 1fr 250px;
+  grid-column-gap: 10px;
+  justify-items: center;
+  align-items: center;
+  margin: auto;
+}
+
+.mobile {
   .mobile-top-header {
+    float: left;
     .hamburger-container {
-      line-height: 46px;
-      float: left;
+      margin-top: 10px;
       height: 100%;
       padding: 0 15px;
       cursor: pointer;
@@ -140,63 +226,25 @@ export default class extends Vue {
     margin-right: 2px;
     line-height: 46px;
     border-left: 1px solid #000;
-  }
 
-  .svg-icon {
-    vertical-align: middle;
-    color: #f90;
-  }
-
-  .desk-top-header {
-    width: 100%;
-    min-height: 80px;
-    padding-left: 4%;
-    display: inline-grid;
-    grid-template-columns: 200px 1fr 250px;
-    grid-column-gap: 10px;
-    justify-items: center;
-    align-items: center;
-    margin: auto;
-
-    .search-button {
-      height: 28px;
-      width: 60px;
-      cursor: pointer;
-      background: #f90;
-      outline: 0;
-      outline-offset: -2px;
-      border: 0;
+    .svg-icon {
+      vertical-align: middle;
+      color: #f90;
     }
+  }
+
+  .search-wrapper {
+    float: left;
+    margin-left: 10%;
+    margin-top: 10px;
+    width: 70%;
+    transition: all .2s ease;
 
     .search {
       .search-input {
-        margin-left: 0;
-        display: inline-block;
-        color: #cacaca;
-        background: #363636;
-        border-radius: 3px 0 0 3px;
-        outline: 0;
-        border: none;
-        padding: 2px 5px;
-        vertical-align: top;
-        cursor: text;
-        width: 350px;
-        font-size: 14px;
-        height: 28px;
-      }
-
-      .search-input:focus {
-        outline-offset: -2px;
-        border-left: 1px solid #757575;
-        border-bottom: 1px solid #757575;
-        border-top: 1px solid #757575;
-        transition: .1s;
-        box-shadow: 0 0 0.1rem #c2c2c2;
-      }
-
-      .search-input:focus + .search-button {
-        box-shadow: 0 0 0.1rem #f90;
+        width: 60%;
       }
     }
   }
+}
 </style>
