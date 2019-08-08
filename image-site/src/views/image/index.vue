@@ -5,70 +5,43 @@
         v-show="!mobile"
         :interval="4000"
         type="card"
-        height="600px"
+        :height="carouselHeight + 'px'"
       >
         <el-carousel-item
+          :style="'width: ' + carouselWidth + 'px'"
           v-for="i in 3"
           :key="i"
         >
           <image-item
             :id="'img' + (i + 100)"
             :carousel="true"
-            :width="500"
-            :height="600"
+            :width="carouselWidth"
+            :height="carouselHeight"
             :img-src="imgList[i - 1]"
           />
         </el-carousel-item>
       </el-carousel>
     </div>
     <div class="image-container">
-      <div class="image-list">
-        <ul>
-          <li>
+      <div
+        class="image-wrapper"
+        :style="mobile ? ('width: ' + mobileImagesWidth + 'px;') : ''"
+      >
+        <ul class="image-list">
+          <li v-for="(item, index) in imgList">
             <image-item
-              :img-src="imgList[0]"
-              :id="1"
-            >
-            </image-item>
-          </li>
-          <li>
-            <image-item
-              :img-src="imgList[1]"
-              :id="2"
-            >
-            </image-item>
-          </li>
-          <li>
-            <image-item
-              :img-src="imgList[2]"
-              :id="3"
-            >
-            </image-item>
-          </li>
-          <li>
-            <image-item
-              :img-src="imgList[3]"
-              :id="4"
-            >
-            </image-item>
-          </li>
-          <li>
-            <image-item
-              :img-src="imgList[4]"
-              :id="5"
-            >
-            </image-item>
-          </li>
-          <li>
-            <image-item
-              :img-src="imgList[5]"
-              :id="6"
-            >
-            </image-item>
+              :id="index"
+              :key="index"
+              :img-src="item"
+            />
           </li>
         </ul>
       </div>
-      <div v-show="!mobile" class="image-right">
+      <div
+        v-if="!mobile"
+        class="image-right"
+      >
+        <span style="background: red; white-space: nowrap">dddddddd</span>
       </div>
     </div>
   </div>
@@ -78,6 +51,8 @@
 import { Component, Vue } from 'vue-property-decorator'
 import ImageItem from './components/ImageItem.vue'
 import { DeviceType, AppModule } from '@/store/modules/app'
+import { deviceResizeSupporter } from '@/utils/mixin'
+import { V_IMAGE } from '@/constant/image'
 
 @Component({
   name: 'Dashboard',
@@ -86,7 +61,22 @@ import { DeviceType, AppModule } from '@/store/modules/app'
   }
 })
 export default class extends Vue {
+  private mobileImagesWidth = 0
+  private carouselWidth = V_IMAGE.carousel.width
+  private carouselHeight= V_IMAGE.carousel.height
+
   private imgList: string[] = [
+    'http://172.20.10.2/images/158514725/1637791670/details/200228125.jpg',
+    'http://172.20.10.2/images/158514725/1856011515/details/1540541095.jpg',
+    'http://172.20.10.2/images/158514725/1856011515/details/864560260.jpg',
+    'http://172.20.10.2/images/158514725/1856011515/details/91420632.jpg',
+    'http://172.20.10.2/images/158514725/1856011515/details/1540541095.jpg',
+    'http://172.20.10.2/images/158514725/1856011515/details/864560260.jpg',
+    'http://172.20.10.2/images/158514725/1856011515/details/91420632.jpg',
+    'http://172.20.10.2/images/158514725/1856011515/details/1540541095.jpg',
+    'http://172.20.10.2/images/158514725/1856011515/details/864560260.jpg',
+    'http://172.20.10.2/images/158514725/1856011515/details/91420632.jpg',
+    'http://172.20.10.2/images/158514725/1856011515/details/1540541095.jpg',
     'http://172.20.10.2/images/158514725/1637791670/details/200228125.jpg',
     'http://172.20.10.2/images/158514725/1856011515/details/1540541095.jpg',
     'http://172.20.10.2/images/158514725/1856011515/details/864560260.jpg',
@@ -103,6 +93,18 @@ export default class extends Vue {
   get mobile() {
     return AppModule.device === DeviceType.Mobile
   }
+
+  private resize() {
+    if (this.mobile) {
+      const c = Math.floor(window.outerWidth * 0.98 / 165)
+      this.mobileImagesWidth = c * 170
+    }
+  }
+
+  mounted() {
+    this.resize()
+    deviceResizeSupporter(this.resize)
+  }
 }
 </script>
 
@@ -111,29 +113,20 @@ export default class extends Vue {
   margin-top: 1%;
   width: 100%;
   overflow: hidden;
-  display: grid;
-  grid-template-columns: 48rem 1fr;
 
-  .image-list {
-    margin-top: 20px;
-    width: 770px;
-
-    ul {
-      padding: 0;
-      margin-top: 0;
-      li{
-        margin-top: 0;
-        float: left;
-        list-style:none;
-        margin-left: 15px;
-      }
+  .image-wrapper {
+    float: left;
+    .image-list {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-column-gap: 10px;
     }
   }
 
   .image-right {
-    width: 350px;
-    height: 1000px;
     margin-top: 20px;
+    float: left;
     border: 1px #f90 solid;
   }
 }
@@ -150,10 +143,6 @@ export default class extends Vue {
     margin: 0;
   }
 
-  .el-carousel__item {
-    width: 500px;
-  }
-
   .el-carousel__item:nth-child(2n) {
     background-color: #000;
   }
@@ -164,10 +153,21 @@ export default class extends Vue {
 }
 
 .mobile {
-  .image-list {
+  .image-container {
     width: 100%;
-    ul li {
-      margin-left: 10px;
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-content: center;
+    justify-items: center;
+
+    .image-wrapper {
+      ul {
+        padding-right: 0;
+        li {
+          margin-left: 5px;
+          margin-right: 0;
+        }
+      }
     }
   }
 }

@@ -9,7 +9,7 @@
     >
       <img
         :src="imgSrc"
-        :style="'width: ' + width + 'px; height: ' + height + 'px;'"
+        :style="'width: ' + reWidth + 'px; height: ' + reHeight + 'px;'"
       >
     </div>
     <image-details ref="imgDetails" />
@@ -17,7 +17,10 @@
       v-show="!carousel"
       class="content"
     >
-      <span class="title" :style="'width: '+ width + 'px;'">绝美波霸厨娘真空巨乳风情身材火爆至绝美波霸厨娘真空巨乳风情身材火爆至</span>
+      <span
+        class="title"
+        :style="'width: '+ reWidth + 'px;'"
+      >绝美波霸厨娘真空巨乳风情身材火爆至绝美波霸厨娘真空巨乳风情身材火爆至</span>
     </div>
   </div>
 </template>
@@ -26,6 +29,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { DeviceType, AppModule } from '@/store/modules/app'
 import ImageDetails from './ImageDetails.vue'
+import { V_IMAGE } from '@/constant/image'
 
 @Component({
   name: 'ImageItem',
@@ -37,8 +41,8 @@ export default class extends Vue {
   @Prop({ default: '#' }) private imgSrc!: string
   @Prop({ default: '' }) private id!: string
   @Prop({ default: false }) private carousel!: boolean
-  @Prop({ default: 230 }) private width!: number
-  @Prop({ default: 300 }) private height!: number
+  @Prop({ default: V_IMAGE.width }) private width!: number
+  @Prop({ default: V_IMAGE.height }) private height!: number
 
   private showViewer() {
     if (!this.carousel) {
@@ -65,13 +69,16 @@ export default class extends Vue {
     }
   }
 
+  get reWidth() {
+    return this.mobile ? V_IMAGE.mobile.width : this.width
+  }
+
+  get reHeight() {
+    return this.mobile ? V_IMAGE.mobile.height : this.height
+  }
+
   get mobile() {
-    const b = AppModule.device === DeviceType.Mobile
-    if (b) {
-      this.width = 160
-      this.height = 230
-    }
-    return b
+    return AppModule.device === DeviceType.Mobile
   }
 }
 </script>
@@ -148,7 +155,6 @@ export default class extends Vue {
 .mobile {
   .image-shadow {
     img {
-      width: 10px;
       border-radius: 4px;
     }
   }
