@@ -15,6 +15,7 @@
       <div
         v-if="showMobileSearch"
         class="search-wrapper"
+        :style="'width: '+ searchWidth + '%'"
       >
         <div class="search">
           <input
@@ -72,6 +73,7 @@ import path from 'path'
 import { Component, Vue } from 'vue-property-decorator'
 import { isExternal } from '@/utils/validate'
 import { DeviceType, AppModule } from '@/store/modules/app'
+import { slider } from '@/utils/mobile'
 import Hamburger from '@/components/Hamburger/index.vue'
 import ErrorLog from '@/components/ErrorLog/index.vue'
 import LangSelect from '@/components/LangSelect/index.vue'
@@ -88,6 +90,7 @@ import { constantRoutes } from '@/router'
 export default class extends Vue {
   private width = 0
   private showMobileSearch = false
+  private searchWidth = 10
   private routes = constantRoutes.filter(v => !v.meta.hidden)
 
   get sidebar() {
@@ -100,6 +103,7 @@ export default class extends Vue {
 
   private showSearchBtn() {
     this.showMobileSearch = true
+    this.searchWidth = 70
   }
 
   private toggleSideBar() {
@@ -127,9 +131,12 @@ export default class extends Vue {
     window.addEventListener('resize', (e: Event) => {
       this.resize()
     })
-    window.addEventListener('touchmove', (e: Event) => {
-      if (this.showMobileSearch) {
-        this.showMobileSearch = false
+    slider(window.document.body, false, (x, y) => {
+      if (y > 25 || y < -25) {
+        this.searchWidth = 10
+        setTimeout(() => {
+          this.showMobileSearch = false
+        }, 250)
       }
     })
   }
@@ -237,8 +244,7 @@ export default class extends Vue {
     float: left;
     margin-left: 10%;
     margin-top: 10px;
-    width: 70%;
-    transition: all .2s ease;
+    transition: all .5s linear;
 
     .search {
       .search-input {

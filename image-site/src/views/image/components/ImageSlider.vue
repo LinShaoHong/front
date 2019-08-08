@@ -336,7 +336,7 @@ export default class extends Vue {
 
   private bindSliderEvent() {
     const el: Node = window.document.getElementById('imgId')
-    slider(el, (x, y) => {
+    slider(el, true, (x, y) => {
       if (x < -5) {
         this.prev()
       } else if (x > 5) {
