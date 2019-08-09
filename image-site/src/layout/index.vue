@@ -139,19 +139,17 @@ export default class extends mixins(ResizeMixin) {
   }
 
   .mobile-sidebar-wrapper {
+    margin-left: 10px;
+    margin-top: 20px;
     position: fixed;
     z-index: 1001;
+    transition: transform .28s;
+    width: $sideBarWidth !important;
   }
 
   .mobile-app-wrapper {
     padding-left: 2%;
     padding-right: 2%;
-  }
-
-  .mobile-sidebar-wrapper {
-    transition: transform .28s;
-    width: $sideBarWidth !important;
-    z-index: 1001;
   }
 
   &.openNavbar {
@@ -176,7 +174,7 @@ export default class extends mixins(ResizeMixin) {
     .mobile-sidebar-wrapper {
       pointer-events: none;
       transition-duration: 0.6s;
-      transform: translate3d(-$sideBarWidth, 0, 0);
+      transform: translate3d(-80px, 0, 0);
     }
   }
 

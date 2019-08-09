@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar"
+  <div :class="classObj"
   >
     <div class="sidebar-container">
       <div class="menu-container">
@@ -23,6 +23,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import ErrorLog from '@/components/ErrorLog/index.vue'
 import LangSelect from '@/components/LangSelect/index.vue'
+import { DeviceType, AppModule } from '@/store/modules/app'
 
 @Component({
   name: 'Sidebar',
@@ -32,6 +33,12 @@ import LangSelect from '@/components/LangSelect/index.vue'
   }
 })
 export default class extends Vue {
+  get classObj() {
+    return {
+      sidebar: true,
+      mobile: AppModule.device === DeviceType.Mobile
+    }
+  }
 }
 </script>
 
@@ -39,7 +46,7 @@ export default class extends Vue {
 .sidebar {
   width: $sideBarWidth !important;
   background: #101010;
-  border-radius: 3px;
+  border-radius: 10px;
   z-index: 1001;
 }
 
@@ -82,5 +89,11 @@ export default class extends Vue {
 
 .sidebar-container::-webkit-scrollbar {
   display: none;
+}
+
+.mobile {
+  &.sidebar {
+    width: $mobileSideBarWidth !important;
+  }
 }
 </style>
