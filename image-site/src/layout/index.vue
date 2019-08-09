@@ -112,13 +112,14 @@ export default class extends mixins(ResizeMixin) {
     margin-top: 1%;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    justify-items: center;
 
     .desk-sidebar-wrapper {
       grid-column: 1 / 2;
       .sidebar-sticky {
         position: sticky;
         top: $NavBarHeight;
-        margin-top: 30%;
+        margin-top: 100%;
         padding-top: 3px;
         padding-left: 3px;
       }
