@@ -29,10 +29,9 @@ export default class extends Vue {
   }
 
   mounted() {
-    const isMobile = this.isMobile()
-    if (isMobile) {
+    AppModule.CloseSideBar(true)
+    if (this.isMobile()) {
       AppModule.ToggleDevice(DeviceType.Mobile)
-      AppModule.CloseSideBar(true)
     }
   }
 

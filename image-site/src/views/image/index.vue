@@ -107,78 +107,78 @@ export default class extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .image-container {
-    margin-top: 1%;
+.image-container {
+  margin-top: 1%;
+  width: 100%;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(3, 250px) 320px;
+  grid-column-gap: 10px;
+
+  .image-list {
+    margin-top: 20px;
     width: 100%;
-    overflow: hidden;
+    grid-column: 1 / 4;
+
+    ul {
+      padding: 0;
+      margin-top: 0;
+      @include clearfix;
+      li{
+        margin-top: 0;
+        float: left;
+        list-style:none;
+        margin-left: 15px;
+      }
+    }
+  }
+
+  .image-right {
+    width: 100%;
+    margin-top: 20px;
+    grid-column: 4 / 5;
+    border: 1px #f90 solid;
+  }
+}
+
+.image-carousel {
+  width: 85%;
+  margin-left: 50px;
+
+  .el-carousel__item h3 {
+    background-color: #000;
+    font-size: 14px;
+    opacity: 0.75;
+    line-height: 200px;
+    margin: 0;
+  }
+
+  .el-carousel__item:nth-child(2n) {
+    background-color: #000;
+  }
+
+  .el-carousel__item:nth-child(2n+1) {
+    background-color: #000;
+  }
+}
+
+.mobile {
+  .image-container {
+    width: 100%;
     display: grid;
-    grid-template-columns: repeat(3, 250px) 320px;
-    grid-column-gap: 10px;
+    grid-template-columns: 1fr;
+    justify-content: center;
+    justify-items: center;
 
     .image-list {
-      margin-top: 20px;
-      width: 100%;
-      grid-column: 1 / 4;
-
       ul {
-        padding: 0;
-        margin-top: 0;
-        @include clearfix;
-        li{
-          margin-top: 0;
-          float: left;
-          list-style:none;
-          margin-left: 15px;
-        }
-      }
-    }
-
-    .image-right {
-      width: 100%;
-      margin-top: 20px;
-      grid-column: 4 / 5;
-      border: 1px #f90 solid;
-    }
-  }
-
-  .image-carousel {
-    width: 85%;
-    margin-left: 50px;
-
-    .el-carousel__item h3 {
-      background-color: #000;
-      font-size: 14px;
-      opacity: 0.75;
-      line-height: 200px;
-      margin: 0;
-    }
-
-    .el-carousel__item:nth-child(2n) {
-      background-color: #000;
-    }
-
-    .el-carousel__item:nth-child(2n+1) {
-      background-color: #000;
-    }
-  }
-
-  .mobile {
-    .image-container {
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr;
-      justify-content: center;
-      justify-items: center;
-
-      .image-list {
-        ul {
-          padding-right: 0;
-          li {
-            margin-left: 5px;
-            margin-right: 0;
-          }
+        padding-right: 0;
+        li {
+          margin-left: 5px;
+          margin-right: 0;
         }
       }
     }
   }
+}
 </style>

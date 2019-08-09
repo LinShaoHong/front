@@ -55,7 +55,7 @@ export default class extends Vue {
     if (el !== null && !this.carousel && !this.mobile) {
       const cursPosX = e.pageX - el.offsetLeft
       const cursPosY = e.pageY - el.offsetTop
-      const cursFromCenterX = el.clientWidth / 2 - cursPosX + 250
+      const cursFromCenterX = el.clientWidth / 2 - cursPosX + 200
       const cursFromCenterY = el.clientHeight / 2 - cursPosY
       el.style.transform = 'perspective(500px) rotateX(' + (cursFromCenterY / 20) + 'deg) rotateY(' + -(cursFromCenterX / 20) + 'deg) translateZ(10px)'
       el.classList.remove('leave')

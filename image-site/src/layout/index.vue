@@ -8,7 +8,7 @@
         <navbar />
       </div>
       <div
-        v-if="classObj.mobile && sidebar.opened"
+        v-if="sidebar.opened"
         class="drawer-bg"
         @click="handleClickOutside"
       />
@@ -22,15 +22,17 @@
           <app-main />
         </div>
       </div>
-      <div
-        v-else
-        class="desk-content-grid"
-      >
-        <div class="desk-sidebar-wrapper">
-          <sidebar />
-        </div>
-        <div class="desk-app-wrapper">
-          <app-main />
+      <div v-else>
+        <div class="desk-content-grid"
+        >
+          <div class="desk-sidebar-wrapper">
+            <div class="sidebar-sticky">
+              <sidebar/>
+            </div>
+          </div>
+          <div class="desk-app-wrapper">
+            <app-main />
+          </div>
         </div>
       </div>
     </div>
@@ -60,7 +62,8 @@ export default class extends mixins(ResizeMixin) {
       hideSidebar: !this.sidebar.opened,
       openSidebar: this.sidebar.opened,
       withoutAnimation: this.sidebar.withoutAnimation,
-      mobile: this.device === DeviceType.Mobile
+      mobile: this.device === DeviceType.Mobile,
+      desktop: this.device !== DeviceType.Mobile
     }
   }
 
@@ -68,29 +71,22 @@ export default class extends mixins(ResizeMixin) {
     return this.device === DeviceType.Mobile
   }
 
+  private toggelSidebar() {
+    AppModule.ToggleSideBar(false)
+  }
+
   private handleClickOutside() {
     AppModule.CloseSideBar(false)
+  }
+
+  mounted() {
+    window.addEventListener('resize', (e: Event) => {
+    })
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.desk-content-grid {
-  margin-top: 1%;
-  margin-left: 2%;
-  display: grid;
-  grid-template-columns: 12rem 1fr;
-  grid-gap: 2%;
-
-  .desk-sidebar-wrapper {
-    width: 100%;
-  }
-
-  .desk-app-wrapper {
-    width: 100%;
-  }
-}
-
 .fixed-header {
   position: sticky;
   top: 0;
@@ -111,19 +107,44 @@ export default class extends mixins(ResizeMixin) {
   margin-left: 0 !important;
 }
 
-.mobile-sidebar-wrapper {
-  position: fixed;
-  z-index: 1001;
-}
+.desktop {
+  .desk-content-grid {
+    margin-top: 1%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
 
-.mobile-app-wrapper {
-  padding-left: 2%;
-  padding-right: 2%;
+    .desk-sidebar-wrapper {
+      grid-column: 1 / 2;
+      .sidebar-sticky {
+        position: sticky;
+        top: $NavBarHeight;
+        margin-top: 30%;
+        padding-top: 3px;
+        padding-left: 3px;
+      }
+    }
+
+    .desk-app-wrapper {
+      margin-left: 0;
+      grid-column: 2 / 3;
+      width: 100%;
+    }
+  }
 }
 
 .mobile {
   .main-container {
     margin-left: 0;
+  }
+
+  .mobile-sidebar-wrapper {
+    position: fixed;
+    z-index: 1001;
+  }
+
+  .mobile-app-wrapper {
+    padding-left: 2%;
+    padding-right: 2%;
   }
 
   .mobile-sidebar-wrapper {

@@ -365,7 +365,7 @@ export default class extends Vue {
         clearInterval(handler)
         this.btnViewScale = 0
         this.btnViewIconScale = 0
-      }, 3000)
+      }, 5000)
     }
   }
 
