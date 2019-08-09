@@ -46,7 +46,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component } from 'vue-property-decorator'
+import { mixins } from 'vue-class-component'
+import Layout from '@/views/common/layout'
 import ImageItem from './components/ImageItem.vue'
 import { DeviceType, AppModule } from '@/store/modules/app'
 import { deviceResizeSupporter } from '@/utils/mixin'
@@ -58,7 +60,7 @@ import { V_IMAGE } from '@/constant/image'
       ImageItem
     }
   })
-export default class extends Vue {
+export default class extends mixins(Layout) {
     private mobileImagesWidth = 0
     private carouselWidth = V_IMAGE.carousel.width
     private carouselHeight= V_IMAGE.carousel.height
@@ -87,10 +89,6 @@ export default class extends Vue {
       'http://172.20.10.2/images/158514725/1856011515/details/91420632.jpg',
       'http://172.20.10.2/images/158514725/1856011515/details/1540541095.jpg'
     ]
-
-    get mobile() {
-      return AppModule.device === DeviceType.Mobile
-    }
 
     private resize() {
       if (this.mobile) {

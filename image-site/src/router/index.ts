@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router, { RouteConfig } from 'vue-router'
 
 import Layout from '@/layout/index.vue'
+import imageRouter from './modules/imageRoute'
 
 Vue.use(Router)
 
@@ -37,6 +38,10 @@ export const constantRoutes: RouteConfig[] = [
   }
 ]
 
+export const asyncRoutes: RouteConfig[] = [
+  imageRouter
+]
+
 const createRouter = () => new Router({
   // mode: 'history',  // Disabled due to Github Pages doesn't support this, enable this if you need.
   scrollBehavior: (to, from, savedPosition) => {
@@ -47,7 +52,7 @@ const createRouter = () => new Router({
     }
   },
   base: process.env.BASE_URL,
-  routes: constantRoutes
+  routes: constantRoutes.concat(asyncRoutes)
 })
 
 const router = createRouter()

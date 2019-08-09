@@ -1,6 +1,6 @@
 const path = require('path')
-const devServerPort = 2338
-const mockServerPort = 2339
+const devServerPort = 1379
+const mockServerPort = 1378
 const name = 'Image Site'
 
 module.exports = {
@@ -15,10 +15,18 @@ module.exports = {
       errors: true
     },
     proxy: {
+      [process.env.VUE_APP_BASE_API + '/api/v1']: {
+        target: `http://172.20.10.2:${devServerPort}/api/v1`,
+        changeOrigin: false,
+        ws: true,
+        pathRewrite: {
+          ['^' + process.env.VUE_APP_BASE_API + '/api/v1']: ''
+        }
+      },
       [process.env.VUE_APP_BASE_API]: {
         target: `http://localhost:${mockServerPort}/mock-api/v1`,
-        changeOrigin: true, // needed for virtual hosted sites
-        ws: true, // proxy websockets
+        changeOrigin: true,
+        ws: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
@@ -57,28 +65,28 @@ module.exports = {
         config => {
           config
             .optimization.splitChunks({
-              chunks: 'all',
-              cacheGroups: {
-                libs: {
-                  name: 'chunk-libs',
-                  test: /[\\/]node_modules[\\/]/,
-                  priority: 10,
-                  chunks: 'initial' // only package third parties that are initially dependent
-                },
-                elementUI: {
-                  name: 'chunk-elementUI', // split elementUI into a single package
-                  priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
-                  test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
-                },
-                commons: {
-                  name: 'chunk-commons',
-                  test: path.resolve(__dirname, 'src/components'),
-                  minChunks: 3, //  minimum common number
-                  priority: 5,
-                  reuseExistingChunk: true
-                }
+            chunks: 'all',
+            cacheGroups: {
+              libs: {
+                name: 'chunk-libs',
+                test: /[\\/]node_modules[\\/]/,
+                priority: 10,
+                chunks: 'initial' // only package third parties that are initially dependent
+              },
+              elementUI: {
+                name: 'chunk-elementUI', // split elementUI into a single package
+                priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
+                test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
+              },
+              commons: {
+                name: 'chunk-commons',
+                test: path.resolve(__dirname, 'src/components'),
+                minChunks: 3, //  minimum common number
+                priority: 5,
+                reuseExistingChunk: true
               }
-            })
+            }
+          })
           config.optimization.runtimeChunk('single')
         }
       )
