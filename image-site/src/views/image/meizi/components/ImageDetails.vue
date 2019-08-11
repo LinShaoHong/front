@@ -5,15 +5,19 @@
     <image-slider
       v-if="isShow"
       ref="imgSlider"
+      :image="image"
+      :title="title"
       :on-close="closeViewer"
-      :url-list="srcList"
+      :urls="urls"
     />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { DeviceType, AppModule } from '@/store/modules/app'
+import { getDetails } from '@/api/imageApi'
+import { ImageResp } from '@/api/imageType'
 import ImageSlider from './ImageSlider.vue'
 
 @Component({
@@ -23,8 +27,10 @@ import ImageSlider from './ImageSlider.vue'
   }
 })
 export default class extends Vue {
+  @Prop({ default: {} }) private image: ImageResp
+
   private isShow = false
-  private srcList = []
+  private urls = []
 
   private closeViewer() {
     setTimeout(() => {
@@ -32,14 +38,10 @@ export default class extends Vue {
     }, 500)
   }
 
-  public showViewer() {
+  public async showViewer(imgId: string) {
+    let data = await getDetails(imgId)
     this.isShow = true
-    this.srcList = [
-      'http://172.20.10.2/images/158514725/1637791670/details/200228125.jpg',
-      'http://172.20.10.2/images/158514725/1856011515/details/91420632.jpg',
-      'http://172.20.10.2/images/158514725/1856011515/details/1540541095.jpg',
-      'http://172.20.10.2/images/158514725/1856011515/details/1099784100.jpg',
-      'http://172.20.10.2/images/158514725/1856011515/details/864560260.jpg']
+    this.urls = data.values.map(v => 'http://172.20.10.2/images' + v)
   }
 
   get mobile() {

@@ -34,7 +34,7 @@
       v-show="showActions"
       id="actions"
       class="el-image-viewer__btn el-image-viewer__actions"
-      :style="showActionTools? '' : 'opacity: 0.1; width: ' + (mobile ? '100px;' : '30px;')"
+      :style="showActionTools? '' : 'opacity: 0.2; width: ' + (mobile ? '100px;' : '90px;')"
     >
       <div
         class="el-image-viewer__actions__inner"
@@ -58,7 +58,7 @@
         <i
           v-if="!showActionTools"
           class="el-icon-full-screen"
-          style="cursor: pointer; font-size: 25px;"
+          :style="'cursor: pointer; font-size: ' + (mobile ? 25 : 23) + 'px;'"
           @click="toggleAction"
         />
         <i
@@ -68,9 +68,9 @@
           @click="toggleAction"
         />
         <i
-          v-if="mobile && !showActionTools"
+          v-if="!showActionTools"
           class="el-icon-circle-close"
-          style="cursor: pointer; font-size: 28px; margin-left: 10px;"
+          :style="'cursor: pointer; margin-left: 10px; font-size: 28px;'"
           @click="hide"
         />
         <i
@@ -92,6 +92,27 @@
       </div>
     </div>
     <div class="image-viewer-container">
+      <div
+        v-show="!mobile"
+        class="preview-list"
+      >
+        <span class="gallery-span">相册</span>
+        <div class="preview-container"
+             id="previewList"
+        >
+          <img
+            v-for="(url, index) in urls"
+            :id="'preview:' + index"
+            :key="'preview:' + index"
+            v-lazy="url"
+            :class="actives[index] ? 'active': ''"
+            @click="preview(index)"
+          >
+        </div>
+      </div>
+      <div v-show="!mobile" class="title">
+        <span>{{ image.title }}</span>
+      </div>
       <img
         id="imgId"
         ref="img"
@@ -103,6 +124,28 @@
         @error="handleImgError"
         @click="handleClick"
       >
+      <div
+        v-show="!mobile"
+        class="preview-description"
+      >
+        <span class="relate-span">相关推荐</span>
+        <div class="recommendation">
+          <div class="recommendation-item"
+               v-for="(r, index) in recommendations"
+               :key="'recommendation:' + index"
+          >
+            <img
+              v-lazy="'http://172.20.10.2/images' + r.src"
+              @click="chooseRec(r)"
+            >
+            <div
+              class="rec-content"
+            >
+              <span class="rec-title">{{ r.title }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -112,14 +155,15 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { isFirefox, off, on, rafThrottle } from '@/utils/image'
 import { slider } from '@/utils/mobile'
 import { AppModule, DeviceType } from '@/store/modules/app'
-
-const mousewheelEventName = isFirefox() ? 'DOMMouseScroll' : 'mousewheel'
+import { ImageResp } from '@/api/imageType'
+import { getDetails, getRecommendations } from '@/api/imageApi'
 
 @Component({
   name: 'ImageSlider'
 })
 export default class extends Vue {
-  @Prop({ default: [] }) private urlList!: string[]
+  @Prop({ default: [] }) private urls!: string[]
+  @Prop({ default: {} }) private image: ImageResp
   @Prop({ default: (v: number) => {} }) private onSwitch!: Function
   @Prop({ default: () => {} }) private onClose!: Function
 
@@ -130,6 +174,8 @@ export default class extends Vue {
   private showPrevNext = true
   private showActions = true
   private showActionTools = false
+  private actives: boolean[] = []
+  private recommendations: ImageResp[] = []
   private transform = {
     scale: 0,
     deg: 0,
@@ -138,14 +184,13 @@ export default class extends Vue {
     enableTransition: false
   }
   private _keyDownHandler: any = null
-  private _mouseWheelHandler: any = null
 
   get currentImg() {
-    return this.urlList[this.index]
+    return this.urls[this.index]
   }
 
   get isSingle() {
-    return this.urlList.length <= 1
+    return this.urls.length <= 1
   }
 
   get isFirst() {
@@ -153,7 +198,7 @@ export default class extends Vue {
   }
 
   get isLast() {
-    return this.index === this.urlList.length - 1
+    return this.index === this.urls.length - 1
   }
 
   get imgStyle() {
@@ -174,6 +219,9 @@ export default class extends Vue {
 
   @Watch('index')
   onIndexChange(v: number) {
+    this.actives = []
+    this.$set(this.actives, this.index, true)
+    this.scrollPreview()
     this.reset()
     if (this.onSwitch) {
       this.onSwitch(v)
@@ -187,6 +235,10 @@ export default class extends Vue {
         this.loading = true
       }
     })
+  }
+
+  private preview(index: number) {
+    this.index = index
   }
 
   private toggleAction() {
@@ -203,9 +255,7 @@ export default class extends Vue {
 
   private deviceSupportUninstall() {
     off(document, 'keydown', this._keyDownHandler)
-    off(document, mousewheelEventName, this._mouseWheelHandler)
     this._keyDownHandler = null
-    this._mouseWheelHandler = null
   }
 
   private deviceSupportInstall() {
@@ -234,40 +284,43 @@ export default class extends Vue {
           break
       }
     })
-    this._mouseWheelHandler = rafThrottle((e: any) => {
-      const delta = e.wheelDelta ? e.wheelDelta : -e.detail
-      if (delta > 0) {
-        this.handleActions('zoomIn', {
-          zoomRate: 0.015,
-          enableTransition: false
-        })
-      } else {
-        this.handleActions('zoomOut', {
-          zoomRate: 0.015,
-          enableTransition: false
-        })
-      }
-    })
     on(document, 'keydown', this._keyDownHandler)
-    on(document, mousewheelEventName, this._mouseWheelHandler)
+  }
+
+  private scrollPreview() {
+    const step = 200
+    const _previewDoc = document.getElementById('previewList')
+    const item: HTMLElement = document.getElementById('preview:' + this.index)
+    const viewHeight = document.documentElement.clientHeight || window.innerHeight
+    const rectTop = item.getBoundingClientRect().top
+    console.log(rectTop + '::' + viewHeight + '::' + _previewDoc.scrollTop)
+    if (this.isFirst) {
+      _previewDoc.scrollTop = 0
+    } else if (this.isLast) {
+      _previewDoc.scrollTop = this.urls.length * step
+    } else {
+      if (rectTop <= 0) {
+        _previewDoc.scrollTop -= step
+      } else if (rectTop >= viewHeight - step) {
+        _previewDoc.scrollTop += 2 * step
+      }
+    }
   }
 
   private prev() {
     if (this.isFirst && !this.infinite) return
-    const len = this.urlList.length
+    const len = this.urls.length
     this.index = (this.index - 1 + len) % len
   }
 
   private next() {
     if (this.isLast && !this.infinite) return
-    const len = this.urlList.length
+    const len = this.urls.length
     this.index = (this.index + 1) % len
   }
 
   private handleClickOutside(e: any) {
-    if (!this.mobile) {
-      this.hide()
-    } else {
+    if (this.mobile) {
       this.handleClick(e)
     }
   }
@@ -334,17 +387,6 @@ export default class extends Vue {
     transform.enableTransition = enableTransition
   }
 
-  private bindSliderEvent() {
-    const el: Node = window.document.getElementById('imgId')
-    slider(el, true, (x, y) => {
-      if (x < -5) {
-        this.prev()
-      } else if (x > 5) {
-        this.next()
-      }
-    })
-  }
-
   private showImgTimeout() {
     setTimeout(() => {
       this.transform.scale = 1
@@ -369,28 +411,30 @@ export default class extends Vue {
     }
   }
 
+  private async chooseRec(img: ImageResp) {
+    this.reset()
+    let data = await getDetails(img.id)
+    this.index = 0
+    this.actives = []
+    this.image = img
+    this.urls = data.values.map(v => 'http://172.20.10.2/images' + v)
+  }
+
+  private async loadRecommendations() {
+    let data = await getRecommendations(this.image.id, { count: 20 })
+    this.recommendations = data.values
+  }
+
+  created() {
+    this.actives[this.index] = true
+    this.loadRecommendations()
+  }
+
   mounted() {
-    // this.bindSliderEvent()
     this.showImgTimeout()
     this.hideBtnPrevAndNext()
     this.deviceSupportInstall()
   }
-
-  // private handleMouseDown(e: any) {
-  //   if (this.loading || e.button !== 0) return
-  //   const { offsetX, offsetY } = this.transform
-  //   const startX = e.pageX
-  //   const startY = e.pageY
-  //   this._dragHandler = rafThrottle((ev: any) => {
-  //     this.transform.offsetX = offsetX + ev.pageX - startX
-  //     this.transform.offsetY = offsetY + ev.pageY - startY
-  //   })
-  //   on(document, 'mousemove', this._dragHandler)
-  //   on(document, 'mouseup', () => {
-  //     off(document, 'mousemove', this._dragHandler)
-  //   })
-  //   e.preventDefault()
-  // }
 }
 </script>
 
@@ -406,7 +450,7 @@ export default class extends Vue {
 
 .image-viewer-mask {
   background: #000;
-  opacity: 0.8;
+  opacity: 0.95;
   width: 100%;
   top: 0;
   height: 100%;
@@ -437,24 +481,146 @@ export default class extends Vue {
 }
 
 .image-viewer-container {
+  overflow-y: scroll;
   width: 100%;
   height: 100%;
-  display: -webkit-box;
-  display: flex;
-  -webkit-box-pack: center;
-  justify-content: center;
-  -webkit-box-align: center;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 20px 2fr 1fr;
+  justify-items: center;
+
+  .preview-list {
+    overflow-y: scroll;
+    z-index: 1100;
+    justify-self: center;
+    grid-column: 1 / 2;
+    display: grid;
+    grid-template-rows: 50px 1fr;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #5AA766;
+
+    .gallery-span {
+      grid-row: 1 / 2;
+      color: #f90;
+      margin-bottom: 10px;
+      margin-top: 10px;
+      border-bottom: 1px solid #5AA766;
+    }
+
+    .preview-container {
+      grid-row: 2 / 3;
+      overflow-y: scroll;
+      width: 303px;
+      border: 1px solid #2F2F2F;
+      margin-bottom: 10px;
+
+      img {
+        width: 150px;
+        height: 200px;
+        cursor: pointer;
+        padding: 5px;
+
+        &.active {
+          border: 1px solid #f90;
+        }
+      }
+
+      img:hover {
+        border: 1px solid #f90;
+      }
+    }
+  }
+
+  .title {
+    z-index: 1100;
+    grid-column: 2 / 3;
+    writing-mode: vertical-lr;
+    margin-top: 37px;
+    margin-right: 5px;
+    justify-self: center;
+    span {
+      color: #f90;
+    }
+  }
 
   .image-viewer-img {
+    grid-column: 3 / 4;
     z-index: 1100;
     transition: all 1s ease;
     border-radius: 6px;
     cursor: pointer;
   }
+
+  .preview-description {
+    overflow-y: scroll;
+    grid-column: 4 / 5;
+    z-index: 1100;
+    display: grid;
+    grid-template-rows: 50px 1fr;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #5AA766;
+
+    .relate-span {
+      grid-row: 1 / 2;
+      color: #f90;
+      margin-bottom: 10px;
+      margin-top: 10px;
+      border-bottom: 1px solid #5AA766;
+    }
+    .recommendation {
+      overflow-y: scroll;
+      grid-row: 2 / 3;
+      z-index: 1100;
+      justify-self: center;
+      border: 1px solid #2F2F2F;
+      width: 303px;
+      margin-bottom: 10px;
+
+      .recommendation-item {
+        float: left;
+
+        img {
+          width: 150px;
+          height: 200px;
+          cursor: pointer;
+          padding: 5px;
+        }
+
+        .rec-content {
+          padding-left: 5px;
+          align-content: center;
+          .rec-title {
+            width: 145px;
+            color: #f90;
+            font-size: 12px;
+            line-height: 12px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            display: inline-block;
+          }
+        }
+
+        img:hover {
+          border: 1px solid #f90;
+        }
+      }
+    }
+  }
+}
+
+.preview-list::-webkit-scrollbar {
+  display: none;
+}
+
+.preview-description::-webkit-scrollbar {
+  display: none;
 }
 
 .mobile {
+  .image-viewer-container {
+    display: block;
+  }
+
   .el-image-viewer__btn {
     &.el-image-viewer__prev {
       left: 10%;

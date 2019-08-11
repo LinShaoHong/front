@@ -3,6 +3,7 @@ import Vue, { DirectiveOptions } from 'vue'
 import 'normalize.css'
 import ElementUI from 'element-ui'
 import SvgIcon from 'vue-svgicon'
+import VueLazyLoad from 'vue-lazyload'
 
 import 'jssor-slider/js/jssor.slider.min'
 import '@/styles/element-variables.scss'
@@ -30,6 +31,8 @@ Vue.use(SvgIcon, {
   defaultWidth: '1em',
   defaultHeight: '1em'
 })
+
+Vue.use(VueLazyLoad)
 
 // Register global directives
 Object.keys(directives).forEach(key => {

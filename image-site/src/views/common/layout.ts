@@ -1,5 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { AppModule, DeviceType } from '@/store/modules/app'
+import { CategoryModule } from '@/store/modules/category'
 
 @Component({
   name: 'Layout'
@@ -19,9 +20,13 @@ export default class extends Vue {
 
   get category() {
     let category = this.$route.params.category
-    if (category === null || category === undefined) {
-      category = 'all'
+    if (category === undefined) {
+      category = null
     }
     return category
+  }
+
+  protected changeCategory(type: string, subType: string) {
+    CategoryModule.ChangeKeyType(type + ':' + subType)
   }
 }

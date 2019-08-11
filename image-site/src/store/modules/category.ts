@@ -3,6 +3,7 @@ import store from '@/store'
 
 export interface ICategory {
   type: string,
+  subType: string,
   items: { name: string, path: string }[]
 }
 
@@ -10,22 +11,32 @@ export interface ICategoryState {
   category: ICategory
 }
 
-@Module({dynamic: true, store, name: 'categories'})
+@Module({ dynamic: true, store, name: 'categories' })
 class Categories extends VuexModule implements ICategoryState {
   private categories: Map<string, ICategory> = new Map()
+  private initiated: boolean = false
+  private keyType: string = null
   public category: ICategory = {
-    type: 'image',
+    type: '',
+    subType: '',
     items: []
   }
 
   @Mutation
   private SET_CATEGORIES(categories: Map<string, ICategory>) {
     this.categories = categories
+    if (this.keyType !== null && !this.initiated) {
+      this.initiated = true
+      this.category = this.categories.get(this.keyType)
+    }
   }
 
   @Mutation
-  public SET_TYPE(type: string) {
-    this.category = this.categories.get(type)
+  public SET_KEY_TYPE(keyType: string) {
+    if (this.keyType !== keyType) {
+      this.category = this.categories.get(keyType)
+      this.keyType = keyType
+    }
   }
 
   @Action
@@ -34,8 +45,8 @@ class Categories extends VuexModule implements ICategoryState {
   }
 
   @Action
-  public ChangeType(type: string) {
-    this.SET_TYPE(type)
+  public ChangeKeyType(keyType: string) {
+    this.SET_KEY_TYPE(keyType)
   }
 }
 

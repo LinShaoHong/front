@@ -1,4 +1,4 @@
-import {RouteConfig} from 'vue-router'
+import { RouteConfig } from 'vue-router'
 import Layout from '@/layout/index.vue'
 
 const ImageRoutes: RouteConfig = {
@@ -7,8 +7,16 @@ const ImageRoutes: RouteConfig = {
   redirect: '/image',
   children: [
     {
-      path: '/image/:category',
-      component: () => import('@/views/image/index.vue')
+      name: 'image-meizi',
+      path: '/image/meizi',
+      component: () => import('@/views/image/meizi/index.vue'),
+      children: [
+        {
+          name: 'image-meizi-category',
+          path: '/image/meizi/:category',
+          component: () => import('@/views/image/meizi/index.vue')
+        }
+      ]
     }
   ]
 }

@@ -23,15 +23,16 @@
         </div>
       </div>
       <div v-else>
-        <div class="desk-content-grid"
+        <div
+          class="desk-content-grid"
         >
-          <div class="desk-sidebar-wrapper">
-            <div class="sidebar-sticky">
-              <sidebar/>
-            </div>
-          </div>
           <div class="desk-app-wrapper">
             <app-main />
+          </div>
+          <div class="desk-sidebar-wrapper">
+            <div class="sidebar-sticky">
+              <sidebar />
+            </div>
           </div>
         </div>
       </div>
@@ -114,21 +115,21 @@ export default class extends mixins(ResizeMixin) {
     grid-template-columns: repeat(3, 1fr);
     justify-items: center;
 
-    .desk-sidebar-wrapper {
-      grid-column: 1 / 2;
-      .sidebar-sticky {
-        position: sticky;
-        top: $NavBarHeight;
-        margin-top: 100%;
-        padding-top: 3px;
-        padding-left: 3px;
-      }
-    }
-
     .desk-app-wrapper {
       margin-left: 0;
       grid-column: 2 / 3;
       width: 100%;
+    }
+
+    .desk-sidebar-wrapper {
+      grid-column: 3 / 4;
+      justify-self: left;
+      .sidebar-sticky {
+        margin-top: 20px;
+        position: sticky;
+        top: $NavBarHeight;
+        padding-left: 8px;
+      }
     }
   }
 }

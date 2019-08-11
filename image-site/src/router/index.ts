@@ -21,16 +21,16 @@ export const constantRoutes: RouteConfig[] = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/home',
     meta: { hidden: false },
     children: [
       {
-        path: 'dashboard',
-        component: () => import('@/views/image/index.vue'),
-        name: 'Dashboard',
+        path: 'home',
+        component: () => import('@/views/image/meizi/index.vue'),
+        name: 'Home',
         meta: {
-          title: 'dashboard',
-          icon: 'dashboard',
+          title: 'home',
+          icon: 'home',
           affix: true
         }
       }

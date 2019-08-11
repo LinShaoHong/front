@@ -2,7 +2,10 @@
   <div
     :class="classObj"
   >
-    <div v-if="mobile" class="mobile-top-header">
+    <div
+      v-if="mobile"
+      class="mobile-top-header"
+    >
       <div class="mobile-hamburger">
         <hamburger
           :is-active="sidebar.opened"
@@ -20,7 +23,7 @@
         </button>
       </div>
       <div
-           class="search-svg"
+        class="search-svg"
       >
         <svg-icon
           name="search"
@@ -30,7 +33,10 @@
         />
       </div>
     </div>
-    <div v-else class="desk-top-header">
+    <div
+      v-else
+      class="desk-top-header"
+    >
       <div>
         <a
           itemprop="url"
@@ -187,7 +193,7 @@ export default class extends Vue {
   width: 100%;
   display: grid;
   height: 100%;
-  grid-template-columns: 150px 1fr;
+  grid-template-columns: 150px 4fr 1fr;
   grid-column-gap: 5px;
   justify-items: center;
   align-items: center;

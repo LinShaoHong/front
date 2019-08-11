@@ -1,26 +1,29 @@
 <template>
-  <div :class="mobile ? 'mobile' : (carousel ? 'carousel' : '')">
+  <div :class="mobile ? 'mobile' : ''">
     <div
-      :id="id"
+      :id="image.id"
       class="image-shadow js-tilt-container"
       @mousemove="move"
       @mouseleave="leave"
       @click="showViewer"
     >
       <img
-        :src="imgSrc"
+        v-lazy="src"
+        :id="image.id"
         :style="'width: ' + reWidth + 'px; height: ' + reHeight + 'px;'"
       >
     </div>
-    <image-details ref="imgDetails" />
+    <image-details
+      :image="image"
+      ref="imgDetails"
+    />
     <div
-      v-show="!carousel"
       class="content"
     >
       <span
         class="title"
         :style="'width: '+ reWidth + 'px;'"
-      >绝美波霸厨娘真空巨乳风情身材火爆至绝美波霸厨娘真空巨乳风情身材火爆至</span>
+      >{{ image.title }}</span>
     </div>
   </div>
 </template>
@@ -30,6 +33,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { DeviceType, AppModule } from '@/store/modules/app'
 import ImageDetails from './ImageDetails.vue'
 import { V_IMAGE } from '@/constant/image'
+import { ImageResp } from '@/api/imageType'
 
 @Component({
   name: 'ImageItem',
@@ -38,33 +42,30 @@ import { V_IMAGE } from '@/constant/image'
   }
 })
 export default class extends Vue {
-  @Prop({ default: '#' }) private imgSrc!: string
-  @Prop({ default: '' }) private id!: string
-  @Prop({ default: false }) private carousel!: boolean
+  @Prop({ default: '#' }) private src: string
+  @Prop({ default: {} }) private image: ImageResp
   @Prop({ default: V_IMAGE.width }) private width!: number
   @Prop({ default: V_IMAGE.height }) private height!: number
 
   private showViewer() {
-    if (!this.carousel) {
-      (this.$refs.imgDetails as ImageDetails).showViewer()
-    }
+    (this.$refs.imgDetails as ImageDetails).showViewer(this.image.id)
   }
 
   private move(e: MouseEvent) {
-    const el: HTMLElement | null = window.document.getElementById(this.id)
-    if (el !== null && !this.carousel && !this.mobile) {
+    const el: HTMLElement | null = window.document.getElementById(this.image.id)
+    if (el !== null && !this.mobile) {
       const cursPosX = e.pageX - el.offsetLeft
       const cursPosY = e.pageY - el.offsetTop
       const cursFromCenterX = el.clientWidth / 2 - cursPosX + 200
-      const cursFromCenterY = el.clientHeight / 2 - cursPosY
+      const cursFromCenterY = el.clientHeight / 2 - cursPosY + 100
       el.style.transform = 'perspective(500px) rotateX(' + (cursFromCenterY / 20) + 'deg) rotateY(' + -(cursFromCenterX / 20) + 'deg) translateZ(10px)'
       el.classList.remove('leave')
     }
   }
 
   private leave(e: any) {
-    const el: HTMLElement | null = window.document.getElementById(this.id)
-    if (el !== null && !this.carousel && !this.mobile) {
+    const el: HTMLElement | null = window.document.getElementById(this.image.id)
+    if (el !== null && !this.mobile) {
       el.classList.add('leave')
     }
   }
@@ -136,20 +137,6 @@ export default class extends Vue {
   transform: rotateX(0) rotateY(0) !important;
   transition-timing-function: cubic-bezier(0.42, 0, 0, 1) !important;
   transition-duration: 1.5s;
-}
-
-.carousel {
-  .image-shadow {
-    padding-left: 0;
-    img {
-      object-fit: fill;
-      border-radius: 0;
-    }
-
-    img:hover {
-      transform: scale(1.15);
-    }
-  }
 }
 
 .mobile {
