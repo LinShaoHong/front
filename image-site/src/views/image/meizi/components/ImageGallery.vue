@@ -34,7 +34,7 @@
       v-show="showActions"
       id="actions"
       class="el-image-viewer__btn el-image-viewer__actions"
-      :style="showActionTools? '' : 'opacity: 0.2; width: ' + (mobile ? '100px;' : '90px;')"
+      :style="showActionTools? '' : 'opacity: 0.2; width: ' + (mobile ? '115px;' : '105px;')"
     >
       <div
         class="el-image-viewer__actions__inner"
@@ -61,6 +61,7 @@
           :style="'cursor: pointer; font-size: ' + (mobile ? 25 : 23) + 'px;'"
           @click="toggleAction"
         />
+        <sapn v-if="!showActionTools" class="counter">{{ (index + 1) + '/' + urls.length }}</sapn>
         <i
           v-if="showActionTools"
           class="el-icon-menu"
@@ -70,7 +71,7 @@
         <i
           v-if="!showActionTools"
           class="el-icon-circle-close"
-          :style="'cursor: pointer; margin-left: 10px; font-size: 28px;'"
+          :style="'cursor: pointer; font-size: 28px;'"
           @click="hide"
         />
         <i
@@ -117,7 +118,6 @@
         id="imgId"
         ref="img"
         class="image-viewer-img"
-        style="max-width: 10%"
         :src="currentImg"
         :style="imgStyle"
         @load="handleImgLoad"
@@ -159,7 +159,7 @@ import { ImageResp } from '@/api/imageType'
 import { getDetails, getRecommendations } from '@/api/imageApi'
 
 @Component({
-  name: 'ImageSlider'
+  name: 'ImageGallery'
 })
 export default class extends Vue {
   @Prop({ default: [] }) private urls!: string[]
@@ -293,7 +293,6 @@ export default class extends Vue {
     const item: HTMLElement = document.getElementById('preview:' + this.index)
     const viewHeight = document.documentElement.clientHeight || window.innerHeight
     const rectTop = item.getBoundingClientRect().top
-    console.log(rectTop + '::' + viewHeight + '::' + _previewDoc.scrollTop)
     if (this.isFirst) {
       _previewDoc.scrollTop = 0
     } else if (this.isLast) {
@@ -478,6 +477,12 @@ export default class extends Vue {
   z-index: 1200;
   opacity: 0.4;
   transition: all .5s ease;
+
+  .counter {
+    font-size: 15px;
+    margin-right: 3px;
+    margin-left: 3px;
+  }
 }
 
 .image-viewer-container {
@@ -553,7 +558,7 @@ export default class extends Vue {
   .preview-description {
     overflow-y: scroll;
     grid-column: 4 / 5;
-    z-index: 1100;
+    z-index: 1000;
     display: grid;
     grid-template-rows: 50px 1fr;
     margin-bottom: 10px;

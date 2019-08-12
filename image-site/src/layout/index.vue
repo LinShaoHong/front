@@ -3,15 +3,15 @@
     :class="classObj"
     class="app-wrapper"
   >
+    <div
+      v-if="mobile && sidebar.opened"
+      class="drawer-bg"
+      @click="handleClickOutside"
+    />
+    <div class="fixed-header">
+      <navbar />
+    </div>
     <div class="main-container">
-      <div class="fixed-header">
-        <navbar />
-      </div>
-      <div
-        v-if="sidebar.opened"
-        class="drawer-bg"
-        @click="handleClickOutside"
-      />
       <div
         v-if="mobile"
       >
@@ -89,7 +89,7 @@ export default class extends mixins(ResizeMixin) {
 
 <style lang="scss" scoped>
 .fixed-header {
-  position: sticky;
+  position: fixed;
   top: 0;
   right: 0;
   z-index: 9;
@@ -99,11 +99,11 @@ export default class extends mixins(ResizeMixin) {
 
 .drawer-bg {
   background: #000;
-  opacity: 0.3;
+  opacity: 0.5;
   width: 100%;
   top: 0;
   height: 100%;
-  position: absolute;
+  position: fixed;
   z-index: 999;
   margin-left: 0 !important;
 }
@@ -137,6 +137,7 @@ export default class extends mixins(ResizeMixin) {
 .mobile {
   .main-container {
     margin-left: 0;
+    margin-top: $MobileNavBarHeight !important;
   }
 
   .mobile-sidebar-wrapper {

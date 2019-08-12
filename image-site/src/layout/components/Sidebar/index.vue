@@ -6,11 +6,14 @@
       v-if="category !== undefined && category.items.length > 0"
       class="sidebar-container"
     >
-      <div class="menu-container">
+      <div class="menu-container"
+           id="menuContainer"
+      >
         <div
           v-for="(v, i) in category.items"
           :key="v.path"
           class="menu-item"
+          :id="'item:'+ i"
           @click="jump(category.subType, v.path, i)"
         >
           <div class="route-content">
@@ -30,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import ErrorLog from '@/components/ErrorLog/index.vue'
 import LangSelect from '@/components/LangSelect/index.vue'
 import { DeviceType, AppModule } from '@/store/modules/app'
@@ -45,6 +48,7 @@ import { getCategories } from '@/api/categoryApi'
   }
 })
 export default class extends Vue {
+  private index: number = 0
   private actives: boolean[] = []
 
   private backtop() {
@@ -78,12 +82,14 @@ export default class extends Vue {
         let i = 0
         CategoryModule.category.items.forEach(v => {
           if (name === v.path) {
+            this.index = i
             this.$set(this.actives, i++, true)
           } else {
             this.$set(this.actives, i++, false)
           }
         })
       } else {
+        this.index = 0
         this.$set(this.actives, 0, true)
       }
     }
@@ -96,8 +102,9 @@ export default class extends Vue {
     CategoryModule.category.items.forEach(v => {
       this.$set(this.actives, i++, false)
     })
+    this.index = index
     this.$set(this.actives, index, true)
-    console.log(this.actives)
+    this.scrollToPreview(index)
     if (path === null) {
       this.$router.push({ name: this.category.type.concat('-', subType) })
     } else {
@@ -105,8 +112,18 @@ export default class extends Vue {
     }
   }
 
-  mounted() {
-    this.loadCategory()
+  @Watch('index')
+  scrollToPreview(index: number) {
+    const step = 50
+    const _containerDoc = document.getElementById('menuContainer')
+    const item: HTMLElement = document.getElementById('item:' + index)
+    const viewHeight = _containerDoc.clientHeight
+    const rectTop = item.getBoundingClientRect().top - _containerDoc.getBoundingClientRect().top
+    if (rectTop <= 0) {
+      _containerDoc.scrollTop -= step
+    } else if (rectTop >= viewHeight - step) {
+      _containerDoc.scrollTop += step
+    }
   }
 
   private async loadCategory() {
@@ -122,6 +139,10 @@ export default class extends Vue {
       categories.set(type + ':' + subType, { type: type, subType: subType, items: items })
     })
     CategoryModule.SetCategories(categories)
+  }
+
+  mounted() {
+    this.loadCategory()
   }
 }
 </script>

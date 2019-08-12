@@ -17,10 +17,6 @@
           </li>
         </ul>
       </div>
-      <div
-        v-if="!mobile"
-        class="image-right"
-      />
     </div>
   </div>
 </template>
@@ -75,7 +71,7 @@ export default class extends mixins(Layout) {
   width: 100%;
   overflow: hidden;
   display: grid;
-  grid-template-columns: repeat(3, 243px) 320px;
+  grid-template-columns: 900px;
   grid-column-gap: 5px;
   justify-items: left;
 
@@ -94,13 +90,6 @@ export default class extends mixins(Layout) {
         margin-left: 15px;
       }
     }
-  }
-
-  .image-right {
-    width: 100%;
-    margin-top: 20px;
-    grid-column: 4 / 5;
-    border: 1px #f90 solid;
   }
 }
 

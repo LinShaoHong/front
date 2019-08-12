@@ -2,7 +2,7 @@
   <div
     :class="mobile ? 'img-details mobile' : 'img-details'"
   >
-    <image-slider
+    <image-gallery
       v-if="isShow"
       ref="imgSlider"
       :image="image"
@@ -18,12 +18,12 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { DeviceType, AppModule } from '@/store/modules/app'
 import { getDetails } from '@/api/imageApi'
 import { ImageResp } from '@/api/imageType'
-import ImageSlider from './ImageSlider.vue'
+import ImageGallery from './ImageGallery.vue'
 
 @Component({
   name: 'ImageDetails',
   components: {
-    ImageSlider
+    ImageGallery
   }
 })
 export default class extends Vue {
