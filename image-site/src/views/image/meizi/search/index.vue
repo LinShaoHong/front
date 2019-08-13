@@ -40,6 +40,9 @@ import NProgress from 'nprogress'
   }
 })
 export default class extends mixins(Layout) {
+  private TYPE = 'image'
+  private SUB_TYPE = 'meizi'
+
   private mobileImagesWidth = 0
   private images: ImageResp[] = []
 
@@ -70,6 +73,7 @@ export default class extends mixins(Layout) {
   created() {
     this.resize()
     deviceResizeSupporter(this.resize)
+    this.changeCategory(this.TYPE, this.SUB_TYPE)
   }
 }
 </script>
