@@ -85,7 +85,7 @@ export default class extends mixins(Layout) {
   }
 
   private loadWhenScrolling() {
-    window.addEventListener('scroll', (e: Event) => {
+    window.addEventListener('scroll', async (e: Event) => {
       for (let index = 1; index < this.items.length; index++) {
         const item = this.items[index]
         const id = 'label:' + item.name
@@ -95,12 +95,12 @@ export default class extends mixins(Layout) {
         if (rectTop > 0 && rectTop < viewHeight / 3) {
           CategoryModule.ChangeIndex(index)
           const count = this.mobile ? 6 : 10
-          this.getImages(count, item.label, item.name)
+          await this.getImages(count, item.label, item.name)
           if (index > 1) {
-            this.getImages(count, this.items[index - 1].label, this.items[index - 1].name)
+            await this.getImages(count, this.items[index - 1].label, this.items[index - 1].name)
           }
           if (index < this.items.length - 1) {
-            this.getImages(count, this.items[index + 1].label, this.items[index + 1].name)
+            await this.getImages(count, this.items[index + 1].label, this.items[index + 1].name)
           }
         }
       }
