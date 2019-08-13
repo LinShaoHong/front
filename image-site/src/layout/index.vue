@@ -125,7 +125,7 @@ export default class extends mixins(ResizeMixin) {
       grid-column: 3 / 4;
       justify-self: left;
       .sidebar-sticky {
-        margin-top: 20px;
+        margin-top: 50px;
         position: sticky;
         top: $NavBarHeight;
         padding-left: 8px;

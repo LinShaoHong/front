@@ -22,7 +22,7 @@ export const constantRoutes: RouteConfig[] = [
     path: '/',
     component: Layout,
     redirect: '/home',
-    meta: { hidden: false },
+    meta: { hidden: false, keepAlive: true },
     children: [
       {
         path: 'home',
@@ -31,7 +31,8 @@ export const constantRoutes: RouteConfig[] = [
         meta: {
           title: 'home',
           icon: 'home',
-          affix: true
+          affix: true,
+          savedPositionY: 0
         }
       }
     ]
@@ -43,12 +44,15 @@ export const asyncRoutes: RouteConfig[] = [
 ]
 
 const createRouter = () => new Router({
-  // mode: 'history',  // Disabled due to Github Pages doesn't support this, enable this if you need.
+  mode: 'history',
   scrollBehavior: (to, from, savedPosition) => {
     if (savedPosition) {
       return savedPosition
     } else {
-      return { x: 0, y: 0 }
+      if (from.meta.savedPositionY !== undefined) {
+        from.meta.savedPositionY = document.scrollingElement.scrollTop
+      }
+      return { x: 0, y: from.meta.savedPositionY | 0 }
     }
   },
   base: process.env.BASE_URL,
@@ -57,7 +61,6 @@ const createRouter = () => new Router({
 
 const router = createRouter()
 
-// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
   const newRouter = createRouter();
   (router as any).matcher = (newRouter as any).matcher // reset router

@@ -61,7 +61,12 @@
           :style="'cursor: pointer; font-size: ' + (mobile ? 25 : 23) + 'px;'"
           @click="toggleAction"
         />
-        <sapn v-if="!showActionTools" class="counter">{{ (index + 1) + '/' + urls.length }}</sapn>
+        <sapn
+          v-if="!showActionTools"
+          class="counter"
+        >
+          {{ (index + 1) + '/' + urls.length }}
+        </sapn>
         <i
           v-if="showActionTools"
           class="el-icon-menu"
@@ -98,20 +103,30 @@
         class="preview-list"
       >
         <span class="gallery-span">相册</span>
-        <div class="preview-container"
-             id="previewList"
+        <div
+          id="previewList"
+          class="preview-container"
         >
-          <img
-            v-for="(url, index) in urls"
-            :id="'preview:' + index"
-            :key="'preview:' + index"
-            v-lazy="url"
-            :class="actives[index] ? 'active': ''"
-            @click="preview(index)"
+          <div v-for="(url, index) in urls"
+               :key="'preview:' + index"
+               class="preview-item"
           >
+            <img
+              :id="'preview:' + index"
+              v-lazy="url"
+              :class="actives[index] ? 'active': ''"
+              @click="preview(index)"
+            >
+            <div style="display: flex; justify-content: center">
+              <span style="color: #f90; margin: auto; font-size: 14px;">{{ index + 1 }}</span>
+            </div>
+          </div>
         </div>
       </div>
-      <div v-show="!mobile" class="title">
+      <div
+        v-show="!mobile"
+        class="title"
+      >
         <span>{{ image.title }}</span>
       </div>
       <img
@@ -130,9 +145,10 @@
       >
         <span class="relate-span">相关推荐</span>
         <div class="recommendation">
-          <div class="recommendation-item"
-               v-for="(r, index) in recommendations"
-               :key="'recommendation:' + index"
+          <div
+            v-for="(r, index) in recommendations"
+            :key="'recommendation:' + index"
+            class="recommendation-item"
           >
             <img
               v-lazy="'http://172.20.10.2/images' + r.src"
@@ -487,6 +503,7 @@ export default class extends Vue {
 
 .image-viewer-container {
   overflow-y: scroll;
+  scrollbar-width: none;
   width: 100%;
   height: 100%;
   display: grid;
@@ -495,6 +512,7 @@ export default class extends Vue {
 
   .preview-list {
     overflow-y: scroll;
+    scrollbar-width: none;
     z-index: 1100;
     justify-self: center;
     grid-column: 1 / 2;
@@ -514,23 +532,27 @@ export default class extends Vue {
     .preview-container {
       grid-row: 2 / 3;
       overflow-y: scroll;
+      scrollbar-width: none;
       width: 303px;
       border: 1px solid #2F2F2F;
       margin-bottom: 10px;
 
-      img {
-        width: 150px;
-        height: 200px;
-        cursor: pointer;
-        padding: 5px;
+      .preview-item {
+        float: left;
+        img {
+          width: 150px;
+          height: 200px;
+          cursor: pointer;
+          padding: 5px;
 
-        &.active {
+          &.active {
+            border: 1px solid #f90;
+          }
+        }
+
+        img:hover {
           border: 1px solid #f90;
         }
-      }
-
-      img:hover {
-        border: 1px solid #f90;
       }
     }
   }
@@ -557,6 +579,7 @@ export default class extends Vue {
 
   .preview-description {
     overflow-y: scroll;
+    scrollbar-width: none;
     grid-column: 4 / 5;
     z-index: 1000;
     display: grid;
@@ -573,6 +596,7 @@ export default class extends Vue {
     }
     .recommendation {
       overflow-y: scroll;
+      scrollbar-width: none;
       grid-row: 2 / 3;
       z-index: 1100;
       justify-self: center;
@@ -617,7 +641,15 @@ export default class extends Vue {
   display: none;
 }
 
+.preview-container::-webkit-scrollbar {
+  display: none;
+}
+
 .preview-description::-webkit-scrollbar {
+  display: none;
+}
+
+.recommendation::-webkit-scrollbar {
   display: none;
 }
 

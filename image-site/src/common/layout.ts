@@ -26,7 +26,17 @@ export default class extends Vue {
     return category
   }
 
-  protected changeCategory(type: string, subType: string) {
+  public changeCategory(type: string, subType: string) {
     CategoryModule.ChangeKeyType(type + ':' + subType)
+  }
+
+  public scrollToPosition() {
+    let interval = setTimeout(() => {
+      const positionY = this.$route.meta.savedPositionY | 0
+      document.scrollingElement.scrollTop = positionY
+      if (document.scrollingElement.scrollTop === positionY) {
+        clearInterval(interval)
+      }
+    }, 300)
   }
 }

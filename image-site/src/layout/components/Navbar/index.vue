@@ -18,7 +18,7 @@
           class="search-input"
           placeholder="搜索"
         >
-        <button class="search-button">
+        <button class="search-button" @click="search">
           <i class="el-icon-search" />
         </button>
       </div>
@@ -55,7 +55,7 @@
           class="search-input"
           placeholder="搜索"
         >
-        <button class="search-button">
+        <button class="search-button" @click="search">
           <i class="el-icon-search" />
         </button>
       </div>
@@ -69,6 +69,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { isExternal } from '@/utils/validate'
 import { DeviceType, AppModule } from '@/store/modules/app'
 import { slider } from '@/utils/mobile'
+import { CategoryModule, ICategory } from '@/store/modules/category'
 import Hamburger from '@/components/Hamburger/index.vue'
 import ErrorLog from '@/components/ErrorLog/index.vue'
 import LangSelect from '@/components/LangSelect/index.vue'
@@ -102,6 +103,19 @@ export default class extends Vue {
 
   get sidebar() {
     return AppModule.sidebar
+  }
+
+  private async search() {
+    const el: HTMLInputElement = document.getElementsByClassName('search-input').item(0) as HTMLInputElement
+    let q = el.value
+    if (q !== null && q.trim().length > 0) {
+      q = q.trim()
+      const category: ICategory = CategoryModule.category
+      if (category) {
+        const name = category.type + '-' + category.subType + '-search'
+        this.$router.push({ name: name, query: { q: q } })
+      }
+    }
   }
 
   private showSearchBtn() {

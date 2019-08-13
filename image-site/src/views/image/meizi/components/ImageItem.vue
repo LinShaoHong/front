@@ -8,14 +8,14 @@
       @click="showViewer"
     >
       <img
-        v-lazy="src"
         :id="image.id"
+        v-lazy="src"
         :style="'width: ' + reWidth + 'px; height: ' + reHeight + 'px;'"
       >
     </div>
     <image-details
-      :image="image"
       ref="imgDetails"
+      :image="image"
     />
     <div
       class="content"
@@ -54,11 +54,9 @@ export default class extends Vue {
   private move(e: MouseEvent) {
     const el: HTMLElement | null = window.document.getElementById(this.image.id)
     if (el !== null && !this.mobile) {
-      const cursPosX = e.pageX - el.offsetLeft
       const cursPosY = e.pageY - el.offsetTop
-      const cursFromCenterX = el.clientWidth / 2 - cursPosX + 300
-      const cursFromCenterY = el.clientHeight / 2 - cursPosY + 100
-      el.style.transform = 'perspective(500px) rotateX(' + (cursFromCenterY / 20) + 'deg) rotateY(' + -(cursFromCenterX / 20) + 'deg) translateZ(10px)'
+      const cursFromCenterY = el.clientHeight / 2 - cursPosY
+      el.style.transform = 'perspective(500px) rotateX(' + (cursFromCenterY / 40) + 'deg) translateZ(10px)'
       el.classList.remove('leave')
     }
   }

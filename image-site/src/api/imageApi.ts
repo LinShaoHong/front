@@ -33,3 +33,10 @@ export const getRecommendations = (imgId: string, params: any): any =>
     method: 'get',
     params
   })
+
+export const search = (params: { q: string }): any =>
+  request({
+    url: '/api/v1/images/search',
+    method: 'get',
+    params
+  })

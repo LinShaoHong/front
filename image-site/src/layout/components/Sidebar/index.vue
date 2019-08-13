@@ -6,18 +6,19 @@
       v-if="category !== undefined && category.items.length > 0"
       class="sidebar-container"
     >
-      <div class="menu-container"
-           id="menuContainer"
+      <div
+        id="menuContainer"
+        class="menu-container"
       >
         <div
           v-for="(v, i) in category.items"
-          :key="v.path"
-          class="menu-item"
           :id="'item:'+ i"
-          @click="jump(category.subType, v.path, i)"
+          :key="v.name"
+          class="menu-item"
+          @click="jump(category.subType, v.name, i)"
         >
           <div class="route-content">
-            <span :class="actives[i] ? 'category-name active' : 'category-name'">{{ v.name }}</span>
+            <span :class="actives[i] ? 'category-name active' : 'category-name'">{{ v.label }}</span>
           </div>
         </div>
       </div>
@@ -48,7 +49,6 @@ import { getCategories } from '@/api/categoryApi'
   }
 })
 export default class extends Vue {
-  private index: number = 0
   private actives: boolean[] = []
 
   private backtop() {
@@ -72,58 +72,64 @@ export default class extends Vue {
   }
 
   get category() {
-    this.actives = []
     if (CategoryModule.category !== undefined && CategoryModule.category.items.length > 0) {
-      if (CategoryModule.category.items[0].name !== '所有') {
-        CategoryModule.category.items.unshift({ name: '所有', path: null })
+      if (CategoryModule.category.items[0].name !== null) {
+        CategoryModule.category.items.unshift({ label: '所有', name: null })
       }
       const name = this.$route.params['category']
-      if (name !== undefined) {
-        let i = 0
-        CategoryModule.category.items.forEach(v => {
-          if (name === v.path) {
-            this.index = i
-            this.$set(this.actives, i++, true)
-          } else {
-            this.$set(this.actives, i++, false)
-          }
-        })
+      if (name !== null) {
+        const index = CategoryModule.category.items.findIndex(v => v.name === name)
+        if (index >= 0) {
+          CategoryModule.ChangeIndex(index)
+          this.resetIndex(index)
+        }
+      } else if (name === null) {
+        CategoryModule.ChangeIndex(0)
       } else {
-        this.index = 0
-        this.$set(this.actives, 0, true)
+        this.resetIndex(-1)
       }
     }
     return CategoryModule.category
   }
 
-  private jump(subType: string, path: string, index: number) {
-    let i = 0
-    this.actives = []
-    CategoryModule.category.items.forEach(v => {
-      this.$set(this.actives, i++, false)
-    })
-    this.index = index
-    this.$set(this.actives, index, true)
-    this.scrollToPreview(index)
-    if (path === null) {
+  private jump(subType: string, name: string, index: number) {
+    this.resetIndex(index)
+    if (name === null) {
       this.$router.push({ name: this.category.type.concat('-', subType) })
     } else {
-      this.$router.push({ name: this.category.type.concat('-', subType, '-category'), params: { category: path } })
+      this.$router.push({ name: this.category.type.concat('-', subType, '-category'), params: { category: name } })
     }
+  }
+
+  private resetIndex(index: number) {
+    for (let i = 0; i < CategoryModule.category.items.length; i++) {
+      if (i !== index) {
+        this.$set(this.actives, i, false)
+      } else {
+        this.$set(this.actives, i, true)
+      }
+    }
+  }
+
+  get index() {
+    return CategoryModule.index
   }
 
   @Watch('index')
   scrollToPreview(index: number) {
-    const step = 50
-    const _containerDoc = document.getElementById('menuContainer')
-    const item: HTMLElement = document.getElementById('item:' + index)
-    const viewHeight = _containerDoc.clientHeight
-    const rectTop = item.getBoundingClientRect().top - _containerDoc.getBoundingClientRect().top
-    if (rectTop <= 0) {
-      _containerDoc.scrollTop -= step
-    } else if (rectTop >= viewHeight - step) {
-      _containerDoc.scrollTop += step
+    if (index >= 0) {
+      const step = 50
+      const _containerDoc = document.getElementById('menuContainer')
+      const item: HTMLElement = document.getElementById('item:' + index)
+      const viewHeight = _containerDoc.clientHeight
+      const rectTop = item.getBoundingClientRect().top - _containerDoc.getBoundingClientRect().top
+      if (rectTop <= 0) {
+        _containerDoc.scrollTop -= step
+      } else if (rectTop >= viewHeight - step) {
+        _containerDoc.scrollTop += step
+      }
     }
+    this.resetIndex(index)
   }
 
   private async loadCategory() {
@@ -132,16 +138,17 @@ export default class extends Vue {
     data.values.forEach(v => {
       const type: string = v.type
       const subType: string = v.subType
-      const items: { name: string, path: string }[] = []
+      const items: { label: string, name: string }[] = []
       v.items.forEach(item => {
-        items.push({ name: item.label, path: item.name })
+        items.push({ label: item.label, name: item.name })
       })
       categories.set(type + ':' + subType, { type: type, subType: subType, items: items })
     })
     CategoryModule.SetCategories(categories)
   }
 
-  mounted() {
+  created() {
+    this.actives[0] = true
     this.loadCategory()
   }
 }
@@ -162,6 +169,7 @@ export default class extends Vue {
   .menu-container {
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
     max-height: $sideBarHeight !important;
     padding-top: 3px;
     padding-bottom: 5px;

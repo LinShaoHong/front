@@ -16,7 +16,7 @@ const getPageTitle = (key: string) => {
   return `${settings.title}`
 }
 
-router.beforeEach((to: Route, _: Route, next: any) => {
+router.beforeEach((to: Route, from: Route, next: any) => {
   NProgress.start()
   next()
 })
@@ -24,7 +24,6 @@ router.beforeEach((to: Route, _: Route, next: any) => {
 router.afterEach((to: Route) => {
   // Finish progress bar
   NProgress.done()
-
   // set page title
   document.title = getPageTitle(to.meta.title)
 })

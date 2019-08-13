@@ -4,7 +4,7 @@ import store from '@/store'
 export interface ICategory {
   type: string,
   subType: string,
-  items: { name: string, path: string }[]
+  items: { label: string, name: string }[]
 }
 
 export interface ICategoryState {
@@ -16,6 +16,7 @@ class Categories extends VuexModule implements ICategoryState {
   private categories: Map<string, ICategory> = new Map()
   private initiated: boolean = false
   private keyType: string = null
+  public index: number = 0
   public category: ICategory = {
     type: '',
     subType: '',
@@ -39,6 +40,11 @@ class Categories extends VuexModule implements ICategoryState {
     }
   }
 
+  @Mutation
+  public SET_INDEX(index: number) {
+    this.index = index
+  }
+
   @Action
   public SetCategories(categories: Map<string, ICategory>) {
     this.SET_CATEGORIES(categories)
@@ -47,6 +53,11 @@ class Categories extends VuexModule implements ICategoryState {
   @Action
   public ChangeKeyType(keyType: string) {
     this.SET_KEY_TYPE(keyType)
+  }
+
+  @Action
+  public ChangeIndex(index: number) {
+    this.SET_INDEX(index)
   }
 }
 
