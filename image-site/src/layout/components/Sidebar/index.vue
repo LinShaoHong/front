@@ -76,17 +76,19 @@ export default class extends Vue {
       if (CategoryModule.category.items[0].name !== null) {
         CategoryModule.category.items.unshift({ label: '所有', name: null })
       }
-      const name = this.$route.params['category']
-      if (name !== null && name !== undefined) {
-        const index = CategoryModule.category.items.findIndex(v => v.name === name)
-        if (index >= 0) {
-          CategoryModule.ChangeIndex(index)
-          this.resetIndex(index)
+      if (this.$route.path.startsWith('/' + CategoryModule.category.type.concat('/', CategoryModule.category.subType, '/category-'))) {
+        const name = this.$route.params['category']
+        if (name !== null && name !== undefined) {
+          const index = CategoryModule.category.items.findIndex(v => v.name === name)
+          if (index >= 0) {
+            CategoryModule.ChangeIndex(index)
+            this.resetIndex(index)
+          }
+        } else if (name === null) {
+          CategoryModule.ChangeIndex(0)
         }
-      } else if (name === null) {
-        CategoryModule.ChangeIndex(0)
       } else {
-        this.resetIndex(-1)
+        CategoryModule.ChangeIndex(-1)
       }
     }
     return CategoryModule.category
@@ -102,12 +104,16 @@ export default class extends Vue {
   }
 
   private resetIndex(index: number) {
-    for (let i = 0; i < CategoryModule.category.items.length; i++) {
-      if (i !== index) {
-        this.$set(this.actives, i, false)
-      } else {
-        this.$set(this.actives, i, true)
+    if (CategoryModule.category) {
+      for (let i = 0; i < CategoryModule.category.items.length; i++) {
+        if (i !== index) {
+          this.$set(this.actives, i, false)
+        } else {
+          this.$set(this.actives, i, true)
+        }
       }
+    } else {
+      this.actives = []
     }
   }
 
