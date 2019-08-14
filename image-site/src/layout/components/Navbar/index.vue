@@ -15,6 +15,7 @@
       </div>
       <div class="search">
         <input
+          v-model="q"
           class="search-input"
           placeholder="搜索"
           @keyup="pressSearch"
