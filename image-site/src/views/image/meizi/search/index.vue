@@ -2,18 +2,19 @@
   <div :class="mobile ? 'app-container mobile' : 'app-container'">
     <div class="image-container">
       <div
-        v-if="!loading && images.length > 0"
+        v-if="!loading && result.images.length > 0"
         class="image-list"
         :style="mobile ? ('width: ' + mobileImagesWidth + 'px;') : ''"
       >
         <ul>
           <li
-            v-for="item in images"
-            :key="item.id"
+            v-for="image in result.images"
+            :key="image.id"
           >
             <image-item
-              :image="item"
-              :src="'http://172.20.10.2/images' + item.src"
+              :keyWords="result.keyWords"
+              :image="image"
+              :src="'http://172.20.10.2/images' + image.src"
             />
           </li>
         </ul>
@@ -25,7 +26,7 @@
         <ripple />
       </div>
       <div
-        v-if="!loading && images.length === 0"
+        v-if="!loading && result.images.length === 0"
         class="empty"
       >
         <span>对不起，没找到你要的妹子.....</span>
@@ -59,7 +60,10 @@ export default class extends mixins(Layout) {
   private SUB_TYPE = 'meizi'
 
   private mobileImagesWidth = 0
-  private images: ImageResp[] = []
+  private result: { images: ImageResp[], keyWords: string[] } = {
+    images: [],
+    keyWords: []
+  }
   private loading: boolean = true
 
   @Watch('$route')
@@ -72,7 +76,7 @@ export default class extends mixins(Layout) {
     NProgress.start()
     let data = await search({ q: q })
     this.loading = false
-    this.images = data.values
+    this.result = data.value
     NProgress.done()
   }
 

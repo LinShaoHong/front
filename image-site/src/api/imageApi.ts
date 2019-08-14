@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { PageResp, ListResp } from './response'
+import { PageResp, ListResp, SingleResp } from './response'
 
 export interface IPageParam {
   start: number,
@@ -34,7 +34,7 @@ export const getRecommendations = (imgId: string, params: any): any =>
     params
   })
 
-export const search = (params: { q: string }): any =>
+export const search = (params: { q: string }): SingleResp | any =>
   request({
     url: '/api/v1/images/search',
     method: 'get',

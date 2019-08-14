@@ -22,6 +22,7 @@
     >
       <span
         class="title"
+        :id="'title:' + image.id"
         :style="'width: '+ reWidth + 'px;'"
       >{{ image.title }}</span>
     </div>
@@ -44,6 +45,7 @@ import { ImageResp } from '@/api/imageType'
 export default class extends Vue {
   @Prop({ default: '#' }) private src: string
   @Prop({ default: {} }) private image: ImageResp
+  @Prop({ default: [] }) private keyWords!: string[]
   @Prop({ default: V_IMAGE.width }) private width!: number
   @Prop({ default: V_IMAGE.height }) private height!: number
 
@@ -78,6 +80,21 @@ export default class extends Vue {
 
   get mobile() {
     return AppModule.device === DeviceType.Mobile
+  }
+
+  private highlight() {
+    const el: HTMLElement =  document.getElementById('title:' + this.image.id)
+    if (this.keyWords.length > 0) {
+      let title: string = this.image.title
+      this.keyWords.forEach(word => {
+        title = title.replace(word, '<em style="color: #5AA766; font-style: normal;">' + word + '</em>')
+      })
+      el.innerHTML = title
+    }
+  }
+
+  mounted() {
+    this.highlight()
   }
 }
 </script>
