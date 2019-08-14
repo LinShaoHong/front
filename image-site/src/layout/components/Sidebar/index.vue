@@ -164,7 +164,7 @@ export default class extends Vue {
 
 <style lang="scss" scoped>
 .sidebar {
-  min-width: $sideBarWidth !important;
+  width: $sideBarWidth !important;
   border-radius: 10px;
   z-index: 1001;
 }
@@ -203,6 +203,7 @@ export default class extends Vue {
       .category-label {
         max-width: 64%;
         font-size: 14px;
+        font-family: "Songti SC",serif;
         text-indent: 0;
         margin-right: 20px;
       }
@@ -251,7 +252,7 @@ export default class extends Vue {
 
 .mobile {
   &.sidebar {
-    min-width: $mobileSideBarWidth !important;
+    width: $mobileSideBarWidth !important;
   }
 }
 </style>

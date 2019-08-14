@@ -26,13 +26,13 @@
         <div
           class="desk-content-grid"
         >
-          <div class="desk-app-wrapper">
-            <app-main />
-          </div>
           <div class="desk-sidebar-wrapper">
             <div class="sidebar-sticky">
               <sidebar />
             </div>
+          </div>
+          <div class="desk-app-wrapper">
+            <app-main />
           </div>
         </div>
       </div>
@@ -122,13 +122,13 @@ export default class extends mixins(ResizeMixin) {
     }
 
     .desk-sidebar-wrapper {
-      grid-column: 3 / 4;
-      justify-self: left;
+      grid-column: 1 / 2;
+      justify-self: right;
       .sidebar-sticky {
         margin-top: 50px;
         position: sticky;
         top: $NavBarHeight;
-        padding-left: 8px;
+        padding-right: 20px;
       }
     }
   }

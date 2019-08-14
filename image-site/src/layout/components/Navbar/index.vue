@@ -117,11 +117,13 @@ export default class extends Vue {
   }
 
   private async search() {
-    if (this.q !== null && this.q.trim().length > 0) {
-      const category: ICategory = CategoryModule.category
-      if (category) {
+    const category: ICategory = CategoryModule.category
+    if (category) {
+      if (this.q !== null && this.q.trim().length > 0) {
         const name = category.type + '-' + category.subType + '-search'
         this.$router.push({ name: name, query: { q: this.q.trim() } })
+      } else {
+        this.$router.push({ path: '/' + category.type + '/' + category.subType })
       }
     }
   }
