@@ -5,35 +5,43 @@
         class="image-list"
         :style="mobile ? ('width: ' + mobileImagesWidth + 'px;') : ''"
       >
-        <div v-for="v in groupedImages"
-             :key="v.name"
+        <div
+          v-for="v in groupedImages"
+          :key="v.name"
         >
-          <div :id="'label:' + v.name"
-               class="category-label"
+          <div
+            :id="'label:' + v.name"
+            class="category-label"
           >
             <div class="divider_text_left">
-              <hr class="divider"/>
+              <hr class="divider">
             </div>
             <div class="span_text">
-              <span class="category-span" @click="toCategorized(v.name)">{{ v.label }}</span>
+              <span
+                class="category-span"
+                @click="toCategorized(v.name)"
+              >{{ v.label }}</span>
             </div>
             <div class="divider_text_right">
-              <hr class="divider"/>
+              <hr class="divider">
             </div>
           </div>
           <ul v-if="v.images.length > 0">
             <li
-            v-for="item in v.images"
-            :key="item.id"
+              v-for="item in v.images"
+              :key="item.id"
             >
               <image-item
-              :image="item"
-              :src="'http://172.20.10.2/images' + item.src"
+                :image="item"
+                :src="'http://172.20.10.2/images' + item.src"
               />
             </li>
           </ul>
-          <div v-else class="loading">
-            <ripple></ripple>
+          <div
+            v-else
+            class="loading"
+          >
+            <ripple />
           </div>
         </div>
       </div>
@@ -81,20 +89,30 @@ export default class extends mixins(Layout) {
       } else {
         this.groupedImages[index].images = data.values
       }
+      this.groupedImages.sort((o1, o2) => {
+        const i1 = this.items.findIndex(v => v.name === o1.name)
+        const i2 = this.items.findIndex(v => v.name === o2.name)
+        return i1 - i2
+      })
     }
   }
 
   private loadWhenScrolling() {
     window.addEventListener('scroll', (e: Event) => {
+      let j = 1
+      let found: boolean = false
+      const count = this.mobile ? 6 : 10
       for (let index = 1; index < this.items.length; index++) {
         const item = this.items[index]
         const id = 'label:' + item.name
         const el: HTMLElement = document.getElementById(id)
         const rectTop = el === null ? 0 : el.getBoundingClientRect().top
         const viewHeight = document.documentElement.clientHeight || window.innerHeight
+        if (rectTop < 0) {
+          j = index
+        }
         if (rectTop > 0 && rectTop < viewHeight) {
           CategoryModule.ChangeIndex(index)
-          const count = this.mobile ? 6 : 10
           this.getImages(count, item.label, item.name)
           if (index > 1) {
             this.getImages(count, this.items[index - 1].label, this.items[index - 1].name)
@@ -102,7 +120,18 @@ export default class extends mixins(Layout) {
           if (index < this.items.length - 1) {
             this.getImages(count, this.items[index + 1].label, this.items[index + 1].name)
           }
+          found = true
           break
+        }
+      }
+      if (!found) {
+        const item = this.items[j]
+        this.getImages(count, item.label, item.name)
+        if (j > 1) {
+          this.getImages(count, this.items[j - 1].label, this.items[j - 1].name)
+        }
+        if (j < this.items.length - 1) {
+          this.getImages(count, this.items[j + 1].label, this.items[j + 1].name)
         }
       }
     }, false)
@@ -262,7 +291,7 @@ export default class extends mixins(Layout) {
         }
       }
       .loading {
-        height: 100%;
+        height: 800px;
       }
     }
   }

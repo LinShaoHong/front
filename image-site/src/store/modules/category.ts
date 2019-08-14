@@ -4,7 +4,7 @@ import store from '@/store'
 export interface ICategory {
   type: string,
   subType: string,
-  items: { label: string, name: string }[]
+  items: { label: string, name: string, count: number }[]
 }
 
 export interface ICategoryState {

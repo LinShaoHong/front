@@ -146,7 +146,6 @@ export default class extends mixins(ResizeMixin) {
     position: fixed;
     z-index: 1001;
     transition: transform .28s;
-    width: $sideBarWidth !important;
   }
 
   .mobile-app-wrapper {
@@ -175,8 +174,8 @@ export default class extends mixins(ResizeMixin) {
   &.hideSidebar {
     .mobile-sidebar-wrapper {
       pointer-events: none;
-      transition-duration: 0.6s;
-      transform: translate3d(-80px, 0, 0);
+      transition-duration: 1s;
+      transform: translate3d(-200px, 0, 0);
     }
   }
 

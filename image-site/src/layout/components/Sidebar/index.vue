@@ -18,7 +18,8 @@
           @click="jump(category.subType, v.name, i)"
         >
           <div class="route-content">
-            <span :class="actives[i] ? 'category-name active' : 'category-name'">{{ v.label }}</span>
+            <span :class="actives[i] ? 'category-label active' : 'category-label'">{{ v.label }}</span>
+            <span :class="actives[i] ? 'category-num active' : 'category-num'">{{ v.count | toThousands }}</span>
           </div>
         </div>
       </div>
@@ -74,7 +75,8 @@ export default class extends Vue {
   get category() {
     if (CategoryModule.category !== undefined && CategoryModule.category.items.length > 0) {
       if (CategoryModule.category.items[0].name !== null) {
-        CategoryModule.category.items.unshift({ label: '所有', name: null })
+        const total = CategoryModule.category.items.map(v => v.count).reduce((a, b) => a + b)
+        CategoryModule.category.items.unshift({ label: '所有', name: null, count: total })
       }
       if (this.$route.path.startsWith('/' + CategoryModule.category.type.concat('/', CategoryModule.category.subType, '/category-'))) {
         const name = this.$route.params['category']
@@ -144,9 +146,9 @@ export default class extends Vue {
     data.values.forEach(v => {
       const type: string = v.type
       const subType: string = v.subType
-      const items: { label: string, name: string }[] = []
+      const items: { label: string, name: string, count: number }[] = []
       v.items.forEach(item => {
-        items.push({ label: item.label, name: item.name })
+        items.push({ label: item.label, name: item.name, count: item.count })
       })
       categories.set(type + ':' + subType, { type: type, subType: subType, items: items })
     })
@@ -191,22 +193,36 @@ export default class extends Vue {
     }
 
     .route-content {
-      padding: 2px;
-      text-align: center;
+      position: relative;
+      text-indent: 10px;
 
       .active {
         color: #f90;
       }
 
-      .category-name {
-        margin-left: 2px;
-        margin-right: 2px;
+      .category-label {
+        max-width: 64%;
+        font-size: 14px;
+        text-indent: 0;
+        margin-right: 20px;
+      }
+
+      .category-num {
+        float: right;
+        font-size: 12px;
+        text-indent: 0;
+        margin-right: 3px;
+        margin-top: 4px;
       }
     }
   }
 }
 
-.route-content:hover .category-name {
+.route-content:hover .category-label {
+  color: #f90;
+}
+
+.route-content:hover .category-num {
   color: #f90;
 }
 

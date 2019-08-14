@@ -18,7 +18,10 @@
           class="search-input"
           placeholder="搜索"
         >
-        <button class="search-button" @click="search">
+        <button
+          class="search-button"
+          @click="search"
+        >
           <i class="el-icon-search" />
         </button>
       </div>
@@ -55,7 +58,10 @@
           class="search-input"
           placeholder="搜索"
         >
-        <button class="search-button" @click="search">
+        <button
+          class="search-button"
+          @click="search"
+        >
           <i class="el-icon-search" />
         </button>
       </div>

@@ -107,9 +107,10 @@
           id="previewList"
           class="preview-container"
         >
-          <div v-for="(url, index) in urls"
-               :key="'preview:' + index"
-               class="preview-item"
+          <div
+            v-for="(url, index) in urls"
+            :key="'preview:' + index"
+            class="preview-item"
           >
             <img
               :id="'preview:' + index"

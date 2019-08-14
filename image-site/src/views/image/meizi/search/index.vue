@@ -2,6 +2,7 @@
   <div :class="mobile ? 'app-container mobile' : 'app-container'">
     <div class="image-container">
       <div
+        v-if="!loading && images.length > 0"
         class="image-list"
         :style="mobile ? ('width: ' + mobileImagesWidth + 'px;') : ''"
       >
@@ -16,6 +17,18 @@
             />
           </li>
         </ul>
+      </div>
+      <div
+        v-if="loading"
+        class="loading"
+      >
+        <ripple />
+      </div>
+      <div
+        v-if="!loading && images.length === 0"
+        class="empty"
+      >
+        <span>对不起，没找到你要的妹子.....</span>
       </div>
     </div>
   </div>
@@ -32,10 +45,12 @@ import { DeviceType, AppModule } from '@/store/modules/app'
 import { CategoryModule } from '@/store/modules/category'
 import { deviceResizeSupporter } from '@/utils/mixin'
 import NProgress from 'nprogress'
+import Ripple from '@/components/Loading/Ripple.vue'
 
 @Component({
   name: 'ImageSearch',
   components: {
+    Ripple,
     ImageItem
   }
 })
@@ -45,6 +60,7 @@ export default class extends mixins(Layout) {
 
   private mobileImagesWidth = 0
   private images: ImageResp[] = []
+  private loading: boolean = true
 
   @Watch('$route')
   onQueryChange(v: any) {
@@ -52,8 +68,10 @@ export default class extends mixins(Layout) {
   }
 
   private async getImages(q: string) {
+    this.loading = true
     NProgress.start()
     let data = await search({ q: q })
+    this.loading = false
     this.images = data.values
     NProgress.done()
   }
@@ -101,6 +119,25 @@ export default class extends mixins(Layout) {
         list-style: none;
         margin-left: 15px;
       }
+    }
+  }
+
+  .loading {
+    margin: 20% auto auto;
+  }
+
+  .empty {
+    width: 80%;
+    height: 200px;
+    margin: 4% auto auto;
+    border: 2px solid #2F2F2F;
+    display: flex;
+    justify-content: center;
+
+    span {
+      margin: auto;
+      font-size: 20px;
+      color: #A3A2A2;
     }
   }
 }
