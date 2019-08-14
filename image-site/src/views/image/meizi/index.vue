@@ -85,23 +85,24 @@ export default class extends mixins(Layout) {
   }
 
   private loadWhenScrolling() {
-    window.addEventListener('scroll', async (e: Event) => {
+    window.addEventListener('scroll', (e: Event) => {
       for (let index = 1; index < this.items.length; index++) {
         const item = this.items[index]
         const id = 'label:' + item.name
         const el: HTMLElement = document.getElementById(id)
         const rectTop = el === null ? 0 : el.getBoundingClientRect().top
         const viewHeight = document.documentElement.clientHeight || window.innerHeight
-        if (rectTop > 0 && rectTop < viewHeight / 3) {
+        if (rectTop > 0 && rectTop < viewHeight) {
           CategoryModule.ChangeIndex(index)
           const count = this.mobile ? 6 : 10
-          await this.getImages(count, item.label, item.name)
+          this.getImages(count, item.label, item.name)
           if (index > 1) {
-            await this.getImages(count, this.items[index - 1].label, this.items[index - 1].name)
+            this.getImages(count, this.items[index - 1].label, this.items[index - 1].name)
           }
           if (index < this.items.length - 1) {
-            await this.getImages(count, this.items[index + 1].label, this.items[index + 1].name)
+            this.getImages(count, this.items[index + 1].label, this.items[index + 1].name)
           }
+          break
         }
       }
     }, false)
@@ -126,7 +127,9 @@ export default class extends mixins(Layout) {
       if (i <= len) {
         await this.getImages(count, this.items[i].label, this.items[i].name)
       } else {
-        this.groupedImages.push({ label: this.items[i].label, name: this.items[i].name, images: [] })
+        if (this.groupedImages[i] === undefined) {
+          this.groupedImages.push({ label: this.items[i].label, name: this.items[i].name, images: [] })
+        }
       }
     }
   }
@@ -135,7 +138,6 @@ export default class extends mixins(Layout) {
     this.resize()
     deviceResizeSupporter(this.resize)
     this.changeCategory(this.TYPE, this.SUB_TYPE)
-    this.scrollToPosition()
   }
 
   mounted() {
@@ -146,6 +148,7 @@ export default class extends mixins(Layout) {
       }
     }, 100)
     this.loadWhenScrolling()
+    this.scrollToPosition()
   }
 }
 </script>
