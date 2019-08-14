@@ -17,6 +17,7 @@
         <input
           class="search-input"
           placeholder="搜索"
+          @keyup="pressSearch"
         >
         <button
           class="search-button"
@@ -58,6 +59,7 @@
           v-model="q"
           class="search-input"
           placeholder="搜索"
+          @keyup="pressSearch"
         >
         <button
           class="search-button"
@@ -120,6 +122,12 @@ export default class extends Vue {
         const name = category.type + '-' + category.subType + '-search'
         this.$router.push({ name: name, query: { q: this.q.trim() } })
       }
+    }
+  }
+
+  private pressSearch(e: KeyboardEvent) {
+    if (e.code === 'Enter') {
+      this.search()
     }
   }
 
