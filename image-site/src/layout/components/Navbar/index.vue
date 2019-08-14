@@ -55,6 +55,7 @@
       </div>
       <div class="search">
         <input
+          v-model="q"
           class="search-input"
           placeholder="搜索"
         >
@@ -92,6 +93,7 @@ import { constantRoutes } from '@/router'
 export default class extends Vue {
   private width = 0
   private hideSearch = true
+  private q: string = ''
   private routes = constantRoutes.filter(v => !v.meta.hidden)
 
   get classObj() {
@@ -112,14 +114,11 @@ export default class extends Vue {
   }
 
   private async search() {
-    const el: HTMLInputElement = document.getElementsByClassName('search-input').item(0) as HTMLInputElement
-    let q = el.value
-    if (q !== null && q.trim().length > 0) {
-      q = q.trim()
+    if (this.q !== null && this.q.trim().length > 0) {
       const category: ICategory = CategoryModule.category
       if (category) {
         const name = category.type + '-' + category.subType + '-search'
-        this.$router.push({ name: name, query: { q: q } })
+        this.$router.push({ name: name, query: { q: this.q.trim() } })
       }
     }
   }
@@ -140,6 +139,13 @@ export default class extends Vue {
       return basePath
     }
     return path.resolve(basePath, routePath)
+  }
+
+  created() {
+    const q = this.$route.query.q as string
+    if (q !== null && q !== undefined) {
+      this.q = q
+    }
   }
 
   mounted() {
