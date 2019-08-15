@@ -128,7 +128,11 @@
         v-show="!mobile"
         class="title"
       >
-        <span>{{ currImage.title }}</span>
+        <span>{{ currImage.title }}<svg-icon :name="like ? 'heart' : 'unheart'"
+                                             :style="'transition: all 1s ease; margin-top: 10px; margin-left: 6px; font-size: 30px; cursor: pointer; color: ' + (like ? '#F6625D;' : '#FFD766;')"
+                                             @click="onLike"
+        >
+        </svg-icon><span :style="'transition: all 1s ease; color: ' + (like ? '#F6625D;' : '#FFD766;')">{{ like ? '喜欢' : '喜欢就赞' }}</span></span>
       </div>
       <img
         id="imgId"
@@ -182,10 +186,12 @@ export default class extends Vue {
   @Prop({ default: () => {} }) private image: ImageResp
   @Prop({ default: (v: number) => {} }) private onSwitch!: Function
   @Prop({ default: () => {} }) private onClose!: Function
+  @Prop({ default: false }) private liked: boolean
 
   private urls: string[] = []
   private currImage = this.image
 
+  private like: boolean = this.liked
   private index = 0
   private isShow = false
   private infinite = true
@@ -254,6 +260,11 @@ export default class extends Vue {
         this.loading = true
       }
     })
+  }
+
+  private onLike() {
+    this.like = !this.like
+    this.$emit('onLike')
   }
 
   private preview(index: number) {
@@ -438,6 +449,7 @@ export default class extends Vue {
     this.reset()
     await this.getDetailUrls(img.id)
     this.index = 0
+    this.like = false
     this.actives = []
     this.currImage = img
   }

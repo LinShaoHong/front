@@ -5,6 +5,8 @@
     <image-gallery
       v-if="isShow"
       ref="imgSlider"
+      @onLike="onLike"
+      :liked="liked"
       :image="image"
       :on-close="closeViewer"
     />
@@ -26,8 +28,13 @@ import ImageGallery from './ImageGallery.vue'
 })
 export default class extends Vue {
   @Prop({ default: {} }) private image: ImageResp
+  @Prop({ default: false }) private liked: boolean
 
   private isShow = false
+
+  private onLike() {
+    this.$emit('onLike')
+  }
 
   private closeViewer() {
     setTimeout(() => {

@@ -15,6 +15,8 @@
     </div>
     <image-details
       ref="imgDetails"
+      @onLike="onLike"
+      :liked="liked"
       :image="image"
     />
     <div
@@ -29,12 +31,12 @@
     </div>
     <div class="view-like">
       <span class="view-span">
-        人气({{ visits | toThousands }})
+        <svg-icon name="click" style="font-size: 18px; margin-right: 3px;"></svg-icon>{{ visits | toThousands }}
       </span>
       <span :class="liked? 'like-span liked' : 'like-span'"
             @click="onLike"
       >
-        点赞({{ likes | toThousands }})
+        <svg-icon name="zan" style="font-size: 18px; margin-right: 3px;"></svg-icon>{{ likes | toThousands }}
       </span>
     </div>
   </div>
@@ -192,7 +194,7 @@ export default class extends Vue {
 }
 
 .view-like {
-  padding-top: 5px;
+  padding-top: 15px;
   width: 100%;
   display: inline-grid;
   grid-template-columns: 1fr 1fr;
@@ -207,6 +209,9 @@ export default class extends Vue {
     grid-column: 1 / 2;
     justify-self: left;
     margin-left: 5px;
+    svg-icon {
+
+    }
   }
 
   .like-span {
@@ -216,12 +221,8 @@ export default class extends Vue {
     cursor: pointer;
 
     &.liked {
-      color: #5AA766;
+      color: #F6625D;
     }
-  }
-
-  .like-span:hover {
-    color: #5AA766;
   }
 }
 

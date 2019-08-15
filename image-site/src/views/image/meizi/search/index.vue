@@ -29,7 +29,7 @@
         v-if="!loading && result.images.length === 0"
         class="empty"
       >
-        <span>对不起，没找到你要的妹子.....</span>
+        <span>对不起，没找到你要的妹子.....<svg-icon style="font-size: 22px; margin-left: 10px;" name="cry"></svg-icon></span>
       </div>
     </div>
   </div>
