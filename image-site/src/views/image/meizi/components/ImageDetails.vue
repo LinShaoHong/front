@@ -6,9 +6,7 @@
       v-if="isShow"
       ref="imgSlider"
       :image="image"
-      :title="title"
       :on-close="closeViewer"
-      :urls="urls"
     />
   </div>
 </template>
@@ -30,7 +28,6 @@ export default class extends Vue {
   @Prop({ default: {} }) private image: ImageResp
 
   private isShow = false
-  private urls = []
 
   private closeViewer() {
     setTimeout(() => {
@@ -38,10 +35,8 @@ export default class extends Vue {
     }, 500)
   }
 
-  public async showViewer(imgId: string) {
-    let data = await getDetails(imgId)
+  public showViewer() {
     this.isShow = true
-    this.urls = data.values.map(v => 'http://172.20.10.2/images' + v)
   }
 
   get mobile() {

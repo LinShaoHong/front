@@ -3,7 +3,7 @@ export abstract class V_IMAGE {
   static readonly height = 213
 
   static readonly mobile = {
-    width: 160,
+    width: 164,
     height: 230
   }
 }

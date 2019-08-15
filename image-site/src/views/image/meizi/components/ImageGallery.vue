@@ -61,12 +61,12 @@
           :style="'cursor: pointer; font-size: ' + (mobile ? 25 : 23) + 'px;'"
           @click="toggleAction"
         />
-        <sapn
+        <span
           v-if="!showActionTools"
           class="counter"
         >
           {{ (index + 1) + '/' + urls.length }}
-        </sapn>
+        </span>
         <i
           v-if="showActionTools"
           class="el-icon-menu"
@@ -119,7 +119,7 @@
               @click="preview(index)"
             >
             <div style="display: flex; justify-content: center">
-              <span style="color: #f90; margin: auto; font-size: 14px;">{{ index + 1 }}</span>
+              <span :style="'color: ' + (actives[index] ? '#5AA766;' : '#f90;') + 'margin: auto; font-size: 14px;'">{{ index + 1 }}</span>
             </div>
           </div>
         </div>
@@ -128,7 +128,7 @@
         v-show="!mobile"
         class="title"
       >
-        <span>{{ image.title }}</span>
+        <span>{{ currImage.title }}</span>
       </div>
       <img
         id="imgId"
@@ -179,10 +179,12 @@ import { getDetails, getRecommendations } from '@/api/imageApi'
   name: 'ImageGallery'
 })
 export default class extends Vue {
-  @Prop({ default: [] }) private urls!: string[]
-  @Prop({ default: {} }) private image: ImageResp
+  @Prop({ default: () => {} }) private image: ImageResp
   @Prop({ default: (v: number) => {} }) private onSwitch!: Function
   @Prop({ default: () => {} }) private onClose!: Function
+
+  private urls: string[] = []
+  private currImage = this.image
 
   private index = 0
   private isShow = false
@@ -427,13 +429,17 @@ export default class extends Vue {
     }
   }
 
+  private async getDetailUrls(imgId: string) {
+    let data = await getDetails(imgId)
+    this.urls = data.values.map(v => 'http://172.20.10.2/images' + v)
+  }
+
   private async chooseRec(img: ImageResp) {
     this.reset()
-    let data = await getDetails(img.id)
+    await this.getDetailUrls(img.id)
     this.index = 0
     this.actives = []
-    this.image = img
-    this.urls = data.values.map(v => 'http://172.20.10.2/images' + v)
+    this.currImage = img
   }
 
   private async loadRecommendations() {
@@ -450,6 +456,7 @@ export default class extends Vue {
     this.showImgTimeout()
     this.hideBtnPrevAndNext()
     this.deviceSupportInstall()
+    this.getDetailUrls(this.image.id)
   }
 }
 </script>

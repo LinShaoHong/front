@@ -58,7 +58,7 @@ export default class extends mixins(Layout) {
   private resize() {
     if (this.mobile) {
       const c = Math.floor(window.outerWidth * 0.98 / 165)
-      this.mobileImagesWidth = c * 170
+      this.mobileImagesWidth = c * 172
     }
   }
 

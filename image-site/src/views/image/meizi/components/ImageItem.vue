@@ -1,11 +1,11 @@
 <template>
-  <div :class="mobile ? 'mobile' : ''">
+  <div :class="mobile ? 'image-wrapper mobile' : 'image-wrapper'">
     <div
       :id="image.id"
       class="image-shadow js-tilt-container"
       @mousemove="move"
       @mouseleave="leave"
-      @click="showViewer"
+      @click="showViewerOnImage"
     >
       <img
         :id="image.id"
@@ -19,12 +19,21 @@
     />
     <div
       class="content"
+      @click="showViewer"
     >
       <span
-        class="title"
         :id="'title:' + image.id"
+        class="title"
         :style="'width: '+ reWidth + 'px;'"
       >{{ image.title }}</span>
+    </div>
+    <div class="view-like">
+      <span class="view-span">
+        浏览({{ visits | toThousands }})
+      </span>
+      <span class="like-span">
+        点赞({{ likes | toThousands }})
+      </span>
     </div>
   </div>
 </template>
@@ -45,12 +54,22 @@ import { ImageResp } from '@/api/imageType'
 export default class extends Vue {
   @Prop({ default: '#' }) private src: string
   @Prop({ default: {} }) private image: ImageResp
-  @Prop({ default: [] }) private keyWords!: string[]
+  @Prop({ default: () => [] }) private keyWords!: string[]
   @Prop({ default: V_IMAGE.width }) private width!: number
   @Prop({ default: V_IMAGE.height }) private height!: number
 
+  private visits: number = this.image.visits
+  private likes: number = this.image.likes
+
   private showViewer() {
-    (this.$refs.imgDetails as ImageDetails).showViewer(this.image.id)
+    (this.$refs.imgDetails as ImageDetails).showViewer()
+    this.visits = this.visits + 1
+  }
+
+  private showViewerOnImage() {
+    if (!this.mobile) {
+      this.showViewer()
+    }
   }
 
   private move(e: MouseEvent) {
@@ -83,14 +102,17 @@ export default class extends Vue {
   }
 
   private highlight() {
-    const el: HTMLElement =  document.getElementById('title:' + this.image.id)
+    const el: HTMLElement = document.getElementById('title:' + this.image.id)
+    let title: string = this.image.title
+    if (title.length > 24) {
+      title = title.substring(0, 24)
+    }
     if (this.keyWords.length > 0) {
-      let title: string = this.image.title
       this.keyWords.forEach(word => {
         title = title.replace(word, '<em style="color: #5AA766; font-style: normal;">' + word + '</em>')
       })
-      el.innerHTML = title
     }
+    el.innerHTML = title
   }
 
   mounted() {
@@ -100,18 +122,26 @@ export default class extends Vue {
 </script>
 
 <style lang="scss" scoped>
+.image-wrapper {
+  border: 1px solid #2F2F2F;
+  margin-bottom: 15px;
+}
+
+.image-wrapper:hover {
+  border: 1px solid #f90;
+  transition: all 1s ease;
+}
+
 .image-shadow {
-  display: block;
   position: relative;
   background-size: cover;
   cursor: pointer;
-  padding-left: 5px;
   transition: all 2.5s ease;
 
   img {
     object-fit: fill;
-    border-radius: 6px;
     transition: all 1s ease;
+    margin: auto;
   }
 
   img:hover {
@@ -131,20 +161,48 @@ export default class extends Vue {
 
 .content {
   align-content: center;
-  margin-top: 3px;
-  margin-bottom: 10px;
+  margin-top: 5px;
+  cursor: pointer;
 
   .title {
-    font-size: 14px;
+    height: 30px;
+    font-size: 13px;
+    line-height: 14px;
+    display: block;
     width: 100%;
     margin-top: 2px;
     padding: 2px;
     color: #f90;
-    line-height: 14px;
-    white-space: nowrap;
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  }
+
+  .title:hover{
+    color: #5AA766;
+    transition: all .5s ease;
+  }
+}
+
+.view-like {
+  padding-top: 5px;
+  width: 100%;
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+
+  span {
+    line-height: 20px;
+    color: #A3A2A2;
+    font-size: 11px;
+  }
+
+  .view-span {
+    grid-column: 1 / 2;
+    justify-self: left;
+    margin-left: 5px;
+  }
+
+  .like-span {
+    grid-column: 2 / 3;
+    justify-self: right;
+    margin-right: 5px;
   }
 }
 
@@ -157,7 +215,6 @@ export default class extends Vue {
 .mobile {
   .image-shadow {
     img {
-      border-radius: 4px;
     }
   }
 }

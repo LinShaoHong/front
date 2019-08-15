@@ -12,7 +12,7 @@
             :key="image.id"
           >
             <image-item
-              :keyWords="result.keyWords"
+              :key-words="result.keyWords"
               :image="image"
               :src="'http://172.20.10.2/images' + image.src"
             />
@@ -83,7 +83,7 @@ export default class extends mixins(Layout) {
   private resize() {
     if (this.mobile) {
       const c = Math.floor(window.outerWidth * 0.98 / 165)
-      this.mobileImagesWidth = c * 170
+      this.mobileImagesWidth = c * 172
     }
   }
 

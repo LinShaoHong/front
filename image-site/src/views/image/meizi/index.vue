@@ -140,7 +140,7 @@ export default class extends mixins(Layout) {
   private resize() {
     if (this.mobile) {
       const c = Math.floor(window.outerWidth * 0.98 / 165)
-      this.mobileImagesWidth = c * 170
+      this.mobileImagesWidth = c * 172
     }
   }
 
@@ -203,7 +203,7 @@ export default class extends mixins(Layout) {
       grid-column-gap: 10px;
       align-content: center;
       justify-content: center;
-      margin-left: 20px;
+      margin-left: 16px;
 
       .span_text {
         grid-column: 2 / 3;
@@ -221,6 +221,7 @@ export default class extends mixins(Layout) {
 
       .divider_text_right {
         grid-column: 3 / 4;
+        margin-right: 13px;
       }
 
       .divider {
@@ -278,7 +279,11 @@ export default class extends mixins(Layout) {
         }
 
         .divider_text_left {
-          margin-left: 10px;
+          margin-left: 5px;
+        }
+
+        .divider_text_right {
+          margin-right: 1px;
         }
       }
 
