@@ -29,9 +29,11 @@
     </div>
     <div class="view-like">
       <span class="view-span">
-        浏览({{ visits | toThousands }})
+        人气({{ visits | toThousands }})
       </span>
-      <span class="like-span">
+      <span :class="liked? 'like-span liked' : 'like-span'"
+            @click="onLike"
+      >
         点赞({{ likes | toThousands }})
       </span>
     </div>
@@ -44,6 +46,7 @@ import { DeviceType, AppModule } from '@/store/modules/app'
 import ImageDetails from './ImageDetails.vue'
 import { V_IMAGE } from '@/constant/image'
 import { ImageResp } from '@/api/imageType'
+import { like } from '@/api/imageApi'
 
 @Component({
   name: 'ImageItem',
@@ -60,16 +63,28 @@ export default class extends Vue {
 
   private visits: number = this.image.visits
   private likes: number = this.image.likes
+  private liked: boolean = false
 
   private showViewer() {
     (this.$refs.imgDetails as ImageDetails).showViewer()
-    this.visits = this.visits + 1
+    this.visits += 1
   }
 
   private showViewerOnImage() {
     if (!this.mobile) {
       this.showViewer()
     }
+  }
+
+  private onLike() {
+    if (this.liked) {
+      this.likes -= 1
+      this.liked = false
+    } else {
+      this.likes += 1
+      this.liked = true
+    }
+    like(this.image.id)
   }
 
   private move(e: MouseEvent) {
@@ -177,7 +192,7 @@ export default class extends Vue {
 
   .title:hover{
     color: #5AA766;
-    transition: all .5s ease;
+    transition: all .2s ease;
   }
 }
 
@@ -203,6 +218,15 @@ export default class extends Vue {
     grid-column: 2 / 3;
     justify-self: right;
     margin-right: 5px;
+    cursor: pointer;
+
+    &.liked {
+      color: #5AA766;
+    }
+  }
+
+  .like-span:hover {
+    color: #5AA766;
   }
 }
 
