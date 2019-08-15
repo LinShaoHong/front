@@ -5,7 +5,7 @@
       class="image-shadow js-tilt-container"
       @mousemove="move"
       @mouseleave="leave"
-      @click="showViewerOnImage"
+      @click="showViewer"
     >
       <img
         :id="image.id"
@@ -68,12 +68,6 @@ export default class extends Vue {
   private showViewer() {
     (this.$refs.imgDetails as ImageDetails).showViewer()
     this.visits += 1
-  }
-
-  private showViewerOnImage() {
-    if (!this.mobile) {
-      this.showViewer()
-    }
   }
 
   private onLike() {
@@ -239,7 +233,9 @@ export default class extends Vue {
 
 .mobile {
   .image-shadow {
-    img {
+    img:hover {
+      box-shadow: none;
+      transform: none;
     }
   }
 }
