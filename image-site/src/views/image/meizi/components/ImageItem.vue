@@ -80,11 +80,12 @@ export default class extends Vue {
     if (this.liked) {
       this.likes -= 1
       this.liked = false
+      like(this.image.id, { like: false })
     } else {
       this.likes += 1
       this.liked = true
+      like(this.image.id, { like: true })
     }
-    like(this.image.id)
   }
 
   private move(e: MouseEvent) {

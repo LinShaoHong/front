@@ -21,10 +21,11 @@ export const getDetails = (imgId: string): ListResp | any =>
     method: 'get'
   })
 
-export const like = (imgId: string): any =>
+export const like = (imgId: string, params: any): any =>
   request({
     url: `/api/v1/images/like/${imgId}`,
-    method: 'put'
+    method: 'put',
+    params
   })
 
 export const getRecommendations = (imgId: string, params: any): any =>
