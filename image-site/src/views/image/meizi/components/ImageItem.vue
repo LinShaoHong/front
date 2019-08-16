@@ -33,7 +33,7 @@
       <span class="view-span">
         <svg-icon name="click" style="font-size: 18px; margin-right: 3px;"></svg-icon>{{ visits | toThousands }}
       </span>
-      <span :class="liked? 'like-span liked' : 'like-span'"
+      <span :class="liked ? 'like-span liked' : 'like-span'"
             @click="onLike"
       >
         <svg-icon name="zan" style="font-size: 18px; margin-right: 3px;"></svg-icon>{{ likes | toThousands }}
@@ -45,6 +45,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { DeviceType, AppModule } from '@/store/modules/app'
+import { LikesModule } from '@/store/modules/like'
 import ImageDetails from './ImageDetails.vue'
 import { V_IMAGE } from '@/constant/image'
 import { ImageResp } from '@/api/imageType'
@@ -67,6 +68,11 @@ export default class extends Vue {
   private likes: number = this.image.likes
   private liked: boolean = false
 
+  private setLiked() {
+    let ret = LikesModule.likes.get(this.image.id)
+    this.liked =  ret === undefined ? false : ret
+  }
+
   private showViewer() {
     (this.$refs.imgDetails as ImageDetails).showViewer()
     this.visits += 1
@@ -75,13 +81,13 @@ export default class extends Vue {
   private onLike() {
     if (this.liked) {
       this.likes -= 1
-      this.liked = false
       like(this.image.id, { like: false })
     } else {
       this.likes += 1
-      this.liked = true
       like(this.image.id, { like: true })
     }
+    LikesModule.Like(this.image.id)
+    this.setLiked()
   }
 
   private move(e: MouseEvent) {
@@ -129,6 +135,7 @@ export default class extends Vue {
 
   mounted() {
     this.highlight()
+    this.setLiked()
   }
 }
 </script>
