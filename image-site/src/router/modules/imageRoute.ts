@@ -14,7 +14,7 @@ const ImageRoutes: RouteConfig = {
     },
     {
       name: 'image-meizi-category',
-      path: '/image/meizi/category-:category',
+      path: '/image/meizi/category-:category/:rank',
       component: () => import('@/views/image/meizi/categorized/index.vue')
     },
     {

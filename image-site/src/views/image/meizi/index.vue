@@ -6,7 +6,7 @@
         :style="mobile ? ('width: ' + mobileImagesWidth + 'px;') : ''"
       >
         <div
-          v-for="v in groupedImages"
+          v-for="(v, index) in groupedImages"
           :key="v.name"
         >
           <div
@@ -17,10 +17,31 @@
               <hr class="divider">
             </div>
             <div class="span_text">
-              <span
-                class="category-span"
-                @click="toCategorized(v.name)"
+              <span class="category-span"
               >{{ v.label }}</span>
+              <div class="category-rank">
+                <div class="rank-item"
+                     :style="groupedRanks[index] === 'updateTime' ? 'border-bottom: 1px solid #5AA766;' : ''"
+                     @mouseover="selectRank(v.name, 'updateTime')"
+                >
+                  <span @click="toCategorized(v.name, 'updateTime')"
+                  >最新</span>
+                </div>
+                <div class="rank-item"
+                     :style="groupedRanks[index] === 'visits' ? 'border-bottom: 1px solid #5AA766;' : ''"
+                     @mouseover="selectRank(v.name, 'visits')"
+                >
+                  <span @click="toCategorized(v.name, 'visits')"
+                  >人气</span>
+                </div>
+                <div class="rank-item"
+                     :style="groupedRanks[index] === 'likes' ? 'border-bottom: 1px solid #5AA766;' : ''"
+                     @mouseover="selectRank(v.name, 'likes')"
+                >
+                  <span @click="toCategorized(v.name, 'likes')"
+                  >点赞</span>
+                </div>
+              </div>
             </div>
             <div class="divider_text_right">
               <hr class="divider">
@@ -74,9 +95,20 @@ export default class extends mixins(Layout) {
 
   private mobileImagesWidth = 0
   private groupedImages: { label: string, name: string, images: ImageResp[] }[] = []
+  private groupedRanks: string[] = []
 
-  private toCategorized(name: string) {
-    this.$router.push({ name: this.TYPE.concat('-', this.SUB_TYPE, '-category'), params: { category: name } })
+  private async selectRank(category: string, rank: string) {
+    const count = this.mobile ? 6 : 10
+    const index = this.groupedImages.findIndex(v => v.name === category)
+    if (index >= 0) {
+      this.groupedRanks[index] = rank
+      let data = await getPaged({ start: 0, count: count, type: this.SUB_TYPE, category: category, rank: rank })
+      this.groupedImages[index].images = data.values
+    }
+  }
+
+  private toCategorized(name: string, rank: string) {
+    this.$router.push({ name: this.TYPE.concat('-', this.SUB_TYPE, '-category'), params: { category: name, rank: rank } })
   }
 
   private async getImages(count: number, label: string, name: string) {
@@ -153,6 +185,7 @@ export default class extends mixins(Layout) {
     len = len < 2 ? len : 2
     const count = this.mobile ? 6 : 10
     for (let i = 1; i < this.items.length; i++) {
+      this.groupedRanks.push('updateTime')
       if (i <= len) {
         await this.getImages(count, this.items[i].label, this.items[i].name)
       } else {
@@ -211,7 +244,23 @@ export default class extends mixins(Layout) {
           color: white;
           font-size: 24px;
           line-height: 24px;
-          cursor: pointer;
+        }
+
+        .category-rank {
+          float: right;
+          padding-top: 2px;
+          margin-left: 10px;
+
+          .rank-item {
+            float: left;
+            padding-bottom: 3px;
+            margin-left: 10px;
+            span {
+              font-size: 15px;
+              color: white;
+              cursor: pointer;
+            }
+          }
         }
       }
 

@@ -5,7 +5,8 @@ export interface IPageParam {
   start: number,
   count: number,
   type?: string,
-  category?: string
+  category?: string,
+  rank?: string
 }
 
 export const getPaged = (params: IPageParam): PageResp | any =>

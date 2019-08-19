@@ -47,7 +47,7 @@ export default class extends mixins(Layout) {
   private images: ImageResp[] = []
 
   private async getImages(start: number, count: number) {
-    let data = await getPaged({ start: start, count: count, type: this.SUB_TYPE, category: this.category })
+    let data = await getPaged({ start: start, count: count, type: this.SUB_TYPE, category: this.category, rank: this.$route.params.rank })
     if (data.values.length > 0) {
       this.images.push(...data.values)
     } else {
