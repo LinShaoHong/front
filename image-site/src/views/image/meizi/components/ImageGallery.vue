@@ -451,6 +451,7 @@ export default class extends Vue {
     this.index = 0
     this.like = false
     this.actives = []
+    this.actives[this.index] = true
     this.currImage = img
   }
 
