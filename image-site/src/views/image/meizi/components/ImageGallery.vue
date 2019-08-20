@@ -128,11 +128,11 @@
         v-show="!mobile"
         class="title"
       >
-        <span>{{ currImage.title }}<svg-icon :name="like ? 'heart' : 'unheart'"
-                                             :style="'transition: all 1s ease; margin-top: 10px; margin-left: 6px; font-size: 30px; cursor: pointer; color: ' + (like ? '#F6625D;' : '#FFD766;')"
-                                             @click="onLike"
-        >
-        </svg-icon><span :style="'transition: all 1s ease; color: ' + (like ? '#F6625D;' : '#FFD766;')">{{ like ? '喜欢' : '喜欢就赞' }}</span></span>
+        <span>{{ currImage.title }}<svg-icon
+          :name="like ? 'heart' : 'unheart'"
+          :style="'transition: all 1s ease; margin-top: 10px; margin-left: 6px; font-size: 30px; cursor: pointer; color: ' + (like ? '#F6625D;' : '#FFD766;')"
+          @click="onLike"
+        /><span :style="'transition: all 1s ease; color: ' + (like ? '#F6625D;' : '#FFD766;')">{{ like ? '喜欢' : '喜欢就赞' }}</span></span>
       </div>
       <img
         id="imgId"

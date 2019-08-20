@@ -17,28 +17,35 @@
               <hr class="divider">
             </div>
             <div class="span_text">
-              <span class="category-span"
+              <span
+                class="category-span"
               >{{ v.label }}</span>
               <div class="category-rank">
-                <div class="rank-item"
-                     :style="groupedRanks[index] === 'updateTime' ? 'border-bottom: 1px solid #5AA766;' : ''"
-                     @mouseover="selectRank(v.name, 'updateTime')"
+                <div
+                  class="rank-item"
+                  :style="groupedRanks[index] === 'updateTime' ? 'border-bottom: 1px solid #5AA766;' : ''"
+                  @mouseover="selectRank(v.name, 'updateTime')"
                 >
-                  <span @click="toCategorized(v.name, 'updateTime')"
+                  <span
+                    @click="toCategorized(v.name, 'updateTime')"
                   >最新</span>
                 </div>
-                <div class="rank-item"
-                     :style="groupedRanks[index] === 'visits' ? 'border-bottom: 1px solid #5AA766;' : ''"
-                     @mouseover="selectRank(v.name, 'visits')"
+                <div
+                  class="rank-item"
+                  :style="groupedRanks[index] === 'visits' ? 'border-bottom: 1px solid #5AA766;' : ''"
+                  @mouseover="selectRank(v.name, 'visits')"
                 >
-                  <span @click="toCategorized(v.name, 'visits')"
+                  <span
+                    @click="toCategorized(v.name, 'visits')"
                   >人气</span>
                 </div>
-                <div class="rank-item"
-                     :style="groupedRanks[index] === 'likes' ? 'border-bottom: 1px solid #5AA766;' : ''"
-                     @mouseover="selectRank(v.name, 'likes')"
+                <div
+                  class="rank-item"
+                  :style="groupedRanks[index] === 'likes' ? 'border-bottom: 1px solid #5AA766;' : ''"
+                  @mouseover="selectRank(v.name, 'likes')"
                 >
-                  <span @click="toCategorized(v.name, 'likes')"
+                  <span
+                    @click="toCategorized(v.name, 'likes')"
                   >点赞</span>
                 </div>
               </div>

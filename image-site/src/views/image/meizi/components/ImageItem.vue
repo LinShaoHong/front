@@ -15,9 +15,9 @@
     </div>
     <image-details
       ref="imgDetails"
-      @onLike="onLike"
       :liked="liked"
       :image="image"
+      @onLike="onLike"
     />
     <div
       class="content"
@@ -31,12 +31,19 @@
     </div>
     <div class="view-like">
       <span class="view-span">
-        <svg-icon name="click" style="font-size: 18px; margin-right: 3px;"></svg-icon>{{ visits | toThousands }}
+        <svg-icon
+          name="click"
+          style="font-size: 18px; margin-right: 3px;"
+        />{{ visits | toThousands }}
       </span>
-      <span :class="liked ? 'like-span liked' : 'like-span'"
-            @click="onLike"
+      <span
+        :class="liked ? 'like-span liked' : 'like-span'"
+        @click="onLike"
       >
-        <svg-icon name="zan" style="font-size: 18px; margin-right: 3px;"></svg-icon>{{ likes | toThousands }}
+        <svg-icon
+          name="zan"
+          style="font-size: 18px; margin-right: 3px;"
+        />{{ likes | toThousands }}
       </span>
     </div>
   </div>
@@ -70,7 +77,7 @@ export default class extends Vue {
 
   private setLiked() {
     let ret = LikesModule.likes.get(this.image.id)
-    this.liked =  ret === undefined ? false : ret
+    this.liked = ret === undefined ? false : ret
   }
 
   private showViewer() {

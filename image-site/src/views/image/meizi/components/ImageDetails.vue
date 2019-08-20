@@ -5,10 +5,10 @@
     <image-gallery
       v-if="isShow"
       ref="imgSlider"
-      @onLike="onLike"
       :liked="liked"
       :image="image"
       :on-close="closeViewer"
+      @onLike="onLike"
     />
   </div>
 </template>
