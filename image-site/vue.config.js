@@ -4,7 +4,7 @@ const mockServerPort = 1378
 const name = 'Image Site'
 
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production' ? '/sun-console/' : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/image-site/' : '/',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
@@ -16,7 +16,7 @@ module.exports = {
     },
     proxy: {
       [process.env.VUE_APP_BASE_API + '/api/v1']: {
-        target: `http://172.20.10.2:${devServerPort}/api/v1`,
+        target: process.env.VUE_APP_BACKEND_SERVER + '/api/v1',
         changeOrigin: false,
         ws: true,
         pathRewrite: {

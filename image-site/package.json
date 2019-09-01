@@ -4,7 +4,7 @@
   "private": true,
   "author": "LinShaoHong",
   "scripts": {
-    "serve": "concurrently \"npm:mock\" \"vue-cli-service serve\"",
+    "start": "concurrently \"npm:mock\" \"vue-cli-service serve\"",
     "build:prod": "vue-cli-service build",
     "build:stage": "vue-cli-service build --mode staging",
     "lint": "vue-cli-service lint",

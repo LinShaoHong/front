@@ -12,7 +12,7 @@
           >
             <image-item
               :image="item"
-              :src="'http://172.20.10.2/images' + item.src"
+              :src="SERVER + '/images' + item.src"
             />
           </li>
         </ul>
@@ -41,6 +41,7 @@ export default class extends mixins(Layout) {
   private TYPE = 'image'
   private SUB_TYPE = 'meizi'
   private STEP_COUNT = 20
+  private SERVER = process.env.VUE_APP_IMAGE_SERVER
 
   private loadedAll: boolean = false
   private mobileImagesWidth = 0

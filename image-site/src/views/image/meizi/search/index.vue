@@ -14,7 +14,7 @@
             <image-item
               :key-words="result.keyWords"
               :image="image"
-              :src="'http://172.20.10.2/images' + image.src"
+              :src="SERVER + '/images' + image.src"
             />
           </li>
         </ul>
@@ -61,6 +61,7 @@ import Ripple from '@/components/Loading/Ripple.vue'
 export default class extends mixins(Layout) {
   private TYPE = 'image'
   private SUB_TYPE = 'meizi'
+  private SERVER = process.env.VUE_APP_IMAGE_SERVER
 
   private mobileImagesWidth = 0
   private result: { images: ImageResp[], keyWords: string[] } = {

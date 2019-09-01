@@ -156,7 +156,7 @@
             class="recommendation-item"
           >
             <img
-              v-lazy="'http://172.20.10.2/images' + r.src"
+              v-lazy="SERVER + '/images' + r.src"
               @click="chooseRec(r)"
             >
             <div
@@ -187,6 +187,8 @@ export default class extends Vue {
   @Prop({ default: (v: number) => {} }) private onSwitch!: Function
   @Prop({ default: () => {} }) private onClose!: Function
   @Prop({ default: false }) private liked: boolean
+
+  private SERVER = process.env.VUE_APP_IMAGE_SERVER
 
   private urls: string[] = []
   private currImage = this.image
@@ -442,7 +444,7 @@ export default class extends Vue {
 
   private async getDetailUrls(imgId: string) {
     let data = await getDetails(imgId)
-    this.urls = data.values.map(v => 'http://172.20.10.2/images' + v)
+    this.urls = data.values.map(v => process.env.VUE_APP_IMAGE_SERVER + '/images' + v)
   }
 
   private async chooseRec(img: ImageResp) {
