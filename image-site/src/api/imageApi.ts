@@ -11,34 +11,34 @@ export interface IPageParam {
 
 export const getPaged = (params: IPageParam): PageResp | any =>
   request({
-    url: '/api/v1/images',
+    url: '/v1/images',
     method: 'get',
     params
   })
 
 export const getDetails = (imgId: string): ListResp | any =>
   request({
-    url: `/api/v1/images/details/${imgId}`,
+    url: `/v1/images/details/${imgId}`,
     method: 'get'
   })
 
 export const like = (imgId: string, params: any): any =>
   request({
-    url: `/api/v1/images/like/${imgId}`,
+    url: `/v1/images/like/${imgId}`,
     method: 'put',
     params
   })
 
 export const getRecommendations = (imgId: string, params: any): any =>
   request({
-    url: `/api/v1/images/recommendation/${imgId}`,
+    url: `/v1/images/recommendation/${imgId}`,
     method: 'get',
     params
   })
 
 export const search = (params: { q: string }): SingleResp | any =>
   request({
-    url: '/api/v1/images/search',
+    url: '/v1/images/search',
     method: 'get',
     params
   })

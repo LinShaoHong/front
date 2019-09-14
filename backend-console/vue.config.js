@@ -4,7 +4,7 @@ const mockServerPort = 1339
 const name = 'Sun Console'
 
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production' ? '/sun-console' : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/sun-console/' : '/',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
@@ -15,7 +15,7 @@ module.exports = {
       errors: true
     },
     proxy: {
-      [process.env.VUE_APP_BASE_API + '/api/consoles']: {
+      [process.env.VUE_APP_BASE_API + '/consoles']: {
         target: process.env.VUE_APP_BACKEND_SERVER + '/api/consoles',
         changeOrigin: true,
         ws: true,

@@ -3,76 +3,76 @@ import { ListResp, SingleResp } from './response'
 
 export const getJobs = (params: any): ListResp | any =>
   request({
-    url: '/api/consoles/spider/jobs',
+    url: '/consoles/spider/jobs',
     method: 'get',
     params
   })
 
 export const getGroups = (): ListResp | any =>
   request({
-    url: '/api/consoles/spider/jobs/groups',
+    url: '/consoles/spider/jobs/groups',
     method: 'get'
   })
 
 export const create = (data: any) =>
   request({
-    url: '/api/consoles/spider/jobs',
+    url: '/consoles/spider/jobs',
     method: 'post',
     data
   })
 
 export const update = (id: string, data: any) =>
   request({
-    url: `/api/consoles/spider/jobs/${id}`,
+    url: `/consoles/spider/jobs/${id}`,
     method: 'put',
     data
   })
 
 export const deleteJob = (id: string) =>
   request({
-    url: `/api/consoles/spider/jobs/${id}`,
+    url: `/consoles/spider/jobs/${id}`,
     method: 'delete'
   })
 
 export const clearCheckpoint = (id: string) =>
   request({
-    url: `/api/consoles/spider/jobs/checkpoint/${id}`,
+    url: `/consoles/spider/jobs/checkpoint/${id}`,
     method: 'delete'
   })
 
 export const publish = (id: string) =>
   request({
-    url: `/api/consoles/spider/jobs/publish/${id}`,
+    url: `/consoles/spider/jobs/publish/${id}`,
     method: 'put'
   })
 
 export const unPublish = (id: string) =>
   request({
-    url: `/api/consoles/spider/jobs/unPublish/${id}`,
+    url: `/consoles/spider/jobs/unPublish/${id}`,
     method: 'put'
   })
 
 export const testJob = (data: any): SingleResp | any =>
   request({
-    url: `/api/consoles/spider/jobs/test`,
+    url: `/consoles/spider/jobs/test`,
     method: 'post',
     data
   })
 
 export const deleteTest = (requestId: string) =>
   request({
-    url: `/api/consoles/spider/jobs/test/${requestId}`,
+    url: `/consoles/spider/jobs/test/${requestId}`,
     method: 'delete'
   })
 
 export const getProgress = (id: string): ListResp | any =>
   request({
-    url: `/api/consoles/spider/jobs/progress/${id}`,
+    url: `/consoles/spider/jobs/progress/${id}`,
     method: 'get'
   })
 
 export const getLatestProgresses = (id: string): SingleResp | any =>
   request({
-    url: `/api/consoles/spider/jobs/progress/latest/${id}`,
+    url: `/consoles/spider/jobs/progress/latest/${id}`,
     method: 'get'
   })

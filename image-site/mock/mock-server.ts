@@ -6,7 +6,6 @@ import cors from 'cors'
 import http from 'http'
 import path from 'path'
 import yaml from 'yamljs'
-import * as api from './api'
 import { accessTokenAuth } from './security'
 
 const app = express()
@@ -41,7 +40,7 @@ const options = {
     AccessTokenAuth: accessTokenAuth
   }
 }
-const connectSwagger = connector(api, apiDefinition, options)
+const connectSwagger = connector(apiDefinition, options)
 connectSwagger(app)
 // Print swagger router api summary
 const apiSummary = summarise(apiDefinition)

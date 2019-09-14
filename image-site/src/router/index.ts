@@ -44,7 +44,6 @@ export const asyncRoutes: RouteConfig[] = [
 ]
 
 const createRouter = () => new Router({
-  mode: 'history',
   scrollBehavior: (to, from, savedPosition) => {
     if (savedPosition) {
       return savedPosition

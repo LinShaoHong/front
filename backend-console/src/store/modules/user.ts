@@ -1,5 +1,4 @@
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
-import { login, logout, getUserInfo } from '@/api/users'
 import { getToken, setToken, removeToken } from '@/utils/cookies'
 import router, { resetRouter } from '@/router'
 import { PermissionModule } from './permission'
@@ -58,9 +57,11 @@ class User extends VuexModule implements IUserState {
   public async Login(userInfo: { username: string, password: string}) {
     let { username, password } = userInfo
     username = username.trim()
-    const { data } = await login({ username, password })
-    setToken(data.accessToken)
-    this.SET_TOKEN(data.accessToken)
+    if (username === 'admin' && password === 'lin1234') {
+      const accessToken = username + '-token'
+      setToken(accessToken)
+      this.SET_TOKEN(accessToken)
+    }
   }
 
   @Action
@@ -75,11 +76,13 @@ class User extends VuexModule implements IUserState {
     if (this.token === '') {
       throw Error('GetUserInfo: token is undefined!')
     }
-    const { data } = await getUserInfo({ /* Your params here */ })
-    if (!data) {
-      throw Error('Verification failed, please Login again.')
+    const { roles, name, avatar, introduction, email } = {
+      roles: ['admin'],
+      name: 'linsh',
+      avatar: '../../../assets/avatar.jpeg',
+      introduction: 'I am a super administrator',
+      email: 'shaohonglin0411@gmail.com'
     }
-    const { roles, name, avatar, introduction, email } = data.user
     // roles must be a non-empty array
     if (!roles || roles.length <= 0) {
       throw Error('GetUserInfo: roles must be a non-null array!')
@@ -112,7 +115,6 @@ class User extends VuexModule implements IUserState {
     if (this.token === '') {
       throw Error('LogOut: token is undefined!')
     }
-    await logout()
     removeToken()
     resetRouter()
     this.SET_TOKEN('')

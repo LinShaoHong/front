@@ -4,7 +4,7 @@ const mockServerPort = 1378
 const name = 'Image Site'
 
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production' ? '/image-site/' : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/meizi/' : '/',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
@@ -15,12 +15,12 @@ module.exports = {
       errors: true
     },
     proxy: {
-      [process.env.VUE_APP_BASE_API + '/api/v1']: {
+      [process.env.VUE_APP_BASE_API + '/v1']: {
         target: process.env.VUE_APP_BACKEND_SERVER + '/api/v1',
         changeOrigin: false,
         ws: true,
         pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API + '/api/v1']: ''
+          ['^' + process.env.VUE_APP_BASE_API + '/v1']: ''
         }
       },
       [process.env.VUE_APP_BASE_API]: {
