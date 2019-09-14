@@ -156,7 +156,7 @@
             class="recommendation-item"
           >
             <img
-              v-lazy="SERVER + '/images' + r.src"
+              v-lazy="SERVER + r.src"
               @click="chooseRec(r)"
             >
             <div
@@ -444,7 +444,7 @@ export default class extends Vue {
 
   private async getDetailUrls(imgId: string) {
     let data = await getDetails(imgId)
-    this.urls = data.values.map(v => process.env.VUE_APP_IMAGE_SERVER + '/images' + v)
+    this.urls = data.values.map(v => process.env.VUE_APP_IMAGE_SERVER + v)
   }
 
   private async chooseRec(img: ImageResp) {

@@ -14,7 +14,7 @@
             <image-item
               :key-words="result.keyWords"
               :image="image"
-              :src="SERVER + '/images' + image.src"
+              :src="SERVER + image.src"
             />
           </li>
         </ul>

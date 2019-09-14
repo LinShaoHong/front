@@ -61,7 +61,7 @@
             >
               <image-item
                 :image="item"
-                :src="SERVER + '/images' + item.src"
+                :src="SERVER + item.src"
               />
             </li>
           </ul>
