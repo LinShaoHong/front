@@ -20,7 +20,7 @@ module.exports = {
         changeOrigin: true,
         ws: true,
         pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API + '/api/consoles']: ''
+          ['^' + process.env.VUE_APP_BASE_API + '/consoles']: ''
         }
       },
       [process.env.VUE_APP_BASE_API]: {

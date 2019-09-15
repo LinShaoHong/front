@@ -76,7 +76,7 @@
               </el-table-column>
               <el-table-column
                 :label="$t('spider.startTime')"
-                min-width="150px"
+                min-width="160px"
                 align="center"
               >
                 <template slot-scope="scope">
@@ -84,27 +84,27 @@
                 </template>
               </el-table-column>
               <el-table-column
-                :label="$t('spider.rate')"
-                align="center"
-                width="90px"
-              >
-                <template slot-scope="{row}">
-                  <span>{{ row.rate | rateFilter }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column
                 :label="$t('spider.nextTime')"
                 align="center"
-                min-width="150px"
+                min-width="160px"
               >
                 <template slot-scope="scope">
                   <span>{{ scope.row.nextTime === null ? '-' : scope.row.nextTime }}</span>
                 </template>
               </el-table-column>
               <el-table-column
+                :label="$t('spider.rate')"
+                align="center"
+                min-width="65px"
+              >
+                <template slot-scope="{row}">
+                  <span>{{ row.rate | rateFilter }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column
                 :label="$t('spider.checkpointCategory')"
                 align="center"
-                min-width="130px"
+                min-width="110px"
                 :show-tooltip-when-overflow="true"
               >
                 <template slot-scope="scope">
@@ -114,7 +114,7 @@
               <el-table-column
                 :label="$t('spider.checkpointPage')"
                 align="center"
-                width="70px"
+                width="90px"
               >
                 <template slot-scope="scope">
                   <span>{{ scope.row.checkpoint === null ? '-' : (scope.row.checkpoint.pageNum === null ? '-' : scope.row.checkpoint.pageNum) }}</span>

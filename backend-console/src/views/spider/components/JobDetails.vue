@@ -83,7 +83,7 @@
         <div class="schema">
           <el-input
             v-model="schema"
-            :autosize="{minRows: 2, maxRows: 31}"
+            :autosize="{minRows: 2, maxRows: 27}"
             type="textarea"
             :readonly="true"
           />
