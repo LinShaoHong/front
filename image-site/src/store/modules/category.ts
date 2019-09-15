@@ -17,6 +17,7 @@ class Categories extends VuexModule implements ICategoryState {
   private initiated: boolean = false
   private keyType: string = null
   public index: number = 0
+  public hoverIndex: number = 0
   public category: ICategory = {
     type: '',
     subType: '',
@@ -45,6 +46,11 @@ class Categories extends VuexModule implements ICategoryState {
     this.index = index
   }
 
+  @Mutation
+  public SET_HOVER_INDEX(hoverIndex: number) {
+    this.hoverIndex = hoverIndex
+  }
+
   @Action
   public SetCategories(categories: Map<string, ICategory>) {
     this.SET_CATEGORIES(categories)
@@ -58,6 +64,11 @@ class Categories extends VuexModule implements ICategoryState {
   @Action
   public ChangeIndex(index: number) {
     this.SET_INDEX(index)
+  }
+
+  @Action
+  public ChangeHoverIndex(hoverIndex: number) {
+    this.SET_HOVER_INDEX(hoverIndex)
   }
 }
 

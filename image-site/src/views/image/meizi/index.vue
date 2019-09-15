@@ -105,6 +105,22 @@ export default class extends mixins(Layout) {
   private groupedImages: { label: string, name: string, images: ImageResp[] }[] = []
   private groupedRanks: string[] = []
 
+  get hoverIndex(){
+    return CategoryModule.hoverIndex
+  }
+
+  @Watch('hoverIndex')
+  scrollToPreview(hoverIndex: number) {
+    const i = hoverIndex == 0 ? 0 : hoverIndex - 1
+    if (i >= 0) {
+      if (this.groupedImages.length > i) {
+        const id = 'label:' + this.groupedImages[i].name
+        const el: HTMLElement = document.getElementById(id)
+        document.scrollingElement.scrollTop = el.offsetTop
+      }
+    }
+  }
+
   private async selectRank(category: string, rank: string) {
     const count = this.mobile ? 6 : 10
     const index = this.groupedImages.findIndex(v => v.name === category)

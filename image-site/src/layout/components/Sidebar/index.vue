@@ -17,7 +17,9 @@
           class="menu-item"
           @click="jump(category.subType, v.name, i)"
         >
-          <div class="route-content">
+          <div class="route-content"
+               @mouseover="onHover(i)"
+          >
             <span :class="actives[i] ? 'category-label active' : 'category-label'">{{ v.label }}</span>
             <span :class="actives[i] ? 'category-num active' : 'category-num'">{{ v.count | toThousands }}</span>
           </div>
@@ -94,6 +96,10 @@ export default class extends Vue {
       }
     }
     return CategoryModule.category
+  }
+
+  private onHover(hoverIndex: number) {
+    CategoryModule.ChangeHoverIndex(hoverIndex)
   }
 
   private jump(subType: string, name: string, index: number) {
