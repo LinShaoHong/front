@@ -4,7 +4,7 @@ const mockServerPort = 1339
 const name = 'Sun Console'
 
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production' ? '/sun-console/' : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/console/' : '/',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
