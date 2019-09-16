@@ -47,7 +47,7 @@
             </el-select>
             <el-input
               v-model="model.sql"
-              :autosize="{minRows: 2, maxRows: 18}"
+              :autosize="{minRows: 2, maxRows: 23}"
               type="textarea"
               style="margin-top: 20px;"
               placeholder="Enter SQL"

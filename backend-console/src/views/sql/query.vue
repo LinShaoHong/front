@@ -88,7 +88,7 @@
           >
             <el-input
               v-model="result"
-              :autosize="{minRows: 2, maxRows: 27}"
+              :autosize="{minRows: 2, maxRows: 23}"
               type="textarea"
               :readonly="true"
             />
