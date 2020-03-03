@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { listAftersale, receptAftersale, batchReceptAftersale, rejectAftersale, batchRejectAftersale, refundAftersale } from '@/api/aftersale'
+import { listAftersale, receptAftersale, batchReceptAftersale, rejectAftersale, batchRejectAftersale, refundAftersale } from '@/api/afterSale'
 import BackToTop from '@/components/BackToTop'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import _ from 'lodash'
@@ -70,13 +70,13 @@ export default {
       listLoading: true,
       tab: 'all',
       listQuery: {
-        page: 1,
-        limit: 20,
+        start: 0,
+        count: 20,
         aftersaleSn: undefined,
         orderId: undefined,
         status: '',
-        sort: 'add_time',
-        order: 'desc'
+        sort: 'createTime',
+        asc: false
       },
       typeTag: [
         '',
@@ -102,8 +102,8 @@ export default {
       this.listLoading = true
       listAftersale(this.listQuery)
         .then(response => {
-          this.list = response.data.data.list
-          this.total = response.data.data.total
+          this.list = response.values
+          this.total = response.total
           this.listLoading = false
         })
         .catch(() => {

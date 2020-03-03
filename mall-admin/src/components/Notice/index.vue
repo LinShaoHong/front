@@ -34,7 +34,7 @@ export default {
         return
       }
       nNotice().then(response => {
-        this.hasNotice = response.data.data > 0
+        this.hasNotice = response.data.value > 0
       })
     }
   }

@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function listAd(query) {
   return request({
-    url: '/ad/list',
+    url: '/advertise',
     method: 'get',
     params: query
   })
@@ -10,7 +10,7 @@ export function listAd(query) {
 
 export function createAd(data) {
   return request({
-    url: '/ad/create',
+    url: '/advertise',
     method: 'post',
     data
   })
@@ -18,24 +18,22 @@ export function createAd(data) {
 
 export function readAd(data) {
   return request({
-    url: '/ad/read',
-    method: 'get',
-    data
+    url: '/advertise/$' + data.id,
+    method: 'get'
   })
 }
 
 export function updateAd(data) {
   return request({
-    url: '/ad/update',
-    method: 'post',
+    url: '/advertise/$' + data.id,
+    method: 'put',
     data
   })
 }
 
 export function deleteAd(data) {
   return request({
-    url: '/ad/delete',
-    method: 'post',
-    data
+    url: '/advertise/$' + data.id,
+    method: 'delete'
   })
 }

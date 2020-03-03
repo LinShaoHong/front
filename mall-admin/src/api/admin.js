@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function listAdmin(query) {
   return request({
-    url: '/admin/list',
+    url: '/admin',
     method: 'get',
     params: query
   })
@@ -10,7 +10,7 @@ export function listAdmin(query) {
 
 export function createAdmin(data) {
   return request({
-    url: '/admin/create',
+    url: '/admin',
     method: 'post',
     data
   })
@@ -18,24 +18,22 @@ export function createAdmin(data) {
 
 export function readminAdmin(data) {
   return request({
-    url: '/admin/readmin',
-    method: 'get',
-    data
+    url: '/admin/$' + data.id,
+    method: 'get'
   })
 }
 
 export function updateAdmin(data) {
   return request({
-    url: '/admin/update',
-    method: 'post',
+    url: '/admin/$' + data.id,
+    method: 'put',
     data
   })
 }
 
 export function deleteAdmin(data) {
   return request({
-    url: '/admin/delete',
-    method: 'post',
-    data
+    url: '/admin/$' + data.id,
+    method: 'delete'
   })
 }

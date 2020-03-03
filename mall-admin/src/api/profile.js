@@ -10,7 +10,7 @@ export function changePassword(data) {
 
 export function nNotice() {
   return request({
-    url: '/profile/nnotice',
+    url: '/profile/nNotice',
     method: 'get'
   })
 }

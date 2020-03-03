@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: '/user/list',
+    url: '/user',
     method: 'get',
     params: query
   })
@@ -10,7 +10,7 @@ export function fetchList(query) {
 
 export function listAddress(query) {
   return request({
-    url: '/address/list',
+    url: '/address',
     method: 'get',
     params: query
   })
@@ -18,7 +18,7 @@ export function listAddress(query) {
 
 export function listCollect(query) {
   return request({
-    url: '/collect/list',
+    url: '/collection',
     method: 'get',
     params: query
   })
@@ -26,7 +26,7 @@ export function listCollect(query) {
 
 export function listFeedback(query) {
   return request({
-    url: '/feedback/list',
+    url: '/feedback',
     method: 'get',
     params: query
   })
@@ -34,7 +34,7 @@ export function listFeedback(query) {
 
 export function listFootprint(query) {
   return request({
-    url: '/footprint/list',
+    url: '/footprint',
     method: 'get',
     params: query
   })
@@ -42,7 +42,7 @@ export function listFootprint(query) {
 
 export function listHistory(query) {
   return request({
-    url: '/history/list',
+    url: '/searchHistory',
     method: 'get',
     params: query
   })

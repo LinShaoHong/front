@@ -402,8 +402,8 @@ export default {
   methods: {
     init: function() {
       listCatAndBrand().then(response => {
-        this.categoryList = response.data.data.categoryList
-        this.brandList = response.data.data.brandList
+        this.categoryList = response.value.categoryList
+        this.brandList = response.value.brandList
       })
     },
     handleCategoryChange(value) {

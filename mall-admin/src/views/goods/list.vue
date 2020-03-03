@@ -142,12 +142,12 @@ export default {
       total: 0,
       listLoading: true,
       listQuery: {
-        page: 1,
-        limit: 20,
+        start: 0,
+        count: 20,
         goodsSn: undefined,
         name: undefined,
-        sort: 'add_time',
-        order: 'desc'
+        sort: 'createTime',
+        asc: false
       },
       goodsDetail: '',
       detailDialogVisible: false,
@@ -161,8 +161,8 @@ export default {
     getList() {
       this.listLoading = true
       listGoods(this.listQuery).then(response => {
-        this.list = response.data.data.list
-        this.total = response.data.data.total
+        this.list = response.values
+        this.total = response.total
         this.listLoading = false
       }).catch(() => {
         this.list = []

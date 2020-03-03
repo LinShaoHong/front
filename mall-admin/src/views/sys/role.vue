@@ -3,16 +3,16 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入角色名称"/>
+      <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 200px;" placeholder="请输入角色名称" />
       <el-button v-permission="['GET /admin/role/list']" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       <el-button v-permission="['POST /admin/role/create']" class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
     </div>
 
     <!-- 查询结果 -->
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-      <el-table-column align="center" label="角色名称" prop="name" sortable/>
+      <el-table-column align="center" label="角色名称" prop="name" sortable />
 
-      <el-table-column align="center" label="说明" prop="desc"/>
+      <el-table-column align="center" label="说明" prop="desc" />
 
       <el-table-column align="center" label="操作" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -29,10 +29,10 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
         <el-form-item label="角色名称" prop="name">
-          <el-input v-model="dataForm.name"/>
+          <el-input v-model="dataForm.name" />
         </el-form-item>
         <el-form-item label="说明" prop="desc">
-          <el-input v-model="dataForm.desc"/>
+          <el-input v-model="dataForm.desc" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -46,11 +46,12 @@
     <el-dialog :visible.sync="permissionDialogFormVisible" title="权限配置">
       <el-tree
         ref="tree"
-        :data="systemPermissions"
-        :default-checked-keys="assignedPermissions"
+        :data="system"
+        :default-checked-keys="assigned"
         show-checkbox
         node-key="id"
-        highlight-current>
+        highlight-current
+      >
         <span slot-scope="{ node, data }" class="custom-tree-node">
           <span>{{ data.label }}</span>
           <el-tag v-if="data.api" type="success" size="mini">{{ data.api }}</el-tag>
@@ -77,11 +78,11 @@ export default {
       total: 0,
       listLoading: true,
       listQuery: {
-        page: 1,
-        limit: 20,
+        start: 0,
+        count: 20,
         name: undefined,
-        sort: 'add_time',
-        order: 'desc'
+        sort: 'createTime',
+        asc: false
       },
       dataForm: {
         id: undefined,
@@ -100,8 +101,8 @@ export default {
         ]
       },
       permissionDialogFormVisible: false,
-      systemPermissions: null,
-      assignedPermissions: null,
+      system: null,
+      assigned: null,
       permissionForm: {
         roleId: undefined,
         permissions: []
@@ -116,8 +117,8 @@ export default {
       this.listLoading = true
       listRole(this.listQuery)
         .then(response => {
-          this.list = response.data.data.list
-          this.total = response.data.data.total
+          this.list = response.values
+          this.total = response.total
           this.listLoading = false
         })
         .catch(() => {
@@ -150,7 +151,7 @@ export default {
         if (valid) {
           createRole(this.dataForm)
             .then(response => {
-              this.list.unshift(response.data.data)
+              this.list.unshift(response.value)
               this.dialogFormVisible = false
               this.$notify.success({
                 title: '成功',
@@ -223,8 +224,8 @@ export default {
       this.permissionForm.roleId = row.id
       getPermission({ roleId: row.id })
         .then(response => {
-          this.systemPermissions = response.data.data.systemPermissions
-          this.assignedPermissions = response.data.data.assignedPermissions
+          this.system = response.value.system
+          this.assigned = response.value.assigned
         })
     },
     updatePermission() {

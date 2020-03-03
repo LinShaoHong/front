@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function listBrand(query) {
   return request({
-    url: '/brand/list',
+    url: '/brand',
     method: 'get',
     params: query
   })
@@ -10,7 +10,7 @@ export function listBrand(query) {
 
 export function createBrand(data) {
   return request({
-    url: '/brand/create',
+    url: '/brand',
     method: 'post',
     data
   })
@@ -18,24 +18,23 @@ export function createBrand(data) {
 
 export function readBrand(data) {
   return request({
-    url: '/brand/read',
-    method: 'get',
-    data
+    url: '/brand/$' + data.id,
+    method: 'get'
   })
 }
 
 export function updateBrand(data) {
   return request({
-    url: '/brand/update',
-    method: 'post',
+    url: '/brand/$' + data.id,
+    method: 'put',
     data
   })
 }
 
 export function deleteBrand(data) {
   return request({
-    url: '/brand/delete',
-    method: 'post',
+    url: '/brand/$' + data.id,
+    method: 'delete',
     data
   })
 }

@@ -15,7 +15,7 @@ service.interceptors.request.use(
     // Do something before request is sent
     if (store.getters.token) {
       // 让每个请求携带token-- ['X-Litemall-Admin-Token']为自定义key 请根据实际情况自行修改
-      config.headers['X-Litemall-Admin-Token'] = getToken()
+      config.headers['MALL-ADMIN-TOKEN'] = getToken()
     }
     return config
   },
@@ -30,7 +30,6 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response.data
-
     if (res.errno === 501) {
       MessageBox.alert('系统未登录，请重新登录', '错误', {
         confirmButtonText: '确定',
@@ -75,7 +74,7 @@ service.interceptors.response.use(
       // 非5xx的错误属于业务错误，留给具体页面处理
       return Promise.reject(response)
     } else {
-      return response
+      return response.data
     }
   }, error => {
     console.log('err' + error)// for debug

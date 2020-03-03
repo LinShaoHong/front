@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function listRole(query) {
   return request({
-    url: '/role/list',
+    url: '/role',
     method: 'get',
     params: query
   })
@@ -10,7 +10,7 @@ export function listRole(query) {
 
 export function createRole(data) {
   return request({
-    url: '/role/create',
+    url: '/role',
     method: 'post',
     data
   })
@@ -18,31 +18,29 @@ export function createRole(data) {
 
 export function readRole(data) {
   return request({
-    url: '/role/read',
-    method: 'get',
-    data
+    url: '/role/$' + data.id,
+    method: 'get'
   })
 }
 
 export function updateRole(data) {
   return request({
-    url: '/role/update',
-    method: 'post',
+    url: '/role/$' + data.id,
+    method: 'put',
     data
   })
 }
 
 export function deleteRole(data) {
   return request({
-    url: '/role/delete',
-    method: 'post',
-    data
+    url: '/role/$' + data.id,
+    method: 'delete'
   })
 }
 
 export function getPermission(query) {
   return request({
-    url: '/role/permissions',
+    url: '/permission',
     method: 'get',
     params: query
   })
@@ -50,8 +48,8 @@ export function getPermission(query) {
 
 export function updatePermission(data) {
   return request({
-    url: '/role/permissions',
-    method: 'post',
+    url: '/permission',
+    method: 'put',
     data
   })
 }

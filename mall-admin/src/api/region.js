@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function listRegion() {
   return request({
-    url: '/region/list',
+    url: '/region',
     method: 'get'
   })
 }

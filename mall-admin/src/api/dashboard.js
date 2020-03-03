@@ -1,9 +1,7 @@
 import request from '@/utils/request'
 
-export function info(query) {
+export function info() {
   return request({
-    url: '/dashboard',
-    method: 'get',
-    params: query
+    url: '/dashboard'
   })
 }

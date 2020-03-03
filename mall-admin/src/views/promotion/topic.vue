@@ -105,18 +105,18 @@ export default {
       total: 0,
       listLoading: true,
       listQuery: {
-        page: 1,
-        limit: 20,
+        start: 0,
+        count: 20,
         title: undefined,
         subtitle: undefined,
-        sort: 'add_time',
-        order: 'desc'
+        sort: 'createTime',
+        asc: false
       },
       options: [{
         value: 'id',
         label: '按序号排序'
       }, {
-        value: 'add_time',
+        value: 'createTime',
         label: '按时间排序'
       }, {
         value: 'price',
@@ -136,8 +136,8 @@ export default {
       this.listLoading = true
       listTopic(this.listQuery)
         .then(response => {
-          this.list = response.data.data.list
-          this.total = response.data.data.total
+          this.list = response.values
+          this.total = response.total
           this.listLoading = false
         })
         .catch(() => {

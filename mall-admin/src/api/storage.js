@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function listStorage(query) {
   return request({
-    url: '/storage/list',
+    url: '/storage',
     method: 'get',
     params: query
   })
@@ -10,7 +10,7 @@ export function listStorage(query) {
 
 export function createStorage(data) {
   return request({
-    url: '/storage/create',
+    url: '/storage',
     method: 'post',
     data
   })
@@ -18,25 +18,23 @@ export function createStorage(data) {
 
 export function readStorage(data) {
   return request({
-    url: '/storage/read',
-    method: 'get',
-    data
+    url: '/storage/$' + data.id,
+    method: 'get'
   })
 }
 
 export function updateStorage(data) {
   return request({
-    url: '/storage/update',
-    method: 'post',
+    url: '/storage/$' + data.id,
+    method: 'put',
     data
   })
 }
 
 export function deleteStorage(data) {
   return request({
-    url: '/storage/delete',
-    method: 'post',
-    data
+    url: '/storage/$' + data.id,
+    method: 'delete'
   })
 }
 

@@ -182,14 +182,14 @@ export default {
       total: 0,
       listLoading: true,
       listQuery: {
-        page: 1,
-        limit: 20,
+        start: 0,
+        count: 20,
         id: undefined,
         name: undefined,
         timeArray: [],
         orderStatusArray: [],
-        sort: 'add_time',
-        order: 'desc'
+        sort: 'createTime',
+        asc: false
       },
       pickerOptions: {
         shortcuts: [{
@@ -253,8 +253,8 @@ export default {
         this.listQuery.end = this.listQuery.timeArray[1]
       }
       listOrder(this.listQuery).then(response => {
-        this.list = response.data.data.list
-        this.total = response.data.data.total
+        this.list = response.values
+        this.total = response.total
         this.listLoading = false
       }).catch(() => {
         this.list = []
@@ -264,7 +264,7 @@ export default {
     },
     getChannel() {
       listChannel().then(response => {
-        this.channels = response.data.data
+        this.channels = response.value
       })
     },
     handleFilter() {
@@ -273,7 +273,7 @@ export default {
     },
     handleDetail(row) {
       detailOrder(row.id).then(response => {
-        this.orderDetail = response.data.data
+        this.orderDetail = response.value
       })
       this.orderDialogVisible = true
     },

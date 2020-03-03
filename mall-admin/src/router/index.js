@@ -204,7 +204,7 @@ export const asyncRouterMap = [
       },
       {
         path: 'aftersale',
-        component: () => import('@/views/mall/aftersale'),
+        component: () => import('@/views/mall/afterSale'),
         name: 'aftersale',
         meta: {
           perms: ['GET /admin/aftersale/list', 'GET /admin/aftersale/detail', 'POST /admin/order/receive', 'POST /admin/aftersale/complete', 'POST /admin/aftersale/reject'],
@@ -302,7 +302,7 @@ export const asyncRouterMap = [
     children: [
       {
         path: 'ad',
-        component: () => import('@/views/promotion/ad'),
+        component: () => import('@/views/promotion/advertise'),
         name: 'ad',
         meta: {
           perms: ['GET /admin/ad/list', 'POST /admin/ad/create', 'GET /admin/ad/read', 'POST /admin/ad/update', 'POST /admin/ad/delete'],

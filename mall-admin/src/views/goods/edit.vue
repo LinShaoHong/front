@@ -385,7 +385,7 @@ export default {
 
       const goodsId = this.$route.query.id
       detailGoods(goodsId).then(response => {
-        this.goods = response.data.data.goods
+        this.goods = response.value.goods
         // 稍微调整一下前后端不一致
         if (this.goods.brandId === 0) {
           this.goods.brandId = null
@@ -393,10 +393,10 @@ export default {
         if (this.goods.keywords === '') {
           this.goods.keywords = null
         }
-        this.specifications = response.data.data.specifications
-        this.products = response.data.data.products
-        this.attributes = response.data.data.attributes
-        this.categoryIds = response.data.data.categoryIds
+        this.specifications = response.value.specifications
+        this.products = response.value.products
+        this.attributes = response.value.attributes
+        this.categoryIds = response.value.categoryIds
 
         this.galleryFileList = []
         for (var i = 0; i < this.goods.gallery.length; i++) {
@@ -404,15 +404,15 @@ export default {
             url: this.goods.gallery[i]
           })
         }
-        const keywords = response.data.data.goods.keywords
+        const keywords = response.value.goods.keywords
         if (keywords !== null) {
           this.keywords = keywords.split(',')
         }
       })
 
       listCatAndBrand().then(response => {
-        this.categoryList = response.data.data.categoryList
-        this.brandList = response.data.data.brandList
+        this.categoryList = response.value.categoryList
+        this.brandList = response.value.brandList
       })
     },
     handleCategoryChange(value) {

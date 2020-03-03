@@ -109,11 +109,11 @@ export default {
       total: 0,
       listLoading: true,
       listQuery: {
-        page: 1,
-        limit: 20,
+        start: 0,
+        count: 20,
         goodsId: undefined,
-        sort: 'add_time',
-        order: 'desc'
+        sort: 'createTime',
+        asc: false
       },
       downloadLoading: false,
       dataForm: {
@@ -149,8 +149,8 @@ export default {
     getList() {
       this.listLoading = true
       listGroupon(this.listQuery).then(response => {
-        this.list = response.data.data.list
-        this.total = response.data.data.total
+        this.list = response.values
+        this.total = response.total
         this.listLoading = false
       }).catch(() => {
         this.list = []
@@ -183,7 +183,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           publishGroupon(this.dataForm).then(response => {
-            this.list.unshift(response.data.data)
+            this.list.unshift(response.value)
             this.dialogFormVisible = false
             this.$notify.success({
               title: '成功',

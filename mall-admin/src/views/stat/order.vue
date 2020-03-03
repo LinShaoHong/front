@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <ve-line :extend="chartExtend" :data="chartData" :settings="chartSettings"/>
+    <ve-line :extend="chartExtend" :data="chartData" :settings="chartSettings" />
   </div>
 </template>
 
@@ -18,7 +18,7 @@ export default {
   },
   created() {
     statOrder().then(response => {
-      this.chartData = response.data.data
+      this.chartData = response.value
       this.chartSettings = {
         labelMap: {
           'orders': '订单量',

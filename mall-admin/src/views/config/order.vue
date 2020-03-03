@@ -58,7 +58,7 @@ export default {
   methods: {
     init: function() {
       listOrder().then(response => {
-        this.dataForm = response.data.data
+        this.dataForm = response.value
       })
     },
     cancel() {
