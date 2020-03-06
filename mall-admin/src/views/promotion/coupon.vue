@@ -63,7 +63,7 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :start.sync="listQuery.start" :count.sync="listQuery.count" @pagination="getList" />
 
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
@@ -184,30 +184,30 @@ import Pagination from '@/components/Pagination' // Secondary package based on e
 const defaultTypeOptions = [
   {
     label: '通用领券',
-    value: 0
+    value: 'COMMON'
   },
   {
     label: '注册赠券',
-    value: 1
+    value: 'REGISTER'
   },
   {
     label: '兑换码',
-    value: 2
+    value: 'CODE'
   }
 ]
 
 const defaultStatusOptions = [
   {
     label: '正常',
-    value: 0
+    value: 'NORMAL'
   },
   {
     label: '已过期',
-    value: 1
+    value: 'EXPIRED'
   },
   {
     label: '已下架',
-    value: 2
+    value: 'OUT'
   }
 ]
 
@@ -224,18 +224,18 @@ export default {
       return ''
     },
     formatGoodsType(goodsType) {
-      if (goodsType === 0) {
+      if (goodsType === 'ALL') {
         return '全场通用'
-      } else if (goodsType === 1) {
+      } else if (goodsType === 'CATEGORY') {
         return '指定分类'
       } else {
         return '指定商品'
       }
     },
     formatStatus(status) {
-      if (status === 0) {
+      if (status === 'NORMAL') {
         return '正常'
-      } else if (status === 1) {
+      } else if (status === 'EXPIRED') {
         return '已过期'
       } else {
         return '已下架'
@@ -251,7 +251,7 @@ export default {
       listLoading: true,
       listQuery: {
         start: 0,
-        count: 20,
+        count: 10,
         name: undefined,
         type: undefined,
         status: undefined,

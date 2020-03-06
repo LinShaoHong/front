@@ -14,7 +14,6 @@ service.interceptors.request.use(
   config => {
     // Do something before request is sent
     if (store.getters.token) {
-      // 让每个请求携带token-- ['X-Litemall-Admin-Token']为自定义key 请根据实际情况自行修改
       config.headers['MALL-ADMIN-TOKEN'] = getToken()
     }
     return config
@@ -30,59 +29,46 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response.data
-    if (res.errno === 501) {
-      MessageBox.alert('系统未登录，请重新登录', '错误', {
-        confirmButtonText: '确定',
-        type: 'error'
-      }).then(() => {
-        store.dispatch('FedLogOut').then(() => {
-          location.reload()
+    const status = response.status
+    if (status < 200 || status >= 300) {
+      alert(1)
+      Message({
+        message: res.message || 'Error',
+        type: 'info',
+        duration: 500
+      })
+      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+        MessageBox.confirm(
+          '你已被登出，可以取消继续留在该页面，或者重新登录',
+          '确定登出',
+          {
+            confirmButtonText: '重新登录',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
+        ).then(() => {
+          location.reload() // To prevent bugs from vue-router
         })
-      })
-      return Promise.reject('error')
-    } else if (res.errno === 502) {
-      MessageBox.alert('系统内部错误，请联系管理员维护', '错误', {
-        confirmButtonText: '确定',
-        type: 'error'
-      })
-      return Promise.reject('error')
-    } else if (res.errno === 503) {
-      MessageBox.alert('请求业务目前未支持', '警告', {
-        confirmButtonText: '确定',
-        type: 'error'
-      })
-      return Promise.reject('error')
-    } else if (res.errno === 504) {
-      MessageBox.alert('更新数据已经失效，请刷新页面重新操作', '警告', {
-        confirmButtonText: '确定',
-        type: 'error'
-      })
-      return Promise.reject('error')
-    } else if (res.errno === 505) {
-      MessageBox.alert('更新失败，请再尝试一次', '警告', {
-        confirmButtonText: '确定',
-        type: 'error'
-      })
-      return Promise.reject('error')
-    } else if (res.errno === 506) {
-      MessageBox.alert('没有操作权限，请联系管理员授权', '错误', {
-        confirmButtonText: '确定',
-        type: 'error'
-      })
-      return Promise.reject('error')
-    } else if (res.errno !== 0) {
-      // 非5xx的错误属于业务错误，留给具体页面处理
-      return Promise.reject(response)
+      }
+      return Promise.reject(new Error(res.message || 'Error'))
     } else {
       return response.data
     }
   }, error => {
-    console.log('err' + error)// for debug
-    Message({
-      message: '登录连接超时（后台不能连接，请联系系统管理员）',
-      type: 'error',
-      duration: 5 * 1000
-    })
+    const res = error.response
+    if (res.status === 500) {
+      Message({
+        message: '内部错误',
+        type: 'error',
+        duration: 1000
+      })
+    } else {
+      Message({
+        message: res.data.message,
+        type: 'info',
+        duration: 1000
+      })
+    }
     return Promise.reject(error)
   })
 

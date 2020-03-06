@@ -1,11 +1,11 @@
 <template>
   <div class="app-container">
     <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-width="300px">
-      <el-form-item label="运费满减所需最低消费" prop="litemall_express_freight_min">
-        <el-input v-model="dataForm.litemall_express_freight_min" />
+      <el-form-item label="运费满减所需最低消费" prop="mall_express_freight_min">
+        <el-input v-model="dataForm.mall_express_freight_min" />
       </el-form-item>
-      <el-form-item label="运费满减不足所需运费" prop="litemall_express_freight_value">
-        <el-input v-model="dataForm.litemall_express_freight_value" />
+      <el-form-item label="运费满减不足所需运费" prop="mall_express_freight_value">
+        <el-input v-model="dataForm.mall_express_freight_value" />
       </el-form-item>
       <el-form-item>
         <el-button @click="cancel">取消</el-button>
@@ -22,14 +22,14 @@ export default {
   data() {
     return {
       dataForm: {
-        litemall_express_freight_min: 0,
-        litemall_express_freight_value: 0
+        mall_express_freight_min: 0,
+        mall_express_freight_value: 0
       },
       rules: {
-        litemall_express_freight_min: [
+        mall_express_freight_min: [
           { required: true, message: '不能为空', trigger: 'blur' }
         ],
-        litemall_express_freight_value: [
+        mall_express_freight_value: [
           { required: true, message: '不能为空', trigger: 'blur' }
         ]
       }

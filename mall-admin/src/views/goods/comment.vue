@@ -26,7 +26,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="时间" prop="addTime" />
+      <el-table-column align="center" label="时间" prop="createTime" />
 
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -36,7 +36,7 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :start.sync="listQuery.start" :count.sync="listQuery.count" @pagination="getList" />
 
     <!-- 评论回复 -->
     <el-dialog :visible.sync="replyFormVisible" title="回复">
@@ -69,7 +69,7 @@ export default {
       listLoading: true,
       listQuery: {
         start: 0,
-        count: 20,
+        count: 10,
         userId: undefined,
         valueId: undefined,
         sort: 'createTime',
@@ -137,7 +137,7 @@ export default {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
         const tHeader = ['评论ID', '用户ID', '商品ID', '评论', '评论图片列表', '评论时间']
-        const filterVal = ['id', 'userId', 'valueId', 'content', 'picUrls', 'addTime']
+        const filterVal = ['id', 'userId', 'valueId', 'content', 'picUrls', 'createTime']
         excel.export_json_to_excel2(tHeader, this.list, filterVal, '商品评论信息')
         this.downloadLoading = false
       })

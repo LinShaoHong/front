@@ -4,8 +4,8 @@
     <el-card class="box-card">
       <h3>商品介绍</h3>
       <el-form ref="goods" :rules="rules" :model="goods" label-width="150px">
-        <el-form-item label="商品编号" prop="goodsSn">
-          <el-input v-model="goods.goodsSn" />
+        <el-form-item label="商品编号" prop="sn">
+          <el-input v-model="goods.sn" />
         </el-form-item>
         <el-form-item label="商品名称" prop="name">
           <el-input v-model="goods.name" />
@@ -355,19 +355,16 @@ export default {
       keywords: [],
       categoryList: [],
       brandList: [],
-      goods: { picUrl: '', gallery: [], isHot: false, isNew: true, isOnSale: true },
+      goods: { picUrl: '', gallery: [], isHot: false, isNew: true, isOnSale: true, attributes: [], products: [{ id: 0, specifications: ['标准'], price: 0.00, number: 0, url: '' }], specifications: [{ specification: '规格', value: '标准', picUrl: '' }] },
       specVisiable: false,
       specForm: { specification: '', value: '', picUrl: '' },
       multipleSpec: false,
-      specifications: [{ specification: '规格', value: '标准', picUrl: '' }],
       productVisiable: false,
       productForm: { id: 0, specifications: [], price: 0.00, number: 0, url: '' },
-      products: [{ id: 0, specifications: ['标准'], price: 0.00, number: 0, url: '' }],
       attributeVisiable: false,
       attributeForm: { attribute: '', value: '' },
-      attributes: [],
       rules: {
-        goodsSn: [{ required: true, message: '商品编号不能为空', trigger: 'blur' }],
+        sn: [{ required: true, message: '商品编号不能为空', trigger: 'blur' }],
         name: [{ required: true, message: '商品名称不能为空', trigger: 'blur' }]
       },
       editorInit: {
@@ -391,7 +388,7 @@ export default {
   computed: {
     headers() {
       return {
-        'X-Litemall-Admin-Token': getToken()
+        'MALL-ADMIN-TOKEN': getToken()
       }
     }
   },

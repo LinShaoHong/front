@@ -31,7 +31,7 @@
 
       <el-table-column align="center" label="级别" prop="level">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.level === 'L1' ? 'primary' : 'info' ">{{ scope.row.level === 'L1' ? '一级类目' : '二级类目' }}</el-tag>
+          <el-tag :type="scope.row.level === 1 ? 'primary' : 'info' ">{{ scope.row.level === 1 ? '一级类目' : '二级类目' }}</el-tag>
         </template>
       </el-table-column>
 
@@ -54,8 +54,8 @@
         </el-form-item>
         <el-form-item label="级别" prop="level">
           <el-select v-model="dataForm.level" @change="onLevelChange">
-            <el-option label="一级类目" value="L1" />
-            <el-option label="二级类目" value="L2" />
+            <el-option label="一级类目" value="1" />
+            <el-option label="二级类目" value="2" />
           </el-select>
         </el-form-item>
         <el-form-item v-if="dataForm.level === 'L2'" label="父类目" prop="pid">
@@ -105,7 +105,7 @@
 
 <style scoped>
 .filter-item{
-  margin-left: 100px;
+  margin-left: 0px;
 }
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
@@ -169,7 +169,7 @@ export default {
   computed: {
     headers() {
       return {
-        'X-Litemall-Admin-Token': getToken()
+        'MALL-ADMIN-TOKEN': getToken()
       }
     }
   },

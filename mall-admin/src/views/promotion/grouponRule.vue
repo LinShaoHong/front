@@ -86,7 +86,7 @@
       </div>
     </el-dialog>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :start.sync="listQuery.start" :count.sync="listQuery.count" @pagination="getList" />
 
     <el-tooltip placement="top" content="返回顶部">
       <back-to-top :visibility-height="100" />
@@ -110,7 +110,7 @@ export default {
       listLoading: true,
       listQuery: {
         start: 0,
-        count: 20,
+        count: 10,
         goodsId: undefined,
         sort: 'createTime',
         asc: false
@@ -250,7 +250,7 @@ export default {
       this.downloadLoading = true
         import('@/vendor/Export2Excel').then(excel => {
           const tHeader = ['商品ID', '名称', '首页主图', '折扣', '人数要求', '活动开始时间', '活动结束时间']
-          const filterVal = ['id', 'name', 'pic_url', 'discount', 'discountMember', 'addTime', 'expireTime']
+          const filterVal = ['id', 'name', 'pic_url', 'discount', 'discountMember', 'createTime', 'expireTime']
           excel.export_json_to_excel2(tHeader, this.list, filterVal, '商品信息')
           this.downloadLoading = false
         })

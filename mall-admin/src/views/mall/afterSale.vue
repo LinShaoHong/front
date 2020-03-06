@@ -33,7 +33,7 @@
       </el-table-column>
       <el-table-column align="center" label="退款原因" prop="reason" />
       <el-table-column align="center" label="退款价格" prop="amount" />
-      <el-table-column align="center" label="申请时间" prop="addTime" />
+      <el-table-column align="center" label="申请时间" prop="createTime" />
 
       <el-table-column align="center" label="操作" min-width="120" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -45,7 +45,7 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :start.sync="listQuery.start" :count.sync="listQuery.count" @pagination="getList" />
 
     <el-tooltip placement="top" content="返回顶部">
       <back-to-top :visibility-height="100" />
@@ -71,7 +71,7 @@ export default {
       tab: 'all',
       listQuery: {
         start: 0,
-        count: 20,
+        count: 10,
         aftersaleSn: undefined,
         orderId: undefined,
         status: '',
@@ -244,7 +244,7 @@ export default {
           'type',
           'reason',
           'amount',
-          'addTime'
+          'createTime'
         ]
         excel.export_json_to_excel2(tHeader, this.list, filterVal, '售后信息')
         this.downloadLoading = false

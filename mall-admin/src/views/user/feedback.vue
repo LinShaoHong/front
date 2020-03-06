@@ -28,11 +28,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="时间" prop="addTime" />
+      <el-table-column align="center" label="时间" prop="createTime" />
 
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :start.sync="listQuery.start" :count.sync="listQuery.count" @pagination="getList" />
 
   </div>
 </template>
@@ -51,7 +51,7 @@ export default {
       listLoading: true,
       listQuery: {
         start: 0,
-        count: 20,
+        count: 10,
         username: undefined,
         sort: 'createTime',
         asc: false
@@ -83,7 +83,7 @@ export default {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
         const tHeader = ['反馈ID', '用户名称', '反馈内容', '反馈图片列表', '反馈时间']
-        const filterVal = ['id', 'username', 'content', 'picUrls', 'addTime']
+        const filterVal = ['id', 'username', 'content', 'picUrls', 'createTime']
         excel.export_json_to_excel2(tHeader, this.list, filterVal, '意见反馈信息')
         this.downloadLoading = false
       })

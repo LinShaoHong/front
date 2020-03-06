@@ -24,7 +24,7 @@
 
       <el-table-column align="center" label="通知标题" prop="noticeTitle" />
 
-      <el-table-column align="center" label="通知时间" prop="addTime" width="180" />
+      <el-table-column align="center" label="通知时间" prop="createTime" width="180" />
 
       <el-table-column align="center" label="通知状态" prop="readTime" width="120">
         <template slot-scope="scope">
@@ -40,7 +40,7 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :start.sync="listQuery.start" :count.sync="listQuery.count" @pagination="getList" />
 
     <el-dialog :title="notice.title" :visible.sync="noticeVisible" center>
       <el-divider content-position="left">{{ notice.admin }} 于 {{ notice.time }} 通知如下内容：</el-divider>
@@ -67,7 +67,7 @@ export default {
       listLoading: true,
       listQuery: {
         start: 0,
-        count: 20,
+        count: 10,
         title: '',
         type: 'unread',
         sort: 'createTime',
@@ -78,7 +78,7 @@ export default {
         title: '',
         source: '',
         content: '',
-        addTime: ''
+        createTime: ''
       },
       noticeVisible: false
     }

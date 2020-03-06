@@ -125,7 +125,7 @@ export default {
       listLoading: true,
       listQuery: {
         start: 0,
-        count: 20,
+        count: 10,
         username: undefined,
         sort: 'createTime',
         asc: false
@@ -155,7 +155,7 @@ export default {
   computed: {
     headers() {
       return {
-        'X-Litemall-Admin-Token': getToken()
+        'MALL-ADMIN-TOKEN': getToken()
       }
     }
   },

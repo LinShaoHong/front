@@ -29,7 +29,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" label="添加时间" prop="addTime" />
+      <el-table-column align="center" label="添加时间" prop="createTime" />
 
       <el-table-column align="center" label="管理员ID" prop="adminId" />
 
@@ -41,7 +41,7 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :start.sync="listQuery.start" :count.sync="listQuery.count" @pagination="getList" />
 
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
@@ -86,7 +86,7 @@ export default {
       listLoading: true,
       listQuery: {
         start: 0,
-        count: 20,
+        count: 10,
         title: undefined,
         content: undefined,
         sort: 'createTime',
@@ -133,7 +133,7 @@ export default {
   computed: {
     headers() {
       return {
-        'X-Litemall-Admin-Token': getToken()
+        'MALL-ADMIN-TOKEN': getToken()
       }
     }
   },
@@ -293,7 +293,7 @@ export default {
           'title',
           'content',
           'adminId',
-          'addTime',
+          'createTime',
           'updateTime'
         ]
         excel.export_json_to_excel2(tHeader, this.list, filterVal, '通知')

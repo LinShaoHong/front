@@ -10,7 +10,7 @@ export function listMall() {
 export function updateMall(data) {
   return request({
     url: '/config/mall',
-    method: 'post',
+    method: 'put',
     data
   })
 }
@@ -25,7 +25,7 @@ export function listExpress() {
 export function updateExpress(data) {
   return request({
     url: '/config/express',
-    method: 'post',
+    method: 'put',
     data
   })
 }
@@ -40,7 +40,7 @@ export function listOrder() {
 export function updateOrder(data) {
   return request({
     url: '/config/order',
-    method: 'post',
+    method: 'put',
     data
   })
 }
@@ -55,7 +55,7 @@ export function listWx() {
 export function updateWx(data) {
   return request({
     url: '/config/wx',
-    method: 'post',
+    method: 'put',
     data
   })
 }

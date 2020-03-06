@@ -33,7 +33,8 @@ export function detailGoods(id) {
 export function editGoods(data) {
   return request({
     url: '/goods/$' + data.id,
-    method: 'put'
+    method: 'put',
+    data
   })
 }
 

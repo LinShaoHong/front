@@ -10,8 +10,8 @@
         <el-form-item label="商品名称" prop="name">
           <el-input v-model="goods.name" />
         </el-form-item>
-        <el-form-item label="商品编号" prop="goodsSn">
-          <el-input v-model="goods.goodsSn" />
+        <el-form-item label="商品编号" prop="sn">
+          <el-input v-model="goods.sn" />
         </el-form-item>
         <el-form-item label="市场售价" prop="counterPrice">
           <el-input v-model="goods.counterPrice" placeholder="0.00">
@@ -86,6 +86,15 @@
 
         <el-form-item label="所属品牌商">
           <el-select v-model="goods.brandId" clearable>
+            <div class="text-center" style="position: sticky;background: #fff;height:30px;top:0;z-index:1">
+              <a class="text-normal">
+                <el-pagination
+                  class="pagination"
+                  :page-sizes="[100]"
+                  layout="prev, next"
+                />
+              </a>
+            </div>
             <el-option v-for="item in brandList" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
@@ -102,7 +111,7 @@
 
     <el-card class="box-card">
       <h3>商品规格</h3>
-      <el-table :data="specifications">
+      <el-table :data="goods.specifications">
         <el-table-column property="specification" label="规格名" />
         <el-table-column property="value" label="规格值">
           <template slot-scope="scope">
@@ -154,7 +163,7 @@
 
     <el-card class="box-card">
       <h3>商品库存</h3>
-      <el-table :data="products">
+      <el-table :data="goods.products">
         <el-table-column property="value" label="货品规格">
           <template slot-scope="scope">
             <el-tag v-for="tag in scope.row.specifications" :key="tag">
@@ -213,7 +222,7 @@
     <el-card class="box-card">
       <h3>商品参数</h3>
       <el-button type="primary" @click="handleAttributeShow">添加</el-button>
-      <el-table :data="attributesData">
+      <el-table :data="goods.attributes">
         <el-table-column property="attribute" label="商品参数名称" />
         <el-table-column property="value" label="商品参数值" />
         <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
@@ -291,7 +300,8 @@
 </style>
 
 <script>
-import { detailGoods, editGoods, listCatAndBrand } from '@/api/goods'
+import { detailGoods, editGoods } from '@/api/goods'
+import { listBrand } from '@/api/brand'
 import { createStorage, uploadPath } from '@/api/storage'
 import Editor from '@tinymce/tinymce-vue'
 import { MessageBox } from 'element-ui'
@@ -310,10 +320,9 @@ export default {
       categoryList: [],
       brandList: [],
       categoryIds: [],
-      goods: { gallery: [] },
+      goods: { gallery: [], attributes: [], specifications: [{ specification: '规格', value: '标准', picUrl: '' }], products: [{ id: 0, specifications: ['标准'], price: 0.0, number: 0, url: '' }] },
       specVisiable: false,
       specForm: { specification: '', value: '', picUrl: '' },
-      specifications: [{ specification: '规格', value: '标准', picUrl: '' }],
       productVisiable: false,
       productForm: {
         id: 0,
@@ -322,13 +331,9 @@ export default {
         number: 0,
         url: ''
       },
-      products: [
-        { id: 0, specifications: ['标准'], price: 0.0, number: 0, url: '' }
-      ],
       attributeVisiable: false,
       attributeAdd: true,
       attributeForm: { attribute: '', value: '' },
-      attributes: [],
       rules: {
         name: [{ required: true, message: '商品名称不能为空', trigger: 'blur' }]
       },
@@ -360,18 +365,8 @@ export default {
   computed: {
     headers() {
       return {
-        'X-Litemall-Admin-Token': getToken()
+        'MALL-ADMIN-TOKEN': getToken()
       }
-    },
-    attributesData() {
-      var attributesData = []
-      for (var i = 0; i < this.attributes.length; i++) {
-        if (this.attributes[i].deleted) {
-          continue
-        }
-        attributesData.push(this.attributes[i])
-      }
-      return attributesData
     }
   },
   created() {
@@ -385,7 +380,11 @@ export default {
 
       const goodsId = this.$route.query.id
       detailGoods(goodsId).then(response => {
-        this.goods = response.value.goods
+        const _goods = response.value
+        _goods.attributes = _goods.attributes === null ? this.goods.attributes : _goods.attributes
+        _goods.specifications = _goods.specifications === null ? this.goods.specifications : _goods.specifications
+        _goods.products = _goods.products === null ? this.goods.products : _goods.products
+        this.goods = _goods
         // 稍微调整一下前后端不一致
         if (this.goods.brandId === 0) {
           this.goods.brandId = null
@@ -393,27 +392,29 @@ export default {
         if (this.goods.keywords === '') {
           this.goods.keywords = null
         }
-        this.specifications = response.value.specifications
-        this.products = response.value.products
-        this.attributes = response.value.attributes
-        this.categoryIds = response.value.categoryIds
+        this.specifications = this.goods.specifications
+        this.products = this.goods.products
+        this.attributes = this.goods.attributes
+        this.categoryIds = this.goods.categoryIds
 
         this.galleryFileList = []
-        for (var i = 0; i < this.goods.gallery.length; i++) {
+        for (let i = 0; i < this.goods.gallery.length; i++) {
           this.galleryFileList.push({
             url: this.goods.gallery[i]
           })
         }
-        const keywords = response.value.goods.keywords
+        const keywords = this.goods.keywords
         if (keywords !== null) {
           this.keywords = keywords.split(',')
         }
       })
-
-      listCatAndBrand().then(response => {
-        this.categoryList = response.value.categoryList
-        this.brandList = response.value.brandList
+      listBrand({ start: 0, count: 10 }).then(response => {
+        this.brandList = response.values.map((v) => { return { value: v.id, label: v.name } })
       })
+      // listCatAndBrand().then(response => {
+      //   this.categoryList = response.value.categoryList
+      //   this.brandList = response.value.brandList
+      // })
     },
     handleCategoryChange(value) {
       this.goods.categoryId = value[value.length - 1]
@@ -422,13 +423,7 @@ export default {
       this.$router.push({ path: '/goods/list' })
     },
     handleEdit: function() {
-      const finalGoods = {
-        goods: this.goods,
-        specifications: this.specifications,
-        products: this.products,
-        attributes: this.attributes
-      }
-      editGoods(finalGoods)
+      editGoods(this.goods)
         .then(response => {
           this.$notify.success({
             title: '成功',
@@ -516,10 +511,10 @@ export default {
     },
     handleSpecificationEdit() {
       this.specForm.updateTime = ''
-      for (var i = 0; i < this.specifications.length; i++) {
-        const v = this.specifications[i]
+      for (let i = 0; i < this.goods.specifications.length; i++) {
+        const v = this.goods.specifications[i]
         if (v.id === this.specForm.id) {
-          this.specifications.splice(i, 1, this.specForm)
+          this.goods.specifications.splice(i, 1, this.specForm)
           break
         }
       }
@@ -534,10 +529,10 @@ export default {
     },
     handleProductEdit() {
       this.productForm.updateTime = ''
-      for (var i = 0; i < this.products.length; i++) {
-        const v = this.products[i]
+      for (let i = 0; i < this.goods.products.length; i++) {
+        const v = this.goods.products[i]
         if (v.id === this.productForm.id) {
-          this.products.splice(i, 1, this.productForm)
+          this.goods.products.splice(i, 1, this.productForm)
           break
         }
       }
@@ -560,10 +555,10 @@ export default {
     handleAttributeEdit() {
       // 这是一个trick，设置updateTime的值为空，告诉后端这个记录已编辑需要更新。
       this.attributeForm.updateTime = ''
-      for (var i = 0; i < this.attributes.length; i++) {
-        const v = this.attributes[i]
+      for (let i = 0; i < this.goods.attributes.length; i++) {
+        const v = this.goods.attributes[i]
         if (v.id === this.attributeForm.id) {
-          this.attributes.splice(i, 1, this.attributeForm)
+          this.goods.attributes.splice(i, 1, this.attributeForm)
           break
         }
       }

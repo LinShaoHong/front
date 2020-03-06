@@ -17,11 +17,11 @@
 
       <el-table-column align="center" min-width="100px" label="商品ID" prop="valueId" />
 
-      <el-table-column align="center" min-width="100px" label="添加时间" prop="addTime" />
+      <el-table-column align="center" min-width="100px" label="添加时间" prop="createTime" />
 
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :start.sync="listQuery.start" :count.sync="listQuery.count" @pagination="getList" />
 
   </div>
 </template>
@@ -40,7 +40,7 @@ export default {
       listLoading: true,
       listQuery: {
         start: 0,
-        count: 20,
+        count: 10,
         userId: undefined,
         valueId: undefined,
         sort: 'createTime',
@@ -74,14 +74,14 @@ export default {
         id: undefined,
         userId: '',
         valueId: '',
-        addTime: undefined
+        createTime: undefined
       }
     },
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
         const tHeader = ['用户ID', '商品ID', '添加时间']
-        const filterVal = ['userId', 'valueId', 'addTime']
+        const filterVal = ['userId', 'valueId', 'createTime']
         excel.export_json_to_excel2(tHeader, this.list, filterVal, '用户收藏信息')
         this.downloadLoading = false
       })

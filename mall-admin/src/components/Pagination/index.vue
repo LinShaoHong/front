@@ -8,7 +8,8 @@
       :total="total"
       v-bind="$attrs"
       @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"/>
+      @current-change="handleCurrentChange"
+    />
   </div>
 </template>
 
@@ -22,18 +23,18 @@ export default {
       required: true,
       type: Number
     },
-    page: {
+    start: {
       type: Number,
-      default: 1
+      default: 0
     },
-    limit: {
+    count: {
       type: Number,
-      default: 20
+      default: 10
     },
     pageSizes: {
       type: Array,
       default() {
-        return [10, 20, 30, 50]
+        return [10, 20, 30, 40, 50]
       }
     },
     layout: {
@@ -56,10 +57,10 @@ export default {
   computed: {
     currentPage: {
       get() {
-        return this.page
+        return this.start / this.count + 1
       },
       set(val) {
-        this.$emit('update:page', val)
+        this.$emit('update:start', (val - 1) * this.count)
       }
     },
     pageSize: {
@@ -67,19 +68,19 @@ export default {
         return this.limit
       },
       set(val) {
-        this.$emit('update:limit', val)
+        this.$emit('update:count', val)
       }
     }
   },
   methods: {
     handleSizeChange(val) {
-      this.$emit('pagination', { page: this.currentPage, limit: val })
+      this.$emit('pagination', { start: this.start, count: val })
       if (this.autoScroll) {
         scrollTo(0, 800)
       }
     },
     handleCurrentChange(val) {
-      this.$emit('pagination', { page: val, limit: this.pageSize })
+      this.$emit('pagination', { start: (val - 1) * this.count, count: this.pageSize })
       if (this.autoScroll) {
         scrollTo(0, 800)
       }
@@ -91,7 +92,6 @@ export default {
 <style scoped>
 .pagination-container {
   background: #fff;
-  padding: 32px 16px;
 }
 .pagination-container.hidden {
   display: none;

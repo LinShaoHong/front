@@ -73,7 +73,7 @@
           </el-table-column>
           <el-table-column align="center" label="商品名称" prop="name" />
         </el-table>
-        <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+        <pagination v-show="total>0" :total="total" :start.sync="listQuery.start" :count.sync="listQuery.count" @pagination="getList" />
 
       </div>
       <div slot="footer" class="dialog-footer">
@@ -137,7 +137,7 @@ export default {
       listLoading: false,
       listQuery: {
         start: 0,
-        limit: 5,
+        count: 5,
         id: undefined,
         name: undefined,
         sort: 'createTime',
@@ -186,7 +186,7 @@ export default {
   computed: {
     headers() {
       return {
-        'X-Litemall-Admin-Token': getToken()
+        'MALL-ADMIN-TOKEN': getToken()
       }
     }
   },
@@ -203,8 +203,8 @@ export default {
       this.listLoading = true
       readTopic({ id: this.id })
         .then(response => {
-          this.topic = response.value.topic
-          this.goodsList = response.value.goodsList
+          this.topic = response.value
+          this.goodsIds = this.topic.goodsIds
           this.listLoading = false
         })
         .catch(() => {
@@ -238,7 +238,7 @@ export default {
     handleCreate() {
       this.listQuery = {
         start: 0,
-        limit: 5,
+        count: 5,
         id: undefined,
         name: undefined,
         sort: 'createTime',
@@ -255,7 +255,7 @@ export default {
       this.selectedlist.forEach(item => {
         const id = item.id
         let found = false
-        this.topic.goods.forEach(goodsId => {
+        this.topic.goodsIds.forEach(goodsId => {
           if (id === goodsId) {
             found = true
           }
@@ -267,15 +267,15 @@ export default {
       })
 
       if (newGoodsIds.length > 0) {
-        this.topic.goods = this.topic.goods.concat(newGoodsIds)
+        this.topic.goodsIds = this.topic.goodsIds.concat(newGoodsIds)
         this.goodsList = this.goodsList.concat(newGoodsList)
       }
       this.addVisiable = false
     },
     handleDelete(row) {
-      for (var index = 0; index < this.topic.goods.length; index++) {
-        if (row.id === this.topic.goods[index]) {
-          this.topic.goods.splice(index, 1)
+      for (var index = 0; index < this.topic.goodsIds.length; index++) {
+        if (row.id === this.topic.goodsIds[index]) {
+          this.topic.goodsIds.splice(index, 1)
         }
       }
       for (var index2 = 0; index2 < this.goodsList.length; index2++) {

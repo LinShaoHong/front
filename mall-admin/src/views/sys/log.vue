@@ -11,7 +11,7 @@
     <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
       <el-table-column align="center" label="操作管理员" prop="admin" />
       <el-table-column align="center" label="IP地址" prop="ip" />
-      <el-table-column align="center" label="操作时间" prop="addTime" />
+      <el-table-column align="center" label="操作时间" prop="createTime" />
       <el-table-column align="center" label="操作类别" prop="type">
         <template slot-scope="scope">
           <el-tag>{{ scope.row.type | typeFilter }}</el-tag>
@@ -28,7 +28,7 @@
 
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :start.sync="listQuery.start" :count.sync="listQuery.count" @pagination="getList" />
 
   </div>
 </template>
@@ -59,7 +59,7 @@ export default {
       listLoading: true,
       listQuery: {
         start: 0,
-        count: 20,
+        count: 10,
         name: undefined,
         sort: 'createTime',
         asc: false

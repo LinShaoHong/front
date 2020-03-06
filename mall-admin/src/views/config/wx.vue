@@ -9,28 +9,28 @@
     >
       <el-tabs tab-position="left">
         <el-tab-pane label="首页配置">
-          <el-form-item label="新品首发栏目商品显示数量" prop="litemall_wx_index_new">
-            <el-input v-model="dataForm.litemall_wx_index_new" />
+          <el-form-item label="新品首发栏目商品显示数量" prop="mall_wx_index_new">
+            <el-input v-model="dataForm.mall_wx_index_new" />
           </el-form-item>
-          <el-form-item label="人气推荐栏目商品显示数量" prop="litemall_wx_index_hot">
-            <el-input v-model="dataForm.litemall_wx_index_hot" />
+          <el-form-item label="人气推荐栏目商品显示数量" prop="mall_wx_index_hot">
+            <el-input v-model="dataForm.mall_wx_index_hot" />
           </el-form-item>
-          <el-form-item label="品牌制造商直供栏目品牌商显示数量" prop="litemall_wx_index_brand">
-            <el-input v-model="dataForm.litemall_wx_index_brand" />
+          <el-form-item label="品牌制造商直供栏目品牌商显示数量" prop="mall_wx_index_brand">
+            <el-input v-model="dataForm.mall_wx_index_brand" />
           </el-form-item>
-          <el-form-item label="专题精选栏目显示数量" prop="litemall_wx_index_topic">
-            <el-input v-model="dataForm.litemall_wx_index_topic" />
+          <el-form-item label="专题精选栏目显示数量" prop="mall_wx_index_topic">
+            <el-input v-model="dataForm.mall_wx_index_topic" />
           </el-form-item>
-          <el-form-item label="分类栏目显示数量" prop="litemall_wx_catlog_list">
-            <el-input v-model="dataForm.litemall_wx_catlog_list" />
+          <el-form-item label="分类栏目显示数量" prop="mall_wx_catlog_list">
+            <el-input v-model="dataForm.mall_wx_catlog_list" />
           </el-form-item>
-          <el-form-item label="分类栏目商品显示数量" prop="litemall_wx_catlog_goods">
-            <el-input v-model="dataForm.litemall_wx_catlog_goods" />
+          <el-form-item label="分类栏目商品显示数量" prop="mall_wx_catlog_goods">
+            <el-input v-model="dataForm.mall_wx_catlog_goods" />
           </el-form-item>
         </el-tab-pane>
         <el-tab-pane label="其他配置">
-          <el-form-item label="商品分享功能" prop="litemall_wx_share">
-            <el-switch v-model="dataForm.litemall_wx_share" />
+          <el-form-item label="商品分享功能" prop="mall_wx_share">
+            <el-switch v-model="dataForm.mall_wx_share" />
           </el-form-item>
         </el-tab-pane>
       </el-tabs>
@@ -51,31 +51,31 @@ export default {
   data() {
     return {
       dataForm: {
-        litemall_wx_index_new: 0,
-        litemall_wx_index_hot: 0,
-        litemall_wx_index_brand: 0,
-        litemall_wx_index_topic: 0,
-        litemall_wx_catlog_list: 0,
-        litemall_wx_catlog_goods: 0,
-        litemall_wx_share: false
+        mall_wx_index_new: 0,
+        mall_wx_index_hot: 0,
+        mall_wx_index_brand: 0,
+        mall_wx_index_topic: 0,
+        mall_wx_catlog_list: 0,
+        mall_wx_catlog_goods: 0,
+        mall_wx_share: false
       },
       rules: {
-        litemall_wx_index_new: [
+        mall_wx_index_new: [
           { required: true, message: '不能为空', trigger: 'blur' }
         ],
-        litemall_wx_index_hot: [
+        mall_wx_index_hot: [
           { required: true, message: '不能为空', trigger: 'blur' }
         ],
-        litemall_wx_index_brand: [
+        mall_wx_index_brand: [
           { required: true, message: '不能为空', trigger: 'blur' }
         ],
-        litemall_wx_index_topic: [
+        mall_wx_index_topic: [
           { required: true, message: '不能为空', trigger: 'blur' }
         ],
-        litemall_wx_catlog_list: [
+        mall_wx_catlog_list: [
           { required: true, message: '不能为空', trigger: 'blur' }
         ],
-        litemall_wx_catlog_goods: [
+        mall_wx_catlog_goods: [
           { required: true, message: '不能为空', trigger: 'blur' }
         ]
       }

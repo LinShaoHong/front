@@ -52,7 +52,7 @@
 
       <el-table-column align="center" label="用户ID" prop="userId" />
 
-      <el-table-column align="center" label="领取时间" prop="addTime" />
+      <el-table-column align="center" label="领取时间" prop="createTime" />
 
       <el-table-column align="center" label="使用状态" prop="status">
         <template slot-scope="scope">{{ scope.row.status | formatUseStatus }}</template>
@@ -64,7 +64,7 @@
 
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+    <pagination v-show="total>0" :total="total" :start.sync="listQuery.start" :count.sync="listQuery.count" @pagination="getList" />
 
   </div>
 </template>
@@ -76,34 +76,34 @@ import Pagination from '@/components/Pagination' // Secondary package based on e
 const defaultTypeOptions = [
   {
     label: '通用领券',
-    value: 0
+    value: 'COMMON'
   },
   {
     label: '注册赠券',
-    value: 1
+    value: 'REGISTER'
   },
   {
     label: '兑换码',
-    value: 2
+    value: 'CODE'
   }
 ]
 
 const defaultUseStatusOptions = [
   {
     label: '未使用',
-    value: 0
+    value: 'UNUSED'
   },
   {
     label: '已使用',
-    value: 1
+    value: 'USED'
   },
   {
     label: '已过期',
-    value: 2
+    value: 'EXPIRED'
   },
   {
     label: '已下架',
-    value: 3
+    value: 'OUT'
   }
 ]
 
@@ -120,29 +120,29 @@ export default {
       return ''
     },
     formatGoodsType(goodsType) {
-      if (goodsType === 0) {
+      if (goodsType === 'ALL') {
         return '全场通用'
-      } else if (goodsType === 1) {
+      } else if (goodsType === 'CATEGORY') {
         return '指定分类'
       } else {
         return '指定商品'
       }
     },
     formatStatus(status) {
-      if (status === 0) {
+      if (status === 'NORMAL') {
         return '正常'
-      } else if (status === 1) {
+      } else if (status === 'EXPIRED') {
         return '已过期'
       } else {
         return '已下架'
       }
     },
     formatUseStatus(status) {
-      if (status === 0) {
+      if (status === 'UNUSED') {
         return '未使用'
-      } else if (status === 1) {
+      } else if (status === 'USED') {
         return '已使用'
-      } else if (status === 3) {
+      } else if (status === 'EXPIRED') {
         return '已过期'
       } else {
         return '已下架'
@@ -159,7 +159,7 @@ export default {
       listLoading: true,
       listQuery: {
         start: 0,
-        count: 20,
+        count: 10,
         couponId: 0,
         userId: undefined,
         status: undefined,

@@ -73,7 +73,7 @@
           </el-table-column>
           <el-table-column align="center" label="商品名称" prop="name" />
         </el-table>
-        <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
+        <pagination v-show="total>0" :total="total" :start.sync="listQuery.start" :count.sync="listQuery.count" @pagination="getList" />
 
       </div>
       <div slot="footer" class="dialog-footer">
@@ -139,7 +139,7 @@ export default {
       listLoading: false,
       listQuery: {
         start: 0,
-        limit: 5,
+        count: 5,
         id: undefined,
         name: undefined,
         sort: 'createTime',
@@ -188,7 +188,7 @@ export default {
   computed: {
     headers() {
       return {
-        'X-Litemall-Admin-Token': getToken()
+        'MALL-ADMIN-TOKEN': getToken()
       }
     }
   },
@@ -220,7 +220,7 @@ export default {
     handleCreate() {
       this.listQuery = {
         start: 0,
-        limit: 5,
+        count: 5,
         id: undefined,
         name: undefined,
         sort: 'createTime',
