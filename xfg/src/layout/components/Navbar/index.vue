@@ -116,7 +116,9 @@
                       @click="doRead(item.read, item.id)"
                     >
                       <div class="message-item-header">
-                      <svg-icon name="unRead" :style="item.read? 'color: #1b1b1b; font-size: 9px;' : 'color: red; font-size: 9px;'"></svg-icon>
+                      <svg-icon name="unRead"
+                                :style="item.read? 'display: none' : 'color: red; font-size: 9px;'"
+                      ></svg-icon>
                       </div>
                       <div class="message-item-content">
                         <span :style="item.system? 'color: #f1403c; font-size: 15px; margin-right: 2px;' : 'color: #f90; font-size: 15px; margin-right: 2px;'">
