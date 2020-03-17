@@ -65,7 +65,7 @@ export default {
     },
     pageSize: {
       get() {
-        return this.limit
+        return this.count
       },
       set(val) {
         this.$emit('update:count', val)
