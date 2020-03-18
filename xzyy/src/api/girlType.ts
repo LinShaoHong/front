@@ -1,5 +1,6 @@
 export interface GirlResp {
   id: string
+  type: string
   name: string
   city: string
   mainImage: string

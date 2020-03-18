@@ -17,10 +17,10 @@ class Menu extends VuexModule implements MenuState {
   public index: number = 0
   public menus: MenuItem[] = [
     { label: '首頁', path: '/home', type: null },
-    { label: 'QM', path: '/qm', type: 'QM' },
-    { label: 'SN', path: '/sn', type: 'SN' },
-    { label: 'VIDEO', path: '/video', type: 'VIDEO' },
-    { label: 'PIC', path: '/pic', type: 'PIC' },
+    { label: 'QM', path: '/girl/qm', type: 'QM' },
+    { label: 'SN', path: '/girl/sn', type: 'SN' },
+    { label: 'VIDEO', path: '/girl/video', type: 'VIDEO' },
+    { label: 'PIC', path: '/girl/pic', type: 'PIC' },
     { label: '充值', path: '/user/recharge', type: null },
     { label: '個人中心', path: '/user/detail', type: null },
   ]

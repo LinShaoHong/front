@@ -509,10 +509,10 @@ export default class extends Vue {
             if (this.toBottom() || (rect.top < viewHeight / 2 && rect.top > viewHeight / 3.5)) {
               const data = await read(r.id);
               if (data.code === 200) {
-                MessageModule.messages.forEach(m => {
+                MessageModule.comment.messages.forEach(m => {
                   if (m.id === r.id) {
                     m.read = true
-                    MessageModule.decUnReads()
+                    MessageModule.decUnReads(true)
                   }
                 })
               }
@@ -615,10 +615,10 @@ export default class extends Vue {
           hates: 0,
           replies: [] })
         if (!r.read) {
-          const m = MessageModule.messages.find(v => v.id = r.id)
+          const m = MessageModule.comment.messages.find(v => v.id = r.id)
           if (m) {
             m.read = true
-            MessageModule.decUnReads()
+            MessageModule.decUnReads(true)
           }
         }
       }

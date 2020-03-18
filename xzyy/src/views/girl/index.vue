@@ -216,6 +216,14 @@ export default class extends mixins(Layout) {
     }
   }
 
+  private showMore(type: string) {
+    const index = this.groupedImages.findIndex(v => v.type === type)
+    if (index >= 0) {
+      const rank = this.groupedRanks[index]
+      window.open(window.location.origin + '/#/girl/' + type.toLocaleLowerCase() + '?rank=' + rank)
+    }
+  }
+
   private toCategorized(type: string, rank: string) {
     this.$router.push({ name: this.TYPE.concat('-', '-category'), params: { category: name, rank: rank } })
   }
@@ -270,7 +278,6 @@ export default class extends mixins(Layout) {
   created() {
     this.resize()
     deviceResizeSupporter(this.resize)
-    this.changeCategory(this.TYPE, '')
   }
 
   mounted() {

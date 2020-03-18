@@ -10,25 +10,25 @@
           <el-select v-model="type"
                      size="medium">
             <el-option label="10 金幣" value="TEN">
-              10金幣
+              10 金幣
             </el-option>
             <el-option label="30 金幣" value="THIRTY">
-              30金幣
+              30 金幣
             </el-option>
             <el-option label="50 金幣" value="FIFTY">
-              50金幣
+              50 金幣
             </el-option>
             <el-option label="月VIP" value="VIP_MONTH">
-              月VIP
+              月 VIP
             </el-option>
             <el-option label="季VIP" value="VIP_QUARTER">
-              季VIP
+              季 VIP
             </el-option>
             <el-option label="年VIP" value="VIP_YEAR">
-              年VIP
+              年 VIP
             </el-option>
             <el-option label="永久VIP" value="VIP_FOREVER">
-              永久VIP
+              永久 VIP
             </el-option>
           </el-select>
           <span style="color: #f90; font-size: 18px;">會員可免費獲取本站所有資源！！</span>

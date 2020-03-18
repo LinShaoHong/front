@@ -35,7 +35,7 @@ export const recommendation = (id: string, params: any): ListResp | any =>
     params
   })
 
-export const search = (id: string, params: any): SingleResp | any =>
+export const search = (params: any): SingleResp | any =>
   request({
     url: '/v1/xzyy/girls/search',
     method: 'get',

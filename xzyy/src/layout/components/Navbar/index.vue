@@ -122,9 +122,12 @@
                         <div v-if="!item.read" style="width: 6px; height: 6px; border-radius: 3px; background-color: red"></div>
                       </div>
                       <div class="message-item-content">
+                        <div style="float: left; height: 17px; padding-top: 2px;">
+                          <img v-if="item.avatar" style="width: 15px; height: 15px; margin-right: 5px;" class="avatar" :src="SERVER + item.avatar">
+                        </div>
                         <span style="color: #f90; font-size: 15px; margin-right: 2px;">
                       {{ item.system? '系統消息: ' : item.commentatorName }}</span>
-                        <span v-if="!item.system" style="color: whitesmoke; font-size: 12px; margin-right: 2px;">&nbsp;{{ item.time + ': ' }}</span>
+                        <span v-if="!item.system" style="color: whitesmoke; font-size: 12px; margin-right: 2px;">&nbsp;{{ item.time }}</span><br/>
                         <a v-if="!item.system" class="message-reply-content"
                            href="#"
                            @click="toComment(item.girlId, item.id)">{{ item.content }}</a>
@@ -152,7 +155,7 @@
                       </div>
                       <div class="message-item-content">
                         <span style="color: #f90; font-size: 15px; margin-right: 2px;">
-                      {{ item.system? '系統消息: ' : item.commentatorName }}</span>
+                      {{ item.system? '西子夭夭' : item.commentatorName }}</span><br/>
                         <span v-if="!item.system" style="color: whitesmoke; font-size: 12px; margin-right: 2px;">&nbsp;{{ item.time + ': ' }}</span>
                         <a v-if="!item.system" class="message-reply-content"
                            href="#"
@@ -387,7 +390,11 @@ export default class extends Vue {
   }
 
   private async search() {
-
+    if (this.q !== null && this.q.trim().length > 0) {
+      this.$router.push({ path: '/girl/search', query: { q: this.q.trim() } })
+    } else {
+      this.$router.push({ path: '/' })
+    }
   }
 
   private pressSearch(e: KeyboardEvent) {
