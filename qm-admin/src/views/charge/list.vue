@@ -114,7 +114,7 @@
         style="font-size: 13px; height: 30px; width: 100%;"
       ></textarea>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="visible = false" size="mini">取 消</el-button>
+        <el-button @click="visibleYQ = false" size="mini">取 消</el-button>
         <el-button type="primary" @click="addYq" size="mini">确定</el-button>
       </span>
     </el-dialog>
