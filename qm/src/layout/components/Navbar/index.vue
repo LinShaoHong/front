@@ -112,6 +112,7 @@
                   class="message-menu-list"
                 >
                   <div v-for="(item, i) in commentMessages"
+                       v-if="commentMessages.length > 0"
                   >
                     <div
                       :class="i < (messages.length - 1)? 'message-item bottom-solid' : 'message-item'"
@@ -137,6 +138,9 @@
                       </div>
                     </div>
                   </div>
+                  <div v-if="commentMessages.length === 0" style="text-align: center; margin-top: 30px;">
+                    <span style="color: whitesmoke;">暫無評論內容~~</span>
+                  </div>
                 </div>
                 <div
                   v-show="!isComment"
@@ -144,6 +148,7 @@
                   class="message-menu-list"
                 >
                   <div v-for="(item, i) in noticeMessages"
+                       v-if="noticeMessages.length > 0"
                   >
                     <div
                       :class="i < (messages.length - 1)? 'message-item bottom-solid' : 'message-item'"
@@ -153,18 +158,13 @@
                         <div v-if="!item.read" style="width: 6px; height: 6px; border-radius: 3px; background-color: red"></div>
                       </div>
                       <div class="message-item-content">
-                        <span style="color: #f90; font-size: 15px; margin-right: 2px;">
-                      {{ item.system? '西子夭夭' : item.commentatorName }}</span><br/>
-                        <span v-if="!item.system" style="color: whitesmoke; font-size: 12px; margin-right: 2px;">&nbsp;{{ item.time + ': ' }}</span>
-                        <a v-if="!item.system" class="message-reply-content"
-                           href="#"
-                           @click="toComment(item.girlId, item.id)">{{ item.content }}</a>
-                        <span v-if="item.system" style="color: whitesmoke">{{ item.content }}</span>
-                      </div>
-                      <div v-if="!item.system" class="message-item-reply">
-                        <span @click="openReply(item.sessionId, item.id, item.commentatorName)">回复</span>
+                        <span style="color: #f90; font-size: 15px; margin-right: 2px;">寻芳阁</span><br/>
+                        <span style="color: whitesmoke" :id="item.id">{{ item.content }}</span>
                       </div>
                     </div>
+                  </div>
+                  <div v-else>
+                    <span>暫無通知~~</span>
                   </div>
                 </div>
                 <el-dialog
@@ -186,13 +186,16 @@
               </div>
             </div>
           </div>
-          <div style="float: right; cursor: pointer;">
+          <div style="float: right; cursor: pointer; height: 38px; display: flex; align-items: center">
             <el-dropdown
               class="avatar-container right-menu-item hover-effect"
               trigger="click"
             >
               <div class="avatar-wrapper">
                 <img v-if="user.avatar" class="user-avatar" :src="SERVER + user.avatar">
+                <el-button
+                  style="color: whitesmoke; background-color: #f90; border: solid 1px #f90;"
+                  v-if="!user.avatar" size="mini">{{ user.name }}</el-button>
               </div>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item class="avatar-header" style="cursor: default;">
@@ -505,7 +508,7 @@ export default class extends Vue {
   private fetchMessage() {
     setInterval(async() => {
       const latestId = this.commentMessages.length > 0? this.commentMessages[0].id : null
-      if (UserModule.user !== null && this.commentMessages.length > 0) {
+      if (UserModule.user !== null) {
         const data = await replyMessage({ start: 0, count: 20, latestId: latestId, isComment: true })
         if (data.code === 200) {
           if (data.value.messages.length > 0) {
@@ -518,7 +521,7 @@ export default class extends Vue {
 
     setInterval(async() => {
       const latestId = this.noticeMessages.length > 0? this.noticeMessages[0].id : null
-      if (UserModule.user !== null && this.noticeMessages.length > 0) {
+      if (UserModule.user !== null) {
         const data = await replyMessage({ start: 0, count: 20, latestId: latestId, isComment: false })
         if (data.code === 200) {
           if (data.value.messages.length > 0) {

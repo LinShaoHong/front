@@ -3,7 +3,6 @@
     <el-card class="box-card">
       <div slot="header" class="clearfix">
         <span>卡号管理</span>
-        <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
       </div>
       <div class="filter-container">
         <el-select v-model="listQuery.type" clearable placeholder="产品" class="filter-item" style="width: 150px;">
@@ -15,7 +14,7 @@
           <el-option label="年VIP" value="VIP_YEAR"></el-option>
           <el-option label="永久VIP" value="VIP_FOREVER"></el-option>
         </el-select>
-        <el-select v-model="listQuery.used" clearable placeholder="是否已用" class="filter-item" style="width: 90px;">
+        <el-select v-model="listQuery.used" clearable placeholder="已用" class="filter-item" style="width: 90px;">
           <el-option label="是" value="true"></el-option>
           <el-option label="否" value="false"></el-option>
         </el-select>
@@ -49,7 +48,6 @@
     <el-card class="box-card" style="margin-top: 20px;">
       <div slot="header" class="clearfix">
         <span>支付链接管理</span>
-        <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
       </div>
       <div class="filter-container">
         <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreateYQ">添加</el-button>
@@ -63,8 +61,18 @@
         </el-table-column>
         <el-table-column align="center" label="购买链接" prop="url">
         </el-table-column>
-        <el-table-column align="center" label="操作" width="80" class-name="small-padding fixed-width">
+        <el-table-column align="center" label="金额" prop="amount">
+        </el-table-column>
+        <el-table-column align="center" label="操作" width="160" class-name="small-padding fixed-width">
           <template slot-scope="{row}">
+            <el-link
+              :underline="false"
+              type="primary"
+              style="font-size: 10px; margin-right: 5px;"
+              @click="handleUpdateYQ(row)"
+            >
+              编辑
+            </el-link>
             <el-link
               :underline="false"
               type="primary"
@@ -109,6 +117,11 @@
         <el-option label="年VIP" value="VIP_YEAR"></el-option>
         <el-option label="永久VIP" value="VIP_FOREVER"></el-option>
       </el-select>
+      <el-input-number
+        v-model="amount"
+        class="filter-item"
+        style="margin-left: 20px; width: 150px;"
+      ></el-input-number>
       <textarea
         v-model="url"
         style="font-size: 13px; height: 30px; width: 100%;"
@@ -154,6 +167,7 @@ export default class extends Vue {
   private visibleYQ = false
   private typeYQ: string = ''
   private url: string = ''
+  private amount: number = 0
 
   private async getList() {
     if (!this.listQuery.used) {
@@ -191,11 +205,15 @@ export default class extends Vue {
   }
 
   private async addYq() {
-    await addYQ({ type: this.typeYQ, url: this.url })
+    await addYQ({ type: this.typeYQ, url: this.url, amount: this.amount })
     this.url = ''
     this.typeYQ = ''
     this.visibleYQ = false
     this.getYq()
+  }
+
+  private cancelEdit(row: any) {
+    row.edit = false
   }
 
   private async handleDelete(id: string) {
@@ -206,6 +224,13 @@ export default class extends Vue {
   private async handleDeleteYQ(id: string) {
     await yqDel(id)
     this.getYq()
+  }
+
+  private async handleUpdateYQ(row: any) {
+    this.typeYQ = row.type
+    this.url = row.url
+    this.amount = row.amount
+    this.visibleYQ = true
   }
 
   private asType(type: string) {
@@ -269,5 +294,15 @@ export default class extends Vue {
   }
   .goods-detail-box img {
     width: 100%;
+  }
+
+  .edit-input {
+    padding-right: 100px;
+  }
+
+  .cancel-btn {
+    position: absolute;
+    right: 15px;
+    top: 10px;
   }
 </style>

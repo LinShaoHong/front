@@ -36,7 +36,7 @@ service.interceptors.response.use(
     const res = error.response
     if (res.status === 500) {
       Message({
-        message: '内部错误',
+        message: '官人別急，網絡開小差了.........',
         type: 'error',
         duration: 1000
       })

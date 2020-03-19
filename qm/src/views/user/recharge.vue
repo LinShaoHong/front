@@ -69,9 +69,13 @@ import { Message } from 'element-ui'
 export default class extends mixins(Layout) {
   private cardNo: string = ''
   private type: string = 'THIRTY'
-  private yqUrls = []
+  private yqs = []
 
   get amount() {
+    const v = this.yqs.find(v => v.type === this.type)
+    if (v) {
+      return v.amount + ' 人民幣'
+    }
     switch (this.type) {
       case 'TEN':
         return '10 人民幣'
@@ -95,7 +99,7 @@ export default class extends mixins(Layout) {
   }
 
   get yqUrl() {
-    const v = this.yqUrls.find(v => v.type === this.type)
+    const v = this.yqs.find(v => v.type === this.type)
     if(v) {
       return v.url
     }
@@ -141,13 +145,13 @@ export default class extends mixins(Layout) {
     this.$router.push({ path: '/user/login' })
   }
 
-  private async getYqUrls() {
+  private async getYqs() {
     const data = await yq()
-    this.yqUrls = data.values
+    this.yqs = data.values
   }
 
   created() {
-    this.getYqUrls()
+    this.getYqs()
   }
 }
 </script>

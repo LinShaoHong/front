@@ -8,3 +8,10 @@ export const paged = (params: any): PageResp | any =>
     params
   })
 
+export const stat = (params: any): PageResp | any =>
+  request({
+    url: '/v1/qm/admin/user/stat',
+    method: 'get',
+    params
+  })
+

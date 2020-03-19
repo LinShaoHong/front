@@ -167,6 +167,7 @@ import { UserModule } from '@/store/modules/user'
 import { MenuModule } from '@/store/modules/menu'
 import { signIn, info, uploadAvatarPath, deleteAvatar } from '@/api/user'
 import { getCollections } from '@/api/collection'
+import { yq } from '@/api/charge'
 import { getFootprints } from '@/api/footprint'
 import { CollectResp } from '@/api/collectType'
 import { FootprintResp } from '@/api/footprintType'
@@ -200,6 +201,12 @@ export default class extends mixins(Layout) {
   private flowsType: string = ''
 
   private count: number = 10
+
+  private yqs: [{ type: string, url: string, amount: number }] = [{
+    type: '',
+    url: '',
+    amount: 0
+  }]
 
   get user() {
     return UserModule.user
@@ -283,6 +290,10 @@ export default class extends mixins(Layout) {
   }
 
   private amount(type: string) {
+    const v = this.yqs.find(v => v.type === type)
+    if (v) {
+      return v.amount
+    }
     switch (type) {
       case 'TEN':
         return '10'
@@ -320,6 +331,11 @@ export default class extends mixins(Layout) {
     }
   }
 
+  private async getYqs() {
+    const data = await yq()
+    this.yqs = data.values
+  }
+
   created() {
     if (UserModule.user !== null) {
       if (this.$route.query.name) {
@@ -328,6 +344,7 @@ export default class extends mixins(Layout) {
       this.getCollects()
       this.getFootprints()
       this.getFlows()
+      this.getYqs()
     }
   }
 }

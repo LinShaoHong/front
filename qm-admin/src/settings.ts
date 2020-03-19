@@ -12,7 +12,7 @@ interface ISettings {
 
 // You can customize below settings :)
 const settings: ISettings = {
-  title: 'Sun Console',
+  title: 'QM Console',
   showSettings: true,
   showTagsView: true,
   fixedHeader: false,

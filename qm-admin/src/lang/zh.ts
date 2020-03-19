@@ -80,7 +80,7 @@ export default {
     messageCreate: '发布',
     messageEdit: '更新',
     user: '用户管理',
-    userList: '用户管理',
+    userList: '查询',
     userStat: '统计',
   },
   navbar: {

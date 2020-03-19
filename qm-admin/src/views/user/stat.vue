@@ -1,146 +1,201 @@
 <template>
   <div class="app-container">
     <el-card class="box-card">
-      <div class="filter-container">
-        <el-input v-model="listQuery.id" clearable class="filter-item" style="width: 200px;" placeholder="用户ID" />
-        <el-input v-model="listQuery.username" clearable class="filter-item" style="width: 200px;" placeholder="用户名" />
-        <el-input v-model="listQuery.email" clearable class="filter-item" style="width: 200px;" placeholder="邮箱" />
-        <el-select v-model="listQuery.vip" clearable placeholder="vip" class="filter-item" style="width: 70px;">
-          <el-option label="是" value="true"></el-option>
-          <el-option label="否" value="false"></el-option>
-        </el-select>
-        <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
-      </div>
-
-        <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
-          <el-table-column type="expand">
-            <template slot-scope="props">
-              <el-form label-position="left" class="table-expand">
-                <el-form-item label="ID">
-                  <span>{{ props.row.id }}</span>
-                </el-form-item>
-                <el-form-item label="头像">
-                  <img :src="imageServer + props.row.avatar" width="60" height="60">
-                </el-form-item>
-                <el-form-item v-if="props.row.vip" label="VIP充值时间">
-                  <span>{{ props.row.vipStartTime | parseTime }}</span>
-                </el-form-item>
-                <el-form-item v-if="props.row.vip" label="VIP到期时间">
-                  <span>{{ props.row.vipEndTime | parseTime }}</span>
-                </el-form-item>
-              </el-form>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="用户名" prop="username" />
-          <el-table-column align="center" label="邮箱" prop="email" />
-          <el-table-column align="center" width="70px;" label="VIP" prop="vip">
-            <template slot-scope="scope">
-              <el-tag :type="scope.row.vip ? 'success' : 'danger' ">{{ scope.row.vip ? '是' : '否' }}</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" width="90px;" label="签到次数" prop="signInCount" />
-          <el-table-column align="center" width="100px;" label="金币" prop="amount" />
-          <el-table-column align="center" label="上次登录时间" prop="createTime">
-            <template slot-scope="scope">
-              {{ scope.row.lastLoginTime | parseTime }}
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="注册时间" prop="createTime">
-            <template slot-scope="scope">
-              {{ scope.row.createTime | parseTime }}
-            </template>
-          </el-table-column>
-        </el-table>
-      <pagination v-show="total>0" :total="total" :start.sync="listQuery.start" :count.sync="listQuery.count" @pagination="getList" />
+      <el-select v-model="timeType"
+                 size="mini"
+                 style="margin-bottom: 10px; width: 100px;"
+                 @change="onTimeChange"
+      >
+        <el-option label="近1周" value="1"></el-option>
+        <el-option label="近1月" value="2"></el-option>
+        <el-option label="近3月" value="3"></el-option>
+        <el-option label="近半年" value="4"></el-option>
+        <el-option label="近1年" value="5"></el-option>
+      </el-select>
+      <div
+        id="chart"
+        style="height: 500px; width: 100%"
+      />
     </el-card>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import Pagination from '@/components/Pagination/index.vue'
-import { paged } from '@/api/user'
-import { imageServer } from '@/api/storage'
+import echarts, { EChartOption, ECharts } from 'echarts'
+import { Component, Prop, Vue } from 'vue-property-decorator'
+import { stat } from '@/api/user'
 
 @Component({
-  name: 'GirlList',
-  components: {
-    Pagination
-  }
+  name: 'LineChart'
 })
 export default class extends Vue {
-  private imageServer = imageServer
+  private chart!: ECharts | null
+  private sidebarElm?: Element
 
-  private total = 0
-  private list = []
-  private listLoading = true
-  private listQuery = {
-    id: '',
-    username: '',
-    vip: null,
-    email: '',
-    start: 0,
-    count: 10
+  private timeType: string = '1'
+
+  private stat: { times: string[], incs: number[], nums: number[] } = {
+    times: [],
+    incs: [],
+    nums: []
   }
 
-  private visible = false
-  private id: string = ''
-  private content: string = ''
+  private async fetchStat() {
+    const data = await stat({ timeType: this.timeType })
+    this.stat = data.value
+    this.initChart()
+  }
 
-  private async getList() {
-    if (!this.listQuery.vip) {
-      delete this.listQuery.vip
+  private onTimeChange() {
+    this.fetchStat()
+  }
+
+  mounted() {
+    this.fetchStat()
+  }
+
+  beforeDestroy() {
+    if (!this.chart) {
+      return
     }
-    paged(this.listQuery).then(response => {
-      this.list = response.values
-      this.total = response.total
-      this.listLoading = false
-    }).catch(() => {
-      this.list = []
-      this.total = 0
-      this.listLoading = false
-    })
+    this.chart.dispose()
+    this.chart = null
   }
 
-  private handleFilter() {
-    this.getList()
-  }
-
-  private timestampToTime(timestamp: number) {
-    let date = new Date(timestamp);
-    let Y = date.getFullYear() + '-';
-    let M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
-    let D = date.getDate() + ' ';
-    let h = date.getHours() + ':';
-    let m = date.getMinutes() + ':';
-    let s = date.getSeconds();
-    return Y+M+D+h+m+s;
-  }
-
-  private created() {
-    this.getList()
+  private initChart() {
+    this.chart = echarts.init(document.getElementById('chart') as HTMLDivElement)
+    this.chart.setOption({
+      // dataZoom: [
+      //   {
+      //     type: 'slider',
+      //     xAxisIndex: 0,
+      //     filterMode: 'filter',
+      //     startValue:0,
+      //     endValue:4000
+      //   }
+      // ],
+      backgroundColor: '#394056',
+      title: {
+        top: 20,
+        text: '用户增长趋势',
+        textStyle: {
+          fontWeight: 'normal',
+          fontSize: 16,
+          color: '#F1F1F3'
+        }
+      },
+      tooltip: {
+        trigger: 'axis'
+      },
+      legend: {
+        top: 20,
+        icon: 'rect',
+        itemWidth: 14,
+        itemHeight: 5,
+        itemGap: 13,
+        data: ['增量', '总量'],
+        right: '4%',
+        textStyle: {
+          fontSize: 12,
+          color: '#F1F1F3'
+        }
+      },
+      grid: {
+        top: 100,
+        left: '2%',
+        right: '2%',
+        bottom: '2%',
+        containLabel: true
+      },
+      xAxis: [{
+        type: 'category',
+        scale: true,
+        boundaryGap: false,
+        axisLine: {
+          lineStyle: {
+            color: '#57617B'
+          }
+        },
+        data: this.stat.times
+      }],
+      yAxis: [{
+        type: 'value',
+        axisTick: {
+          show: false
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#57617B'
+          }
+        },
+        axisLabel: {
+          show:true,
+          interval: 0,
+          margin: 10,
+          fontSize: 14
+        },
+        splitLine: {
+          lineStyle: {
+            color: '#57617B'
+          }
+        }
+      }],
+      series: [{
+        name: '增量',
+        type: 'line',
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 5,
+        showSymbol: false,
+        lineStyle: {
+          width: 1
+        },
+        areaStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+            offset: 0,
+            color: 'rgba(137, 189, 27, 0.3)'
+          }, {
+            offset: 0.8,
+            color: 'rgba(137, 189, 27, 0)'
+          }], false) as any,
+          shadowColor: 'rgba(0, 0, 0, 0.1)',
+          shadowBlur: 10
+        },
+        itemStyle: {
+          color: 'rgb(137,189,27)',
+          borderColor: 'rgba(137,189,2,0.27)',
+          borderWidth: 12
+        },
+        data: this.stat.incs
+      }, {
+        name: '总量',
+        type: 'line',
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 5,
+        showSymbol: false,
+        lineStyle: {
+          width: 1
+        },
+        areaStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+            offset: 0,
+            color: 'rgba(0, 136, 212, 0.3)'
+          }, {
+            offset: 0.8,
+            color: 'rgba(0, 136, 212, 0)'
+          }], false) as any,
+          shadowColor: 'rgba(0, 0, 0, 0.1)',
+          shadowBlur: 10
+        },
+        itemStyle: {
+          color: 'rgb(0,136,212)',
+          borderColor: 'rgba(0,136,212,0.2)',
+          borderWidth: 12
+        },
+        data: this.stat.nums
+      }]
+    } as EChartOption<EChartOption.SeriesLine>)
   }
 }
 </script>
-
-<style>
-  .table-expand {
-    font-size: 0;
-  }
-  .table-expand label {
-    width: 100px;
-    color: #99a9bf;
-  }
-  .table-expand .el-form-item {
-    margin-right: 0;
-    margin-bottom: 0;
-  }
-  .gallery {
-    width: 120px;
-    height: 100px;
-    margin-right: 10px;
-  }
-  .goods-detail-box img {
-    width: 100%;
-  }
-</style>

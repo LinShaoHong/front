@@ -39,6 +39,8 @@ import { register, checkName } from '@/api/session'
 import { info } from '@/api/user'
 import { UserModule } from '@/store/modules/user'
 import { MenuModule } from '@/store/modules/menu'
+import Cookies from 'js-cookie'
+import { MessageModule } from '@/store/modules/message'
 
 @Component({
   name: 'Register'
@@ -109,8 +111,10 @@ export default class extends mixins(Layout) {
       if (valid) {
         const data = await register(this.registerForm)
         if (data.code === 200) {
+          Cookies.set('QM-TOKEN', data.value, { expires: 7, path: '/' })
           const user = await info()
           UserModule.Set(user.value)
+          await MessageModule.GetMessages({ start:0, count: 10, isComment: false })
           this.$router.push({ path: '/' })
           MenuModule.SetIndex(0)
         }

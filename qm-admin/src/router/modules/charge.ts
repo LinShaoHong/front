@@ -8,14 +8,14 @@ const chargeRoutes: RouteConfig = {
   name: 'Charge',
   meta: {
     title: 'charge',
-    icon: 'table'
+    icon: 'money'
   },
   children: [
     {
       path: 'charge-list',
       component: () => import('@/views/charge/list.vue'),
       name: 'ChargeList',
-      meta: { title: 'chargeList', icon: 'list' }
+      meta: { title: 'chargeList', icon: 'money' }
     }
   ]
 }

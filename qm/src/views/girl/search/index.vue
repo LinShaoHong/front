@@ -100,13 +100,13 @@ export default class extends mixins(Layout) {
   private asType(type: string) {
     switch (type) {
       case "QM":
-        return "楼风"
+        return "樓風"
       case "SN":
-        return "会所"
+        return "會所"
       case "VIDEO":
-        return "视频"
+        return "視頻"
       case "PIC":
-        return "美图"
+        return "美圖"
     }
   }
 

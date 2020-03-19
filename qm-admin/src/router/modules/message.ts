@@ -8,14 +8,14 @@ const messageRoutes: RouteConfig = {
   name: 'Message',
   meta: {
     title: 'message',
-    icon: 'table'
+    icon: 'message'
   },
   children: [
     {
       path: 'message-list',
       component: () => import('@/views/message/list.vue'),
       name: 'MessageList',
-      meta: { title: 'messageList', icon: 'list' }
+      meta: { title: 'messageList', icon: 'message' }
     }
   ]
 }

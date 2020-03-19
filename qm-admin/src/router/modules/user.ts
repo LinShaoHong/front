@@ -8,7 +8,7 @@ const userRoutes: RouteConfig = {
   name: 'User',
   meta: {
     title: 'user',
-    icon: 'table'
+    icon: 'user'
   },
   children: [
     {
@@ -17,12 +17,12 @@ const userRoutes: RouteConfig = {
       name: 'UserList',
       meta: { title: 'userList', icon: 'list' }
     },
-    // {
-    //   path: 'user-stat',
-    //   component: () => import('@/views/user/stat.vue'),
-    //   name: 'UserStat',
-    //   meta: { title: 'userStat', icon: 'list' }
-    // }
+    {
+      path: 'user-stat',
+      component: () => import('@/views/user/stat.vue'),
+      name: 'UserStat',
+      meta: { title: 'userStat', icon: 'chart' }
+    }
   ]
 }
 
