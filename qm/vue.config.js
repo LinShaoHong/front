@@ -1,7 +1,7 @@
 const path = require('path')
 const devServerPort = 1379
 const mockServerPort = 1378
-const name = '寻芳阁'
+const name = '尋芳閣'
 
 module.exports = {
   publicPath: process.env.NODE_ENV === 'production' ? '/' : '/',

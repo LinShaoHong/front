@@ -12,7 +12,7 @@ interface ISettings {
 
 // You can customize below settings :)
 const settings: ISettings = {
-  title: 'Image Site',
+  title: '尋芳閣',
   showSettings: true,
   showTagsView: true,
   fixedHeader: false,
