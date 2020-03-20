@@ -329,7 +329,7 @@ export default class extends mixins(Layout) {
         .category-label {
           margin-bottom: 10px;
           display: grid;
-          grid-template-columns: 60px 180px 2fr 1fr;
+          grid-template-columns: 60px 230px 2fr 1fr;
           grid-column-gap: 10px;
           align-content: center;
           justify-content: center;
