@@ -1,6 +1,6 @@
 <template>
   <div :class="mobile ? 'app-container mobile' : 'app-container'">
-    <div class="image-container">
+    <div class="main-image-container">
       <div class="image-header">
         <div class="image-carousel">
           <el-carousel :interval="2000" type="card" height="550px">
@@ -15,7 +15,7 @@
         </div>
       </div>
       <div
-        class="image-list"
+        class="main-image-list"
         :style="mobile ? ('width: ' + mobileImagesWidth + 'px;') : ''"
       >
         <div
@@ -288,7 +288,7 @@ export default class extends mixins(Layout) {
 </script>
 
 <style lang="less">
-.image-container {
+.main-image-container {
   width: 100%;
   overflow: hidden;
 
@@ -314,7 +314,7 @@ export default class extends mixins(Layout) {
     }
   }
 
-  .image-list {
+  .main-image-list {
     margin-top: 20px;
     width: 100%;
 
@@ -504,14 +504,14 @@ export default class extends mixins(Layout) {
 }
 
 .mobile {
-  .image-container {
+  .main-image-container {
     width: 100%;
     display: grid;
     grid-template-columns: 1fr;
     justify-content: center;
     justify-items: center;
 
-    .image-list {
+    .main-image-list {
       .category-label {
         margin-left: 0;
         grid-column-gap: 5px;

@@ -21,7 +21,7 @@
         :id="'title:' + image.id"
         class="title"
         :style="'width: '+ reWidth + 'px;'"
-      >{{ image.city + ' ' + image.name }}</span>
+      >{{ image.name }}</span>
     </div>
     <div class="view-like">
       <span class="view-span">
@@ -96,7 +96,7 @@ export default class extends Vue {
 
   private highlight() {
     const el: HTMLElement = document.getElementById('title:' + this.image.id)
-    let title: string = this.image.city + ' ' + this.image.name
+    let title: string = this.image.name
     if (title.length > 24) {
       title = title.substring(0, 24)
     }

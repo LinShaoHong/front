@@ -146,8 +146,10 @@ export default class extends mixins(Layout) {
   }
 
   private async getYqs() {
-    const data = await yq()
-    this.yqs = data.values
+    if (UserModule.user !== null) {
+      const data = await yq()
+      this.yqs = data.values
+    }
   }
 
   created() {

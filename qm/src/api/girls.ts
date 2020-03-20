@@ -42,5 +42,12 @@ export const search = (params: any): SingleResp | any =>
     params
   })
 
+export const city = (params: any): ListResp | any =>
+  request({
+    url: '/v1/qm/girls/city',
+    method: 'get',
+    params
+  })
+
 
 
