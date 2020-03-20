@@ -124,7 +124,8 @@
       ></el-input-number>
       <textarea
         v-model="url"
-        style="font-size: 13px; height: 30px; width: 100%;"
+        style="font-size: 15px; height: 25px; width: 100%;"
+        placeholder="官方url"
       ></textarea>
       <span slot="footer" class="dialog-footer">
         <el-button @click="visibleYQ = false" size="mini">取 消</el-button>
