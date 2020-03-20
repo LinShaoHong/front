@@ -260,24 +260,38 @@ export default class extends mixins(Layout) {
 }
 
 .sub-search-input {
+  width: 180px;
   margin-left: 20px;
-  width: 20%;
-  height: 30px;
   display: inline-block;
   color: #cacaca;
   background: #363636;
+  border-radius: 3px 0 0 3px;
   outline: 0;
+  border: none;
   padding: 2px 5px;
   vertical-align: top;
   cursor: text;
   font-size: 14px;
-  border: 1px solid #757575;
+  height: 30px;
+  border-left: 1px solid #757575;
+  border-bottom: 1px solid #757575;
+  border-top: 1px solid #757575;
   transition: all .5s ease;
+}
+
+.sub-search-input:focus {
+  outline-offset: -2px;
+  transition: .1s;
+  box-shadow: 0 0 0.1rem #c2c2c2;
+}
+
+.sub-search-input:focus + .sub-search-button {
+  box-shadow: 0 0 0.1rem #f90;
 }
 
 .sub-search-button {
   height: 30px;
-  width: 40px;
+  width: 50px;
   cursor: pointer;
   background: #f90;
   outline: 0;

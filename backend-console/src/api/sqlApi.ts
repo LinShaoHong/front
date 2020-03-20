@@ -3,21 +3,21 @@ import { ListResp, SingleResp } from './response'
 
 export const getResult = (data: any):ListResp|any =>
   request({
-    url: '/consoles/sql/query',
+    url: '/v1/sql/query',
     method: 'post',
     data
   })
 
 export const update = (data: any):SingleResp|any =>
   request({
-    url: '/consoles/sql/write',
+    url: '/v1/sql/write',
     method: 'post',
     data
   })
 
 export const getTables = (params: any):ListResp|any =>
   request({
-    url: '/consoles/sql/tables',
+    url: '/v1/sql/tables',
     method: 'get',
     params
   })

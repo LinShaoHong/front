@@ -15,12 +15,12 @@ module.exports = {
       errors: true
     },
     proxy: {
-      [process.env.VUE_APP_BASE_API + '/consoles']: {
-        target: process.env.VUE_APP_BACKEND_SERVER + '/api/consoles',
+      [process.env.VUE_APP_BASE_API + '/v1']: {
+        target: process.env.VUE_APP_BACKEND_SERVER + '/api/v1',
         changeOrigin: true,
         ws: true,
         pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API + '/consoles']: ''
+          ['^' + process.env.VUE_APP_BASE_API + '/v1']: ''
         }
       },
       [process.env.VUE_APP_BASE_API]: {
