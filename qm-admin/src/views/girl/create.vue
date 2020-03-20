@@ -28,6 +28,9 @@
         <el-form-item label="城市" prop="city">
           <el-input v-model="girl.city" />
         </el-form-item>
+        <el-form-item label="类型" prop="category">
+          <el-input v-model="girl.category" />
+        </el-form-item>
         <el-form-item label="开课" prop="onService">
           <el-radio-group v-model="girl.onService">
             <el-radio :label="true">是</el-radio>
@@ -92,6 +95,7 @@ export default class extends Vue {
     type: '',
     mainImage: '',
     city: '',
+    category: '',
     detailImages: new Array(),
     onService: false
   }

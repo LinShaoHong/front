@@ -3,7 +3,7 @@
     <el-card class="box-card">
       <h3>编辑教师</h3>
       <el-form ref="goods" :rules="rules" :model="goods" label-width="150px">
-        <el-form-item label="名称" prop="id">
+        <el-form-item label="ID" prop="id">
           <el-input v-model="girl.id" disabled="true"/>
         </el-form-item>
         <el-form-item label="名称" prop="name">
@@ -30,6 +30,9 @@
         </el-form-item>
         <el-form-item label="城市" prop="city">
           <el-input v-model="girl.city" />
+        </el-form-item>
+        <el-form-item label="类型" prop="category">
+          <el-input v-model="girl.category" />
         </el-form-item>
         <el-form-item label="开课" prop="onService">
           <el-radio-group v-model="girl.onService">

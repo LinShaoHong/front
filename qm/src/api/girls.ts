@@ -49,5 +49,12 @@ export const city = (params: any): ListResp | any =>
     params
   })
 
+export const getCategory = (params: any): ListResp | any =>
+  request({
+    url: '/v1/qm/girls/category',
+    method: 'get',
+    params
+  })
+
 
 

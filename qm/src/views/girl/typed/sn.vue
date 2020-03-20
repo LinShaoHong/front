@@ -5,12 +5,12 @@
         class="image-list"
         :style="mobile ? ('width: ' + mobileImagesWidth + 'px;') : ''"
       >
-        <div class="rank-city-select">
+        <div class="category-rank-city-select">
           <span style="color: whitesmoke">排序:</span>
           <el-select v-model="rank"
                      size="mini"
                      style="width: 80px; margin-right: 20px;"
-                     @change="onRankChange"
+                     @change="onChange"
           >
             <el-option
               v-for="r in ranks"
@@ -23,8 +23,8 @@
           <el-select v-if="cities.length > 0"
                      v-model="city"
                      size="mini"
-                     style="width: 90px;"
-                     @change="onCityChange"
+                     style="width: 80px; margin-right: 20px;"
+                     @change="onChange"
           >
             <el-option
               label="不限"
@@ -35,6 +35,25 @@
               v-for="city in cities"
               :label="city"
               :value="city"
+            >
+            </el-option>
+          </el-select>
+          <span v-if="categories.length > 2" style="color: whitesmoke">類型:</span>
+          <el-select v-if="categories.length > 2"
+                     v-model="category2"
+                     size="mini"
+                     style="width: 130px;"
+                     @change="onChange"
+          >
+            <el-option
+              label="不限"
+              value=""
+            >
+            </el-option>
+            <el-option
+              v-for="r in categories"
+              :label="r.name"
+              :value="r.nameSpell"
             >
             </el-option>
           </el-select>
@@ -65,7 +84,7 @@
           </li>
         </ul>
         <div v-else class="empty">
-          <span>抱歉，沒找到妳想要的教師.....<svg-icon
+          <span>{{ '抱歉，' + (city === ''?  '沒找到' : '【' + city + '】地區没有') + '妳想要的' + (categoryName === ''? '' : '【' + categoryName + '】') + '技師.....' }}<svg-icon
             style="font-size: 22px; margin-left: 10px;"
             name="cry"
           /></span>
@@ -80,17 +99,22 @@ import { Component } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
 import Layout from '@/common/layout'
 import { GirlResp } from '@/api/girlType'
-import { paged, city } from '@/api/girls'
+import { paged, city, getCategory } from '@/api/girls'
 import GirlItem from '../components/GirlItem.vue'
 import { deviceResizeSupporter } from '@/utils/mixin'
 
 @Component({
-  name: 'GirlQM',
+  name: 'GirlSN',
   components: {
     GirlItem
   }
 })
 export default class extends mixins(Layout) {
+  private TYPE: string = 'SN'
+
+  private category2: string = ''
+  private categories: { name: string, nameSpell: string }[] = []
+
   private rank: string = 'updateTime'
   private ranks: { label: string, value: string }[] = [
     { label: "最新", value: "updateTime" },
@@ -114,11 +138,23 @@ export default class extends mixins(Layout) {
   private city: string = ''
 
   get searchPlaceholder() {
-    return '按名字搜索 ' + this.city + ' 會所'
+    return '按名字搜索 ' + this.city + ' 樓鳳'
+  }
+
+  get categoryName() {
+    if (this.category2 === '') {
+      return ''
+    }
+    const v = this.categories.find(v => v.nameSpell === this.category2)
+    console.log(v)
+    if (v) {
+      return v.name
+    }
+    return ''
   }
 
   private async getGirls(start: number, count: number) {
-    let data = await paged({ start: start, count: count, type: "SN", rank: this.rank, city: this.city, q: this.q })
+    let data = await paged({ start: start, count: count, type: this.TYPE, rank: this.rank, city: this.city, category: this.category2, q: this.q })
     if (data.values.length > 0) {
       this.girls.push(...data.values)
     } else {
@@ -146,14 +182,7 @@ export default class extends mixins(Layout) {
     })
   }
 
-  private async onCityChange() {
-    this.girls = []
-    this.loadedAll = false
-    this.scrollCounter = 1
-    await this.getGirls(0, this.STEP_COUNT)
-  }
-
-  private async onRankChange(){
+  private async onChange() {
     this.girls = []
     this.loadedAll = false
     this.scrollCounter = 1
@@ -174,13 +203,19 @@ export default class extends mixins(Layout) {
   }
 
   private async getCities() {
-    const data = await city({ type: 'SN' })
+    const data = await city({ type: this.TYPE })
     this.cities = data.values
+  }
+
+  private async getCategories() {
+    const data = await getCategory({ type: this.TYPE })
+    this.categories = data.values
   }
 
   mounted() {
     this.getGirls(0, this.STEP_COUNT)
     this.getCities()
+    this.getCategories()
   }
 
   created() {
@@ -220,7 +255,7 @@ export default class extends mixins(Layout) {
   }
 }
 
-.rank-city-select {
+.category-rank-city-select {
   color: #000;
   background-color: #000;
   margin-top: 20px;

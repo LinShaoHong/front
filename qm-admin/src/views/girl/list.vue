@@ -53,6 +53,7 @@
           <el-table-column align="center" min-width="100" label="名称" prop="name" />
           <el-table-column align="center" min-width="100" label="价格" prop="price" />
           <el-table-column align="center" min-width="100" label="城市" prop="city" />
+          <el-table-column align="center" min-width="100" label="类型" prop="category" />
           <el-table-column align="center" min-width="80" label="赞数" prop="likes" />
           <el-table-column align="center" min-width="80" label="浏览量" prop="visits" />
           <el-table-column align="center" min-width="80" label="收藏量" prop="collects" />
