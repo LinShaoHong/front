@@ -9,7 +9,7 @@
           <span style="color: whitesmoke">排序:</span>
           <el-select v-model="rank"
                      size="mini"
-                     style="width: 80px; margin-right: 30px;"
+                     style="width: 80px; margin-right: 20px;"
                      @change="onRankChange"
           >
             <el-option
@@ -23,11 +23,14 @@
           <el-select v-if="cities.length > 0"
                      v-model="city"
                      size="mini"
-                     style="width: 80px;"
+                     style="width: 90px;"
                      @change="onCityChange"
-                     placeholder="不限"
-                     clearable
           >
+            <el-option
+              label="不限"
+              value=""
+            >
+            </el-option>
             <el-option
               v-for="city in cities"
               :label="city"
@@ -35,8 +38,21 @@
             >
             </el-option>
           </el-select>
+          <input
+            class="sub-search-input"
+            v-model="q"
+            @keyup="pressSearch"
+            :placeholder="searchPlaceholder"
+          >
+          </input>
+          <button
+            class="sub-search-button"
+            @click="search"
+          >
+            <i class="el-icon-search" />
+          </button>
         </div>
-        <ul>
+        <ul v-if="girls.length > 0">
           <li
             v-for="item in girls"
             :key="item.id"
@@ -44,9 +60,16 @@
             <girl-item
               :image="item"
               :src="SERVER + item.mainImage"
+              :keyWords="item.keyWords"
             />
           </li>
         </ul>
+        <div v-else class="empty">
+          <span>抱歉，沒找到妳想要的教師.....<svg-icon
+            style="font-size: 22px; margin-left: 10px;"
+            name="cry"
+          /></span>
+        </div>
       </div>
     </div>
   </div>
@@ -76,6 +99,7 @@ export default class extends mixins(Layout) {
     { label: "購買", value: "payments" },
     { label: "收藏", value: "collects" }
   ]
+  private q: string = ''
 
   private STEP_COUNT = 20
   private SERVER = process.env.VUE_APP_IMAGE_SERVER
@@ -89,8 +113,12 @@ export default class extends mixins(Layout) {
   private cities: string[] = []
   private city: string = ''
 
+  get searchPlaceholder() {
+    return '按名字搜索 ' + this.city + ' 視頻'
+  }
+
   private async getGirls(start: number, count: number) {
-    let data = await paged({ start: start, count: count, type: "VIDEO", rank: this.rank, city: this.city })
+    let data = await paged({ start: start, count: count, type: "VIDEO", rank: this.rank, city: this.city, q: this.q })
     if (data.values.length > 0) {
       this.girls.push(...data.values)
     } else {
@@ -130,6 +158,19 @@ export default class extends mixins(Layout) {
     this.loadedAll = false
     this.scrollCounter = 1
     await this.getGirls(0, this.STEP_COUNT)
+  }
+
+  private async search() {
+    this.girls = []
+    this.loadedAll = false
+    this.scrollCounter = 1
+    await this.getGirls(0, this.STEP_COUNT)
+  }
+
+  private pressSearch(e: KeyboardEvent) {
+    if (e.code === 'Enter') {
+      this.search()
+    }
   }
 
   private async getCities() {
@@ -215,6 +256,52 @@ export default class extends mixins(Layout) {
 
   &.hover {
     background-color: #757575;
+  }
+}
+
+.sub-search-input {
+  margin-left: 20px;
+  width: 20%;
+  height: 30px;
+  display: inline-block;
+  color: #cacaca;
+  background: #363636;
+  outline: 0;
+  padding: 2px 5px;
+  vertical-align: top;
+  cursor: text;
+  font-size: 14px;
+  border: 1px solid #757575;
+  transition: all .5s ease;
+}
+
+.sub-search-button {
+  height: 30px;
+  width: 40px;
+  cursor: pointer;
+  background: #f90;
+  outline: 0;
+  outline-offset: -2px;
+  border: 0;
+  transition: all .5s ease;
+
+  .el-icon-search {
+    margin: 0 auto;
+  }
+}
+
+.empty {
+  width: 100%;
+  height: 200px;
+  margin: 4% auto auto;
+  border: 2px solid #2F2F2F;
+  display: flex;
+  justify-content: center;
+
+  span {
+    margin: auto;
+    font-size: 20px;
+    color: #A3A2A2;
   }
 }
 

@@ -6,6 +6,7 @@ export interface GirlResp {
   mainImage: string
   likes: number
   visits: number
+  keyWords: string[]
 }
 
 export interface GirlDetailResp {
