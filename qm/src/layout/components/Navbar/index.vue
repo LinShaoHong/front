@@ -58,7 +58,7 @@
           <input
             v-model="q"
             class="search-input"
-            placeholder="搜索"
+            placeholder="搜索全部"
             @keyup="pressSearch"
           >
           <button
@@ -663,6 +663,8 @@ export default class extends Vue {
   height: 22%;
   width: 100%;
   display: inline-grid;
+  padding-left: 60px;
+  padding-right: 60px;
   grid-template-columns: repeat(7, 1fr);
   vertical-align: center;
 
