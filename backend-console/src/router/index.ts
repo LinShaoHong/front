@@ -5,8 +5,6 @@ import Router, { RouteConfig } from 'vue-router'
 import Layout from '@/layout/index.vue'
 
 /* Router modules */
-import spiderRouter from './modules/spider'
-import mysqlRouter from './modules/mysql'
 
 Vue.use(Router)
 
@@ -51,8 +49,6 @@ export const constantRoutes: RouteConfig[] = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes: RouteConfig[] = [
-  spiderRouter,
-  mysqlRouter
 ]
 
 const createRouter = () => new Router({

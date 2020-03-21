@@ -3,6 +3,7 @@ import { getToken, setToken, removeToken } from '@/utils/cookies'
 import router, { resetRouter } from '@/router'
 import { PermissionModule } from './permission'
 import { TagsViewModule } from './tags-view'
+import { login } from '@/api/session'
 import store from '@/store'
 
 export interface IUserState {
@@ -57,10 +58,10 @@ class User extends VuexModule implements IUserState {
   public async Login(userInfo: { username: string, password: string}) {
     let { username, password } = userInfo
     username = username.trim()
-    if (username === 'admin' && password === 'lin1234') {
-      const accessToken = username + '-token'
-      setToken(accessToken)
-      this.SET_TOKEN(accessToken)
+    const data = await login({ username: username, password: password })
+    if (data.code === 200) {
+      setToken(data.value)
+      this.SET_TOKEN(data.value)
     }
   }
 
