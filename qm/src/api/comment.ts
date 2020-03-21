@@ -59,6 +59,22 @@ export const hateComment = (id: string): Resp | any =>
     method: 'put'
   })
 
+export interface ReplyResp {
+  id: string
+  avatar: string
+  commentatorId: string
+  commentatorName: string
+  replierId: string
+  replierName: string
+  content: string
+  time: string
+  likes: number
+  hates: number
+  liked: boolean
+  hated: boolean
+  read: boolean
+}
+
 export interface CommentResp {
   id: string
   avatar: string
@@ -72,19 +88,5 @@ export interface CommentResp {
   hated: boolean
   expand: boolean
   read: boolean
-  replies: [{
-    id: string
-    avatar: string
-    commentatorId: string
-    commentatorName: string
-    replierId: string
-    replierName: string
-    content: string
-    time: string
-    likes: number
-    hates: number
-    liked: boolean
-    hated: boolean
-    read: boolean
-  }]
+  replies: ReplyResp[]
 }

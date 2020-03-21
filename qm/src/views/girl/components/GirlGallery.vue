@@ -233,7 +233,7 @@ import { AppModule, DeviceType } from '@/store/modules/app'
 import { GirlDetailResp, GirlResp } from '@/api/girlType'
 import { detail, recommendation, like } from '@/api/girls'
 import { consume } from '@/api/charge'
-import {addComment, CommentResp, getComments, likeComment, hateComment, reply, read} from '@/api/comment'
+import {addComment, CommentResp, ReplyResp, getComments, likeComment, hateComment, reply, read} from '@/api/comment'
 import { addCollection, deleteByGirlId } from '@/api/collection'
 import { LikesModule } from '@/store/modules/like'
 import { Message } from 'element-ui'
@@ -424,13 +424,18 @@ export default class extends Vue {
       const data = await addComment({ girlId: this.currImage.id, content: this.comment })
       if (data.code == 200) {
         this.comments.unshift({
+          avatar: this.user.avatar,
           commentatorId: UserModule.user.id,
           commentatorName: UserModule.user.name,
           content: this.comment,
           time: '剛剛',
           id: data.value,
+          read: true,
           likes: 0,
           hates: 0,
+          hated: false,
+          liked: false,
+          expand: false,
           replies: [] })
         this.comment = ''
       }
@@ -600,7 +605,10 @@ export default class extends Vue {
           time: '剛剛',
           likes: 0,
           hates: 0,
-          replies: [] })
+          avatar: this.user.avatar,
+          liked: false,
+          hated: false,
+          read: false })
       } else {
         const r = c.replies.find(v => v.id === this.replyId)
         c.replies.unshift({
@@ -613,7 +621,10 @@ export default class extends Vue {
           time: '剛剛',
           likes: 0,
           hates: 0,
-          replies: [] })
+          avatar: this.user.avatar,
+          liked: false,
+          hated: false,
+          read: false})
         if (!r.read) {
           const m = MessageModule.comment.messages.find(v => v.id = r.id)
           if (m) {

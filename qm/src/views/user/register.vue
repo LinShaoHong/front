@@ -41,6 +41,7 @@ import { UserModule } from '@/store/modules/user'
 import { MenuModule } from '@/store/modules/menu'
 import Cookies from 'js-cookie'
 import { MessageModule } from '@/store/modules/message'
+import { Form as ElForm,  } from 'element-ui'
 
 @Component({
   name: 'Register'
@@ -64,7 +65,7 @@ export default class extends mixins(Layout) {
       callback(new Error('請輸入密碼'))
     } else {
       if (this.registerForm.checkPass !== '') {
-        this.$refs.registerForm.validateField('checkPass');
+        (this.$refs.registerForm as ElForm).validateField('checkPass', () => {});
       }
       callback()
     }
@@ -107,7 +108,7 @@ export default class extends mixins(Layout) {
   }
 
   private async register() {
-    this.$refs['registerForm'].validate(async(valid) => {
+    (this.$refs['registerForm'] as ElForm).validate(async(valid) => {
       if (valid) {
         const data = await register(this.registerForm)
         if (data.code === 200) {

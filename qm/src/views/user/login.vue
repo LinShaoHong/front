@@ -35,6 +35,7 @@ import { info } from '@/api/user'
 import { UserModule } from '@/store/modules/user'
 import { MenuModule } from '@/store/modules/menu'
 import { MessageModule } from '@/store/modules/message'
+import { Form as ElForm } from 'element-ui'
 import Cookies from 'js-cookie'
 
 @Component({
@@ -88,7 +89,7 @@ export default class extends mixins(Layout) {
   }
 
   private login() {
-    this.$refs['loginForm'].validate(async(valid) => {
+    (this.$refs['loginForm'] as ElForm).validate(async(valid) => {
       if (valid) {
         const data = await login(this.loginForm)
         this.$set(this.code, 0, data.code)
@@ -101,7 +102,7 @@ export default class extends mixins(Layout) {
           this.$router.push({ path: '/' })
           MenuModule.SetIndex(0)
         } else {
-          this.$refs['loginForm'].validate()
+          (this.$refs['loginForm'] as ElForm).validate()
         }
       }
       this.$set(this.code, 0, 200)

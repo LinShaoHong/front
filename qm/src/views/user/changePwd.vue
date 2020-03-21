@@ -34,7 +34,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
 import Layout from '@/common/layout'
 import { check, change } from '@/api/retrievePass'
-import { Message } from 'element-ui'
+import { Message, Form as ElForm } from 'element-ui'
 
 @Component({
   name: 'Register'
@@ -57,7 +57,7 @@ export default class extends mixins(Layout) {
       callback(new Error('請輸入密碼'))
     } else {
       if (this.changeForm.checkPass !== '') {
-        this.$refs.changeForm.validateField('checkPass');
+        (this.$refs.changeForm as ElForm).validateField('checkPass', () => {});
       }
       callback()
     }

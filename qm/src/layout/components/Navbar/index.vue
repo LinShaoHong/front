@@ -49,7 +49,7 @@
             onclick="ga('send', 'event', 'Header', 'click', 'Logo');"
           >
             <img
-              :src="logo+'?imageView2/1/w/80/h/80'"
+              :src="logo"
               class="logo"
             >
           </a>
@@ -295,7 +295,7 @@ export default class extends Vue {
   }
 
   get logo() {
-    return require('../../../assets/logo.jpg')
+    return this.SERVER + '/logo.jpg'
   }
 
   get mobile() {
