@@ -141,7 +141,6 @@ import { Component, Vue } from 'vue-property-decorator'
 import Pagination from '@/components/Pagination/index.vue'
 import { paged, add, del, getYQ, yqDel, addYQ } from '@/api/charge'
 import { imageServer } from '@/api/storage'
-import {yq} from "../../../../qm/src/api/charge";
 
 @Component({
   name: 'GirlList',
@@ -265,7 +264,7 @@ export default class extends Vue {
   }
 
   private async getYq() {
-    const data = await yq()
+    const data = await getYQ()
     this.listYQ = data.values
   }
 

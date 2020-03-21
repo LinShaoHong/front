@@ -214,7 +214,7 @@ export default class extends mixins(Layout) {
 
   get uploadAvatarPath() {
     if (this.user !== null) {
-      return uploadAvatarPath+"?QM-TOKEN=" + Cookies.get('QM-TOKEN')
+      return uploadAvatarPath
     }
     return uploadAvatarPath
   }

@@ -8,7 +8,7 @@ export const deleteImage = (data: any): Resp | any =>
     data
   })
 
-const uploadPath = process.env.VUE_APP_BACKEND_SERVER + '/api/v1/qm/admin/store'
+const uploadPath = process.env.VUE_APP_BASE_API + '/v1/qm/admin/store'
 export { uploadPath }
 
 const imageServer = process.env.VUE_APP_IMAGE_SERVER

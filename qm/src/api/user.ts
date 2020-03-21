@@ -33,5 +33,5 @@ export const deleteAvatar = (data: any): Resp | any =>
     data
   })
 
-const uploadAvatarPath = process.env.VUE_APP_BACKEND_SERVER + '/api/v1/qm/user/upload/avatar'
+const uploadAvatarPath = process.env.VUE_APP_BASE_API + '/v1/qm/user/upload/avatar'
 export { uploadAvatarPath }
