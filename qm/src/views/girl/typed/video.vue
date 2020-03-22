@@ -85,6 +85,10 @@
             />
           </li>
         </ul>
+        <div v-else-if="loading" class="loading"
+        >
+          <ripple />
+        </div>
         <div v-else class="empty">
           <span>{{ '抱歉，' + (city === ''?  '沒找到' : '【' + city + '】地區没有') + '妳想要的' + (categoryName === ''? '' : '【' + categoryName + '】') + '視頻.....' }}<svg-icon
             style="font-size: 22px; margin-left: 10px;"
@@ -104,16 +108,19 @@ import { GirlResp } from '@/api/girlType'
 import { paged, city, getCategory } from '@/api/girls'
 import GirlItem from '../components/GirlItem.vue'
 import { deviceResizeSupporter } from '@/utils/mixin'
+import Ripple from '@/components/Loading/Ripple.vue'
 
 @Component({
   name: 'GirlVideo',
   components: {
-    GirlItem
+    GirlItem,
+    Ripple
   }
 })
 export default class extends mixins(Layout) {
   private TYPE: string = 'VIDEO'
 
+  private loading = true
   private category2: string = ''
   private categories: { name: string, nameSpell: string }[] = []
 
@@ -156,7 +163,9 @@ export default class extends mixins(Layout) {
   }
 
   private async getGirls(start: number, count: number) {
+    this.loading = true
     let data = await paged({ start: start, count: count, type: this.TYPE, rank: this.rank, city: this.city, category: this.category2, q: this.q })
+    this.loading = false
     if (data.values.length > 0) {
       this.girls.push(...data.values)
     } else {
@@ -341,6 +350,15 @@ export default class extends mixins(Layout) {
   }
 }
 
+.loading {
+  width: 100%;
+  height: 500px;
+  display: flex;
+  justify-items: center;
+  .lds-ripple {
+    margin: 20px auto auto;
+  }
+}
 .empty {
   width: 100%;
   height: 200px;

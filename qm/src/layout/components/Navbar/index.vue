@@ -284,7 +284,8 @@
               </div>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item class="avatar-header" style="cursor: default;">
-                  <span style="display:block; font-size: 10px;">{{ user.name }}</span>
+                  <span style="display:block; font-size: 10px; height: 20px;">{{ user.name }}</span>
+                  <span style="display:block; font-size: 10px; height: 20px; margin-bottom: 8px;">{{ user.amount + ' 金幣' + ( user.vip? ' VIP': '' )}}</span>
                 </el-dropdown-item>
                 <el-dropdown-item>
                   <span style="display:block; cursor: pointer;" @click="toUserDetail(1)"><i class="el-icon-s-custom"></i>我的主頁</span>
@@ -1097,8 +1098,14 @@ export default class extends Vue {
     background-color: #101010;
   }
 
+  .avatar-header {
+    border-bottom: solid 1px #2F2F2F;
+    margin-bottom: 5px;
+  }
+
   li.avatar-header:hover {
     background-color: #101010;
+
   }
 }
 

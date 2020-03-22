@@ -14,7 +14,8 @@
              style="border-bottom: solid 1px #2F2F2F; padding-bottom: 3px;"
         >
           <div class="route-content">
-            <span style="font-size: 10px; color: white;">{{ '妳好 ' + user.name }}</span>
+            <span style="display:block; font-size: 10px; color: white; height: 15px;">{{ user.name }}</span>
+            <span style="display:block; font-size: 10px; color: white;  height: 15px;">{{ user.amount + ' 金幣' + ( user.vip? ' VIP': '' )}}</span>
           </div>
         </div>
         <div
