@@ -11,13 +11,13 @@
     <div class="fixed-header">
       <navbar />
     </div>
+    <div v-if="mobile" class="mobile-sidebar-wrapper">
+      <sidebar />
+    </div>
     <div class="main-container">
       <div
         v-if="mobile"
       >
-        <div class="mobile-sidebar-wrapper">
-          <sidebar />
-        </div>
         <div class="mobile-app-wrapper">
           <app-main />
         </div>
@@ -38,8 +38,8 @@
     <footer>
       <div class="footer">
         <p style="color: whitesmoke; font-size: 18px;">尋芳閣</p>
-        <p style="color: whitesmoke; font-size: 13px;">Copyright@ 2020-2021 xFangGirl All Rights Reserved. <a style="color: #f90; cursor: pointer" @click="toCopyright">版權聲明</a></p>
-        <p style="color: whitesmoke; font-size: 13px;">Contact information: <a href="mailto:someone@example.com">xfanggirl2@gmail.com</a>.</p>
+        <p :style="mobile? 'color: whitesmoke; font-size: 10px;' : 'color: whitesmoke; font-size: 13px;'">Copyright@ 2020-2021 xFangGirl All Rights Reserved. <a style="color: #f90; cursor: pointer" @click="toCopyright">版權聲明</a></p>
+        <p :style="mobile? 'color: whitesmoke; font-size: 10px;' : 'color: whitesmoke; font-size: 13px;'">Contact information: <a href="mailto:someone@example.com">xfanggirl2@gmail.com</a>.</p>
       </div>
     </footer>
   </div>
@@ -49,14 +49,15 @@
 import { Component } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
 import { DeviceType, AppModule } from '@/store/modules/app'
-import { AppMain, Navbar } from './components'
+import { AppMain, Navbar,Sidebar } from './components'
 import ResizeMixin from './mixin/resize'
 
 @Component({
   name: 'Layout',
   components: {
     AppMain,
-    Navbar
+    Navbar,
+    Sidebar
   }
 })
 export default class extends mixins(ResizeMixin) {
@@ -115,15 +116,6 @@ export default class extends mixins(ResizeMixin) {
 </script>
 
 <style lang="scss" scoped>
-.fixed-header {
-  position: relative;
-  z-index: 9;
-  min-width: 1150px;
-  margin: 0;
-  padding: 0;
-  box-shadow: darkgrey 0 0 12px 1px;
-}
-
 .drawer-bg {
   background: #000;
   opacity: 0.5;
@@ -136,6 +128,15 @@ export default class extends mixins(ResizeMixin) {
 }
 
 .desktop {
+  .fixed-header {
+    position: relative;
+    z-index: 9;
+    min-width: 1150px;
+    margin: 0;
+    padding: 0;
+    box-shadow: darkgrey 0 0 12px 1px;
+  }
+
   .desk-content-grid {
     margin-top: 1%;
     display: grid;
@@ -162,9 +163,36 @@ export default class extends mixins(ResizeMixin) {
     border-radius: 10px; /* Rounded corners */
     font-size: 18px; /* Increase font size */
   }
+
+  .footer {
+    text-align: center;
+    border-top: solid 2px #f90;
+    margin-top: 30px;
+    padding-top: 15px;
+    padding-bottom: 25px;
+  }
 }
 
 .mobile {
+  .fixed-header {
+    position: relative;
+    z-index: 9;
+    margin: 0;
+    padding: 0;
+    box-shadow: darkgrey 0 0 12px 1px;
+  }
+
+  .footer {
+    text-align: center;
+    border-top: solid 2px #f90;
+    margin-top: 30px;
+    padding-top: 15px;
+    padding-bottom: 25px;
+    p {
+      font-size: 2px;
+    }
+  }
+
   .main-container {
     margin-left: 0;
     margin-top: $MobileNavBarHeight !important;
@@ -172,7 +200,6 @@ export default class extends mixins(ResizeMixin) {
 
   .mobile-sidebar-wrapper {
     margin-left: 10px;
-    margin-top: 20px;
     position: fixed;
     z-index: 1001;
     transition: transform .28s;
@@ -223,14 +250,5 @@ export default class extends mixins(ResizeMixin) {
   .mobile-sidebar-wrapper {
     transition: none;
   }
-}
-
-.footer {
-  text-align: center;
-  border-top: solid 2px #f90;
-  margin-top: 30px;
-  padding-top: 15px;
-  padding-bottom: 25px;
-  min-width: 1150px;
 }
 </style>

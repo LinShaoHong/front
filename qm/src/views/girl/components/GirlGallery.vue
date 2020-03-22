@@ -50,6 +50,7 @@
           </div>
         </div>
         <div class="main-image">
+          <span v-if="mobile" style="color: whitesmoke; font-size: 11px;">{{ '點擊圖片翻頁 (' + (index + 1)  + '/' + currImage.detailImages.length + ')'}}</span>
           <div class="main-image-pic">
             <img
               id="imgId"
@@ -209,22 +210,22 @@
         <div style="text-align: center">
           <pagination v-show="commentTotal>0" :total="commentTotal" :start.sync="commentStart" :count.sync="commentCount" @pagination="listComments(false, null)" />
         </div>
-        <el-dialog
-          :visible.sync="replayVisible"
-          width="30%">
+      </div>
+    </div>
+    <el-dialog
+      :visible.sync="replayVisible"
+      :width="mobile? '80%' : '30%'">
           <textarea
             v-model="replyContent"
             class="comment-text"
             style="font-size: 13px; height: 100px;"
             :placeholder="replyTitle"
           ></textarea>
-          <span slot="footer" class="dialog-footer">
+      <span slot="footer" class="dialog-footer">
               <el-button @click="replayVisible = false" size="mini">取 消</el-button>
               <el-button type="primary" @click="doReply()" size="mini">回 複</el-button>
             </span>
-        </el-dialog>
-      </div>
-    </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -967,11 +968,13 @@ export default class extends Vue {
     .girl-info {
       width: 100%;
       display: grid;
-      grid-template-rows: repeat(4, 40px);
+      grid-template-rows: repeat(4, auto);
       grid-template-columns: 1fr 5fr;
       margin-top: 25px;
 
       .info-label {
+        padding-bottom: 10px;
+        min-width: 100px;
         display: flex;
         align-items: center;
         justify-content: flex-end;
@@ -980,6 +983,7 @@ export default class extends Vue {
       }
 
       .info-value {
+        padding-bottom: 10px;
         width: 520px;
         margin-left: 10px;
         display: flex;
@@ -1114,6 +1118,14 @@ export default class extends Vue {
 .mobile {
   .image-viewer-container {
     display: block;
+  }
+
+  .main-image-info {
+    .girl-info {
+      .info-value {
+        width: 200px;
+      }
+    }
   }
 
   .el-image-viewer__btn {

@@ -58,6 +58,7 @@
             </el-option>
           </el-select>
           <input
+            v-if="!mobile"
             class="sub-search-input"
             v-model="q"
             @keyup="pressSearch"
@@ -65,6 +66,7 @@
           >
           </input>
           <button
+            v-if="!mobile"
             class="sub-search-button"
             @click="search"
           >

@@ -167,4 +167,12 @@ export default class extends mixins(Layout) {
   background-color: whitesmoke;
 }
 
+.mobile {
+  .register-container {
+    margin-top: 5%;
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+}
+
 </style>

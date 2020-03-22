@@ -3,25 +3,32 @@
     :class="classObj"
   >
     <div
-      v-if="category !== undefined && category.items.length > 0"
       class="sidebar-container"
     >
       <div
         id="menuContainer"
         class="menu-container"
       >
+        <div v-if="user !== null"
+             class="menu-item"
+             style="border-bottom: solid 1px #2F2F2F; padding-bottom: 3px;"
+        >
+          <div class="route-content">
+            <span style="font-size: 10px; color: white;">{{ '妳好 ' + user.name }}</span>
+          </div>
+        </div>
         <div
-          v-for="(v, i) in category.items"
+          v-for="(v, i) in menus"
           :id="'item:'+ i"
-          :key="v.name"
+          :key="v.label"
           class="menu-item"
-          @click="jump(category.subType, v.name, i)"
+          @click="jump(v.path, i)"
+          :style="i === menus.length - 1? 'border-top: solid 1px #2F2F2F;' : ''"
         >
           <div class="route-content"
                @mouseover="onHover(i)"
           >
             <span :class="actives[i] ? 'category-label active' : 'category-label'">{{ v.label }}</span>
-            <span :class="actives[i] ? 'category-num active' : 'category-num'">{{ v.count | toThousands }}</span>
           </div>
         </div>
       </div>
@@ -41,6 +48,9 @@ import { Component, Vue, Watch } from 'vue-property-decorator'
 import ErrorLog from '@/components/ErrorLog/index.vue'
 import LangSelect from '@/components/LangSelect/index.vue'
 import { DeviceType, AppModule } from '@/store/modules/app'
+import { MenuModule, MenuItem } from '@/store/modules/menu'
+import { UserModule } from '@/store/modules/user'
+import { logout } from '@/api/session'
 
 @Component({
   name: 'Sidebar',
@@ -72,8 +82,85 @@ export default class extends Vue {
     }
   }
 
+  get user() {
+    return UserModule.user
+  }
+
+  get menus() {
+    let ms: MenuItem[] = []
+    if (UserModule.user === null) {
+      ms = [
+        { label: '登錄註冊', path: '/user/login', type: null }
+      ]
+    } else {
+      ms = [
+        { label: '退出', path: '/logout', type: null }
+      ]
+    }
+    ms.unshift(...MenuModule.menus)
+    return ms;
+  }
+
+  private onHover(hoverIndex: number) {
+    MenuModule.SetIndex(hoverIndex)
+  }
+
+  private async logout() {
+    await logout()
+    UserModule.Set(null)
+  }
+
+  private jump(path: string, index: number) {
+    if (path === '/logout') {
+      this.logout()
+    } else {
+      this.resetIndex(index)
+      if (name === null) {
+        this.$router.push({ path: '/' })
+      } else {
+        this.$router.push({ path: path })
+      }
+    }
+  }
+
+  private resetIndex(index: number) {
+    MenuModule.SetIndex(index)
+    for (let i = 0; i < this.menus.length; i++) {
+      if (i !== index) {
+        this.$set(this.actives, i, false)
+      } else {
+        this.$set(this.actives, i, true)
+      }
+    }
+  }
+
+  get index() {
+    return MenuModule.index
+  }
+
+  @Watch('index')
+  scrollToPreview(index: number) {
+    if (index >= 0) {
+      const step = 50
+      const _containerDoc = document.getElementById('menuContainer')
+      const item: HTMLElement = document.getElementById('item:' + index)
+      const viewHeight = _containerDoc.clientHeight
+      const rectTop = item.getBoundingClientRect().top - _containerDoc.getBoundingClientRect().top
+      if (rectTop <= 0) {
+        _containerDoc.scrollTop -= step
+      } else if (rectTop >= viewHeight - step) {
+        _containerDoc.scrollTop += step
+      }
+    }
+    this.resetIndex(index)
+  }
+
   created() {
-    this.actives[0] = true
+    for (let i = 0; i < this.menus.length; i++) {
+      if (this.menus[i].path === this.$route.path) {
+        this.actives[i] = true
+      }
+    }
   }
 }
 </script>
@@ -109,27 +196,18 @@ export default class extends Vue {
     }
 
     .route-content {
+      text-align: center;
       position: relative;
-      text-indent: 10px;
 
       .active {
         color: #f90;
       }
 
       .category-label {
-        max-width: 64%;
         font-size: 14px;
         font-family: "Songti SC",serif;
         text-indent: 0;
-        margin-right: 20px;
-      }
-
-      .category-num {
-        float: right;
-        font-size: 12px;
-        text-indent: 0;
-        margin-right: 3px;
-        margin-top: 4px;
+        line-height: 30px;
       }
     }
   }

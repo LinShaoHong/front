@@ -184,4 +184,12 @@ export default class extends mixins(Layout) {
     color: #A3A2A2;
   }
 }
+
+.mobile {
+  .changePwd-container {
+    margin-top: 5%;
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+}
 </style>

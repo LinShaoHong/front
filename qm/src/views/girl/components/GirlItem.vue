@@ -1,5 +1,6 @@
 <template>
-  <div :class="mobile ? 'image-wrapper mobile' : 'image-wrapper'">
+  <div :class="mobile ? 'image-wrapper mobile' : 'image-wrapper'"
+  >
     <div
       :id="image.id"
       class="image-shadow js-tilt-container"

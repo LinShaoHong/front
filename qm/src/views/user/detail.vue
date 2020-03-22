@@ -53,18 +53,22 @@
         </el-collapse-item>
         <el-collapse-item :title="'我的收藏'" name="2">
           <div v-if="collectTotal > 0" class="collect-wrapper">
-            <div class="collect-list">
-              <div class="collect-item" v-for="item in collects">
-                <div class="collect-item__img">
-                  <img :src="SERVER + item.mainImage" style="width: 130px; height: 180px; cursor: pointer" @click="toDetail(item.girlId, item.onService)">
-                </div>
-                <div class="collect-item__name">
-                  <span>{{ item.city + ' ' + item.name }}</span>
-                </div>
-                <div class="collect-item__time">
-                  <span>收藏于 {{ item.time }}</span>
-                </div>
-              </div>
+            <div class="collect-list"
+                 :style="mobile ? ('width: ' + mobileImagesWidth + 'px;') : ''"
+            >
+              <ul class="collect-item">
+                <li v-for="item in collects">
+                  <div class="collect-item__img">
+                    <img :src="SERVER + item.mainImage" style="width: 130px; height: 180px; cursor: pointer" @click="toDetail(item.girlId, item.onService)">
+                  </div>
+                  <div class="collect-item__name">
+                    <span>{{ (item.city === null?  '' : (item.city + ' ')) + item.name }}</span>
+                  </div>
+                  <div class="collect-item__time">
+                    <span>收藏于 {{ item.time }}</span>
+                  </div>
+                </li>
+              </ul>
             </div>
             <div class="collect-pagination" style="text-align: center; margin-top: 7px;">
               <pagination v-show="collectTotal>0" :total="collectTotal" :start.sync="collectStart" :count.sync="count" @pagination="getCollects" />
@@ -76,18 +80,22 @@
         </el-collapse-item>
         <el-collapse-item :title="'最近浏覽'" name="3">
           <div v-if="footprintTotal > 0" class="collect-wrapper">
-            <div class="collect-list">
-              <div class="collect-item" v-for="item in footprints">
-                <div class="collect-item__img">
-                  <img :src="SERVER + item.mainImage" style="width: 130px; height: 180px; cursor: pointer" @click="toDetail(item.girlId, item.onService)">
-                </div>
-                <div class="collect-item__name">
-                  <span>{{ item.city + ' ' + item.name }}</span>
-                </div>
-                <div class="collect-item__time">
-                  <span>{{ item.time }}</span>
-                </div>
-              </div>
+            <div class="collect-list"
+                 :style="mobile ? ('width: ' + mobileImagesWidth + 'px;') : ''"
+            >
+              <ul class="collect-item">
+                <li v-for="item in footprints">
+                  <div class="collect-item__img">
+                    <img :src="SERVER + item.mainImage" style="width: 130px; height: 180px; cursor: pointer" @click="toDetail(item.girlId, item.onService)">
+                  </div>
+                  <div class="collect-item__name">
+                    <span>{{ (item.city === null?  '' : (item.city + ' ')) + item.name }}</span>
+                  </div>
+                  <div class="collect-item__time">
+                    <span>{{ item.time }}</span>
+                  </div>
+                </li>
+              </ul>
             </div>
             <div class="collect-pagination" style="text-align: center; margin-top: 7px;">
               <pagination v-show="footprintTotal>0" :total="footprintTotal" :start.sync="footprintStart" :count.sync="count" @pagination="getFootprints" />
@@ -174,7 +182,7 @@ import { FootprintResp } from '@/api/footprintType'
 import { flow, FlowResp } from '@/api/charge'
 import { Message } from 'element-ui'
 import Pagination from '@/components/Pagination/index.vue'
-import Cookies from 'js-cookie'
+import { deviceResizeSupporter } from '@/utils/mixin'
 
 @Component({
   name: 'Register',
@@ -200,7 +208,9 @@ export default class extends mixins(Layout) {
   private flowsEnd: boolean = false
   private flowsType: string = ''
 
-  private count: number = 10
+  private count: number = 0
+
+  private mobileImagesWidth: number = 0
 
   private yqs: [{ type: string, url: string, amount: number }] = [{
     type: '',
@@ -259,13 +269,17 @@ export default class extends mixins(Layout) {
   }
 
   private async getCollects() {
-    const data = await getCollections({ start: this.collectStart, count: this.count })
+    const c = this.mobile? 6 : 10
+    this.count = c
+    const data = await getCollections({ start: this.collectStart, count: c })
     this.collects = data.values
     this.collectTotal = data.total
   }
 
   private async getFootprints() {
-    const data = await getFootprints({ start: this.footprintStart, count: this.count })
+    const c = this.mobile? 6 : 10
+    this.count = c
+    const data = await getFootprints({ start: this.footprintStart, count: c })
     this.footprints = data.values
     this.footprintTotal = data.total
   }
@@ -336,6 +350,13 @@ export default class extends mixins(Layout) {
     this.yqs = data.values
   }
 
+  private resize() {
+    if (this.mobile) {
+      const c = Math.floor(window.outerWidth * 0.98 / 165)
+      this.mobileImagesWidth = c * 155
+    }
+  }
+
   created() {
     if (UserModule.user !== null) {
       if (this.$route.query.name) {
@@ -345,6 +366,7 @@ export default class extends mixins(Layout) {
       this.getFootprints()
       this.getFlows()
       this.getYqs()
+      deviceResizeSupporter(this.resize)
     }
   }
 }
@@ -435,24 +457,32 @@ export default class extends mixins(Layout) {
 }
 
 .collect-wrapper {
-  .collect-list {
-    display: grid;
-    margin-top: 10px;
-    grid-template-rows: repeat(2, 210px);
-    grid-template-columns: repeat(5, 1fr);
-    grid-row-gap: 10px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-content: center;
+  justify-items: center;
 
+  .collect-list {
+    width: 600px;
     .collect-item {
-      display: grid;
-      grid-template-rows: 178px 20px 20px;
+      width: 100%;
+      padding: 0;
+      margin-top: 20px;
+      @include clearfix;
+
+      li {
+        margin-top: 0;
+        float: left;
+        list-style: none;
+        margin-left: 15px;
+      }
 
       .collect-item__img {
-        grid-row: 1 / 2;
         text-align: center;
       }
 
       .collect-item__name {
-        grid-row: 2 / 3;
         text-align: center;
 
         span {
@@ -547,5 +577,31 @@ export default class extends mixins(Layout) {
   height: 100px;
   display: block;
   border-radius: 6px;
+}
+
+.mobile {
+  .detail-container {
+    margin-top: 5%;
+    padding-left: 2%;
+    padding-right: 2%;
+
+    .user-info {
+      display: grid;
+      grid-template-rows: 110px repeat(6, 30px);
+      grid-template-columns: 4fr 7fr;
+      font-size: 14px;
+
+      .info-label {
+        text-align: right;
+        color: whitesmoke;
+      }
+
+      .info-value {
+        margin-left: 10px;
+        text-align: left;
+        color: whitesmoke;
+      }
+    }
+  }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
-  <div :class="mobile ? 'app-container mobile' : 'app-container'">
+  <div :class="mobile ? 'app-container mobile' : 'app-container desktop'">
     <div class="main-image-container">
-      <div class="image-header">
+      <div v-if="!mobile" class="image-header">
         <div class="image-carousel">
           <el-carousel :interval="2000" type="card" height="550px">
             <el-carousel-item v-for="item in carousels" :key="item.id">
@@ -16,7 +16,6 @@
       </div>
       <div
         class="main-image-list"
-        :style="mobile ? ('width: ' + mobileImagesWidth + 'px;') : ''"
       >
         <div
           v-for="(v, index) in groupedImages"
@@ -24,7 +23,9 @@
           :key="v.name"
           class="typed-girls"
         >
-          <div class="typed-girls-item">
+          <div class="typed-girls-item"
+               :style="mobile ? ('width: ' + mobileImagesWidth + 'px;') : ''"
+          >
             <div
               :id="'label:' + v.type"
               class="category-label"
@@ -33,10 +34,10 @@
                 <hr class="divider">
               </div>
               <div class="span_text">
-              <span
-                class="category-span"
-              >{{ v.label }}</span>
-                <div class="category-rank">
+                <span
+                  class="category-span"
+                >{{ v.label }}</span>
+                <div v-if="!mobile" class="category-rank">
                   <div
                     class="rank-item"
                     :style="groupedRanks[index] === 'updateTime' ? 'border-bottom: 1px solid #5AA766;' : ''"
@@ -66,7 +67,7 @@
               <div class="divider_text_medium">
                 <hr class="divider">
               </div>
-              <div class="span_text_right">
+              <div  class="span_text_right">
                 <div class="category-rank-right">
                   <div
                     class="rank-item"
@@ -106,7 +107,7 @@
               <ripple />
             </div>
           </div>
-          <div class="girl-hot-list">
+          <div v-if="!mobile" class="girl-hot-list">
             <div class="gir-hot-header" style="padding-bottom: 10px;">
               <span style="color: whitesmoke; font-size: 30px;">熱門</span>
             </div>
@@ -260,7 +261,7 @@ export default class extends mixins(Layout) {
 
   private async loadGroupedImages() {
     let len: number = this.items.length
-    const count = this.mobile ? 6 : 8
+    const count = this.mobile ? 12 : 8
     for (let i = 0; i < len; i++) {
       this.groupedRanks.push('updateTime')
       if (i < len) {
@@ -287,202 +288,204 @@ export default class extends mixins(Layout) {
 </script>
 
 <style lang="less">
-.main-image-container {
-  width: 100%;
-  overflow: hidden;
-
-  .image-header {
-    margin-top: 20px;
-    margin-right: 100px;
-
-    .image-carousel {
-      text-align: center;
-      img {
-        object-fit: fill;
-        transition: all 0.5s ease;
-        margin: auto;
-      }
-
-      img:hover {
-        transform: scale(1.08);
-      }
-    }
-
-    /deep/ .el-carousel ul {
-      display: none;
-    }
-  }
-
-  .main-image-list {
-    margin-top: 20px;
+.desktop {
+  .main-image-container {
     width: 100%;
+    overflow: hidden;
 
-    .typed-girls {
-      height: 720px;
-      display: grid;
-      grid-template-columns: 2fr 1fr;
+    .image-header {
+      margin-top: 20px;
+      margin-right: 100px;
 
-      .typed-girls-item {
-        grid-column: 1 / 2;
-
-        .category-label {
-          margin-bottom: 10px;
-          display: grid;
-          grid-template-columns: 60px 230px 2fr 1fr;
-          grid-column-gap: 10px;
-          align-content: center;
-          justify-content: center;
-          margin-left: 16px;
-
-          .span_text {
-            grid-column: 2 / 3;
-            .category-span {
-              color: white;
-              font-size: 24px;
-              line-height: 24px;
-            }
-          }
-
-          .category-rank {
-            float: right;
-            padding-top: 2px;
-            margin-left: 10px;
-          }
-
-          .rank-item {
-            float: left;
-            padding-bottom: 3px;
-            margin-left: 10px;
-            span {
-              line-height: 20px;
-              font-size: 15px;
-              color: white;
-              cursor: pointer;
-            }
-          }
-
-          .category-rank-right {
-            float: left;
-            padding-top: 2px;
-          }
-
-          .divider_text_left {
-            grid-column: 1 / 2;
-          }
-
-          .divider_text_medium {
-            grid-column: 3 / 4;
-          }
-
-          .span_text_right {
-            grid-column: 4 / 5;
-          }
-
-          .divider {
-            float: left;
-            width: 100%;
-            border: 1px solid #2F2F2F;
-          }
+      .image-carousel {
+        text-align: center;
+        img {
+          object-fit: fill;
+          transition: all 0.5s ease;
+          margin: auto;
         }
 
-        ul {
-          padding: 0;
-          margin-top: 5px;
-          @include clearfix;
-          li {
-            margin-top: 0;
-            float: left;
-            list-style: none;
-            margin-left: 15px;
-          }
-        }
-
-        .loading {
-          width: 100%;
-          height: 500px;
-          display: flex;
-          justify-items: center;
-          .lds-ripple {
-            margin: 20px auto auto;
-          }
+        img:hover {
+          transform: scale(1.08);
         }
       }
 
-      .girl-hot-list {
-        grid-column: 2 / 3;
-        margin-bottom: 15px;
+      /deep/ .el-carousel ul {
+        display: none;
+      }
+    }
 
-        .hot-item__list {
-          overflow-y: scroll;
-          scrollbar-width: none;
-          height: 640px;
-          border-bottom: 1px solid #2F2F2F;
-          .hot-item__wrapper {
+    .main-image-list {
+      margin-top: 20px;
+      width: 100%;
+
+      .typed-girls {
+        height: 720px;
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+
+        .typed-girls-item {
+          grid-column: 1 / 2;
+
+          .category-label {
+            margin-bottom: 10px;
             display: grid;
-            grid-template-columns: 25px 1fr;
+            grid-template-columns: 60px 230px 2fr 1fr;
+            grid-column-gap: 10px;
+            align-content: center;
+            justify-content: center;
+            margin-left: 16px;
 
-            .hot-num {
+            .span_text {
+              grid-column: 2 / 3;
+              .category-span {
+                color: white;
+                font-size: 24px;
+                line-height: 24px;
+              }
+            }
+
+            .category-rank {
+              float: right;
+              padding-top: 2px;
+              margin-left: 10px;
+            }
+
+            .rank-item {
+              float: left;
+              padding-bottom: 3px;
+              margin-left: 10px;
+              span {
+                line-height: 20px;
+                font-size: 15px;
+                color: white;
+                cursor: pointer;
+              }
+            }
+
+            .category-rank-right {
+              float: left;
+              padding-top: 2px;
+            }
+
+            .divider_text_left {
               grid-column: 1 / 2;
             }
 
-            .hot-info-img__wrapper {
-              grid-column: 2 / 3;
-              display: grid;
-              grid-template-columns: 100px 1fr;
-
-              .hot-img {
-                grid-column: 1 / 2;
-
-                img {
-                  object-fit: fill;
-                  transition: all 0.5s ease;
-                  margin: auto;
-                }
-
-                img:hover {
-                  box-shadow: 0 0 16px hotpink;
-                  transform: scale(1.02);
-                }
-              }
-
-              .hot-info {
-                grid-column: 2 / 3;
-                width: 100%;
-                span {
-                  cursor: pointer;
-                  margin-left: 7px;
-                  width: 170px;
-                  color: whitesmoke;
-                  white-space: nowrap;
-                  text-overflow: ellipsis;
-                  overflow: hidden;
-                  display: inline-block;
-                }
-
-                span:hover{
-                  color: #5AA766;
-                  transition: all .2s ease;
-                }
-              }
+            .divider_text_medium {
+              grid-column: 3 / 4;
             }
 
-            .hot-info__wrapper {
-              .hot-info-name {
+            .span_text_right {
+              grid-column: 4 / 5;
+            }
+
+            .divider {
+              float: left;
+              width: 100%;
+              border: 1px solid #2F2F2F;
+            }
+          }
+
+          ul {
+            padding: 0;
+            margin-top: 5px;
+          @include clearfix;
+            li {
+              margin-top: 0;
+              float: left;
+              list-style: none;
+              margin-left: 15px;
+            }
+          }
+
+          .loading {
+            width: 100%;
+            height: 500px;
+            display: flex;
+            justify-items: center;
+            .lds-ripple {
+              margin: 20px auto auto;
+            }
+          }
+        }
+
+        .girl-hot-list {
+          grid-column: 2 / 3;
+          margin-bottom: 15px;
+
+          .hot-item__list {
+            overflow-y: scroll;
+            scrollbar-width: none;
+            height: 640px;
+            border-bottom: 1px solid #2F2F2F;
+            .hot-item__wrapper {
+              display: grid;
+              grid-template-columns: 25px 1fr;
+
+              .hot-num {
+                grid-column: 1 / 2;
+              }
+
+              .hot-info-img__wrapper {
                 grid-column: 2 / 3;
-                width: 100%;
-                span {
-                  cursor: pointer;
-                  width: 270px;
-                  color: whitesmoke;
-                  white-space: nowrap;
-                  text-overflow: ellipsis;
-                  overflow: hidden;
-                  display: inline-block;
+                display: grid;
+                grid-template-columns: 100px 1fr;
+
+                .hot-img {
+                  grid-column: 1 / 2;
+
+                  img {
+                    object-fit: fill;
+                    transition: all 0.5s ease;
+                    margin: auto;
+                  }
+
+                  img:hover {
+                    box-shadow: 0 0 16px hotpink;
+                    transform: scale(1.02);
+                  }
                 }
 
-                span:hover{
-                  color: #5AA766;
-                  transition: all .2s ease;
+                .hot-info {
+                  grid-column: 2 / 3;
+                  width: 100%;
+                  span {
+                    cursor: pointer;
+                    margin-left: 7px;
+                    width: 170px;
+                    color: whitesmoke;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    display: inline-block;
+                  }
+
+                  span:hover{
+                    color: #5AA766;
+                    transition: all .2s ease;
+                  }
+                }
+              }
+
+              .hot-info__wrapper {
+                .hot-info-name {
+                  grid-column: 2 / 3;
+                  width: 100%;
+                  span {
+                    cursor: pointer;
+                    width: 270px;
+                    color: whitesmoke;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    display: inline-block;
+                  }
+
+                  span:hover{
+                    color: #5AA766;
+                    transition: all .2s ease;
+                  }
                 }
               }
             }
@@ -490,11 +493,6 @@ export default class extends mixins(Layout) {
         }
       }
     }
-  }
-
-  .girl-hot-list {
-    width: 100%;
-    grid-column: 1 / 4;
   }
 }
 
@@ -504,42 +502,91 @@ export default class extends mixins(Layout) {
 
 .mobile {
   .main-image-container {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr;
-    justify-content: center;
-    justify-items: center;
-
     .main-image-list {
-      .category-label {
-        margin-left: 0;
-        grid-column-gap: 5px;
-        .span_text {
-          .category-span {
-            margin-left: 10px;
-            margin-right: 5px;
+      .typed-girls {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr;
+        justify-content: center;
+        justify-items: center;
+
+        .typed-girls-item {
+          margin-top: 10px;
+          .category-label {
+            margin-bottom: 10px;
+            display: grid;
+            grid-template-columns: 10px 100px 1fr 2fr;
+            grid-column-gap: 10px;
+            align-content: center;
+            justify-content: center;
+            margin-left: 5px;
+
+            .span_text {
+              grid-column: 2 / 3;
+              .category-span {
+                color: white;
+                font-size: 24px;
+                line-height: 24px;
+              }
+            }
+
+            .category-rank {
+              float: right;
+              padding-top: 2px;
+              margin-left: 10px;
+            }
+
+            .rank-item {
+              float: left;
+              padding-bottom: 3px;
+              margin-left: 10px;
+              span {
+                line-height: 20px;
+                font-size: 15px;
+                color: white;
+                cursor: pointer;
+              }
+            }
+
+            .category-rank-right {
+              float: left;
+              padding-top: 2px;
+            }
+
+            .divider_text_left {
+              grid-column: 1 / 2;
+            }
+
+            .divider_text_medium {
+              grid-column: 3 / 4;
+            }
+
+            .span_text_right {
+              grid-column: 4 / 5;
+            }
+
+            .divider {
+              float: left;
+              width: 100%;
+              border: 1px solid #2F2F2F;
+            }
+          }
+
+          ul {
+            padding: 0;
+            margin-top: 20px;
+            @include clearfix;
+            li {
+              margin-top: 0;
+              float: left;
+              list-style: none;
+              margin-left: 5px;
+            }
+          }
+          .loading {
+            height: 800px;
           }
         }
-
-        .divider_text_left {
-          margin-left: 5px;
-        }
-
-        .divider_text_right {
-          margin-right: 1px;
-        }
-      }
-
-      width: 100%;
-      ul {
-        padding-right: 0;
-        li {
-          margin-left: 5px;
-          margin-right: 0;
-        }
-      }
-      .loading {
-        height: 800px;
       }
     }
   }

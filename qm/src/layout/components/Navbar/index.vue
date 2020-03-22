@@ -6,6 +6,11 @@
       v-if="mobile"
       class="mobile-top-header"
     >
+      <div
+        v-if="messageVisible"
+        class="drawer-bg"
+        @click="handleMessageOutside"
+      ></div>
       <div class="mobile-hamburger">
         <hamburger
           :is-active="sidebar.opened"
@@ -26,6 +31,102 @@
         >
           <i class="el-icon-search" />
         </button>
+      </div>
+      <div class="mobile-messages">
+        <div tyle="z-index: 18;">
+          <div style="float: left; z-index: 10; margin-right: 5px;">
+            <div style="display: inline-block; position: relative; margin-left: 5px;">
+              <div style="display: flex; align-items: center; height: 38px;">
+                <svg-icon
+                  name="message"
+                  style="color: #f90; font-size: 25px; cursor: pointer;"
+                  @click="showMessages"
+                ></svg-icon>
+              </div>
+              <span class="message-num" v-show="unReads > 0">{{ '.' }}</span>
+              <div
+                v-show="messageVisible"
+                class="message-menu"
+              >
+                <div class="message-menu-header">
+                  <div :class="isComment? 'message-menu-header__comment active' : 'message-menu-header__comment'"
+                       @click="isComment = !isComment"
+                  >
+                    評論
+                    <span class="message-comment-num" v-show="commentUnReads > 0">{{ commentUnReads }}</span>
+                  </div>
+                  <div :class="isComment? 'message-menu-header__notice' : 'message-menu-header__notice active'"
+                       @click="isComment = !isComment"
+                  >
+                    通知
+                    <span class="message-comment-num" v-show="noticeUnReads > 0">{{ noticeUnReads }}</span>
+                  </div>
+                </div>
+                <div
+                  v-show="isComment"
+                  id="message-comment-menu-list"
+                  class="message-menu-list"
+                >
+                  <div v-for="(item, i) in commentMessages"
+                       v-if="commentMessages.length > 0"
+                  >
+                    <div
+                      :class="i < (messages.length - 1)? 'message-item bottom-solid' : 'message-item'"
+                      @click="doRead(item.read, item.id)"
+                    >
+                      <div class="message-item-header">
+                        <div v-if="!item.read" style="width: 6px; height: 6px; border-radius: 3px; background-color: red"></div>
+                      </div>
+                      <div class="message-item-content">
+                        <div style="float: left; height: 17px; padding-top: 2px;">
+                          <img v-if="item.avatar" style="width: 15px; height: 15px; margin-right: 5px;" class="avatar" :src="SERVER + item.avatar">
+                        </div>
+                        <span style="color: #f90; font-size: 15px; margin-right: 2px;">
+                      {{ item.system? '系統消息: ' : item.commentatorName }}</span>
+                        <span v-if="!item.system" style="color: whitesmoke; font-size: 12px; margin-right: 2px;">&nbsp;{{ item.time }}</span><br/>
+                        <a v-if="!item.system" class="message-reply-content"
+                           href="#"
+                           @click="toComment(item.girlId, item.id)">{{ item.content }}</a>
+                        <span v-if="item.system" style="color: whitesmoke">{{ item.content }}</span>
+                      </div>
+                      <div v-if="!item.system" class="message-item-reply">
+                        <span @click="openReply(item.sessionId, item.id, item.commentatorName)">回複</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div v-if="commentMessages.length === 0" style="text-align: center; margin-top: 30px;">
+                    <span style="color: whitesmoke;">暫無評論內容~~</span>
+                  </div>
+                </div>
+                <div
+                  v-show="!isComment"
+                  id="message-notice-menu-list"
+                  class="message-menu-list"
+                >
+                  <div v-for="(item, i) in noticeMessages"
+                       v-if="noticeMessages.length > 0"
+                  >
+                    <div
+                      :class="i < (messages.length - 1)? 'message-item bottom-solid' : 'message-item'"
+                      @click="doRead(item.read, item.id)"
+                    >
+                      <div class="message-item-header">
+                        <div v-if="!item.read" style="width: 6px; height: 6px; border-radius: 3px; background-color: red"></div>
+                      </div>
+                      <div class="message-item-content">
+                        <span style="color: #f90; font-size: 15px; margin-right: 2px;">寻芳阁</span><br/>
+                        <span style="color: whitesmoke" :id="item.id">{{ item.content }}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div v-else>
+                    <span>暫無通知~~</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div
         class="search-svg"
@@ -167,22 +268,6 @@
                     <span>暫無通知~~</span>
                   </div>
                 </div>
-                <el-dialog
-                  :modal-append-to-body="false"
-                  :visible.sync="replayVisible"
-                  width="30%"
-                >
-                  <textarea
-                    v-model="replyContent"
-                    class="comment-text"
-                    style="font-size: 13px; height: 100px;"
-                    :placeholder="replyTitle">
-                  </textarea>
-                    <span slot="footer" class="dialog-footer">
-                    <el-button @click="replayVisible = false" size="mini">取 消</el-button>
-                    <el-button type="primary" @click="doReply()" size="mini">回 複</el-button>
-                    </span>
-                </el-dialog>
               </div>
             </div>
           </div>
@@ -231,6 +316,22 @@
         </router-link>
       </div>
     </div>
+    <el-dialog
+      :modal-append-to-body="false"
+      :visible.sync="replayVisible"
+      :width="mobile? '80%' : '30%'"
+    >
+                  <textarea
+                    v-model="replyContent"
+                    class="comment-text"
+                    style="font-size: 13px; height: 100px;"
+                    :placeholder="replyTitle">
+                  </textarea>
+      <span slot="footer" class="dialog-footer">
+                    <el-button @click="replayVisible = false" size="mini">取 消</el-button>
+                    <el-button type="primary" @click="doReply()" size="mini">回 複</el-button>
+                    </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -251,7 +352,6 @@ import { logout } from '@/api/session'
 import { info } from '@/api/user'
 import { read, readAll, replyMessage, reply } from '@/api/comment'
 import Pagination from '@/components/Pagination/index.vue'
-import Cookies from 'js-cookie'
 
 @Component({
   name: 'Navbar',
@@ -290,7 +390,8 @@ export default class extends Vue {
       navbar: true,
       hideSearch: this.hideSearch,
       openSearch: !this.hideSearch,
-      mobile: AppModule.device === DeviceType.Mobile
+      mobile: AppModule.device === DeviceType.Mobile,
+      desktop: AppModule.device !== DeviceType.Mobile
     }
   }
 
@@ -582,13 +683,173 @@ export default class extends Vue {
 </script>
 
 <style lang="less">
-.navbar {
-  height: 130px;
-  position: relative;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  background-color: #1b1b1b;
+.desktop {
+  .navbar {
+    height: 130px;
+    position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #1b1b1b;
+  }
+
+  .desk-top-header {
+    width: 100%;
+    display: grid;
+    height: 80%;
+    grid-template-columns: 1fr 3fr 1fr;
+    grid-column-gap: 5px;
+    justify-items: center;
+    align-items: center;
+    margin: auto;
+
+    .search {
+      width: 40%;
+      display: grid;
+      grid-template-columns: 8fr 2fr;
+
+      .search-input {
+        min-width: 100px;
+      }
+    }
+  }
+
+  .desk-menu {
+    height: 22%;
+    width: 100%;
+    display: inline-grid;
+    padding-left: 60px;
+    padding-right: 60px;
+    grid-template-columns: repeat(7, 1fr);
+    vertical-align: center;
+
+    .active {
+      border-bottom: solid #f90;
+    }
+
+    .desc-menu-item {
+      cursor: pointer;
+      text-align: center;
+      border-radius: 2px;
+      padding-top: 5px;
+
+      &:hover {
+        background: #363636;
+      }
+
+      .menu-text {
+        color: whitesmoke;
+      }
+    }
+  }
+
+  .message-num {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    padding: 0 4px;
+    font-size: 11px;
+    color: #fff;
+    background-color: #f1403c;
+    border: 2px solid #fff;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+}
+
+.mobile {
+  .mobile-top-header {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 50px auto 30px 30px;
+    grid-column-gap: 10px;
+    justify-items: center;
+    align-items: center;
+  }
+
+  .mobile-hamburger {
+    .hamburger-container {
+      height: 100%;
+      padding: 0 15px;
+      cursor: pointer;
+      transition: background .3s;
+      border-right: 1px solid #000;
+      -webkit-tap-highlight-color: transparent;
+
+      &:hover {
+        background: rgba(0, 0, 0, .025)
+      }
+    }
+  }
+
+  .message-num {
+    position: absolute;
+    bottom: 50%;
+    left: 60%;
+    padding: 1px 2px;
+    font-size: 5px;
+    color: #f1403c;
+    background-color: #f1403c;
+    border: 1px solid #fff;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  .message-menu {
+    top: 45px;
+    left: -280px;
+
+    .message-menu-header {
+      width: 300px;
+    }
+
+    .message-menu-list {
+      width: 300px;
+
+      .message-item {
+        grid-template-columns: 20px 235px 30px;
+      }
+    }
+  }
+
+  .mobile-messages {
+    border-left: 1px solid #000;
+  }
+
+  .search-svg {
+    cursor: pointer;
+    margin-right: 5px;
+
+    .svg-icon {
+      vertical-align: middle;
+      color: #f90;
+    }
+  }
+
+  .search {
+    width: 95%;
+    transition: transform .38s;
+    .search-input {
+      width: 80%;
+    }
+
+    .search-button {
+      width: 20%;
+    }
+  }
+
+  &.openSearch {
+    .search {
+    }
+  }
+
+  &.hideSearch {
+    .search {
+      pointer-events: none;
+      transition-duration: 2s;
+      transform: translate3d(0, -300px, 0);
+    }
+  }
 }
 
 .search {
@@ -598,7 +859,7 @@ export default class extends Vue {
     display: inline-block;
     color: #cacaca;
     background: #363636;
-    border-radius: 3px 0 0 3px;
+    border-radius: 0 0 0 0;
     outline: 0;
     border: none;
     padding: 2px 5px;
@@ -636,133 +897,6 @@ export default class extends Vue {
       margin: 0 auto;
     }
   }
-}
-
-.desk-top-header {
-  width: 100%;
-  display: grid;
-  height: 80%;
-  grid-template-columns: 1fr 3fr 1fr;
-  grid-column-gap: 5px;
-  justify-items: center;
-  align-items: center;
-  margin: auto;
-
-  .search {
-    width: 40%;
-    display: grid;
-    grid-template-columns: 8fr 2fr;
-
-    .search-input {
-      min-width: 100px;
-    }
-  }
-}
-
-.desk-menu {
-  height: 22%;
-  width: 100%;
-  display: inline-grid;
-  padding-left: 60px;
-  padding-right: 60px;
-  grid-template-columns: repeat(7, 1fr);
-  vertical-align: center;
-
-  .active {
-    border-bottom: solid #f90;
-  }
-
-  .desc-menu-item {
-    cursor: pointer;
-    text-align: center;
-    border-radius: 2px;
-    padding-top: 5px;
-
-    &:hover {
-      background: #363636;
-    }
-
-    .menu-text {
-      color: whitesmoke;
-    }
-  }
-}
-
-.mobile {
-  .mobile-top-header {
-    height: 100%;
-    display: grid;
-    grid-template-columns: 50px auto 50px;
-    grid-column-gap: 10px;
-    justify-items: center;
-    align-items: center;
-  }
-
-  .mobile-hamburger {
-    .hamburger-container {
-      height: 100%;
-      padding: 0 15px;
-      cursor: pointer;
-      transition: background .3s;
-      border-right: 1px solid #000;
-      -webkit-tap-highlight-color: transparent;
-
-      &:hover {
-        background: rgba(0, 0, 0, .025)
-      }
-    }
-  }
-
-  .search-svg {
-    cursor: pointer;
-    padding: 0 15px;
-    margin-right: 2px;
-    border-left: 1px solid #000;
-
-    .svg-icon {
-      vertical-align: middle;
-      color: #f90;
-    }
-  }
-
-  .search {
-    width: 85%;
-    margin: 10px auto auto;
-    transition: transform .38s;
-    .search-input {
-      width: 80%;
-    }
-
-    .search-button {
-      width: 20%;
-    }
-  }
-
-  &.openSearch {
-    .search {
-    }
-  }
-
-  &.hideSearch {
-    .search {
-      pointer-events: none;
-      transition-duration: 2s;
-      transform: translate3d(0, -300px, 0);
-    }
-  }
-}
-
-.message-num {
-  position: absolute;
-  bottom: 50%;
-  left: 50%;
-  padding: 0 4px;
-  font-size: 11px;
-  color: #fff;
-  background-color: #f1403c;
-  border: 2px solid #fff;
-  border-radius: 20px;
-  cursor: pointer;
 }
 
 .message-comment-num {

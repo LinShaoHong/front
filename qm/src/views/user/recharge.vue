@@ -112,7 +112,7 @@ export default class extends mixins(Layout) {
         if (this.cardNo === '') {
           Message({
             message: '請輸入卡號',
-            type: 'info',
+            type: 'warning',
             duration: 1500
           })
         } else {
@@ -281,5 +281,19 @@ export default class extends mixins(Layout) {
   height: 30px;
   border: 1px solid #757575;
   transition: all .5s ease;
+}
+
+.mobile {
+  .recharge-container {
+    margin-top: 5%;
+    padding-left: 0;
+    padding-right: 0;
+
+    .product-select {
+      .el-select {
+        width: 12rem;
+      }
+    }
+  }
 }
 </style>
