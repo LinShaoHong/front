@@ -145,7 +145,7 @@
                       <img :src="SERVER + flow.girl.mainImage" style="width: 90px; height: 130px; cursor: pointer" @click="toDetail(flow.girl.id, flow.girl.onService)">
                     </div>
                     <div class="flow-buy-item__name">
-                      <span>{{ flow.girl.city + ' ' + flow.girl.name }}</span>
+                      <span>{{ (flow.girl.city === null?  '' : (flow.girl.city + ' ')) + flow.girl.name }}</span>
                     </div>
                   </div>
                 </div>
