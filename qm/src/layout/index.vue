@@ -153,7 +153,7 @@ export default class extends mixins(ResizeMixin) {
   #backtop {
     display: none; /* Hidden by default */
     position: fixed; /* Fixed/sticky position */
-    bottom: 20px; /* Place the button at the bottom of the page */
+    bottom: 150px; /* Place the button at the bottom of the page */
     right: 30px; /* Place the button 30px from the right */
     z-index: 99; /* Make sure it does not overlap */
     border: none; /* Remove borders */
@@ -175,8 +175,9 @@ export default class extends mixins(ResizeMixin) {
 
 .mobile {
   .fixed-header {
-    position: relative;
+    position: fixed;
     z-index: 9;
+    top: 0;
     margin: 0;
     padding: 0;
     box-shadow: darkgrey 0 0 12px 1px;
@@ -195,6 +196,7 @@ export default class extends mixins(ResizeMixin) {
 
   .main-container {
     margin-left: 0;
+    padding-top: 20px;
     margin-top: $MobileNavBarHeight !important;
   }
 

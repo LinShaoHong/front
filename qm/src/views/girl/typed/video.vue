@@ -305,6 +305,10 @@ export default class extends mixins(Layout) {
   }
 }
 
+.el-select-dropdown__item:hover {
+  background-color: #757575;
+}
+
 .sub-search-input {
   width: 180px;
   margin-left: 20px;

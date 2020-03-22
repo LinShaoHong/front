@@ -464,6 +464,10 @@ export default class extends Vue {
     this.toIndex(index)
   }
 
+  private toTop() {
+    alert(1)
+  }
+
   private toIndex(index: number) {
     for (let i = 0; i < this.menus.length; i++) {
       if (i !== index) {
@@ -759,6 +763,14 @@ export default class extends Vue {
 }
 
 .mobile {
+  .navbar {
+    position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #1b1b1b;
+  }
+
   .mobile-top-header {
     height: 100%;
     display: grid;
