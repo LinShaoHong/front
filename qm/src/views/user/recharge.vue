@@ -41,7 +41,7 @@
             class="card-input"
             v-model="cardNo"
             style=""></input>
-          <a style="color: #f90; font-size: 15px; margin-left: 13px; cursor: pointer" :href="yqUrl">-->點擊購買官方卡號</a>
+          <a style="color: #f90; font-size: 15px; margin-left: 13px; cursor: pointer" :href="yqUrl" target="_Blank">-->點擊購買官方卡號</a>
         </div>
       </div>
       <el-button type="primary"

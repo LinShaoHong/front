@@ -11,6 +11,7 @@ export interface GirlResp {
 
 export interface GirlDetailResp {
   id: string
+  type: string
   name: string
   city: string
   title: string

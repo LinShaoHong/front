@@ -39,8 +39,8 @@
           <div class="info-value">{{ currImage.title }}</div>
           <div class="info-label">地區:</div>
           <div class="info-value">{{ currImage.city === null? '暫無' : currImage.city }}</div>
-          <div class="info-label">聯系方式:</div>
-          <div v-if="currImage.accessible" class="info-value">{{ currImage.contact === null? '暫無' : currImage.contact }}</div>
+          <div class="info-label">{{ contactLabel }}</div>
+          <div v-if="currImage.accessible" class="info-value">{{ contactValue }}</div>
           <div v-else-if="!currImage.onService" class="info-value">該教師已下課</div>
           <div v-else-if="currImage.needCharge" class="info-value">
             您金幣不足 點擊&nbsp;<a style="cursor: pointer; color: #f90;" @click="recharge">購買</a>({{ currImage.price + '金幣'}})&nbsp;獲取聯系方式
@@ -334,6 +334,25 @@ export default class extends Vue {
     return AppModule.device === DeviceType.Mobile
   }
 
+  get contactLabel() {
+    const type = this.currImage.type
+    switch(type) {
+      case 'PIC':
+        return '更多美圖:'
+      case 'VIDEO':
+        return '下載地址:'
+    }
+    return '聯系方式:'
+  }
+
+  get contactValue() {
+    const type = this.currImage.type
+    if (type === 'PIC') {
+      return '已加載該教師所有詳情圖'
+    }
+    return this.currImage.contact
+  }
+
   @Watch('index')
   onIndexChange(v: number) {
     this.actives = []
@@ -374,6 +393,7 @@ export default class extends Vue {
             const data = await detail(this.currImage.id)
             if (data.code === 200) {
               this.currImage = data.value
+              this.urls = this.currImage.detailImages.map(v => process.env.VUE_APP_IMAGE_SERVER + v)
             }
             const user = await info()
             UserModule.Set(user.value)
