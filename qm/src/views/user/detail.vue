@@ -254,7 +254,7 @@ export default class extends mixins(Layout) {
         duration: 1500
       })
     } else {
-      window.open(window.location.origin + '/#/girl/detail?liked=false&id=' + id)
+      window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/girl/detail?liked=false&id=' + id)
     }
   }
 

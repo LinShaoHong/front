@@ -31,7 +31,7 @@
           </div>
         </div>
         <div id="backtop" @click="backtop">
-          <svg-icon name="backtop" style="color: #3A3A3A; font-size: 25px;"></svg-icon>
+          <svg-icon name="backtop" style="color: sandybrown; font-size: 25px;"></svg-icon>
         </div>
       </div>
     </div>
@@ -98,7 +98,7 @@ export default class extends mixins(ResizeMixin) {
   }
 
   private toCopyright() {
-    window.open(window.location.origin + '/#/site/copyright')
+    window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/site/copyright')
   }
 
   mounted() {

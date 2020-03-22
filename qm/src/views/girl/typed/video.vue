@@ -138,7 +138,7 @@ export default class extends mixins(Layout) {
   private city: string = ''
 
   get searchPlaceholder() {
-    return '按名字搜索 ' + this.city + ' 樓鳳'
+    return '按名字搜索 ' + this.city + ' 視頻'
   }
 
   get categoryName() {

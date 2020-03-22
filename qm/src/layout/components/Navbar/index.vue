@@ -392,7 +392,7 @@ export default class extends Vue {
 
   private toUserDetail(name) {
     MenuModule.ToMenu('/user/detail')
-    window.open(window.location.origin + '/#/user/detail?name=' + name)
+    window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/user/detail?name=' + name)
   }
 
   private async search() {
@@ -502,7 +502,7 @@ export default class extends Vue {
   }
 
   private toComment(girlId: string, commentId: string) {
-    window.open(window.location.origin + '/#/girl/detail?liked=false&id=' + girlId+"&commentId="+commentId)
+    window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/girl/detail?liked=false&id=' + girlId+"&commentId="+commentId)
   }
 
   private fetchMessage() {
@@ -534,7 +534,7 @@ export default class extends Vue {
 
   private openReply(sessionId: string, replyId: string, userName: string) {
     if (this.user === null) {
-      window.open(window.location.origin + '/#/user/login')
+      window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/user/login')
     } else {
       this.replayVisible = true
       this.sessionId = sessionId

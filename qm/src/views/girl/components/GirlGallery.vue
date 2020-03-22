@@ -6,8 +6,9 @@
       <div
         v-show="!mobile"
         class="preview-list"
+        id="preview-list"
       >
-        <span class="gallery-span">相冊</span>
+        <span class="gallery-span">{{ '相冊 (共' + currImage.detailImages.length + '張)' }}</span>
         <div
           id="previewList"
           class="preview-container"
@@ -29,16 +30,17 @@
           </div>
         </div>
       </div>
-      <div class="main-image-info">
+      <div class="main-image-info"
+      >
         <div class="girl-info">
           <div class="info-label">名稱:</div>
           <div class="info-value">{{ currImage.name }}</div>
           <div class="info-label">描述:</div>
           <div class="info-value">{{ currImage.title }}</div>
           <div class="info-label">地區:</div>
-          <div class="info-value">{{ currImage.city }}</div>
+          <div class="info-value">{{ currImage.city === null? '暫無' : currImage.city }}</div>
           <div class="info-label">聯系方式:</div>
-          <div v-if="currImage.accessible" class="info-value">{{ currImage.contact }}</div>
+          <div v-if="currImage.accessible" class="info-value">{{ currImage.contact === null? '暫無' : currImage.contact }}</div>
           <div v-else-if="!currImage.onService" class="info-value">該教師已下課</div>
           <div v-else-if="currImage.needCharge" class="info-value">
             您金幣不足 點擊&nbsp;<a style="cursor: pointer; color: #f90;" @click="recharge">購買</a>({{ currImage.price + '金幣'}})&nbsp;獲取聯系方式
@@ -352,12 +354,12 @@ export default class extends Vue {
   }
 
   private recharge() {
-    window.open(window.location.origin + '/#/user/recharge')
+    window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/user/recharge')
   }
 
   private buy() {
     if (this.user === null) {
-      window.open(window.location.origin + '/#/user/login')
+      window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/user/login')
     } else {
       this.$confirm('確定購買？')
         .then(async _ => {
@@ -400,7 +402,7 @@ export default class extends Vue {
 
   private async onCollect() {
     if (this.user === null) {
-      window.open(window.location.origin + '/#/user/login')
+      window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/user/login')
     } else {
       if (this.currImage.collected) {
         this.currImage.collects -= 1
@@ -581,7 +583,7 @@ export default class extends Vue {
 
   private openReply(sessionId: string, replyId: string, userName: string) {
     if (this.user === null) {
-      window.open(window.location.origin + '/#/user/login')
+      window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/user/login')
     } else {
       this.replayVisible = true
       this.sessionId = sessionId
@@ -917,9 +919,8 @@ export default class extends Vue {
     scrollbar-width: none;
     grid-column: 1 / 2;
     display: grid;
-    grid-template-rows: 50px 1fr;
+    grid-template-rows: 50px 1080px;
     margin-bottom: 10px;
-    border-bottom: 1px solid #5AA766;
 
     .gallery-span {
       grid-row: 1 / 2;
@@ -932,11 +933,13 @@ export default class extends Vue {
     .preview-container {
       grid-row: 2 / 3;
       overflow-y: scroll;
-      height: 660px;
+      height: 100%;
       scrollbar-width: none;
       width: 152px;
       border: 1px solid #2F2F2F;
       margin-bottom: 10px;
+      border-bottom: 1px solid #5AA766;
+      padding-bottom: 10px;
 
       .preview-item {
         float: left;
@@ -993,24 +996,20 @@ export default class extends Vue {
     .main-image {
       padding-left: 4px;
       padding-right: 4px;
-      display: grid;
-      grid-template-rows: 500px 50px;
-      grid-row-gap: 15px;
 
       .main-image-pic {
-        grid-row: 1 / 2;
         .image-viewer-img {
           justify-self: center;
           align-self: center;
           border-radius: 6px;
           cursor: pointer;
-          height: 500px;
+          width: 628px;
+          height: auto;
+          object-fit: fill;
         }
       }
 
       .main-image-op {
-        grid-row: 2 / 3;
-
         span {
           color: #a3a2a2;
         }
@@ -1041,9 +1040,8 @@ export default class extends Vue {
     scrollbar-width: none;
     grid-column: 3 / 4;
     display: grid;
-    grid-template-rows: 50px 1fr;
+    grid-template-rows: 50px 1080px;
     margin-bottom: 10px;
-    border-bottom: 1px solid #5AA766;
 
     .relate-span {
       grid-row: 1 / 2;
@@ -1054,13 +1052,15 @@ export default class extends Vue {
     }
     .recommendation {
       overflow-y: scroll;
-      height: 660px;
+      height: 100%;
       scrollbar-width: none;
       grid-row: 2 / 3;
       justify-self: left;
       border: 1px solid #2F2F2F;
       width: 152px;
       margin-bottom: 10px;
+      border-bottom: 1px solid #5AA766;
+      padding-bottom: 10px;
 
       .recommendation-item {
         float: left;

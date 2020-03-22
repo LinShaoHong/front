@@ -62,7 +62,7 @@ export default class extends Vue {
   private showViewer() {
     let ret = LikesModule.likes.get(this.image.id)
     const liked = ret === undefined ? false : ret
-    window.open(window.location.origin + '/#/girl/detail?id=' + this.image.id + '&liked=' + liked)
+    window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/girl/detail?id=' + this.image.id + '&liked=' + liked)
   }
 
   private move(e: MouseEvent) {

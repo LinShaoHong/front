@@ -127,12 +127,12 @@
                       <img :src="SERVER + item.mainImage" style="width: 100px; height: 120px; cursor: pointer;" @click="toDetail(item.id)">
                     </div>
                     <div class="hot-info" style="align-content: center">
-                      <span @click="toDetail(item.id)">{{ item.city + ' ' + item.name }}</span>
+                      <span @click="toDetail(item.id)">{{ (item.city === null? '' : item.city) + ' ' + item.name }}</span>
                     </div>
                   </div>
                   <div v-else class="hot-info__wrapper">
                     <div class="hot-info-name" style="align-content: center">
-                      <span @click="toDetail(item.id)">{{ item.city + ' ' + item.name }}</span>
+                      <span @click="toDetail(item.id)">{{ (item.city === null? '' : item.city) + ' ' + item.name }}</span>
                     </div>
                   </div>
                 </div>
@@ -186,7 +186,7 @@ export default class extends mixins(Layout) {
   }
 
   private toDetail(id: string) {
-    window.open(window.location.origin + '/#/girl/detail?liked=false&id=' + id)
+    window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/girl/detail?liked=false&id=' + id)
   }
 
   private async selectRank(type: string, rank: string) {
@@ -220,7 +220,7 @@ export default class extends mixins(Layout) {
     const index = this.groupedImages.findIndex(v => v.type === type)
     if (index >= 0) {
       const rank = this.groupedRanks[index]
-      window.open(window.location.origin + '/#/girl/' + type.toLocaleLowerCase() + '?rank=' + rank)
+      window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/girl/' + type.toLocaleLowerCase() + '?rank=' + rank)
     }
   }
 
@@ -260,11 +260,10 @@ export default class extends mixins(Layout) {
 
   private async loadGroupedImages() {
     let len: number = this.items.length
-    len = len < 2 ? len : 2
     const count = this.mobile ? 6 : 8
-    for (let i = 0; i < this.items.length; i++) {
+    for (let i = 0; i < len; i++) {
       this.groupedRanks.push('updateTime')
-      if (i <= len) {
+      if (i < len) {
         await this.getImages(count, this.items[i].label, this.items[i].type)
         this.typeStarts.set(this.items[i].type, count)
       } else {
