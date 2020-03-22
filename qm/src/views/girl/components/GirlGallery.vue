@@ -43,7 +43,7 @@
           <div v-if="currImage.accessible" class="info-value">{{ contactValue }}</div>
           <div v-else-if="!currImage.onService" class="info-value">該教師已下課</div>
           <div v-else-if="currImage.needCharge" class="info-value">
-            您金幣不足 點擊&nbsp;<a style="cursor: pointer; color: #f90;" @click="recharge">購買</a>({{ currImage.price + '金幣'}})&nbsp;獲取聯系方式
+            您金幣不足 點擊&nbsp;<a style="cursor: pointer; color: #f90;" @click="recharge">購買</a>({{ currImage.price + '金幣'}})&nbsp;獲取更多金幣
           </div>
           <div v-else class="info-value">
             <a style="cursor: pointer; color: #f90;" @click="buy">購買</a>({{ currImage.price + '金幣'}})
