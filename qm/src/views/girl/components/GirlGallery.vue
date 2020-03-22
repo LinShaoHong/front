@@ -817,19 +817,6 @@ export default class extends Vue {
     }
   }
 
-  private async getDetailUrls(imgId: string) {
-    let data = await detail(imgId)
-    if (data.code === 200) {
-      this.urls = data.value.detailImages.map(v => process.env.VUE_APP_IMAGE_SERVER + v)
-    } else if (data.code === 2000) {
-      Message({
-        message: '該教師已下課！',
-        type: 'warning',
-        duration: 1500
-      })
-    }
-  }
-
   private async chooseRec(img: GirlResp) {
     this.reset()
     this.index = 0
@@ -861,7 +848,6 @@ export default class extends Vue {
     this.showImgTimeout()
     this.hideBtnPrevAndNext()
     this.deviceSupportInstall()
-    this.getDetailUrls(this.image.id)
     this.readWhenScroll()
   }
 }

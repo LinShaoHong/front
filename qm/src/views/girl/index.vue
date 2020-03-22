@@ -225,10 +225,6 @@ export default class extends mixins(Layout) {
     }
   }
 
-  private toCategorized(type: string, rank: string) {
-    this.$router.push({ name: this.TYPE.concat('-', '-category'), params: { category: name, rank: rank } })
-  }
-
   private async getImages(count: number, label: string, type: string) {
     let index = this.groupedImages.findIndex(v => v.type === type)
     if (index < 0 || (index > 0 && this.groupedImages[index].images.length === 0)) {
