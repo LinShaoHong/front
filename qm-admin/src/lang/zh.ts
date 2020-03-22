@@ -82,6 +82,7 @@ export default {
     user: '用户管理',
     userList: '查询',
     userStat: '统计',
+    viewStat: '统计',
   },
   navbar: {
     logOut: '退出登录',

@@ -36,6 +36,12 @@ const girlRoutes: RouteConfig = {
       meta: { title: 'girlComment', icon: 'message' }
     },
     {
+      path: 'view-stat',
+      component: () => import('@/views/girl/stat.vue'),
+      name: 'ViewStat',
+      meta: { title: 'viewStat', icon: 'chart' }
+    },
+    {
       path: 'spider-jobs',
       component: () => import('@/views/spider/index.vue'),
       name: 'SpiderJobs',

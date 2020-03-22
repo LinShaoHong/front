@@ -102,7 +102,7 @@
             </div>
           </div>
           <div v-else class="empty">
-            <span>趕緊去挑選吧.........</span>
+            <span>趕緊去挑選吧........</span>
           </div>
         </el-collapse-item>
         <el-collapse-item title="金幣收支" name="4">
@@ -156,7 +156,7 @@
             </el-timeline>
           </div>
           <div v-else class="empty">
-            <span>您還沒有金幣哦.........</span>
+            <span>您還沒有金幣哦........</span>
           </div>
         </el-collapse-item>
       </el-collapse>
@@ -601,6 +601,21 @@ export default class extends mixins(Layout) {
         text-align: left;
         color: whitesmoke;
       }
+    }
+  }
+
+  .empty {
+    width: 90%;
+    height: 180px;
+    margin: 2% auto 2%;
+    border: 2px solid #2F2F2F;
+    display: flex;
+    justify-content: center;
+
+    span {
+      margin: auto;
+      font-size: 20px;
+      color: #A3A2A2;
     }
   }
 }

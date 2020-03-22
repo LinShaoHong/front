@@ -39,3 +39,10 @@ export const publishGirl = (id: string): Resp | any =>
     url: '/v1/qm/admin/girl/publish/$' + id,
     method: 'put'
   })
+
+export const stat = (params: any): PageResp | any =>
+  request({
+    url: '/v1/qm/admin/girl/stat',
+    method: 'get',
+    params
+  })
