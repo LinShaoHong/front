@@ -746,6 +746,10 @@ export default class extends Vue {
         color: whitesmoke;
       }
     }
+
+    .desc-menu-item.active {
+      background: #363636;
+    }
   }
 
   .message-num {
