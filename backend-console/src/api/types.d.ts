@@ -17,35 +17,18 @@ export interface IUserData {
   roles: string[]
 }
 
-export interface ISpiderJob {
+export interface ISchedulerJob {
   id: string
-  group: string
   publish: boolean
   startTime: number
+  nextTime: string
   rate: string
-  setting: {
-    parallelism: number,
-    poolSize: number,
-    monitorInterval: number,
-    taskInterval: number,
-    executeTime: number,
-    retryCount: number,
-    retryDelays: number,
-    batchSize: number,
-    fetchSize: number,
-    batchInterval: number
-  }
-  schema: object,
-  checkpoint: {
-    categoryUrl: any,
-    pageNum: any
-  },
+  profiles: object
   createTime: string
   updateTime: string
 }
 
-export interface ISpiderProgress {
-  parallelism: number,
+export interface ISchedulerProgress {
   total: number,
   running: boolean,
   finished: number,
@@ -53,13 +36,5 @@ export interface ISpiderProgress {
   startTime: string,
   endTime: string,
   usedTime: string,
-  checkpoint: {
-    categoryUrl: string,
-    pageNum: number | string
-  },
-  checkPointing: {
-    categoryUrl: string,
-    pageNum: number | string
-  }
   errors: string[]
 }

@@ -3,6 +3,7 @@ import Router, { RouteConfig } from 'vue-router'
 
 /* Layout */
 import Layout from '@/layout/index.vue'
+import schedulerRouter from './modules/scheduler'
 
 /* Router modules */
 
@@ -49,6 +50,7 @@ export const constantRoutes: RouteConfig[] = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes: RouteConfig[] = [
+  schedulerRouter
 ]
 
 const createRouter = () => new Router({
