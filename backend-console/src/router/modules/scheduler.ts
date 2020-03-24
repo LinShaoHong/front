@@ -15,7 +15,7 @@ const schedulerRoutes: RouteConfig = {
       path: 'scheduler-jobs',
       component: () => import('@/views/scheduler/index.vue'),
       name: 'SSchedulerJobs',
-      meta: { title: 'scheduler', icon: 'database' }
+      meta: { title: 'scheduler', icon: 'example' }
     }
   ]
 }

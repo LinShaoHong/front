@@ -38,6 +38,7 @@ export default {
     menu2: '菜单 2',
     table: '表格',
     spider: '爬虫',
+    scheduler: '定时任务',
     dynamicTable: '动态表格',
     draggableTable: '可拖拽表格',
     inlineEditTable: '表格内编辑',
