@@ -32,8 +32,8 @@
           <i class="el-icon-search" />
         </button>
       </div>
-      <div class="mobile-messages">
-        <div tyle="z-index: 18;">
+      <div  class="mobile-messages">
+        <div :style="user === null? 'display: none; z-index: 18;' : 'z-index: 18;'">
           <div style="float: left; z-index: 10; margin-right: 5px;">
             <div style="display: inline-block; position: relative; margin-left: 5px;">
               <div style="display: flex; align-items: center; height: 38px;">
