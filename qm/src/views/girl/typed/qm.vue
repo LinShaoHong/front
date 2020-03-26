@@ -85,7 +85,7 @@
             />
           </li>
         </ul>
-        <div v-else class="empty">
+        <div v-else-if="loadedAll" class="empty">
           <span>{{ '抱歉，' + (city === ''?  '沒找到' : '【' + city + '】地區没有') + '妳想要的' + (categoryName === ''? '' : '【' + categoryName + '】') + '教師.....' }}<svg-icon
             style="font-size: 22px; margin-left: 10px;"
             name="cry"

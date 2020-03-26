@@ -1,7 +1,7 @@
 <template>
   <div :class="mobile ? 'app-container mobile' : 'app-container desktop'">
-    <div class="main-image-container">
-      <div v-if="!mobile" class="image-header">
+    <div  class="main-image-container">
+      <div v-if="!mobile && carousels.length > 0" class="image-header">
         <div class="image-carousel">
           <el-carousel :interval="2000" type="card" height="550px">
             <el-carousel-item v-for="item in carousels" :key="item.id">
@@ -13,6 +13,10 @@
             </el-carousel-item>
           </el-carousel>
         </div>
+      </div>
+      <div v-if="carousels.length === 0" class="loading"
+      >
+        <ripple />
       </div>
       <div
         class="main-image-list"
@@ -496,7 +500,22 @@ export default class extends mixins(Layout) {
   color: #5AA766;
 }
 
+.loading {
+  margin-top: 100px;
+  width: 100%;
+  height: 200px;
+  display: flex;
+  justify-items: center;
+  .lds-ripple {
+    margin: 20px auto auto;
+  }
+}
+
 .mobile {
+  .loading {
+    height: 100px;
+  }
+
   .main-image-container {
     .main-image-list {
       .typed-girls {
