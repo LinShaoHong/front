@@ -18,7 +18,7 @@
           <el-input placeholder="確認密碼" type="password" v-model="registerForm.checkPass" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label-width="0" label="" prop="email" class="label-item">
-          <el-input placeholder="郵箱，用以找回密碼，建議填寫" v-model.number="registerForm.email"></el-input>
+          <el-input placeholder="郵箱" v-model.number="registerForm.email"></el-input>
         </el-form-item>
         <el-form-item label-width="0">
           <el-button type="primary" @click="register" style="width: 100%;">注冊</el-button>
@@ -99,7 +99,7 @@ export default class extends mixins(Layout) {
       { validator: this.validatePass2, trigger: ['blur', 'change'] }
     ],
     email: [
-      { type: 'email', message: '請輸入正確的郵箱地址', trigger: ['blur', 'change'] }
+      { type: 'email', message: '請輸入正確的郵箱地址', required: true,  trigger: ['blur', 'change'] }
     ]
   }
 

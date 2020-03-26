@@ -85,15 +85,15 @@
             />
           </li>
         </ul>
-        <div v-else-if="loading" class="loading"
-        >
-          <ripple />
-        </div>
         <div v-else class="empty">
           <span>{{ '抱歉，' + (city === ''?  '沒找到' : '【' + city + '】地區没有') + '妳想要的' + (categoryName === ''? '' : '【' + categoryName + '】') + '視頻.....' }}<svg-icon
             style="font-size: 22px; margin-left: 10px;"
             name="cry"
           /></span>
+        </div>
+        <div v-if="!loadedAll" class="loading"
+        >
+          <ripple />
         </div>
       </div>
     </div>
@@ -186,7 +186,7 @@ export default class extends mixins(Layout) {
         const viewHeight = document.documentElement.clientHeight || window.innerHeight
         const scrollTop = window.document.scrollingElement.scrollTop
         const scrollHeight = window.document.scrollingElement.scrollHeight
-        if (scrollTop + viewHeight >= scrollHeight) {
+        if (scrollTop + viewHeight >= scrollHeight - 200) {
           await this.getGirls(this.STEP_COUNT * (this.scrollCounter++), this.STEP_COUNT)
         }
       }
@@ -356,7 +356,7 @@ export default class extends mixins(Layout) {
 
 .loading {
   width: 100%;
-  height: 500px;
+  height: 200px;
   display: flex;
   justify-items: center;
   .lds-ripple {
@@ -385,6 +385,10 @@ export default class extends mixins(Layout) {
     grid-template-columns: 1fr;
     justify-content: center;
     justify-items: center;
+
+    .loading {
+      height: 100px;
+    }
 
     .image-list {
       width: 100%;

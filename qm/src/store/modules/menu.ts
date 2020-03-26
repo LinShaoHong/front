@@ -32,6 +32,7 @@ class Menu extends VuexModule implements MenuState {
 
   @Mutation
   public TO_MENU(path: string) {
+    this.index = -1
     for(let i = 0; i < this.menus.length; i++) {
       if (this.menus[i].path === path) {
         this.index = i;

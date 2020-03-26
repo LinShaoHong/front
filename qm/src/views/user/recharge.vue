@@ -61,6 +61,7 @@ import Layout from '@/common/layout'
 import { recharge, yq } from '@/api/charge'
 import { info, signIn } from '@/api/user'
 import { UserModule } from '@/store/modules/user'
+import { MenuModule } from '@/store/modules/menu'
 import { Message } from 'element-ui'
 
 @Component({
@@ -125,6 +126,8 @@ export default class extends mixins(Layout) {
             })
             const user = await info()
             UserModule.Set(user.value)
+            MenuModule.ToMenu('/user/detail')
+            this.$router.push({ path: '/user/detail' })
           } else {
             Message({
               message: data.message,
@@ -142,6 +145,7 @@ export default class extends mixins(Layout) {
   }
 
   private toLogin() {
+    MenuModule.ToMenu('/user/login')
     this.$router.push({ path: '/user/login' })
   }
 

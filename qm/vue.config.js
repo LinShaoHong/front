@@ -4,7 +4,7 @@ const mockServerPort = 1378
 const name = '尋芳閣'
 
 module.exports = {
-  publicPath: process.env.NODE_ENV === 'production' ? '/qm' : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/' : '/',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
@@ -17,7 +17,7 @@ module.exports = {
     proxy: {
       [process.env.VUE_APP_BASE_API + '/v1']: {
         target: process.env.VUE_APP_BACKEND_SERVER + '/api/v1',
-        changeOrigin: false,
+        changeOrigin: true,
         ws: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API + '/v1']: ''
