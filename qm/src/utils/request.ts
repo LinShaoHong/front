@@ -40,6 +40,8 @@ service.interceptors.response.use(
         type: 'error',
         duration: 1000
       })
+    } else if(res.status === 401) {
+      this.$router.push({ path: '/user/login' })
     } else {
       Message({
         message: res.data,

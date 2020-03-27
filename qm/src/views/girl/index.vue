@@ -416,7 +416,8 @@ export default class extends mixins(Layout) {
 
           .hot-item__list {
             overflow-y: scroll;
-            scrollbar-width: none;
+            -ms-overflow-style: none;
+            overflow: -moz-scrollbars-none;
             height: 640px;
             border-bottom: 1px solid #2F2F2F;
             .hot-item__wrapper {
@@ -489,6 +490,10 @@ export default class extends mixins(Layout) {
                 }
               }
             }
+          }
+
+          .hot-item__list::-webkit-scrollbar {
+            width: 0 !important
           }
         }
       }

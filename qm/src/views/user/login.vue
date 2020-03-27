@@ -81,10 +81,10 @@ export default class extends mixins(Layout) {
 
   private rules = {
     username: [
-      { validator: this.checkUsername, trigger: ['blur', 'change'] }
+      { validator: this.checkUsername, trigger: ['blur'] }
     ],
     password: [
-      { validator: this.validatePass, trigger: ['blur', 'change'] }
+      { validator: this.validatePass, trigger: ['blur'] }
     ]
   }
 

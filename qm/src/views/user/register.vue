@@ -35,13 +35,14 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
 import Layout from '@/common/layout'
-import { register, checkName } from '@/api/session'
+import { register, checkName, checkEmail } from '@/api/session'
 import { info } from '@/api/user'
 import { UserModule } from '@/store/modules/user'
 import { MenuModule } from '@/store/modules/menu'
 import Cookies from 'js-cookie'
 import { MessageModule } from '@/store/modules/message'
-import { Form as ElForm,  } from 'element-ui'
+import { isEmail } from '@/utils/validate'
+import { Form as ElForm, Message } from 'element-ui'
 
 @Component({
   name: 'Register'
@@ -49,11 +50,26 @@ import { Form as ElForm,  } from 'element-ui'
 export default class extends mixins(Layout) {
   private checkUsername = async(rule, value, callback) => {
     if (!value) {
-      callback(new Error('請告訴我你的用戶名'))
+      callback(new Error('請填寫用戶名'))
     } else {
       const data = await checkName({ name: value })
       if (data.value) {
         callback(new Error('該用戶名已稱被注冊'))
+      } else {
+        callback()
+      }
+    }
+  }
+
+  private checkEmail = async(rule, value, callback) => {
+    if (!value) {
+      callback(new Error('請填寫郵箱'))
+    } else if (!isEmail(value)) {
+      callback(new Error('請輸入正確的郵箱格式'))
+    } else {
+      const data = await checkEmail({ email: value })
+      if (data.value) {
+        callback(new Error('該郵箱已稱被注冊'))
       } else {
         callback()
       }
@@ -90,16 +106,16 @@ export default class extends mixins(Layout) {
 
   private rules = {
     username: [
-      { validator: this.checkUsername, trigger: ['blur', 'change'] }
+      { validator: this.checkUsername, trigger: ['blur'] }
     ],
     password: [
-      { validator: this.validatePass, trigger: ['blur', 'change'] }
+      { validator: this.validatePass, trigger: ['blur'] }
     ],
     checkPass: [
-      { validator: this.validatePass2, trigger: ['blur', 'change'] }
+      { validator: this.validatePass2, trigger: ['blur'] }
     ],
     email: [
-      { type: 'email', message: '請輸入正確的郵箱地址', required: true,  trigger: ['blur', 'change'] }
+      { validator: this.checkEmail, type: 'email', required: true,  trigger: ['blur'] }
     ]
   }
 
@@ -118,6 +134,12 @@ export default class extends mixins(Layout) {
           await MessageModule.GetMessages({ start:0, count: 10, isComment: false })
           this.$router.push({ path: '/' })
           MenuModule.SetIndex(0)
+        } else {
+          Message({
+            message: data.message,
+            type: 'warning',
+            duration: 1500
+          })
         }
       }
     })

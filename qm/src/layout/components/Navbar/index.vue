@@ -284,8 +284,8 @@
               </div>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item class="avatar-header" style="cursor: default;">
-                  <span style="display:block; font-size: 10px; height: 20px;">{{ user.name }}</span>
-                  <span style="display:block; font-size: 10px; height: 20px; margin-bottom: 8px;">{{ user.amount + ' 金幣' + ( user.vip? ' VIP': '' )}}</span>
+                  <span style="display:block; font-size: 13px; height: 20px;">{{ user.name }}</span>
+                  <span style="display:block; font-size: 13px; height: 20px; margin-bottom: 8px;">{{ (user.amount === null? 0 : user.amount) + ' 金幣' + ( user.vip? ' VIP': '' )}}</span>
                 </el-dropdown-item>
                 <el-dropdown-item>
                   <span style="display:block; cursor: pointer;" @click="toUserDetail(1)"><i class="el-icon-s-custom"></i>我的主頁</span>
@@ -993,10 +993,15 @@ export default class extends Vue {
     }
   }
 
+  .message-menu-list::-webkit-scrollbar {
+    width: 0 !important
+  }
+
   .message-menu-list {
     height: 450px;
     overflow-y: scroll;
-    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overflow: -moz-scrollbars-none;
     width: 430px;
 
     .message-item {

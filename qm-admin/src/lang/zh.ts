@@ -76,6 +76,7 @@ export default {
     girlComment: '评论',
     message: '消息管理',
     messageList: '消息管理',
+    emailSender: '群发邮件',
     chargeList: '支付管理',
     messageCreate: '发布',
     messageEdit: '更新',

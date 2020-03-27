@@ -918,12 +918,12 @@ export default class extends Vue {
   width: 100%;
   height: 100%;
   display: grid;
+  margin-top: 50px;
+  margin-bottom: 100px;
   grid-template-columns: 152px 1fr 152px;
   justify-items: center;
 
   .preview-list {
-    overflow-y: scroll;
-    scrollbar-width: none;
     grid-column: 1 / 2;
     display: grid;
     grid-template-rows: 50px 1080px;
@@ -941,7 +941,8 @@ export default class extends Vue {
       grid-row: 2 / 3;
       overflow-y: scroll;
       height: 100%;
-      scrollbar-width: none;
+      -ms-overflow-style: none;
+      overflow: -moz-scrollbars-none;
       width: 152px;
       border: 1px solid #2F2F2F;
       margin-bottom: 10px;
@@ -965,6 +966,10 @@ export default class extends Vue {
           border: 1px solid #f90;
         }
       }
+    }
+
+    .preview-container::-webkit-scrollbar {
+      width: 0 !important
     }
   }
 
@@ -1046,8 +1051,6 @@ export default class extends Vue {
   }
 
   .preview-description {
-    overflow-y: scroll;
-    scrollbar-width: none;
     grid-column: 3 / 4;
     display: grid;
     grid-template-rows: 50px 1080px;
@@ -1063,7 +1066,8 @@ export default class extends Vue {
     .recommendation {
       overflow-y: scroll;
       height: 100%;
-      scrollbar-width: none;
+      -ms-overflow-style: none;
+      overflow: -moz-scrollbars-none;
       grid-row: 2 / 3;
       justify-self: left;
       border: 1px solid #2F2F2F;
@@ -1101,6 +1105,10 @@ export default class extends Vue {
           border: 1px solid #f90;
         }
       }
+    }
+
+    .recommendation::-webkit-scrollbar {
+      width: 0 !important
     }
   }
 }

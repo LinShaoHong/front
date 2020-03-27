@@ -14,8 +14,8 @@
              style="border-bottom: solid 1px #2F2F2F; padding-bottom: 3px;"
         >
           <div class="route-content">
-            <span style="display:block; font-size: 10px; color: white; height: 15px;">{{ user.name }}</span>
-            <span style="display:block; font-size: 10px; color: white;  height: 15px;">{{ user.amount + ' 金幣' + ( user.vip? ' VIP': '' )}}</span>
+            <span style="display:block; font-size: 13px; color: white; height: 18px;">{{ user.name }}</span>
+            <span style="display:block; font-size: 13px; color: white;  height: 18px;">{{ user.amount + ' 金幣' + ( user.vip? ' VIP': '' )}}</span>
           </div>
         </div>
         <div
@@ -187,7 +187,7 @@ export default class extends Vue {
     padding-bottom: 5px;
 
     span {
-      font-size: 13px;
+      font-size: 15px;
       color: #A3A2A2;
     }
 
@@ -205,7 +205,7 @@ export default class extends Vue {
       }
 
       .category-label {
-        font-size: 14px;
+        font-size: 16px;
         font-family: "Songti SC",serif;
         text-indent: 0;
         line-height: 30px;

@@ -156,7 +156,7 @@
             </el-timeline>
           </div>
           <div v-else class="empty">
-            <span>您還沒有金幣哦........</span>
+            <span>{{ formatFlowEmptyTip() }}</span>
           </div>
         </el-collapse-item>
       </el-collapse>
@@ -342,6 +342,18 @@ export default class extends mixins(Layout) {
         return '年VIP'
       case 'VIP_FOREVER':
         return '永久VIP'
+    }
+  }
+
+  private formatFlowEmptyTip() {
+    if (this.flowsType === '') {
+      return '暫無收支記錄'
+    } else if (this.flowsType === 'PAYMENT') {
+      return '暫無消費記錄'
+    } else if (this.flowsType === 'RECHARGE') {
+      return '暫無充值記錄'
+    } else if (this.flowsType === 'SING_IN') {
+      return '快去簽到吧'
     }
   }
 

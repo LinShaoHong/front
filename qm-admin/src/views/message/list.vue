@@ -1,6 +1,9 @@
 <template>
   <div class="app-container">
     <el-card class="box-card">
+      <div slot="header" class="clearfix">
+        <span>发送通知</span>
+      </div>
       <div class="filter-container">
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
         <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
@@ -36,6 +39,31 @@
         </el-table>
       <pagination v-show="total>0" :total="total" :start.sync="listQuery.start" :count.sync="listQuery.count" @pagination="getList" />
     </el-card>
+    <el-card class="box-card" style="margin-top: 20px;">
+      <div slot="header" class="clearfix">
+        <span>发送邮件</span>
+      </div>
+      <el-form ref="emailForm" :model="emailForm" label-width="80px">
+        <el-form-item label="收件人">
+          <el-input v-model="emailForm.to"></el-input>
+        </el-form-item>
+        <el-form-item label="主题">
+          <el-input v-model="emailForm.title"></el-input>
+        </el-form-item>
+        <el-form-item label="邮件内容">
+          <el-input type="textarea" v-model="emailForm.body"></el-input>
+        </el-form-item>
+        <el-form-item label="文本格式">
+          <el-select v-model="emailForm.format">
+            <el-option label="HTML" value="HTML"></el-option>
+            <el-option label="TEXT" value="TEXT"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSend">发送</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
     <el-dialog
       :visible.sync="visible"
       width="30%">
@@ -54,8 +82,9 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import Pagination from '@/components/Pagination/index.vue'
-import { listMessages, deleteMessage, updateMessage, addMessage } from '@/api/message'
+import { listMessages, deleteMessage, updateMessage, addMessage, sendEmail } from '@/api/message'
 import { imageServer } from '@/api/storage'
+import { Message } from 'element-ui'
 
 @Component({
   name: 'GirlList',
@@ -75,6 +104,13 @@ export default class extends Vue {
   private visible = false
   private id: string = ''
   private content: string = ''
+
+  private emailForm =  {
+    to: '',
+    title: '',
+    body: '',
+    format: 'TEXT'
+  }
 
   private async getList() {
     listMessages(this.listQuery).then(response => {
@@ -128,6 +164,17 @@ export default class extends Vue {
     let m = date.getMinutes() + ':';
     let s = date.getSeconds();
     return Y+M+D+h+m+s;
+  }
+
+  private async onSend() {
+    const data = await sendEmail(this.emailForm)
+    if (data.code === 200) {
+      Message({
+        message: '发送成功！',
+        type: 'success',
+        duration: 1500
+      })
+    }
   }
 
   private created() {

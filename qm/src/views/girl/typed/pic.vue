@@ -186,7 +186,8 @@ export default class extends mixins(Layout) {
         const viewHeight = document.documentElement.clientHeight || window.innerHeight
         const scrollTop = window.document.scrollingElement.scrollTop
         const scrollHeight = window.document.scrollingElement.scrollHeight
-        if (scrollTop + viewHeight >= scrollHeight - 200) {
+        const scrolled = scrollTop + viewHeight
+        if ((scrolled >= scrollHeight - 200 && scrolled <= scrollHeight - 190) || scrolled === scrollHeight) {
           await this.getGirls(this.STEP_COUNT * (this.scrollCounter++), this.STEP_COUNT)
         }
       }

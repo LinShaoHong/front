@@ -33,6 +33,13 @@ export const checkName = (params: any): any =>
     params
   })
 
+export const checkEmail = (params: any): any =>
+  request({
+    url: '/v1/qm/session/checkEmail',
+    method: 'get',
+    params
+  })
+
 export const logout = (): any =>
   request({
     url: '/v1/qm/session/logout',

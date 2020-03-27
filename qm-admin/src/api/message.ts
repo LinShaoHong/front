@@ -27,3 +27,10 @@ export const deleteMessage = (id: string): Resp | any =>
     url: '/v1/qm/admin/message/$' + id,
     method: 'delete'
   })
+
+export const sendEmail = (data: any): Resp | any =>
+  request({
+    url: '/v1/qm/admin/message/email',
+    method: 'post',
+    data
+  })

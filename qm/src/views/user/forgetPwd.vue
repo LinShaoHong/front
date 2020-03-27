@@ -44,7 +44,7 @@ export default class extends mixins(Layout) {
 
   private rules = {
     email: [
-      { type: 'email', message: '請輸入正確的郵箱地址', trigger: ['blur', 'change'] }
+      { type: 'email', message: '請輸入正確的郵箱地址', trigger: ['blur'] }
     ]
   }
 
