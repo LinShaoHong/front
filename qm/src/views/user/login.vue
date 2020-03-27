@@ -53,7 +53,7 @@ export default class extends mixins(Layout) {
 
   private checkUsername = async(rule, value, callback) => {
     if (!value) {
-      callback(new Error('請告訴我你的用戶名'))
+      callback(new Error('請填寫用戶名'))
     } else {
       const data = await checkName({ name: value })
       if (!data.value || this.code[0] === 1000) {
