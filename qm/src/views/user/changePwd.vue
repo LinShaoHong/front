@@ -22,7 +22,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <div v-show="!valid" class="valid-message">
+    <div v-show="!valid && checked" class="valid-message">
       <span>{{ validMessage }}</span>
       <span style="color: #f90; cursor: pointer" @click="toForgetPwd">&nbsp;重新找回</span>
     </div>
@@ -40,6 +40,7 @@ import { Message, Form as ElForm } from 'element-ui'
   name: 'Register'
 })
 export default class extends mixins(Layout) {
+  private checked: boolean = false
   private valid: boolean = false
   private validMessage: string = ''
 
@@ -120,6 +121,7 @@ export default class extends mixins(Layout) {
       this.valid = false
       this.validMessage = data.message
     }
+    this.checked = true
   }
 
   created() {

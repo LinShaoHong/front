@@ -1000,6 +1000,7 @@ export default class extends Vue {
   .message-menu-list {
     height: 450px;
     overflow-y: scroll;
+    scrollbar-width: none;
     -ms-overflow-style: none;
     overflow: -moz-scrollbars-none;
     width: 430px;

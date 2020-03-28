@@ -15,7 +15,7 @@
         >
           <div class="route-content">
             <span style="display:block; font-size: 13px; color: white; height: 18px;">{{ user.name }}</span>
-            <span style="display:block; font-size: 13px; color: white;  height: 18px;">{{ user.amount + ' 金幣' + ( user.vip? ' VIP': '' )}}</span>
+            <span style="display:block; font-size: 13px; color: white;  height: 18px;">{{ (user.amount === null? 0 : user.amount) + ' 金幣' + ( user.vip? ' VIP': '' )}}</span>
           </div>
         </div>
         <div

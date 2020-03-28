@@ -941,6 +941,7 @@ export default class extends Vue {
       grid-row: 2 / 3;
       overflow-y: scroll;
       height: 100%;
+      scrollbar-width: none;
       -ms-overflow-style: none;
       overflow: -moz-scrollbars-none;
       width: 152px;
@@ -1066,6 +1067,7 @@ export default class extends Vue {
     .recommendation {
       overflow-y: scroll;
       height: 100%;
+      scrollbar-width: none;
       -ms-overflow-style: none;
       overflow: -moz-scrollbars-none;
       grid-row: 2 / 3;

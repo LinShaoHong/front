@@ -175,7 +175,7 @@ export default class extends mixins(Layout) {
   private mobileImagesWidth = 0
   private groupedImages: { label: string, type: string, images: GirlResp[], hots: GirlResp[] }[] = []
   private groupedRanks: string[] = []
-  private curRank: string = 'updateTime'
+  private curRank: string = 'visits'
   private typeStarts: Map<string, number> = new Map()
 
   get carousels() {
@@ -232,7 +232,7 @@ export default class extends mixins(Layout) {
   private async getImages(count: number, label: string, type: string) {
     let index = this.groupedImages.findIndex(v => v.type === type)
     if (index < 0 || (index > 0 && this.groupedImages[index].images.length === 0)) {
-      let data = await paged({ start: 0, count: count, type: type })
+      let data = await paged({ start: 0, count: count, type: type, rank: 'visits' })
       index = this.groupedImages.findIndex(v => v.type === type)
       if (index < 0) {
         const hots = await hot({ count: 30, type: type })
@@ -263,7 +263,7 @@ export default class extends mixins(Layout) {
     let len: number = this.items.length
     const count = this.mobile ? 12 : 8
     for (let i = 0; i < len; i++) {
-      this.groupedRanks.push('updateTime')
+      this.groupedRanks.push('visits')
       if (i < len) {
         await this.getImages(count, this.items[i].label, this.items[i].type)
         this.typeStarts.set(this.items[i].type, count)
@@ -416,6 +416,7 @@ export default class extends mixins(Layout) {
 
           .hot-item__list {
             overflow-y: scroll;
+            scrollbar-width: none;
             -ms-overflow-style: none;
             overflow: -moz-scrollbars-none;
             height: 640px;

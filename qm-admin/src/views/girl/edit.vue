@@ -59,7 +59,7 @@
           <el-upload
             :action="uploadPath"
             :headers="headers"
-            :limit="5"
+            :limit="100"
             :file-list="detailImages"
             :on-exceed="uploadOverrun"
             :on-success="uploadDetailImage"
@@ -117,7 +117,7 @@ export default class extends Vue {
   private uploadOverrun(resp: any) {
     this.$message({
       type: 'error',
-      message: '上传文件个数超出限制!最多上20张图片!'
+      message: '上传文件个数超出限制!最多上100张图片!'
     })
   }
 

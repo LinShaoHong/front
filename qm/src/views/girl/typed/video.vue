@@ -124,7 +124,7 @@ export default class extends mixins(Layout) {
   private category2: string = ''
   private categories: { name: string, nameSpell: string }[] = []
 
-  private rank: string = 'updateTime'
+  private rank: string = 'visits'
   private ranks: { label: string, value: string }[] = [
     { label: "最新", value: "updateTime" },
     { label: "人氣", value: "visits" },
@@ -134,7 +134,7 @@ export default class extends mixins(Layout) {
   ]
   private q: string = ''
 
-  private STEP_COUNT = 20
+  private STEP_COUNT = 10
   private SERVER = process.env.VUE_APP_IMAGE_SERVER
   private girls: GirlResp[] = []
 
@@ -187,7 +187,7 @@ export default class extends mixins(Layout) {
         const scrollTop = window.document.scrollingElement.scrollTop
         const scrollHeight = window.document.scrollingElement.scrollHeight
         const scrolled = scrollTop + viewHeight
-        if ((scrolled >= scrollHeight - 200 && scrolled <= scrollHeight - 190) || scrolled === scrollHeight) {
+        if ((scrolled >= scrollHeight - 200 && scrolled <= scrollHeight - 196) || scrolled === scrollHeight) {
           await this.getGirls(this.STEP_COUNT * (this.scrollCounter++), this.STEP_COUNT)
         }
       }
