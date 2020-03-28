@@ -34,18 +34,12 @@ service.interceptors.response.use(
   },
   (error) => {
     const res = error.response
-    if (res.status === 500) {
-      Message({
-        message: '官人別急，網絡開小差了.........',
-        type: 'error',
-        duration: 1000
-      })
-    } else if(res.status === 401) {
+    if(res.status === 401) {
       this.$router.push({ path: '/user/login' })
     } else {
       Message({
-        message: res.data,
-        type: 'info',
+        message: '官人別急，網絡開小差了.........',
+        type: 'error',
         duration: 1000
       })
     }
