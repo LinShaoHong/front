@@ -1,7 +1,7 @@
 <template>
   <div :class="mobile ? 'app-container mobile' : 'app-container desktop'">
     <div  class="main-image-container">
-      <div v-if="!mobile && carousels.length > 0" class="image-header">
+      <div v-if="!mobiel && carousels.length > 0" class="image-header">
         <div class="image-carousel">
           <el-carousel :interval="2000" type="card" height="550px">
             <el-carousel-item v-for="item in carousels" :key="item.id">
@@ -14,7 +14,7 @@
           </el-carousel>
         </div>
       </div>
-      <div v-if="carousels.length === 0" class="loading"
+      <div v-else-if="loading" class="loading"
       >
         <ripple />
       </div>
@@ -124,7 +124,7 @@
                   <div v-if="i < 3" class="hot-num">
                     <el-tag size="mini" style="background-color: #1b1b1b">{{ i + 1 }}</el-tag>
                   </div>
-                  <div v-else class="hot-num">
+                  <div v-else class="hot-num" style="display: flex; align-items: center;">
                     <span style="color: #a3a2a2;">{{ i + 1 }}</span>
                   </div>
                   <div v-if="i < 3" class="hot-info-img__wrapper">
@@ -136,7 +136,7 @@
                     </div>
                   </div>
                   <div v-else class="hot-info__wrapper">
-                    <div class="hot-info-name" style="align-content: center">
+                    <div class="hot-info-name" style="display: flex; align-items: center;">
                       <span @click="toDetail(item.id)">{{ (item.city === null? '' : item.city) + ' ' + item.name }}</span>
                     </div>
                   </div>
@@ -172,6 +172,7 @@ export default class extends mixins(Layout) {
   private TYPE = 'girl'
   private SERVER = process.env.VUE_APP_IMAGE_SERVER
 
+  private loading: boolean = true
   private mobileImagesWidth = 0
   private groupedImages: { label: string, type: string, images: GirlResp[], hots: GirlResp[] }[] = []
   private groupedRanks: string[] = []
@@ -179,6 +180,9 @@ export default class extends mixins(Layout) {
   private typeStarts: Map<string, number> = new Map()
 
   get carousels() {
+    if (this.mobile) {
+      return []
+    }
     let carousels: GirlResp[] = []
     if (this.groupedImages && this.groupedImages.length > 0) {
       this.groupedImages.forEach(g => g.hots.forEach((v,i) => {
@@ -233,10 +237,11 @@ export default class extends mixins(Layout) {
     let index = this.groupedImages.findIndex(v => v.type === type)
     if (index < 0 || (index > 0 && this.groupedImages[index].images.length === 0)) {
       let data = await paged({ start: 0, count: count, type: type, rank: 'visits' })
+      this.loading = false
       index = this.groupedImages.findIndex(v => v.type === type)
       if (index < 0) {
-        const hots = await hot({ count: 30, type: type })
-        this.groupedImages.push({ label: label, type: type, images: data.values, hots: hots.values })
+        const hots = this.mobile? undefined: await hot({ count: 20, type: type })
+        this.groupedImages.push({ label: label, type: type, images: data.values, hots: this.mobile? [] : hots.values })
       } else {
         this.groupedImages[index].images = data.values
       }
@@ -477,6 +482,7 @@ export default class extends mixins(Layout) {
                   span {
                     cursor: pointer;
                     width: 270px;
+                    line-height: 28px;
                     color: whitesmoke;
                     white-space: nowrap;
                     text-overflow: ellipsis;
