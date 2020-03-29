@@ -24,8 +24,7 @@ router.beforeEach(async(to: Route, from: Route, next: any) => {
   if (UserModule.user === null) {
     const cookie = Cookies.get('QM-TOKEN')
     if (cookie != null) {
-      const user = await info()
-      UserModule.Set(user.value)
+      await UserModule.GetUserInfo()
     }
   }
   next()

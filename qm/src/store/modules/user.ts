@@ -1,5 +1,5 @@
 import { Action, getModule, Module, Mutation, VuexModule } from 'vuex-module-decorators'
-import { UserInfo } from '@/api/user'
+import { UserInfo, info } from '@/api/user'
 import store from '@/store'
 
 export interface UserState {
@@ -16,8 +16,14 @@ class User extends VuexModule implements UserState {
   }
 
   @Action
-  public Set(user: UserInfo) {
-    this.SET(user)
+  public async GetUserInfo() {
+    const user = await info()
+    this.SET(user.value)
+  }
+
+  @Action
+  public Clear() {
+    this.SET(null)
   }
 }
 

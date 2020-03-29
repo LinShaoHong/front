@@ -350,8 +350,7 @@ import ErrorLog from '@/components/ErrorLog/index.vue'
 import LangSelect from '@/components/LangSelect/index.vue'
 import { constantRoutes } from '@/router'
 import { logout } from '@/api/session'
-import { info } from '@/api/user'
-import { read, readAll, replyMessage, reply } from '@/api/comment'
+import { read, replyMessage, reply } from '@/api/comment'
 import Pagination from '@/components/Pagination/index.vue'
 
 @Component({
@@ -480,7 +479,7 @@ export default class extends Vue {
 
   private async logout() {
     await logout()
-    UserModule.Set(null)
+    UserModule.Clear()
     MessageModule.Clear()
     this.toIndex(0)
     this.$router.push({ path: '/' })
@@ -531,11 +530,6 @@ export default class extends Vue {
       return basePath
     }
     return path.resolve(basePath, routePath)
-  }
-
-  private async loadUser() {
-    const user = await info()
-    UserModule.Set(user.value)
   }
 
   private handleMessageOutside() {
@@ -669,7 +663,6 @@ export default class extends Vue {
       }
     }
     if (UserModule.user != null) {
-      this.loadUser()
       this.getMessages(true)
       this.getMessages(false)
     }

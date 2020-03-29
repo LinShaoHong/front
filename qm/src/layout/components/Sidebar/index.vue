@@ -108,7 +108,7 @@ export default class extends Vue {
 
   private async logout() {
     await logout()
-    UserModule.Set(null)
+    UserModule.Clear()
   }
 
   private jump(path: string, index: number) {

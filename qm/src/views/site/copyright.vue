@@ -69,8 +69,7 @@ export default class extends mixins(Layout) {
               type: 'success',
               duration: 1500
             })
-            const user = await info()
-            UserModule.Set(user.value)
+            await UserModule.GetUserInfo()
           } else {
             Message({
               message: data.message,

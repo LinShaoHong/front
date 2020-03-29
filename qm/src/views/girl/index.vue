@@ -22,8 +22,8 @@
         class="main-image-list"
       >
         <div
-          v-for="(v, index) in groupedImages"
-          v-if="v.images.length > 0"
+          v-for="(v, index) in groupedGirls"
+          v-if="v.girls.length > 0"
           :key="v.name"
           class="typed-girls"
         >
@@ -93,9 +93,9 @@
                 </div>
               </div>
             </div>
-            <ul v-if="v.images.length > 0">
+            <ul v-if="v.girls.length > 0">
               <li
-                v-for="item in v.images"
+                v-for="item in v.girls"
                 :key="item.id"
               >
                 <girl-item
@@ -154,7 +154,7 @@
 import { Component, Watch } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
 import Layout from '@/common/layout'
-import { paged, hot } from '@/api/girls'
+import { paged, getIndex } from '@/api/girls'
 import GirlItem from './components/GirlItem.vue'
 import { GirlResp } from '@/api/girlType'
 import { MenuModule, MenuItem } from '@/store/modules/menu'
@@ -174,7 +174,7 @@ export default class extends mixins(Layout) {
 
   private loading: boolean = true
   private mobileImagesWidth = 0
-  private groupedImages: { label: string, type: string, images: GirlResp[], hots: GirlResp[] }[] = []
+  private groupedGirls: { label: string, type: string, girls: GirlResp[], hots: GirlResp[] }[] = []
   private groupedRanks: string[] = []
   private curRank: string = 'visits'
   private typeStarts: Map<string, number> = new Map()
@@ -184,14 +184,18 @@ export default class extends mixins(Layout) {
       return []
     }
     let carousels: GirlResp[] = []
-    if (this.groupedImages && this.groupedImages.length > 0) {
-      this.groupedImages.forEach(g => g.hots.forEach((v,i) => {
+    if (this.groupedGirls && this.groupedGirls.length > 0) {
+      this.groupedGirls.forEach(g => g.hots.forEach((v, i) => {
         if (i < 5) {
           carousels.push(v)
         }
       }))
     }
-    return carousels;
+    return carousels
+  }
+
+  get menus(): MenuItem[] {
+    return MenuModule.menus.filter(m => m.type !== null)
   }
 
   private toDetail(id: string) {
@@ -200,18 +204,18 @@ export default class extends mixins(Layout) {
 
   private async selectRank(type: string, rank: string) {
     const count = this.mobile ? 6 : 8
-    const index = this.groupedImages.findIndex(v => v.type === type)
+    const index = this.groupedGirls.findIndex(v => v.type === type)
     if (index >= 0) {
       this.groupedRanks[index] = rank
       let data = await paged({ start: 0, count: count, type: type, rank: rank })
-      this.groupedImages[index].images = data.values
+      this.groupedGirls[index].girls = data.values
       this.curRank = rank
     }
   }
 
   private async refresh(type: string) {
     const count = this.mobile ? 6 : 8
-    const index = this.groupedImages.findIndex(v => v.type === type)
+    const index = this.groupedGirls.findIndex(v => v.type === type)
     if (index >= 0) {
       let start = this.typeStarts.get(type)
       let data = await paged({ start: start, count: count, type: type, rank: this.curRank })
@@ -220,37 +224,32 @@ export default class extends mixins(Layout) {
         start = 0
         data = await paged({ start: start, count: count, type: type, rank: this.curRank })
       }
-      this.groupedImages[index].images = data.values
+      this.groupedGirls[index].girls = data.values
       this.typeStarts.set(type, start + count)
     }
   }
 
   private showMore(type: string) {
-    const index = this.groupedImages.findIndex(v => v.type === type)
+    const index = this.groupedGirls.findIndex(v => v.type === type)
     if (index >= 0) {
       const rank = this.groupedRanks[index]
       window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/girl/' + type.toLocaleLowerCase() + '?rank=' + rank)
     }
   }
 
-  private async getImages(count: number, label: string, type: string) {
-    let index = this.groupedImages.findIndex(v => v.type === type)
-    if (index < 0 || (index > 0 && this.groupedImages[index].images.length === 0)) {
-      let data = await paged({ start: 0, count: count, type: type, rank: 'visits' })
-      this.loading = false
-      index = this.groupedImages.findIndex(v => v.type === type)
-      if (index < 0) {
-        const hots = this.mobile? undefined: await hot({ count: 20, type: type })
-        this.groupedImages.push({ label: label, type: type, images: data.values, hots: this.mobile? [] : hots.values })
-      } else {
-        this.groupedImages[index].images = data.values
-      }
-      this.groupedImages.sort((o1, o2) => {
-        const i1 = this.items.findIndex(v => v.type === o1.type)
-        const i2 = this.items.findIndex(v => v.type === o2.type)
-        return i1 - i2
-      })
-    }
+  private async getGirls() {
+    this.loading = true
+    const data = await getIndex({ start: 0, count: this.mobile ? 6 : 8, hotCount: this.mobile ? 0 : 20, rank: 'visits' })
+    this.groupedGirls = data.values
+    this.groupedGirls.forEach(g => {
+      g.label = this.menus.find(v => v.type === g.type).label
+    })
+    this.groupedGirls.sort((o1, o2) => {
+      const i1 = this.menus.findIndex(v => v.type === o1.type)
+      const i2 = this.menus.findIndex(v => v.type === o2.type)
+      return i1 - i2
+    })
+    this.loading = false
   }
 
   private resize() {
@@ -260,33 +259,13 @@ export default class extends mixins(Layout) {
     }
   }
 
-  get items(): MenuItem[] {
-    return MenuModule.menus.filter(m => m.type !== null)
-  }
-
-  private async loadGroupedImages() {
-    let len: number = this.items.length
-    const count = this.mobile ? 12 : 8
-    for (let i = 0; i < len; i++) {
-      this.groupedRanks.push('visits')
-      if (i < len) {
-        await this.getImages(count, this.items[i].label, this.items[i].type)
-        this.typeStarts.set(this.items[i].type, count)
-      } else {
-        if (this.groupedImages[i] === undefined) {
-          this.groupedImages.push({ label: this.items[i].label, type: this.items[i].type, images: [], hots: [] })
-        }
-      }
-    }
-  }
-
   created() {
     this.resize()
     deviceResizeSupporter(this.resize)
+    this.getGirls()
   }
 
   mounted() {
-    this.loadGroupedImages()
     this.scrollToPosition()
   }
 }

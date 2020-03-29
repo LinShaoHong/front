@@ -2,7 +2,9 @@
   <div :class="mobile ? 'app-container mobile' : 'app-container'">
     <div v-if="user != null" class="detail-container" >
       <el-divider><span style="color: #f90; font-size: 20px;">個人中心</span></el-divider>
-      <el-collapse v-model="activeName" accordion>
+      <el-collapse v-model="activeName" accordion
+                   @change="onChange"
+      >
         <el-collapse-item title="个人信息" name="1">
           <div class="user-info">
             <div class="info-label">上傳頭像:</div>
@@ -74,8 +76,12 @@
               <pagination v-show="collectTotal>0" :total="collectTotal" :start.sync="collectStart" :count.sync="count" @pagination="getCollects" />
             </div>
           </div>
-          <div v-else class="empty">
+          <div v-else-if="!collectsLoading" class="empty">
             <span>您還沒有收藏........</span>
+          </div>
+          <div v-else class="loading"
+          >
+            <ripple />
           </div>
         </el-collapse-item>
         <el-collapse-item :title="'最近浏覽'" name="3">
@@ -101,8 +107,12 @@
               <pagination v-show="footprintTotal>0" :total="footprintTotal" :start.sync="footprintStart" :count.sync="count" @pagination="getFootprints" />
             </div>
           </div>
-          <div v-else class="empty">
+          <div v-else-if="!footprintsLoading" class="empty">
             <span>趕緊去挑選吧........</span>
+          </div>
+          <div v-else class="loading"
+          >
+            <ripple />
           </div>
         </el-collapse-item>
         <el-collapse-item title="金幣收支" name="4">
@@ -155,8 +165,12 @@
               </el-timeline-item>
             </el-timeline>
           </div>
-          <div v-else class="empty">
+          <div v-else-if="!flowsLoading" class="empty">
             <span>{{ formatFlowEmptyTip() }}</span>
+          </div>
+          <div v-else class="loading"
+          >
+            <ripple />
           </div>
         </el-collapse-item>
       </el-collapse>
@@ -183,26 +197,32 @@ import { flow, FlowResp } from '@/api/charge'
 import { Message } from 'element-ui'
 import Pagination from '@/components/Pagination/index.vue'
 import { deviceResizeSupporter } from '@/utils/mixin'
+import Ripple from '@/components/Loading/Ripple.vue'
 
 @Component({
   name: 'Register',
   components: {
-    Pagination
+    Pagination,
+    Ripple
   }
 })
 export default class extends mixins(Layout) {
   private SERVER = process.env.VUE_APP_IMAGE_SERVER
   private activeName = '1'
+
+  private collectsLoading: boolean = true
   private collects: CollectResp[] = []
   private collectTotal: number = 0
   private collectStart: number = 0
 
+  private footprintsLoading: boolean = true
   private footprints: FootprintResp[] = []
   private footprintTotal: number = 0
   private footprintStart: number = 0
 
+  private flowsLoading: boolean = true
   private flows: FlowResp[] = []
-  private flowsTotal: number = 10
+  private flowsTotal: number = 0
   private flowsCount: number = 6
   private flowsStart: number = 0
   private flowsEnd: boolean = false
@@ -239,8 +259,7 @@ export default class extends mixins(Layout) {
   private async signIn() {
     const data = await signIn()
     if (data.code == 200) {
-      const user = await info()
-      UserModule.Set(user.value)
+      await UserModule.GetUserInfo()
       if (this.flowsType === '' || this.flowsType === 'SING_IN') {
         this.flows.unshift({ amount: 1, type: "SING_IN", chargeType: null, time: '剛剛', girl: null})
       }
@@ -269,19 +288,23 @@ export default class extends mixins(Layout) {
   }
 
   private async getCollects() {
-    const c = this.mobile? 6 : 10
+    this.collectsLoading = true
+    const c = this.mobile? 6 : 8
     this.count = c
     const data = await getCollections({ start: this.collectStart, count: c })
     this.collects = data.values
     this.collectTotal = data.total
+    this.collectsLoading = false
   }
 
   private async getFootprints() {
-    const c = this.mobile? 6 : 10
+    this.footprintsLoading = true
+    const c = this.mobile? 6 : 8
     this.count = c
     const data = await getFootprints({ start: this.footprintStart, count: c })
     this.footprints = data.values
     this.footprintTotal = data.total
+    this.footprintsLoading = false
   }
 
   private onFlowTypeChange(val: string) {
@@ -293,9 +316,11 @@ export default class extends mixins(Layout) {
   }
 
   private async getFlows() {
+    this.flowsLoading = true
     const data = await flow({ start: this.flowsStart, count: this.flowsCount, type: this.flowsType })
     this.flows.push(...data.values);
     this.flowsTotal = data.total
+    this.flowsLoading = false
     if (this.flowsStart + this.flowsCount >= this.flowsTotal) {
       this.flowsEnd = true
     } else {
@@ -369,15 +394,31 @@ export default class extends mixins(Layout) {
     }
   }
 
+  private onChange(activeName: string) {
+    this.loadData(activeName)
+  }
+
+  private loadData(activeName: string) {
+    switch (activeName) {
+      case '2':
+        this.getCollects()
+        break
+      case '3':
+        this.getFootprints()
+        break
+      case '4':
+        this.getYqs()
+        this.getFlows()
+        break
+    }
+  }
+
   created() {
     if (UserModule.user !== null) {
       if (this.$route.query.name) {
         this.activeName = this.$route.query.name as string
+        this.onChange(this.activeName)
       }
-      this.getCollects()
-      this.getFootprints()
-      this.getFlows()
-      this.getYqs()
       deviceResizeSupporter(this.resize)
     }
   }
@@ -546,6 +587,16 @@ export default class extends mixins(Layout) {
   }
 }
 
+.loading {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  justify-items: center;
+  .lds-ripple {
+    margin: 20px auto auto;
+  }
+}
+
 .empty {
   width: 50%;
   height: 200px;
@@ -613,6 +664,16 @@ export default class extends mixins(Layout) {
         text-align: left;
         color: whitesmoke;
       }
+    }
+  }
+
+  .loading {
+    width: 100%;
+    height: 180px;
+    display: flex;
+    justify-items: center;
+    .lds-ripple {
+      margin: 20px auto auto;
     }
   }
 

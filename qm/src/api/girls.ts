@@ -8,9 +8,9 @@ export const paged = (params: any): PageResp | any =>
     params
   })
 
-export const hot = (params: any): ListResp | any =>
+export const getIndex = (params: any): ListResp | any =>
   request({
-    url: '/v1/qm/girls/hot',
+    url: '/v1/qm/girls/index',
     method: 'get',
     params
   })

@@ -395,8 +395,7 @@ export default class extends Vue {
               this.currImage = data.value
               this.urls = this.currImage.detailImages.map(v => process.env.VUE_APP_IMAGE_SERVER + v)
             }
-            const user = await info()
-            UserModule.Set(user.value)
+            await UserModule.GetUserInfo()
           } else {
             Message({
               message: data.message,

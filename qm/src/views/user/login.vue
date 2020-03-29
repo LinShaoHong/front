@@ -96,7 +96,7 @@ export default class extends mixins(Layout) {
         if (this.code[0] === 200) {
           Cookies.set('QM-TOKEN', data.value, { expires: 7, path: '/' })
           const user = await info()
-          UserModule.Set(user.value)
+          await UserModule.GetUserInfo()
           await MessageModule.GetMessages({ start:0, count: 10, isComment: true })
           await MessageModule.GetMessages({ start:0, count: 10, isComment: false })
           this.$router.push({ path: '/' })
