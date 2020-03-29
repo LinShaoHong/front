@@ -274,7 +274,6 @@
           <div style="float: right; cursor: pointer; height: 38px; display: flex; align-items: center">
             <el-dropdown
               class="avatar-container right-menu-item hover-effect"
-              trigger="click"
             >
               <div class="avatar-wrapper">
                 <img v-if="user.avatar" class="user-avatar" :src="SERVER + user.avatar">
@@ -284,8 +283,23 @@
               </div>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item class="avatar-header" style="cursor: default;">
-                  <span style="display:block; font-size: 13px; height: 20px;">{{ user.name }}</span>
-                  <span style="display:block; font-size: 13px; height: 20px; margin-bottom: 8px;">{{ (user.amount === null? 0 : user.amount) + ' 金幣' + ( user.vip? ' VIP': '' )}}</span>
+                  <div style="text-align: center">
+                    <span style="display:block; font-size: 13px; height: 20px;">
+                      {{ user.name }}
+                      <svg-icon
+                        v-if="user.vip"
+                        name="vip"
+                        style="font-size: 13px; margin-left: 3px;"
+                      />
+                    </span>
+                    <span style="display:block; font-size: 13px; height: 20px; margin-bottom: 8px;">
+                      <svg-icon
+                        name="bi"
+                        style="font-size: 15px; margin-right: 3px;"
+                      />
+                      {{ (user.amount === null? 0 : user.amount) }}
+                    </span>
+                  </div>
                 </el-dropdown-item>
                 <el-dropdown-item>
                   <span style="display:block; cursor: pointer;" @click="toUserDetail(1)"><i class="el-icon-s-custom"></i>我的主頁</span>

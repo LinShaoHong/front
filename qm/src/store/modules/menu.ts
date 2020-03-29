@@ -21,8 +21,8 @@ class Menu extends VuexModule implements MenuState {
     { label: '會所資訊', path: '/girl/sn', type: 'SN' },
     { label: '視頻資訊', path: '/girl/video', type: 'VIDEO' },
     { label: '美圖資訊', path: '/girl/pic', type: 'PIC' },
-    { label: '充值', path: '/user/recharge', type: null },
-    { label: '我的', path: '/user/detail', type: null }
+    { label: '充值VIP', path: '/user/recharge', type: null },
+    { label: '個人中心', path: '/user/detail', type: null }
   ]
 
   @Mutation

@@ -14,8 +14,21 @@
              style="border-bottom: solid 1px #2F2F2F; padding-bottom: 3px;"
         >
           <div class="route-content">
-            <span style="display:block; font-size: 13px; color: white; height: 18px;">{{ user.name }}</span>
-            <span style="display:block; font-size: 13px; color: white;  height: 18px;">{{ (user.amount === null? 0 : user.amount) + ' 金幣' + ( user.vip? ' VIP': '' )}}</span>
+            <span style="display:block; font-size: 13px; color: white; height: 18px;">
+              {{ user.name }}
+              <svg-icon
+                v-if="user.vip"
+                name="vip"
+                style="font-size: 12px; margin-left: 3px;"
+              />
+            </span>
+            <span style="display:block; font-size: 13px; color: white; height: 18px;">
+                    <svg-icon
+                      name="bi"
+                      style="font-size: 15px; margin-right: 3px;"
+                    />
+                    {{ (user.amount === null? 0 : user.amount) }}
+            </span>
           </div>
         </div>
         <div

@@ -34,6 +34,18 @@
         <el-form-item label="类型" prop="category">
           <el-input v-model="girl.category" />
         </el-form-item>
+        <el-form-item label="人气" prop="price">
+          <el-input-number v-model="girl.visits" placeholder="0.00" :min="0">
+          </el-input-number>
+        </el-form-item>
+        <el-form-item label="赞数" prop="price">
+          <el-input-number v-model="girl.likes" placeholder="0.00" :min="0">
+          </el-input-number>
+        </el-form-item>
+        <el-form-item label="收藏" prop="price">
+          <el-input-number v-model="girl.collects" placeholder="0.00" :min="0">
+          </el-input-number>
+        </el-form-item>
         <el-form-item label="开课" prop="onService">
           <el-radio-group v-model="girl.onService">
             <el-radio :label="true">是</el-radio>

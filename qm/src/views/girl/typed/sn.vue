@@ -129,7 +129,7 @@ export default class extends mixins(Layout) {
     { label: "最新", value: "updateTime" },
     { label: "人氣", value: "visits" },
     { label: "點贊", value: "likes" },
-    { label: "購買", value: "payments" },
+    { label: "請教", value: "payments" },
     { label: "收藏", value: "collects" }
   ]
   private q: string = ''
