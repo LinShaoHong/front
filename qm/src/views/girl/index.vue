@@ -249,6 +249,7 @@ export default class extends mixins(Layout) {
       const i2 = this.menus.findIndex(v => v.type === o2.type)
       return i1 - i2
     })
+    this.menus.forEach((v, i) => this.groupedRanks[i] = 'visits')
     this.loading = false
   }
 
