@@ -104,7 +104,7 @@
             <div
               class="rec-content"
             >
-              <span class="rec-title">{{ r.name }}</span>
+              <span class="rec-title">{{ r.city === null ? r.name : (r.city + ' ' + r.name) }}</span>
             </div>
           </div>
         </div>

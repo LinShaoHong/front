@@ -168,7 +168,8 @@ export default class extends mixins(Layout) {
     this.loading = false
     if (data.values.length > 0) {
       this.girls.push(...data.values)
-    } else {
+    }
+    if (start + count >= data.total) {
       this.loadedAll = true
     }
   }

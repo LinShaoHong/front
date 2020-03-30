@@ -242,7 +242,10 @@ export default class extends mixins(Layout) {
     const data = await getIndex({ start: 0, count: this.mobile ? 6 : 8, hotCount: this.mobile ? 0 : 20, rank: 'visits' })
     this.groupedGirls = data.values
     this.groupedGirls.forEach(g => {
-      g.label = this.menus.find(v => v.type === g.type).label
+      const v = this.menus.find(v => v.type === g.type)
+      if (v) {
+        g.label = v.label
+      }
     })
     this.groupedGirls.sort((o1, o2) => {
       const i1 = this.menus.findIndex(v => v.type === o1.type)
