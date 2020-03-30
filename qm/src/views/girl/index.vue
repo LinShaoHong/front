@@ -239,7 +239,8 @@ export default class extends mixins(Layout) {
 
   private async getGirls() {
     this.loading = true
-    const data = await getIndex({ start: 0, count: this.mobile ? 6 : 8, hotCount: this.mobile ? 0 : 20, rank: 'visits' })
+    const types = this.menus.map(v => v.type).join(",")
+    const data = await getIndex({ types: types, start: 0, count: this.mobile ? 6 : 8, hotCount: this.mobile ? 0 : 20, rank: 'visits' })
     this.groupedGirls = data.values
     this.groupedGirls.forEach(g => {
       const v = this.menus.find(v => v.type === g.type)

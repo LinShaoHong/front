@@ -6,8 +6,9 @@
         :style="mobile ? ('width: ' + mobileImagesWidth + 'px;') : ''"
       >
         <div class="category-rank-city-select">
-          <span style="color: whitesmoke">排序:</span>
-          <el-select v-model="rank"
+          <span v-if="!mobile" style="color: whitesmoke">排序:</span>
+          <el-select v-if="!mobile"
+                     v-model="rank"
                      size="mini"
                      style="width: 80px; margin-right: 20px;"
                      @change="onChange"
@@ -309,6 +310,12 @@ export default class extends mixins(Layout) {
 
 .el-select-dropdown__item:hover {
   background-color: #757575;
+}
+
+.el-scrollbar {
+  > .el-scrollbar__bar {
+    opacity: 1 !important;
+  }
 }
 
 .sub-search-input {
