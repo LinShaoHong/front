@@ -374,12 +374,20 @@ export default class extends Vue {
   }
 
   private recharge() {
-    window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/user/recharge')
+    if (this.mobile) {
+      this.$router.push({ path: '/girl/recharge' })
+    } else {
+      window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/user/recharge')
+    }
   }
 
   private buy() {
     if (this.user === null) {
-      window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/user/login')
+      if (this.mobile) {
+        this.$router.push({ path: '/user/login' })
+      } else {
+        window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/user/login')
+      }
     } else {
       this.$confirm('確定購買？')
         .then(async _ => {
@@ -422,7 +430,11 @@ export default class extends Vue {
 
   private async onCollect() {
     if (this.user === null) {
-      window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/user/login')
+      if (this.mobile) {
+        this.$router.push({ path: '/user/login' })
+      } else {
+        window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/user/login')
+      }
     } else {
       if (this.currImage.collected) {
         this.currImage.collects -= 1
@@ -603,7 +615,11 @@ export default class extends Vue {
 
   private openReply(sessionId: string, replyId: string, userName: string) {
     if (this.user === null) {
-      window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/user/login')
+      if (this.mobile) {
+        this.$router.push({ path: '/user/login' })
+      } else {
+        window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/user/login')
+      }
     } else {
       this.replayVisible = true
       this.sessionId = sessionId

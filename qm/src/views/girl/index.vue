@@ -199,7 +199,11 @@ export default class extends mixins(Layout) {
   }
 
   private toDetail(id: string) {
-    window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/girl/detail?liked=false&id=' + id)
+    if (this.mobile) {
+      this.$router.push({ path: '/girl/detail', query: { id: id, liked: 'false' } })
+    } else {
+      window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/girl/detail?liked=false&id=' + id)
+    }
   }
 
   private async selectRank(type: string, rank: string) {
@@ -233,13 +237,17 @@ export default class extends mixins(Layout) {
     const index = this.groupedGirls.findIndex(v => v.type === type)
     if (index >= 0) {
       const rank = this.groupedRanks[index]
-      window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/girl/' + type.toLocaleLowerCase() + '?rank=' + rank)
+      if (this.mobile) {
+        this.$router.push({ path: '/girl/' + type.toLocaleLowerCase(), query: { rank: rank } })
+      } else {
+        window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/girl/' + type.toLocaleLowerCase() + '?rank=' + rank)
+      }
     }
   }
 
   private async getGirls() {
     this.loading = true
-    const types = this.menus.map(v => v.type).join(",")
+    const types = this.menus.map(v => v.type).join(',')
     const data = await getIndex({ types: types, start: 0, count: this.mobile ? 6 : 8, hotCount: this.mobile ? 0 : 20, rank: 'visits' })
     this.groupedGirls = data.values
     this.groupedGirls.forEach(g => {

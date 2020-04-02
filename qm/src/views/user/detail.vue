@@ -1,6 +1,6 @@
 <template>
   <div :class="mobile ? 'app-container mobile' : 'app-container'">
-    <div v-if="user != null" class="detail-container" >
+    <div v-if="user !== null" class="detail-container" >
       <el-divider><span style="color: #f90; font-size: 20px;">個人中心</span></el-divider>
       <el-collapse v-model="activeName" accordion
                    @change="onChange"
@@ -283,7 +283,11 @@ export default class extends mixins(Layout) {
         duration: 1500
       })
     } else {
-      window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/girl/detail?liked=false&id=' + id)
+      if (this.mobile) {
+        this.$router.push({ path: '/girl/detail', query: { id: id, liked: 'false' } })
+      } else {
+        window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/girl/detail?liked=false&id=' + id)
+      }
     }
   }
 

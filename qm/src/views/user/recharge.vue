@@ -269,6 +269,12 @@ export default class extends mixins(Layout) {
   display: none;
 }
 
+.el-scrollbar {
+  > .el-scrollbar__bar {
+    opacity: 1 !important;
+  }
+}
+
 .card-input {
   width: 60%;
   margin-left: 0;

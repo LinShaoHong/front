@@ -99,7 +99,11 @@ export default class extends mixins(ResizeMixin) {
   }
 
   private toCopyright() {
-    window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/site/copyright')
+    if (this.mobile) {
+      this.$router.push({ path: '/site/copyright' })
+    } else {
+      window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/site/copyright')
+    }
   }
 
   mounted() {
