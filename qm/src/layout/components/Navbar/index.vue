@@ -630,7 +630,7 @@ export default class extends Vue {
           }
         }
       }
-    }, 10000)
+    }, 60000)
 
 
     setInterval(async() => {
