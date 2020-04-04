@@ -375,7 +375,7 @@ export default class extends Vue {
 
   private recharge() {
     if (this.mobile) {
-      this.$router.push({ path: '/girl/recharge' })
+      this.$router.push({ path: '/user/recharge' })
     } else {
       window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/user/recharge')
     }

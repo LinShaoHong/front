@@ -44,10 +44,10 @@
                 <div v-if="!mobile" class="category-rank">
                   <div
                     class="rank-item"
-                    :style="groupedRanks[index] === 'updateTime' ? 'border-bottom: 1px solid #5AA766;' : ''"
+                    :style="groupedRanks[index] === 'createTime' ? 'border-bottom: 1px solid #5AA766;' : ''"
                   >
                   <span
-                    @click="selectRank(v.type, 'updateTime')"
+                    @click="selectRank(v.type, 'createTime')"
                   >最新</span>
                   </div>
                   <div
@@ -251,6 +251,7 @@ export default class extends mixins(Layout) {
     const data = await getIndex({ types: types, start: 0, count: this.mobile ? 6 : 8, hotCount: this.mobile ? 0 : 20, rank: 'visits' })
     this.groupedGirls = data.values
     this.groupedGirls.forEach(g => {
+      this.typeStarts.set(g.type, 0)
       const v = this.menus.find(v => v.type === g.type)
       if (v) {
         g.label = v.label

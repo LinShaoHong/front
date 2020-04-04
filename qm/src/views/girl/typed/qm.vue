@@ -127,7 +127,7 @@ export default class extends mixins(Layout) {
 
   private rank: string = 'visits'
   private ranks: { label: string, value: string }[] = [
-    { label: "最新", value: "updateTime" },
+    { label: "最新", value: "createTime" },
     { label: "人氣", value: "visits" },
     { label: "點贊", value: "likes" },
     { label: "請教", value: "payments" },
