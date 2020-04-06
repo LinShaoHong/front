@@ -67,7 +67,7 @@
               {{ type(scope.row.type) }}
             </template>
           </el-table-column>
-          <el-table-column align="center" label="操作" width="80" class-name="small-padding fixed-width">
+          <el-table-column align="center" label="操作" width="110" class-name="small-padding fixed-width">
             <template slot-scope="{row}">
               <el-link
                 :underline="false"
@@ -81,7 +81,7 @@
                 :underline="false"
                 type="primary"
                 style="font-size: 10px; margin-right: 5px;"
-                @click="handleDelete(row.id)"
+                @click="handleUnShelve(row.id)"
               >
                 下课
               </el-link>
@@ -92,6 +92,14 @@
                        @click="handlePublish(row.id)"
               >
                 上课
+              </el-link>
+              <el-link
+                :underline="false"
+                type="primary"
+                style="font-size: 10px; margin-right: 5px;"
+                @click="handleDelete(row.id)"
+              >
+                删除
               </el-link>
             </template>
           </el-table-column>
@@ -104,7 +112,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import Pagination from '@/components/Pagination/index.vue'
-import { listGirls, deleteGirl, publishGirl } from '@/api/girl'
+import { listGirls, deleteGirl, publishGirl, unShelveGirl } from '@/api/girl'
 import { imageServer } from '@/api/storage'
 
 @Component({
@@ -164,6 +172,11 @@ export default class extends Vue {
 
   private handleCreate() {
     this.$router.push({ path: 'girl-create' })
+  }
+
+  private async handleUnShelve(id: string) {
+    await unShelveGirl(id)
+    this.getList()
   }
 
   private async handleDelete(id: string) {

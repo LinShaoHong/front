@@ -28,6 +28,12 @@ export const updateGirl = (id: any, data: any): Resp | any =>
     data
   })
 
+export const unShelveGirl = (id: string): Resp | any =>
+  request({
+    url: '/v1/qm/admin/girl/unShelve/$' + id,
+    method: 'put'
+  })
+
 export const deleteGirl = (id: string): Resp | any =>
   request({
     url: '/v1/qm/admin/girl/$' + id,
