@@ -93,9 +93,16 @@
           /></span>
         </div>
       </div>
-      <div v-if="!loadedAll" class="loading"
+      <div v-if="!loadedAll && !mobile" class="loading"
       >
         <ripple />
+      </div>
+      <div v-if="!loadedAll && mobile" class="pull"
+      >
+        <svg-icon name="pull"
+                  :style="'transform: scale(' + pullScale + '); transition: transform .3s; color: whitesmoke; font-size: 45px; margin: auto'"
+                  @click="pull"
+        ></svg-icon>
       </div>
     </div>
   </div>
@@ -139,7 +146,9 @@ export default class extends mixins(Layout) {
   private SERVER = process.env.VUE_APP_IMAGE_SERVER
   private girls: GirlResp[] = []
 
-  private scrollCounter: number = 1;
+  private scrollCounter: number = 1
+  private pullCounter: number = 1
+  private pullScale: number = 1
 
   private loadedAll: boolean = false
   private mobileImagesWidth = 0
@@ -182,6 +191,19 @@ export default class extends mixins(Layout) {
     }
   }
 
+  private pullTransform() {
+    const handler = setInterval(() => {
+      if (this.loadedAll) {
+        clearInterval(handler)
+      }
+      this.pullScale = this.pullScale === 1 ? 0.8 : 1
+    }, 500)
+  }
+
+  private async pull() {
+    await this.getGirls(this.STEP_COUNT * (this.pullCounter++), this.STEP_COUNT)
+  }
+
   private loadWhenScroll() {
     window.addEventListener('scroll', async(e: Event) => {
       if (!this.loadedAll) {
@@ -190,7 +212,11 @@ export default class extends mixins(Layout) {
         const scrollHeight = window.document.scrollingElement.scrollHeight
         const scrolled = scrollTop + viewHeight
         if ((scrolled >= scrollHeight - 200 && scrolled <= scrollHeight - 196) || scrolled === scrollHeight) {
-          await this.getGirls(this.STEP_COUNT * (this.scrollCounter++), this.STEP_COUNT)
+          if (!this.mobile) {
+            await this.getGirls(this.STEP_COUNT * (this.scrollCounter++), this.STEP_COUNT)
+          } else {
+            await this.getGirls(this.STEP_COUNT * (this.pullCounter++), this.STEP_COUNT)
+          }
         }
       }
     })
@@ -238,6 +264,9 @@ export default class extends mixins(Layout) {
     deviceResizeSupporter(this.resize)
     this.scrollToPosition()
     this.loadWhenScroll()
+    if(this.mobile) {
+      this.pullTransform()
+    }
   }
 }
 </script>
@@ -394,9 +423,11 @@ export default class extends mixins(Layout) {
     padding-left: 5px;
   }
 
-  .loading {
+  .pull {
     width: 100%;
     height: 100px;
+    display: flex;
+    justify-items: center;
   }
 
   .image-container {
