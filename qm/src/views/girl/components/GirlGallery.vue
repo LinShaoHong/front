@@ -53,6 +53,7 @@
           <span v-if="mobile" style="color: whitesmoke; font-size: 11px;">{{ '點擊圖片翻頁 (' + (index + 1)  + '/' + currImage.detailImages.length + ')'}}</span>
           <div class="main-image-pic">
             <img
+              v-if="!loading"
               id="imgId"
               ref="img"
               class="image-viewer-img"
@@ -62,6 +63,10 @@
               @error="handleImgError"
               @click="handleClick"
             >
+            <div v-else class="loading"
+            >
+              <ripple />
+            </div>
           </div>
           <div class="main-image-op">
             <span
@@ -231,24 +236,25 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
-import { isFirefox, off, on, rafThrottle } from '@/utils/image'
+import { off, on, rafThrottle } from '@/utils/image'
 import { AppModule, DeviceType } from '@/store/modules/app'
 import { GirlDetailResp, GirlResp } from '@/api/girlType'
 import { detail, recommendation, like } from '@/api/girls'
 import { consume } from '@/api/charge'
-import {addComment, CommentResp, ReplyResp, getComments, likeComment, hateComment, reply, read} from '@/api/comment'
+import {addComment, CommentResp, getComments, likeComment, hateComment, reply, read} from '@/api/comment'
 import { addCollection, deleteByGirlId } from '@/api/collection'
 import { LikesModule } from '@/store/modules/like'
 import { Message } from 'element-ui'
 import { UserModule } from "@/store/modules/user";
 import { MessageModule } from "@/store/modules/message";
-import { info } from "@/api/user";
 import Pagination from '@/components/Pagination/index.vue'
+import Ripple from '@/components/Loading/Ripple.vue'
 
 @Component({
   name: 'GirlGallery',
   components: {
-    Pagination
+    Pagination,
+    Ripple
   }
 })
 export default class extends Vue {
@@ -1037,6 +1043,17 @@ export default class extends Vue {
           width: 628px;
           height: auto;
           object-fit: fill;
+        }
+
+        .loading {
+          margin-top: 100px;
+          width: 100%;
+          height: 200px;
+          display: flex;
+          justify-items: center;
+          .lds-ripple {
+            margin: 20px auto auto;
+          }
         }
       }
 
