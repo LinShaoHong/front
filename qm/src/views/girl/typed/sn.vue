@@ -418,6 +418,14 @@ export default class extends mixins(Layout) {
 }
 
 .mobile {
+  .el-divider__text {
+    background-color: #000;
+  }
+
+  .el-divider--horizontal {
+    background-color: #f90;
+  }
+
   .image-container {
     width: 100%;
     display: grid;

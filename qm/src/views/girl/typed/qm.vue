@@ -1,6 +1,7 @@
 <template>
   <div :class="mobile ? 'app-container mobile' : 'app-container'">
     <div class="image-container">
+      <el-divider v-if="mobile"><span style="color: #f90; font-size: 20px;">樓鳳資訊</span></el-divider>
       <div
         class="image-list"
         :style="mobile ? ('width: ' + mobileImagesWidth + 'px;') : ''"
@@ -418,6 +419,18 @@ export default class extends mixins(Layout) {
 }
 
 .mobile {
+  .el-divider__text {
+    background-color: #000;
+  }
+
+  .el-divider {
+    width: 80%;
+  }
+
+  .el-divider--horizontal {
+    background-color: #f90;
+  }
+
   .image-container {
     width: 100%;
     display: grid;
