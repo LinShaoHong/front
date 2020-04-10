@@ -27,11 +27,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
 import Layout from '@/common/layout'
 import { login, checkName } from '@/api/session'
-import { info } from '@/api/user'
 import { UserModule } from '@/store/modules/user'
 import { MenuModule } from '@/store/modules/menu'
 import { MessageModule } from '@/store/modules/message'
@@ -94,8 +93,7 @@ export default class extends mixins(Layout) {
         const data = await login(this.loginForm)
         this.$set(this.code, 0, data.code)
         if (this.code[0] === 200) {
-          Cookies.set('QM-TOKEN', data.value, { expires: 7, path: '/' })
-          const user = await info()
+          Cookies.set('QM-TOKEN',data.value, { expires: 7, path: '/' })
           await UserModule.GetUserInfo()
           await MessageModule.GetMessages({ start:0, count: 10, isComment: true })
           await MessageModule.GetMessages({ start:0, count: 10, isComment: false })

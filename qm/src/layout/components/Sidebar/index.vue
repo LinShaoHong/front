@@ -65,6 +65,7 @@ import { DeviceType, AppModule } from '@/store/modules/app'
 import { MenuModule, MenuItem } from '@/store/modules/menu'
 import { UserModule } from '@/store/modules/user'
 import { logout } from '@/api/session'
+import Cookies from 'js-cookie'
 
 @Component({
   name: 'Sidebar',
@@ -122,11 +123,13 @@ export default class extends Vue {
   private async logout() {
     await logout()
     UserModule.Clear()
+    Cookies.remove('QM-TOKEN')
   }
 
   private jump(path: string, index: number) {
     if (path === '/logout') {
       this.logout()
+      Cookies.remove('QM-TOKEN')
     } else {
       this.resetIndex(index)
       if (name === null) {

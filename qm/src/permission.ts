@@ -5,7 +5,6 @@ import { Route } from 'vue-router'
 import i18n from '@/lang'
 import settings from './settings'
 import { UserModule } from '@/store/modules/user'
-import { info } from '@/api/user'
 import Cookies from 'js-cookie'
 
 NProgress.configure({ showSpinner: false })

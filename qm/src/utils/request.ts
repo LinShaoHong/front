@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
+import Cookies from 'js-cookie'
 
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -10,6 +11,10 @@ const service = axios.create({
 // Request interceptors
 service.interceptors.request.use(
   (config) => {
+    const c = Cookies.get('QM-TOKEN')
+    if (c !== null && c !== '') {
+      config.headers['QM-TOKEN'] = c
+    }
     return config
   },
   (error) => {

@@ -366,6 +366,7 @@ import { constantRoutes } from '@/router'
 import { logout } from '@/api/session'
 import { read, replyMessage, reply } from '@/api/comment'
 import Pagination from '@/components/Pagination/index.vue'
+import Cookies from 'js-cookie'
 
 @Component({
   name: 'Navbar',
@@ -477,10 +478,6 @@ export default class extends Vue {
     this.toIndex(index)
   }
 
-  private toTop() {
-    alert(1)
-  }
-
   private toIndex(index: number) {
     for (let i = 0; i < this.menus.length; i++) {
       if (i !== index) {
@@ -495,6 +492,7 @@ export default class extends Vue {
     await logout()
     UserModule.Clear()
     MessageModule.Clear()
+    Cookies.remove('QM-TOKEN')
     this.toIndex(0)
     this.$router.push({ path: '/' })
   }
