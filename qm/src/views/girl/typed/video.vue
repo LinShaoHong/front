@@ -227,6 +227,7 @@ export default class extends mixins(Layout) {
     this.girls = []
     this.loadedAll = false
     this.scrollCounter = 1
+    this.pullCounter = 1
     await this.getGirls(0, this.STEP_COUNT)
   }
 
@@ -234,6 +235,7 @@ export default class extends mixins(Layout) {
     this.girls = []
     this.loadedAll = false
     this.scrollCounter = 1
+    this.pullCounter = 1
     await this.getGirls(0, this.STEP_COUNT)
   }
 

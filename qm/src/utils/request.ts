@@ -12,7 +12,7 @@ const service = axios.create({
 service.interceptors.request.use(
   (config) => {
     const c = Cookies.get('QM-TOKEN')
-    if (c !== null && c !== '') {
+    if (c !== undefined && c !== null && c !== '') {
       config.headers['QM-TOKEN'] = c
     }
     return config
