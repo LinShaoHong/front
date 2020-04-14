@@ -54,7 +54,7 @@
           </div>
         </el-collapse-item>
         <el-collapse-item :title="'我的收藏'" name="2">
-          <div v-if="collects.length > 0" class="collect-wrapper">
+          <div v-if="collectTotal > 0" class="collect-wrapper">
             <div class="collect-list"
                  :style="mobile ? ('width: ' + mobileImagesWidth + 'px;') : ''"
             >
@@ -85,7 +85,7 @@
           </div>
         </el-collapse-item>
         <el-collapse-item :title="'最近浏覽'" name="3">
-          <div v-if="footprints.length > 0" class="collect-wrapper">
+          <div v-if="footprintTotal > 0" class="collect-wrapper">
             <div class="collect-list"
                  :style="mobile ? ('width: ' + mobileImagesWidth + 'px;') : ''"
             >
@@ -127,7 +127,7 @@
               <el-radio label="SING_IN" style="color: whitesmoke">簽到</el-radio>
             </el-radio-group>
           </div>
-          <div v-if="flows.length > 0" style="margin-top: 20px;">
+          <div v-if="flowsTotal > 0" style="margin-top: 20px;">
             <el-timeline>
               <el-timeline-item
                 v-for="(flow, index) in flows"

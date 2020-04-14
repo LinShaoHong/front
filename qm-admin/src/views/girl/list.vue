@@ -39,6 +39,9 @@
                 <el-form-item label="获取值">
                   <span>{{ props.row.contact }}</span>
                 </el-form-item>
+                <el-form-item label="联系图">
+                  <img v-for="pic in props.row.contactImages" :key="pic" :src="imageServer + pic" class="gallery">
+                </el-form-item>
                 <el-form-item label="详情图">
                   <img v-for="pic in props.row.detailImages" :key="pic" :src="imageServer + pic" class="gallery">
                 </el-form-item>

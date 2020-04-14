@@ -64,6 +64,22 @@
           </el-upload>
         </el-form-item>
 
+        <el-form-item label="联系图">
+          <el-upload
+            :action="uploadPath"
+            :limit="100"
+            :headers="headers"
+            :on-exceed="uploadOverrun"
+            :on-success="uploadContactImage"
+            :on-remove="handleContactRemove"
+            multiple
+            accept=".jpg,.jpeg,.png,.gif"
+            list-type="picture-card"
+          >
+            <i class="el-icon-plus" />
+          </el-upload>
+        </el-form-item>
+
         <el-form-item label="详情图">
           <el-upload
             :action="uploadPath"
@@ -71,7 +87,7 @@
             :headers="headers"
             :on-exceed="uploadOverrun"
             :on-success="uploadDetailImage"
-            :on-remove="handleRemove"
+            :on-remove="handleDetailRemove"
             multiple
             accept=".jpg,.jpeg,.png,.gif"
             list-type="picture-card"
@@ -108,6 +124,7 @@ export default class extends Vue {
     mainImage: '',
     city: '',
     category: '',
+    contactImages: new Array(),
     detailImages: new Array(),
     onService: false
   }
@@ -119,12 +136,27 @@ export default class extends Vue {
     this.girl.mainImage = resp.value
   }
 
+  private uploadContactImage(resp: any) {
+    const path = resp.value
+    this.girl.contactImages.push(path)
+  }
+
   private uploadDetailImage(resp: any) {
     const path = resp.value
     this.girl.detailImages.push(path)
   }
 
-  private async handleRemove(resp: any) {
+  private async handleContactRemove(resp: any) {
+    const path = resp.response.value
+    for (let i = 0; i < this.girl.contactImages.length; i++) {
+      if (this.girl.contactImages[i] === path) {
+        this.girl.contactImages.splice(i, 1)
+      }
+    }
+    await deleteImage({ path: path })
+  }
+
+  private async handleDetailRemove(resp: any) {
     const path = resp.response.value
     for (let i = 0; i < this.girl.detailImages.length; i++) {
       if (this.girl.detailImages[i] === path) {
