@@ -9,9 +9,6 @@
         <div class="product-select charge-info-value" style="margin-left: 15px;">
           <el-select v-model="type"
                      size="medium">
-            <el-option label="10 金幣" value="TEN">
-              10 金幣
-            </el-option>
             <el-option label="30 金幣" value="THIRTY">
               30 金幣
             </el-option>
@@ -69,7 +66,7 @@ import { Message } from 'element-ui'
 })
 export default class extends mixins(Layout) {
   private cardNo: string = ''
-  private type: string = 'TEN'
+  private type: string = 'THIRTY'
   private yqs = []
 
   get amount() {
