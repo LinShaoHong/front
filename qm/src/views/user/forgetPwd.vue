@@ -9,7 +9,7 @@
                label-width="100px"
                class="forget-form">
         <el-form-item label-width="0" label="" prop="email" class="label-item">
-          <el-input placeholder="郵箱地址" v-model.number="forgetForm.email"></el-input>
+          <el-input placeholder="郵箱地址" v-model="forgetForm.email"></el-input>
         </el-form-item>
         <el-form-item v-if="second > 0" style="height: 5px; margin-bottom: 50px;">
           <span  style="float: right; color: #f90; " href="#">{{ '登錄郵箱更改密碼  (' + second + ')' }}</span>

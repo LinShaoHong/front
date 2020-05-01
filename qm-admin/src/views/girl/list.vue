@@ -19,6 +19,8 @@
         </el-select>
         <el-input v-model="listQuery.city" clearable class="filter-item" style="width: 160px;" placeholder="城市" />
         <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 160px;" placeholder="名称" />
+        <el-input v-model="listQuery.title" clearable class="filter-item" style="width: 160px;" placeholder="描述" />
+        <el-input v-model="listQuery.contact" clearable class="filter-item" style="width: 160px;" placeholder="联系方式" />
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
         <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
       </div>
@@ -132,8 +134,10 @@ export default class extends Vue {
   private listQuery = {
     id: null,
     name: null,
+    title: null,
     type: null,
     city: null,
+    contact: null,
     start: 0,
     count: 10
   }
@@ -193,7 +197,7 @@ export default class extends Vue {
   }
 
   private handleUpdate(id: string) {
-    this.$router.push({ path: 'girl-edit', query: { id: id } })
+    this.$router.push({ path: '/girl-edit', query: { id: id } })
   }
 
   private created() {

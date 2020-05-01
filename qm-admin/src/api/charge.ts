@@ -39,3 +39,16 @@ export const yqDel = (id: string): Resp | any =>
     url: '/v1/qm/admin/charge/yq/$' + id,
     method: 'delete'
   })
+
+export const rechargeTotal = (): PageResp | any =>
+  request({
+    url: '/v1/qm/admin/charge/total/',
+    method: 'get'
+  })
+
+export const payLog = (params: any): PageResp | any =>
+  request({
+    url: '/v1/qm/admin/charge/payLog/',
+    method: 'get',
+    params
+  })

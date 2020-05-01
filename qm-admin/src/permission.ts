@@ -7,6 +7,7 @@ import { UserModule } from '@/store/modules/user'
 import { PermissionModule } from '@/store/modules/permission'
 import i18n from '@/lang' // Internationalization
 import settings from './settings'
+import Cookies from 'js-cookie'
 
 NProgress.configure({ showSpinner: false })
 

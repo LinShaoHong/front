@@ -184,7 +184,7 @@ export default class extends Vue {
   }
 
   private handleCancel() {
-    this.$router.push({ path: 'girl-list' })
+    this.$router.push({ path: '/girl-list' })
   }
 }
 </script>

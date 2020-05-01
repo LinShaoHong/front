@@ -3,9 +3,7 @@
 
     <!-- 查询和其他操作 -->
     <div class="filter-container">
-      <el-input v-model="listQuery.id" clearable class="filter-item" style="width: 200px;" placeholder="评论ID" />
-      <el-input v-model="listQuery.girlId" clearable class="filter-item" style="width: 200px;" placeholder="教师ID" />
-      <el-input v-model="listQuery.commentatorId" clearable class="filter-item" style="width: 200px;" placeholder="评论人ID" />
+      <el-input v-model="listQuery.commentatorName" clearable class="filter-item" style="width: 200px;" placeholder="评论人" />
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
     </div>
 
@@ -17,11 +15,8 @@
             <el-form-item label="ID">
               <span>{{ props.row.id }}</span>
             </el-form-item>
-            <el-form-item label="评论人ID">
-              <span>{{ props.row.commentatorId }}</span>
-            </el-form-item>
             <el-form-item label="教师ID">
-              <span><a href="#" @click="toGirl(props.row.girlId)">{{ props.row.girlId }}</a></span>
+              <span><a href="#" @click="toGirl(props.row.girlId)">{{ props.row.girlName }}</a></span>
             </el-form-item>
             <el-form-item label="时间">
               <span>{{ timestampToTime(props.row.time) }}</span>
@@ -29,6 +24,8 @@
           </el-form>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="评论人" width="150" prop="commentatorName" />
+      <el-table-column align="center" label="被回复人" width="150" prop="replierName" />
       <el-table-column align="center" label="评论内容" prop="content" />
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -57,8 +54,7 @@ export default {
         start: 0,
         count: 20,
         id: null,
-        girlId: null,
-        commentatorId: null
+        commentatorName: null
       }
     }
   },
@@ -67,7 +63,7 @@ export default {
   },
   methods: {
     toGirl(girlId) {
-      this.$router.push({ path: 'girl-edit', query: { id: girlId } })
+      this.$router.push({ path: '/girl-edit', query: { id: girlId } })
     },
     getList() {
       this.listLoading = true

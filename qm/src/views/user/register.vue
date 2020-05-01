@@ -18,7 +18,7 @@
           <el-input placeholder="確認密碼" type="password" v-model="registerForm.checkPass" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label-width="0" label="" prop="email" class="label-item">
-          <el-input placeholder="郵箱" v-model.number="registerForm.email"></el-input>
+          <el-input placeholder="郵箱 用以找回密碼和接收通知" v-model="registerForm.email"></el-input>
         </el-form-item>
         <el-form-item label-width="0">
           <el-button type="primary" @click="register" style="width: 100%;">注冊</el-button>

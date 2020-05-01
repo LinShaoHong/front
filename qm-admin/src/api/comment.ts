@@ -13,3 +13,10 @@ export const deleteComment = (id: string): Resp | any =>
     url: '/v1/qm/admin/comment/$' + id,
     method: 'delete'
   })
+
+export const noticeComment = (data: any): Resp | any =>
+  request({
+    url: '/v1/qm/admin/comment',
+    method: 'post',
+    data
+  })

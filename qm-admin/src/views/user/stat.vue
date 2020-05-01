@@ -141,33 +141,6 @@ export default class extends Vue {
         }
       }],
       series: [{
-        name: '增量',
-        type: 'line',
-        smooth: true,
-        symbol: 'circle',
-        symbolSize: 5,
-        showSymbol: false,
-        lineStyle: {
-          width: 1
-        },
-        areaStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-            offset: 0,
-            color: 'rgba(137, 189, 27, 0.3)'
-          }, {
-            offset: 0.8,
-            color: 'rgba(137, 189, 27, 0)'
-          }], false) as any,
-          shadowColor: 'rgba(0, 0, 0, 0.1)',
-          shadowBlur: 10
-        },
-        itemStyle: {
-          color: 'rgb(137,189,27)',
-          borderColor: 'rgba(137,189,2,0.27)',
-          borderWidth: 12
-        },
-        data: this.stat.incs
-      }, {
         name: '总量',
         type: 'line',
         smooth: true,
@@ -194,6 +167,33 @@ export default class extends Vue {
           borderWidth: 12
         },
         data: this.stat.nums
+      },{
+        name: '增量',
+        type: 'line',
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 5,
+        showSymbol: false,
+        lineStyle: {
+          width: 1
+        },
+        areaStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+            offset: 0,
+            color: 'rgba(137, 189, 27, 0.3)'
+          }, {
+            offset: 0.8,
+            color: 'rgba(137, 189, 27, 0)'
+          }], false) as any,
+          shadowColor: 'rgba(0, 0, 0, 0.1)',
+          shadowBlur: 10
+        },
+        itemStyle: {
+          color: 'rgb(137,189,27)',
+          borderColor: 'rgba(137,189,2,0.27)',
+          borderWidth: 12
+        },
+        data: this.stat.incs
       }]
     } as EChartOption<EChartOption.SeriesLine>)
   }

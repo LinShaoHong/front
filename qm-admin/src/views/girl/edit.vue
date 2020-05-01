@@ -176,12 +176,12 @@ export default class extends Vue {
         title: '成功',
         message: '修改成功'
       })
-      this.$router.push({ path: 'girl-list' })
+      this.$router.push({ path: '/girl-list' })
     }
   }
 
   private handleCancel() {
-    this.$router.push({ path: 'girl-list' })
+    this.$router.push({ path: '/girl-list' })
   }
 
   private created() {

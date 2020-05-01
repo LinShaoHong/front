@@ -52,6 +52,7 @@
 <script lang="ts">
 import { Component, Watch } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
+import { MenuModule } from '@/store/modules/menu'
 import Layout from '@/common/layout'
 import { search } from '@/api/girls'
 import GirlItem from '../components/GirlItem.vue'
@@ -94,7 +95,16 @@ export default class extends mixins(Layout) {
         this.types.push(g.type)
       }
     })
+    this.types.sort((t1, t2) => {
+      const i1 = this.menus.findIndex(v => v.type === t1)
+      const i2 = this.menus.findIndex(v => v.type === t2)
+      return i1 - i2
+    })
     NProgress.done()
+  }
+
+  get menus() {
+    return MenuModule.menus
   }
 
   private asType(type: string) {

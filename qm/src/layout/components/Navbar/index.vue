@@ -114,7 +114,9 @@
                         <div v-if="!item.read" style="width: 6px; height: 6px; border-radius: 3px; background-color: red"></div>
                       </div>
                       <div class="message-item-content">
-                        <span style="color: #f90; font-size: 15px; margin-right: 2px;">寻芳阁</span><br/>
+                        <span style="color: #f90; font-size: 15px; margin-right: 2px;">寻芳阁
+                          <span v-if="item.system" style="color: whitesmoke; font-size: 12px; margin-right: 2px;">&nbsp;{{ item.time }}</span>
+                        </span><br/>
                         <span style="color: whitesmoke" :id="item.id">{{ item.content }}</span>
                       </div>
                     </div>
@@ -259,7 +261,8 @@
                         <div v-if="!item.read" style="width: 6px; height: 6px; border-radius: 3px; background-color: red"></div>
                       </div>
                       <div class="message-item-content">
-                        <span style="color: #f90; font-size: 15px; margin-right: 2px;">寻芳阁</span><br/>
+                        <span style="color: #f90; font-size: 15px; margin-right: 2px;">寻芳阁
+                          <span v-if="item.system" style="color: whitesmoke; font-size: 12px; margin-right: 2px;">&nbsp;{{ item.time }}</span></span><br/>
                         <span style="color: whitesmoke" :id="item.id">{{ item.content }}</span>
                       </div>
                     </div>
@@ -809,7 +812,7 @@ export default class extends Vue {
     bottom: 50%;
     left: 60%;
     padding: 1px 2px;
-    font-size: 5px;
+    font-size: 7px;
     color: #f1403c;
     background-color: #f1403c;
     border: 1px solid #fff;

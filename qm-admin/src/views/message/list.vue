@@ -64,6 +64,22 @@
         </el-form-item>
       </el-form>
     </el-card>
+    <el-card class="box-card" style="margin-top: 20px;">
+      <div slot="header" class="clearfix">
+        <span>发送通知</span>
+      </div>
+      <el-form ref="emailForm" :model="noticeForm" label-width="80px">
+        <el-form-item label="通知人">
+          <el-input v-model="noticeForm.username"></el-input>
+        </el-form-item>
+        <el-form-item label="通知内容">
+          <el-input type="textarea" v-model="noticeForm.content"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSendNotice">发送</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
     <el-dialog
       :visible.sync="visible"
       width="30%">
@@ -83,6 +99,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import Pagination from '@/components/Pagination/index.vue'
 import { listMessages, deleteMessage, updateMessage, addMessage, sendEmail } from '@/api/message'
+import { noticeComment } from '@/api/comment'
 import { imageServer } from '@/api/storage'
 import { Message } from 'element-ui'
 
@@ -110,6 +127,11 @@ export default class extends Vue {
     title: '',
     body: '',
     format: 'TEXT'
+  }
+
+  private noticeForm =  {
+    username: '',
+    content: '',
   }
 
   private async getList() {
@@ -168,6 +190,17 @@ export default class extends Vue {
 
   private async onSend() {
     const data = await sendEmail(this.emailForm)
+    if (data.code === 200) {
+      Message({
+        message: '发送成功！',
+        type: 'success',
+        duration: 1500
+      })
+    }
+  }
+
+  private async onSendNotice() {
+    const data = await noticeComment(this.noticeForm)
     if (data.code === 200) {
       Message({
         message: '发送成功！',

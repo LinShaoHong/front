@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
 import { UserModule } from '@/store/modules/user'
+import Cookies from 'js-cookie'
 
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -12,8 +13,9 @@ const service = axios.create({
 service.interceptors.request.use(
   (config) => {
     // Add X-Access-Token header to every request, you can add other custom headers here
-    if (UserModule.token) {
-      config.headers['X-Access-Token'] = UserModule.token
+    const c = Cookies.get('ADMIN_QM_TOKEN')
+    if (c !== undefined && c !== null && c !== '') {
+      config.headers['ADMIN_QM_TOKEN'] = c
     }
     return config
   },

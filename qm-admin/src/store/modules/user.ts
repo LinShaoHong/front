@@ -5,6 +5,7 @@ import { PermissionModule } from './permission'
 import { TagsViewModule } from './tags-view'
 import { login } from '@/api/session'
 import store from '@/store'
+import Cookies from 'js-cookie'
 
 export interface IUserState {
   token: string
@@ -60,6 +61,7 @@ class User extends VuexModule implements IUserState {
     username = username.trim()
     const data = await login({ username: username, password: password })
     if (data.code === 200) {
+      Cookies.set('ADMIN_QM_TOKEN',data.value, { expires: 170, path: '/' })
       setToken(data.value)
       this.SET_TOKEN(data.value)
     }
@@ -74,9 +76,6 @@ class User extends VuexModule implements IUserState {
 
   @Action
   public async GetUserInfo() {
-    if (this.token === '') {
-      throw Error('GetUserInfo: token is undefined!')
-    }
     const { roles, name, avatar, introduction, email } = {
       roles: ['admin'],
       name: 'linsh',

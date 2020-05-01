@@ -40,9 +40,11 @@
           </el-table-column>
           <el-table-column align="center" width="90px;" label="签到次数" prop="signInCount" />
           <el-table-column align="center" width="100px;" label="金币" prop="amount" />
-          <el-table-column align="center" label="上次登录时间" prop="createTime">
+          <el-table-column align="center" label="上次签到时间" prop="signInTime">
             <template slot-scope="scope">
-              {{ scope.row.lastLoginTime | parseTime }}
+              <span v-if="scope.row.signInTime !== null">
+                {{ scope.row.signInTime | parseTime }}
+              </span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="注册时间" prop="createTime">
@@ -118,6 +120,7 @@ export default class extends Vue {
   }
 
   private created() {
+    this.listQuery.username = this.$route.query.userName as string
     this.getList()
   }
 }

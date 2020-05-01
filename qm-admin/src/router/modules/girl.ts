@@ -12,7 +12,7 @@ const girlRoutes: RouteConfig = {
   },
   children: [
     {
-      path: 'girl-list',
+      path: '/girl-list',
       component: () => import('@/views/girl/list.vue'),
       name: 'GirlList',
       meta: { title: 'girlList', icon: 'list' }
@@ -24,7 +24,7 @@ const girlRoutes: RouteConfig = {
       meta: { title: 'girlCreate', icon: 'form' }
     },
     {
-      path: 'girl-edit',
+      path: '/girl-edit',
       component: () => import('@/views/girl/edit.vue'),
       name: 'GirlEdit',
       meta: { title: 'girlEdit', icon: 'form', hidden: true }
