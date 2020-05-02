@@ -95,6 +95,25 @@
             <i class="el-icon-plus" />
           </el-upload>
         </el-form-item>
+
+        <el-form-item label="视频">
+          <el-upload
+            :action="uploadPath"
+            :show-file-list="false"
+            :headers="headers"
+            :on-success="uploadVideo"
+            class="avatar-uploader"
+            accept=".mp4"
+          >
+            <video v-if="girl.video" class="video-js">
+              <source
+                :src="imageServer + girl.video"
+                type="video/mp4"
+              >
+            </video>
+            <i v-else class="el-icon-plus avatar-uploader-icon" />
+          </el-upload>
+        </el-form-item>
       </el-form>
     </el-card>
     <div class="op-container">
@@ -122,6 +141,7 @@ export default class extends Vue {
     price: '',
     type: '',
     mainImage: '',
+    video: '',
     city: '',
     category: '',
     contactImages: new Array(),
@@ -144,6 +164,13 @@ export default class extends Vue {
   private uploadDetailImage(resp: any) {
     const path = resp.value
     this.girl.detailImages.push(path)
+  }
+
+  private uploadVideo(resp: any) {
+    if (this.girl.video !== null && this.girl.video !== '' && this.girl.video !== undefined) {
+      deleteImage({ path: this.girl.video })
+    }
+    this.girl.video = resp.value
   }
 
   private async handleContactRemove(resp: any) {

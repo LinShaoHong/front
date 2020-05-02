@@ -9,6 +9,10 @@ import 'jssor-slider/js/jssor.slider.min'
 import '@/styles/element-variables.scss'
 import '@/styles/index.scss'
 
+import VideoPlayer from 'vue-video-player'
+require('video.js/dist/video-js.css')
+require('vue-video-player/src/custom-theme.css')
+
 import App from '@/App.vue'
 import store from '@/store'
 import { AppModule } from '@/store/modules/app'
@@ -33,6 +37,7 @@ Vue.use(SvgIcon, {
 })
 
 Vue.use(VueLazyLoad)
+Vue.use(VideoPlayer)
 
 // Register global directives
 Object.keys(directives).forEach(key => {

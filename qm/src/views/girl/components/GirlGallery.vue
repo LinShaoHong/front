@@ -50,22 +50,57 @@
           </div>
         </div>
         <div class="main-image">
-          <span v-if="mobile" style="color: whitesmoke; font-size: 11px;">{{ '點擊圖片翻頁 (' + (index + 1)  + '/' + currImage.detailImages.length + ')'}}</span>
-          <div class="main-image-pic">
-            <img
-              v-if="!loading"
-              id="imgId"
-              ref="img"
-              class="image-viewer-img"
-              :src="currentImg"
-              :style="imgStyle"
-              @load="handleImgLoad"
-              @error="handleImgError"
-              @click="handleClick"
-            >
-            <div v-else class="loading"
-            >
-              <ripple />
+          <div v-if="video !== null && video !== '' && video !== undefined">
+            <el-tabs v-model="activeTab"
+                     @tab-click="handleTab">
+              <el-tab-pane label="圖片" name="imageTab">
+                <span v-if="mobile" style="color: whitesmoke; font-size: 11px;">{{ '點擊圖片翻頁 (' + (index + 1)  + '/' + currImage.detailImages.length + ')'}}</span>
+                <div class="main-image-pic">
+                  <img
+                    v-if="!loading"
+                    id="imgId"
+                    ref="img"
+                    class="image-viewer-img"
+                    :src="currentImg"
+                    :style="imgStyle"
+                    @load="handleImgLoad"
+                    @error="handleImgError"
+                    @click="handleClick"
+                  >
+                  <div v-else class="loading"
+                  >
+                    <ripple />
+                  </div>
+                </div>
+              </el-tab-pane>
+              <el-tab-pane v-if="video !== null && video !== '' && video !== undefined" label="視頻" name="videoTab">
+                <video-player  class="video-player vjs-custom-skin"
+                               ref="videoPlayer"
+                               :playsinline="true"
+                               :options="playerOptions"
+                               @play="onPlayerPlay($event)"
+                ></video-player>
+              </el-tab-pane>
+            </el-tabs>
+          </div>
+          <div v-else>
+            <span v-if="mobile" style="color: whitesmoke; font-size: 11px;">{{ '點擊圖片翻頁 (' + (index + 1)  + '/' + currImage.detailImages.length + ')'}}</span>
+            <div class="main-image-pic">
+              <img
+                v-if="!loading"
+                id="imgId"
+                ref="img"
+                class="image-viewer-img"
+                :src="currentImg"
+                :style="imgStyle"
+                @load="handleImgLoad"
+                @error="handleImgError"
+                @click="handleClick"
+              >
+              <div v-else class="loading"
+              >
+                <ripple />
+              </div>
             </div>
           </div>
           <div class="main-image-op">
@@ -267,6 +302,8 @@ export default class extends Vue {
   private SERVER = process.env.VUE_APP_IMAGE_SERVER
 
   private urls: string[] = []
+  private video: string = ''
+  private activeTab: string = 'imageTab'
   private currImage: GirlDetailResp = this.image
 
   private like: boolean = this.liked
@@ -359,6 +396,62 @@ export default class extends Vue {
     return this.currImage.contact
   }
 
+  get playerOptions() {
+    return {
+      // 视频播放
+      // playerOptions : {
+        autoplay: false, //如果true,浏览器准备好时开始回放。
+        muted: false, // 默认情况下将会消除任何音频。
+        loop: false, // 导致视频一结束就重新开始。
+        preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
+        language: 'zh-CN',
+        aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
+        fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
+        sources: [{
+          type: "",
+          src: this.video //url地址
+        }],
+        poster: "", //你的封面地址
+        // width: document.documentElement.clientWidth,
+        notSupportedMessage: '此視頻暫無法播放，請稍後再試', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
+        controlBar: {
+          timeDivider: true,
+          durationDisplay: true,
+          remainingTimeDisplay: false,
+          fullscreenToggle: true  //全屏按钮
+        }
+      // }
+    }
+  }
+
+  private full(ele) {
+    if (ele.requestFullscreen) {
+      ele.requestFullscreen()
+    } else if (ele.mozRequestFullScreen) {
+      ele.mozRequestFullScreen()
+    } else if (ele.msRequestFullscreen) {
+      ele.msRequestFullscreen()
+    } else if (ele.oRequestFullscreen) {
+      ele.oRequestFullscreen()
+    } else if (ele.webkitRequestFullscreen) {
+      ele.webkitRequestFullScreen()
+    } else {
+      const docHtml = document.documentElement
+      const docBody = document.body
+      const videobox = document.getElementsByClassName("video-player")
+      const cssText = "width:100%;height:100%;overflow:hidden;"
+      docHtml.style.cssText = cssText
+      docBody.style.cssText = cssText
+      videobox['style'].cssText = cssText + ";" + "margin:0px;padding:0px;"
+      document['IsFullScreen'] = true
+    }
+  }
+  private onPlayerPlay(player) {
+    if (this.mobile) {
+      this.full(player)
+    }
+  }
+
   @Watch('index')
   onIndexChange(v: number) {
     this.actives = []
@@ -377,6 +470,9 @@ export default class extends Vue {
         this.loading = true
       }
     })
+  }
+
+  private handleTab(tab: string) {
   }
 
   private recharge() {
@@ -406,8 +502,14 @@ export default class extends Vue {
             })
             const data = await detail(this.currImage.id)
             if (data.code === 200) {
+              this.activeTab = 'imageTab'
               this.currImage = data.value
               this.urls = this.currImage.detailImages.map(v => process.env.VUE_APP_IMAGE_SERVER + v)
+              if (this.currImage.video !== null && this.currImage.video !== '' && this.currImage.video !== undefined) {
+                this.video = process.env.VUE_APP_IMAGE_SERVER + this.currImage.video
+              } else {
+                this.video = null
+              }
             }
             await UserModule.GetUserInfo()
           } else {
@@ -866,8 +968,14 @@ export default class extends Vue {
     this.actives[this.index] = true
     const data = await detail(img.id)
     if (data.code === 200) {
+      this.activeTab = 'imageTab'
       this.currImage = data.value
       this.urls = this.currImage.detailImages.map(v => process.env.VUE_APP_IMAGE_SERVER + v)
+      if (this.currImage.video !== null && this.currImage.video !== '' && this.currImage.video !== undefined) {
+        this.video = process.env.VUE_APP_IMAGE_SERVER + this.currImage.video
+      } else {
+        this.video = null
+      }
       this.comments = []
       this.listComments(true, null)
     }
@@ -881,7 +989,13 @@ export default class extends Vue {
   created() {
     this.actives[this.index] = true
     this.loadRecommendations()
+    this.activeTab = 'imageTab'
     this.urls = this.image.detailImages.map(v => process.env.VUE_APP_IMAGE_SERVER + v)
+    if (this.currImage.video !== null && this.currImage.video !== '' && this.currImage.video !== undefined) {
+      this.video = process.env.VUE_APP_IMAGE_SERVER + this.currImage.video
+    } else {
+      this.video = null
+    }
     this.listComments(true, this.commentId)
   }
 
@@ -1031,8 +1145,8 @@ export default class extends Vue {
     }
 
     .main-image {
-      padding-left: 4px;
-      padding-right: 4px;
+      padding-left: 8px;
+      padding-right: 8px;
 
       .main-image-pic {
         .image-viewer-img {
@@ -1243,6 +1357,34 @@ export default class extends Vue {
 
 .el-dialog__headerbtn {
   display: none;
+}
+
+.el-tabs__item {
+  color: whitesmoke;
+}
+
+.vjs-custom-skin > .video-js .vjs-big-play-button {
+  background-color: rgba(0,0,0,0);
+  font-size: 4em;
+  height: 1em !important;
+  width: 1em !important;
+  line-height: 1em !important;
+  margin-top: -1em !important;
+  margin-left: -0.5em;
+  border: none;
+  outline: none;
+}
+
+.vjs-custom-skin > .video-js .vjs-big-play-button:focus {
+  outline: 0;
+}
+
+.vjs-button {
+  outline: none;
+}
+
+.vjs-button:focus {
+  outline: 0;
 }
 
 .avatar {
