@@ -4,6 +4,7 @@ import 'normalize.css'
 import ElementUI from 'element-ui'
 import SvgIcon from 'vue-svgicon'
 import VueLazyLoad from 'vue-lazyload'
+import VueClipboard from 'vue-clipboard2'
 
 import 'jssor-slider/js/jssor.slider.min'
 import '@/styles/element-variables.scss'
@@ -38,6 +39,7 @@ Vue.use(SvgIcon, {
 
 Vue.use(VueLazyLoad)
 Vue.use(VideoPlayer)
+Vue.use(VueClipboard)
 
 // Register global directives
 Object.keys(directives).forEach(key => {

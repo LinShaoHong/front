@@ -6,9 +6,9 @@
         <el-select
           v-model="listQuery.type"
           class="filter-item"
-          :placeholder="类型"
+          placeholder="类型"
           clearable
-          style="width: 150px;"
+          style="width: 110px;"
         >
           <el-option
             v-for="item in types"
@@ -17,10 +17,14 @@
             :value="item.value"
           />
         </el-select>
-        <el-input v-model="listQuery.city" clearable class="filter-item" style="width: 160px;" placeholder="城市" />
+        <el-input v-model="listQuery.city" clearable class="filter-item" style="width: 100px;" placeholder="城市" />
         <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 160px;" placeholder="名称" />
         <el-input v-model="listQuery.title" clearable class="filter-item" style="width: 160px;" placeholder="描述" />
         <el-input v-model="listQuery.contact" clearable class="filter-item" style="width: 160px;" placeholder="联系方式" />
+        <el-select v-model="listQuery.hasVideo" clearable placeholder="视频" class="filter-item" style="width: 80px;">
+          <el-option label="有" value="true"></el-option>
+          <el-option label="无" value="false"></el-option>
+        </el-select>
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
         <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
       </div>
@@ -55,13 +59,18 @@
               <img :src="imageServer + scope.row.mainImage" width="100" height="60">
             </template>
           </el-table-column>
-          <el-table-column align="center" min-width="100" label="名称" prop="name" />
+          <el-table-column align="center" min-width="100" label="名称" prop="name">
+            <template slot-scope="scope">
+              {{ scope.row.city === null? scope.row.name : (scope.row.city + ' ' + scope.row.name) }}
+            </template>
+          </el-table-column>
           <el-table-column align="center" min-width="100" label="价格" prop="price" />
-          <el-table-column align="center" min-width="100" label="城市" prop="city" />
-          <el-table-column align="center" min-width="100" label="类型" prop="category" />
-          <el-table-column align="center" min-width="80" label="赞数" prop="likes" />
+          <el-table-column align="center" min-width="100" label="浏览时间" prop="updateTime">
+            <template slot-scope="scope">
+              {{ scope.row.updateTime | parseTime }}
+            </template>
+          </el-table-column>
           <el-table-column align="center" min-width="80" label="浏览量" prop="visits" />
-          <el-table-column align="center" min-width="80" label="收藏量" prop="collects" />
           <el-table-column align="center" label="上课状态" prop="onService">
             <template slot-scope="scope">
               <el-tag :type="scope.row.onService ? 'success' : 'danger' ">{{ scope.row.onService ? '上课' : '已下课' }}</el-tag>
@@ -138,6 +147,7 @@ export default class extends Vue {
     type: null,
     city: null,
     contact: null,
+    hasVideo: null,
     start: 0,
     count: 10
   }
@@ -149,6 +159,9 @@ export default class extends Vue {
   ]
 
   private async getList() {
+    if (!this.listQuery.hasVideo) {
+      delete this.listQuery.hasVideo
+    }
     listGirls(this.listQuery).then(response => {
       this.list = response.values
       this.total = response.total

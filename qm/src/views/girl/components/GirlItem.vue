@@ -10,7 +10,7 @@
     >
       <img
         :id="image.id"
-        v-lazy="src"
+        :src="src"
         :style="'width: ' + reWidth + 'px; height: ' + reHeight + 'px;'"
       >
     </div>

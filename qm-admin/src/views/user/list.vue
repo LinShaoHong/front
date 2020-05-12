@@ -12,7 +12,7 @@
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
       </div>
 
-        <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
+        <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row @cell-click="editCell">
           <el-table-column type="expand">
             <template slot-scope="props">
               <el-form label-position="left" class="table-expand">
@@ -39,7 +39,26 @@
             </template>
           </el-table-column>
           <el-table-column align="center" width="90px;" label="签到次数" prop="signInCount" />
-          <el-table-column align="center" width="100px;" label="金币" prop="amount" />
+          <el-table-column
+            align="center"
+            width="140px"
+            label="金币"
+          >
+            <template slot-scope="{row}">
+              <template v-if="row.editAmount">
+                <el-input
+                  style="width: 70px;"
+                  v-model="row.amount"
+                  class="edit-input"
+                  size="small"
+                />
+                <i class="el-icon-check" style="margin-left: 10px; color: #1EB7CD; cursor: pointer" @click="confirmEditAmount(row)"></i>
+                <i class="el-icon-close" style="margin-left: 5px; color: deeppink; cursor: pointer" @click="cancelEditAmount(row)"></i>
+              </template>
+              <span v-else>{{ row.amount }}</span>
+            </template>
+          </el-table-column>
+
           <el-table-column align="center" label="上次签到时间" prop="signInTime">
             <template slot-scope="scope">
               <span v-if="scope.row.signInTime !== null">
@@ -61,7 +80,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import Pagination from '@/components/Pagination/index.vue'
-import { paged } from '@/api/user'
+import { paged, update } from '@/api/user'
 import { imageServer } from '@/api/storage'
 
 @Component({
@@ -94,7 +113,10 @@ export default class extends Vue {
       delete this.listQuery.vip
     }
     paged(this.listQuery).then(response => {
-      this.list = response.values
+      this.list = response.values.map((v: any) => {
+        this.$set(v, 'editAmount', false)
+        return v
+      })
       this.total = response.total
       this.listLoading = false
     }).catch(() => {
@@ -117,6 +139,27 @@ export default class extends Vue {
     let m = date.getMinutes() + ':';
     let s = date.getSeconds();
     return Y+M+D+h+m+s;
+  }
+
+  private editCell(row: any, column: number, cell: any) {
+    if (!row.editAmount && column.label === '金币') {
+      row.editAmount = true
+    }
+  }
+
+  private cancelEditAmount(row: any) {
+    row.editAmount = false
+  }
+
+  private async confirmEditAmount(row: any) {
+    const data = await update(row.id, { amount: row.amount })
+    if (data.code === 200) {
+      row.editAmount = false
+      this.$message({
+        message: '修改成功',
+        type: 'success'
+      })
+    }
   }
 
   private created() {

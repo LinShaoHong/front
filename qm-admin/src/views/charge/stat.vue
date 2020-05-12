@@ -6,11 +6,19 @@
                  style="margin-bottom: 10px; width: 100px;"
                  @change="onTimeChange"
       >
-        <el-option label="近1周" value="1"></el-option>
-        <el-option label="近1月" value="2"></el-option>
-        <el-option label="近3月" value="3"></el-option>
-        <el-option label="近半年" value="4"></el-option>
-        <el-option label="近1年" value="5"></el-option>
+        <el-option :label="groupType === 'day'? '近1周' : '近1月'" value="1"></el-option>
+        <el-option :label="groupType === 'day'? '近1月' : '近3月'" value="2"></el-option>
+        <el-option :label="groupType === 'day'? '近3月' : '近半年'" value="3"></el-option>
+        <el-option :label="groupType === 'day'? '近半年' : '近1年'" value="4"></el-option>
+        <el-option :label="groupType === 'day'? '近1年' : '近3年'" value="5"></el-option>
+      </el-select>
+      <el-select v-model="groupType"
+                 size="mini"
+                 style="margin-bottom: 10px; width: 70px; margin-left: 20px;"
+                 @change="onTimeChange"
+      >
+        <el-option label="按天" value="day"></el-option>
+        <el-option label="按月" value="month"></el-option>
       </el-select>
       <div
         id="chart"
@@ -23,7 +31,7 @@
 <script lang="ts">
 import echarts, { EChartOption, ECharts } from 'echarts'
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { stat } from '@/api/user'
+import { stat } from '@/api/charge'
 
 @Component({
   name: 'LineChart'
@@ -32,6 +40,7 @@ export default class extends Vue {
   private chart!: ECharts | null
   private sidebarElm?: Element
 
+  private groupType: string = 'day'
   private timeType: string = '1'
 
   private stat: { times: string[], totals: number[], nums: number[] } = {
@@ -41,7 +50,7 @@ export default class extends Vue {
   }
 
   private async fetchStat() {
-    const data = await stat({ timeType: this.timeType })
+    const data = await stat({ groupType: this.groupType, timeType: this.timeType })
     this.stat = data.value
     this.initChart()
   }
@@ -77,7 +86,7 @@ export default class extends Vue {
       backgroundColor: '#394056',
       title: {
         top: 20,
-        text: '用户增长趋势',
+        text: '充值金额统计',
         textStyle: {
           fontWeight: 'normal',
           fontSize: 16,

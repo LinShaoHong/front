@@ -176,7 +176,7 @@ export default class extends mixins(Layout) {
   private mobileImagesWidth = 0
   private groupedGirls: { label: string, type: string, girls: GirlResp[], hots: GirlResp[] }[] = []
   private groupedRanks: string[] = []
-  private curRank: string = 'visits'
+  private curRank: string = 'createTime'
   private typeStarts: Map<string, number> = new Map()
 
   get carousels() {
@@ -248,7 +248,7 @@ export default class extends mixins(Layout) {
   private async getGirls() {
     this.loading = true
     const types = this.menus.map(v => v.type).join(',')
-    const data = await getIndex({ types: types, start: 0, count: this.mobile ? 6 : 8, hotCount: this.mobile ? 0 : 20, rank: 'visits' })
+    const data = await getIndex({ types: types, start: 0, count: this.mobile ? 6 : 8, hotCount: this.mobile ? 0 : 20, rank: 'createTime' })
     this.groupedGirls = data.values
     this.groupedGirls.forEach(g => {
       this.typeStarts.set(g.type, 0)
@@ -262,7 +262,7 @@ export default class extends mixins(Layout) {
       const i2 = this.menus.findIndex(v => v.type === o2.type)
       return i1 - i2
     })
-    this.menus.forEach((v, i) => this.groupedRanks[i] = 'visits')
+    this.menus.forEach((v, i) => this.groupedRanks[i] = 'createTime')
     this.loading = false
   }
 

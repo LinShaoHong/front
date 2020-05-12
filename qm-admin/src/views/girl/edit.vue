@@ -104,19 +104,17 @@
         <el-form-item label="视频">
           <el-upload
             :action="uploadPath"
-            :show-file-list="false"
             :headers="headers"
+            :limit="10"
+            :file-list="videos"
+            :on-exceed="uploadOverrun"
             :on-success="uploadVideo"
-            class="avatar-uploader"
+            :on-remove="handleVideoRemove"
+            multiple
             accept=".mp4"
+            list-type="picture-card"
           >
-            <video v-if="girl.video" class="video-js">
-              <source
-                :src="imageServer + girl.video"
-                type="video/mp4"
-              >
-            </video>
-            <i v-else class="el-icon-plus avatar-uploader-icon" />
+            <i class="el-icon-plus" />
           </el-upload>
         </el-form-item>
 
@@ -141,6 +139,7 @@ export default class extends Vue {
   private uploadPath = uploadPath
   private imageServer = imageServer
   private girl = {}
+  private videos = []
   private detailImages = []
   private contactImages = []
 
@@ -163,10 +162,11 @@ export default class extends Vue {
   }
 
   private uploadVideo(resp: any) {
-    if (this.girl.video !== null && this.girl.video !== '' && this.girl.video !== undefined) {
-      deleteImage({ path: this.girl.video })
+    const path = resp.value
+    if (!this.girl.videos) {
+      this.girl.videos = []
     }
-    this.girl.video = resp.value
+    this.girl.videos.push(path)
   }
 
   private async handleContactRemove(resp: any) {
@@ -184,6 +184,16 @@ export default class extends Vue {
     for (let i = 0; i < this.girl.detailImages.length; i++) {
       if (this.girl.detailImages[i] === path) {
         this.girl.detailImages.splice(i, 1)
+      }
+    }
+    await deleteImage({ path: path })
+  }
+
+  private async handleVideoRemove(resp: any) {
+    const path = resp.response === undefined? resp.url.substring(this.imageServer.length, resp.url.length) : resp.response.value
+    for (let i = 0; i < this.girl.videos.length; i++) {
+      if (this.girl.videos[i] === path) {
+        this.girl.videos.splice(i, 1)
       }
     }
     await deleteImage({ path: path })
@@ -222,6 +232,11 @@ export default class extends Vue {
       this.detailImages = this.girl.detailImages.map(v => {
         return { url: imageServer + v }
       })
+      if (this.girl.videos !== null) {
+        this.videos = this.girl.videos.map(v => {
+          return { url: imageServer + v }
+        })
+      }
     })
   }
 }

@@ -43,7 +43,8 @@
       </div>
       <el-button type="primary"
                  @click="recharge"
-                 style="width: 100%; margin-top: 12px;">充值</el-button>
+                 style="width: 100%; margin-top: 12px; margin-bottom: 12px;">充值</el-button>
+<!--      <a type="primary" style="margin-left: 5px; color: #f90; font-size: 15px; cursor: pointer;" @click="toPromotion">&ndash;&gt; 推廣赚金幣</a>-->
     </div>
     <div v-else class="noLogin">
       <span>您還未<a style="cursor: pointer; color: #f90;" @click="toLogin">登錄</a>....</span>
@@ -143,6 +144,10 @@ export default class extends mixins(Layout) {
   private toLogin() {
     MenuModule.ToMenu('/user/login')
     this.$router.push({ path: '/user/login' })
+  }
+
+  private toPromotion() {
+    window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/user/promotion')
   }
 
   private async getYqs() {

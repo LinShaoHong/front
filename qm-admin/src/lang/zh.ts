@@ -76,11 +76,14 @@ export default {
     girlComment: '评论',
     message: '消息管理',
     messageList: '消息管理',
+    promotion: '推广管理',
+    promotionList: '推广管理',
     emailSender: '群发邮件',
     charge: '支付管理',
     chargeList: '卡号管理',
     rechargeLog: '充值记录',
     chargeLog: '消费记录',
+    chargeStat: '充值统计',
     messageCreate: '发布',
     messageEdit: '更新',
     user: '用户管理',
@@ -88,7 +91,7 @@ export default {
     userStat: '统计',
     userFoot: '足迹',
     userColl: '收藏',
-    viewStat: '统计',
+    viewStat: '统计'
   },
   navbar: {
     logOut: '退出登录',

@@ -9,6 +9,7 @@ import girlRouter from './modules/girl'
 import messageRouter from './modules/message'
 import chargeRouter from './modules/charge'
 import userRouter from './modules/user'
+import promotionRouter from './modules/promotion'
 
 Vue.use(Router)
 
@@ -53,7 +54,7 @@ export const constantRoutes: RouteConfig[] = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes: RouteConfig[] = [
-  userRouter, girlRouter, messageRouter, chargeRouter
+  userRouter, girlRouter, messageRouter, chargeRouter, promotionRouter
 ]
 
 const createRouter = () => new Router({

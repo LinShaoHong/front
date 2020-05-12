@@ -7,6 +7,18 @@
         :style="mobile ? ('width: ' + mobileImagesWidth + 'px;') : ''"
       >
         <div class="category-rank-city-select">
+          <div v-if="mobile" style="margin-bottom: 20px;">
+            <div
+              :style="rank === 'createTime'? 'display: inline-block; border-bottom: 1px solid #f90; margin-right: 20px; padding-bottom: 5px;' : 'display: inline-block; margin-right: 20px; padding-bottom: 5px;'"
+            >
+              <span style="color: whitesmoke;" @click="onRankChange('createTime')">最新</span>
+            </div>
+            <div
+              :style="rank === 'visits'? 'display: inline-block; border-bottom: 1px solid #f90; padding-bottom: 5px;' : 'display: inline-block; padding-bottom: 5px;'"
+            >
+              <span style="color: whitesmoke" @click="onRankChange('visits')">人氣</span>
+            </div>
+          </div>
           <span v-if="!mobile" style="color: whitesmoke">排序:</span>
           <el-select v-if="!mobile"
                      v-model="rank"
@@ -44,7 +56,7 @@
           <el-select v-if="categories.length > 2"
                      v-model="category2"
                      size="mini"
-                     style="width: 130px;"
+                     style="width: 90px;"
                      @change="onChange"
           >
             <el-option
@@ -133,7 +145,7 @@ export default class extends mixins(Layout) {
   private category2: string = ''
   private categories: { name: string, nameSpell: string }[] = []
 
-  private rank: string = 'visits'
+  private rank: string = 'createTime'
   private ranks: { label: string, value: string }[] = [
     { label: "最新", value: "createTime" },
     { label: "人氣", value: "visits" },
@@ -229,6 +241,11 @@ export default class extends mixins(Layout) {
     this.scrollCounter = 1
     this.pullCounter = 1
     await this.getGirls(0, this.STEP_COUNT)
+  }
+
+  private onRankChange(r: string) {
+    this.rank = r
+    this.onChange()
   }
 
   private async search() {

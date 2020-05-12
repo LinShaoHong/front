@@ -15,27 +15,32 @@ const UserRoutes: RouteConfig = {
     {
       name: 'user-register',
       path: '/user/register',
-      component: () => import('@/views/user/register.vue'),
+      component: () => import('@/views/user/register.vue')
     },
     {
       name: 'user-forgetPwd',
       path: '/user/forgetPwd',
-      component: () => import('@/views/user/forgetPwd.vue'),
+      component: () => import('@/views/user/forgetPwd.vue')
     },
     {
       name: 'user-changePwd',
       path: '/user/changePwd',
-      component: () => import('@/views/user/changePwd.vue'),
+      component: () => import('@/views/user/changePwd.vue')
     },
     {
       name: 'user-detail',
       path: '/user/detail',
-      component: () => import('@/views/user/detail.vue'),
+      component: () => import('@/views/user/detail.vue')
     },
     {
       name: 'user-recharge',
       path: '/user/recharge',
-      component: () => import('@/views/user/recharge.vue'),
+      component: () => import('@/views/user/recharge.vue')
+    },
+    {
+      name: 'user-promotion',
+      path: '/user/promotion',
+      component: () => import('@/views/user/promotion.vue')
     }
   ]
 }

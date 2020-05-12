@@ -28,6 +28,12 @@ const chargeRoutes: RouteConfig = {
       component: () => import('@/views/charge/consume.vue'),
       name: 'ChargeLog',
       meta: { title: 'chargeLog', icon: 'shopping' }
+    },
+    {
+      path: 'charge-stat',
+      component: () => import('@/views/charge/stat.vue'),
+      name: 'ChargeStat',
+      meta: { title: 'chargeStat', icon: 'chart' }
     }
   ]
 }

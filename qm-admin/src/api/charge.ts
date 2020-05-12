@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { PageResp, Resp, ListResp } from './response'
+import {PageResp, Resp, ListResp, SingleResp} from './response'
 
 export const paged = (params: any): PageResp | any =>
   request({
@@ -49,6 +49,13 @@ export const rechargeTotal = (): PageResp | any =>
 export const payLog = (params: any): PageResp | any =>
   request({
     url: '/v1/qm/admin/charge/payLog/',
+    method: 'get',
+    params
+  })
+
+export const stat = (params: any): SingleResp | any =>
+  request({
+    url: '/v1/qm/admin/charge/stat',
     method: 'get',
     params
   })

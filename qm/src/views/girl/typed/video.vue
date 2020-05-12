@@ -44,7 +44,7 @@
           <el-select v-if="categories.length > 2"
                      v-model="category2"
                      size="mini"
-                     style="width: 130px;"
+                     style="width: 110px;"
                      @change="onChange"
           >
             <el-option

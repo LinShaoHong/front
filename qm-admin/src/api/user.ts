@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { PageResp } from './response'
+import { PageResp, SingleResp } from './response'
 
 export const paged = (params: any): PageResp | any =>
   request({
@@ -8,7 +8,14 @@ export const paged = (params: any): PageResp | any =>
     params
   })
 
-export const stat = (params: any): PageResp | any =>
+export const update = (id: string, data: any): PageResp | any =>
+  request({
+    url: '/v1/qm/admin/user/$' + id,
+    method: 'put',
+    data
+  })
+
+export const stat = (params: any): SingleResp | any =>
   request({
     url: '/v1/qm/admin/user/stat',
     method: 'get',

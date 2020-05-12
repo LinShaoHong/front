@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import {Resp} from "../../../qm-admin/src/api/response";
+import { Resp } from "../../../qm-admin/src/api/response";
 
 export interface UserInfo {
   id: string

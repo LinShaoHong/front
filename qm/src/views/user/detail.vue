@@ -124,6 +124,7 @@
               <el-radio label="" style="color: whitesmoke">全部</el-radio>
               <el-radio label="PAYMENT" style="color: whitesmoke">消費</el-radio>
               <el-radio label="RECHARGE" style="color: whitesmoke">充值</el-radio>
+              <el-radio label="PROMOTION" style="color: whitesmoke">推廣</el-radio>
               <el-radio label="SING_IN" style="color: whitesmoke">簽到</el-radio>
             </el-radio-group>
           </div>
@@ -140,9 +141,12 @@
                 <div v-if="flow.type === 'SING_IN'">
                   <span style="color: #a3a2a2">簽到</span>&nbsp;&nbsp;<span style="color: whitesmoke">+{{ flow.amount }}</span>
                 </div>
+                <div v-else-if="flow.type === 'PROMOTION'">
+                  <span style="color: #a3a2a2">推廣</span>&nbsp;&nbsp;<span style="color: whitesmoke">+{{ flow.amount }}</span>
+                </div>
                 <div v-else-if="flow.chargeType !== null">
                   <div v-if="flow.chargeType.startsWith('VIP')">
-                    <span style="color: #a3a2a2">{{ '充值 ' + chargeType(flow.chargeType)}}</span>&nbsp&nbsp<span style="color: whitesmoke">+{{ amount(flow.chargeType) }}</span>
+                    <span style="color: #a3a2a2">{{ '充值 ' + chargeType(flow.chargeType)}}</span>
                   </div>
                   <div v-else>
                     <span style="color: #a3a2a2">充值</span>&nbsp&nbsp<span style="color: whitesmoke">+{{ amount(flow.chargeType) }}</span>
@@ -381,6 +385,8 @@ export default class extends mixins(Layout) {
       return '暫無消費記錄'
     } else if (this.flowsType === 'RECHARGE') {
       return '暫無充值記錄'
+    } else if (this.flowsType === 'PROMOTION') {
+      return '暫無推廣收入'
     } else if (this.flowsType === 'SING_IN') {
       return '快去簽到吧'
     }

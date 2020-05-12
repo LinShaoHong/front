@@ -19,7 +19,7 @@ export interface GirlDetailResp {
   contact: string
   mainImage: string
   detailImages: string[]
-  video: string
+  videos: string[]
   accessible: boolean
   collected: boolean
   likes: number
