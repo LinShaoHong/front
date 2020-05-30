@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-card class="box-card">
       <div class="filter-container">
-        <el-input v-model="listQuery.id" clearable class="filter-item" style="width: 160px;" placeholder="教师ID" />
+        <el-input v-model="listQuery.id" clearable class="filter-item" style="width: 130px;" placeholder="教师ID" />
         <el-select
           v-model="listQuery.type"
           class="filter-item"
@@ -17,13 +17,17 @@
             :value="item.value"
           />
         </el-select>
-        <el-input v-model="listQuery.city" clearable class="filter-item" style="width: 100px;" placeholder="城市" />
-        <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 160px;" placeholder="名称" />
-        <el-input v-model="listQuery.title" clearable class="filter-item" style="width: 160px;" placeholder="描述" />
-        <el-input v-model="listQuery.contact" clearable class="filter-item" style="width: 160px;" placeholder="联系方式" />
+        <el-input v-model="listQuery.city" clearable class="filter-item" style="width: 80px;" placeholder="城市" />
+        <el-input v-model="listQuery.name" clearable class="filter-item" style="width: 120px;" placeholder="名称" />
+        <el-input v-model="listQuery.title" clearable class="filter-item" style="width: 120px;" placeholder="描述" />
+        <el-input v-model="listQuery.contact" clearable class="filter-item" style="width: 120px;" placeholder="联系方式" />
         <el-select v-model="listQuery.hasVideo" clearable placeholder="视频" class="filter-item" style="width: 80px;">
           <el-option label="有" value="true"></el-option>
           <el-option label="无" value="false"></el-option>
+        </el-select>
+        <el-select v-model="listQuery.onService" clearable placeholder="上课" class="filter-item" style="width: 80px;">
+          <el-option label="是" value="true"></el-option>
+          <el-option label="否" value="false"></el-option>
         </el-select>
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
         <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
@@ -148,6 +152,7 @@ export default class extends Vue {
     city: null,
     contact: null,
     hasVideo: null,
+    onService: null,
     start: 0,
     count: 10
   }

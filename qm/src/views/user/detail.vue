@@ -124,7 +124,6 @@
               <el-radio label="" style="color: whitesmoke">全部</el-radio>
               <el-radio label="PAYMENT" style="color: whitesmoke">消費</el-radio>
               <el-radio label="RECHARGE" style="color: whitesmoke">充值</el-radio>
-              <el-radio label="PROMOTION" style="color: whitesmoke">推廣</el-radio>
               <el-radio label="SING_IN" style="color: whitesmoke">簽到</el-radio>
             </el-radio-group>
           </div>
@@ -141,15 +140,12 @@
                 <div v-if="flow.type === 'SING_IN'">
                   <span style="color: #a3a2a2">簽到</span>&nbsp;&nbsp;<span style="color: whitesmoke">+{{ flow.amount }}</span>
                 </div>
-                <div v-else-if="flow.type === 'PROMOTION'">
-                  <span style="color: #a3a2a2">推廣</span>&nbsp;&nbsp;<span style="color: whitesmoke">+{{ flow.amount }}</span>
-                </div>
                 <div v-else-if="flow.chargeType !== null">
                   <div v-if="flow.chargeType.startsWith('VIP')">
                     <span style="color: #a3a2a2">{{ '充值 ' + chargeType(flow.chargeType)}}</span>
                   </div>
                   <div v-else>
-                    <span style="color: #a3a2a2">充值</span>&nbsp&nbsp<span style="color: whitesmoke">+{{ amount(flow.chargeType) }}</span>
+                    <span style="color: #a3a2a2">充值</span>&nbsp;&nbsp;<span style="color: whitesmoke">+{{ amount(flow.chargeType) }}</span>
                   </div>
                 </div>
                 <div v-else>
@@ -165,7 +161,7 @@
                 </div>
               </el-timeline-item>
               <el-timeline-item v-if="!flowsEnd">
-                <span style="color: whitesmoke; font-size: 10px; cursor: pointer" @click="getFlows">顯示更多.....</span>
+                <span style="color: whitesmoke; font-size: 10px; cursor: pointer" @click="getFlows(true)">顯示更多.....</span>
               </el-timeline-item>
             </el-timeline>
           </div>
@@ -320,12 +316,15 @@ export default class extends mixins(Layout) {
     this.flowsStart = 0
     this.flowsTotal = 0
     this.flowsEnd = false
-    this.getFlows()
+    this.getFlows(false)
   }
 
-  private async getFlows() {
+  private async getFlows(more: boolean) {
     this.flowsLoading = true
     const data = await flow({ start: this.flowsStart, count: this.flowsCount, type: this.flowsType })
+    if (!more) {
+      this.flows = []
+    }
     this.flows.push(...data.values);
     this.flowsTotal = data.total
     this.flowsLoading = false
@@ -418,7 +417,7 @@ export default class extends mixins(Layout) {
         break
       case '4':
         this.getYqs()
-        this.getFlows()
+        this.getFlows(false)
         break
     }
   }
