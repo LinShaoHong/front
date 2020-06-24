@@ -167,6 +167,9 @@ export default class extends Vue {
     if (!this.listQuery.hasVideo) {
       delete this.listQuery.hasVideo
     }
+    if (!this.listQuery.onService) {
+      delete this.listQuery.onService
+    }
     listGirls(this.listQuery).then(response => {
       this.list = response.values
       this.total = response.total
