@@ -1,13 +1,21 @@
 <template>
   <div :class="mobile ? 'app-container mobile' : 'app-container'">
     <div v-if="user != null" class="recharge-container" >
-      <el-divider><span style="color: #f90; font-size: 20px;">充值中心</span></el-divider>
+      <el-divider><span style="color: #f90; font-size: 20px; margin-bottom: 10px;">充值中心</span></el-divider>
       <div class="recharge-form">
-        <div class="charge-info-label">用戶名:</div>
-        <div class="charge-info-value">{{ user.name }}</div>
-        <div class="charge-info-label">購買産品:</div>
+        <div class="charge-info-label">说明:</div>
+        <div class="charge-info-value">
+          <div>
+            <span>本站仅支持使用卡号进行充值</span><br/>
+            <span style="color: #f90; font-size: 18px;">VIP可获取本站所有資源！!</span>
+          </div>
+        </div>
+        <div class="charge-info-label" style="margin-top: 10px;">用戶名:</div>
+        <div class="charge-info-value" style="margin-top: 10px;">{{ user.name }}</div>
+        <div class="charge-info-label">選擇産品:</div>
         <div class="product-select charge-info-value" style="margin-left: 15px;">
           <el-select v-model="type"
+                     style="width: 105px;"
                      size="medium">
             <el-option label="30 金幣" value="THIRTY">
               30 金幣
@@ -28,7 +36,7 @@
               永久 VIP
             </el-option>
           </el-select>
-          <span style="color: #f90; font-size: 18px;">會員可免費獲取本站所有資源！！</span>
+          <a style="color: #f90; font-size: 18px; cursor: pointer" :href="yqUrl" target="_Blank">-->購買相應卡號</a>
         </div>
         <div class="charge-info-label">充值金額:</div>
         <div class="charge-info-value">{{ amount }}</div>
@@ -37,8 +45,7 @@
           <input
             class="card-input"
             v-model="cardNo"
-            style=""></input>
-          <a style="color: #f90; font-size: 15px; margin-left: 13px; cursor: pointer" :href="yqUrl" target="_Blank">-->點擊購買官方卡號</a>
+            style=""/>
         </div>
       </div>
       <el-button type="primary"
@@ -53,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component } from 'vue-property-decorator'
 import { mixins } from 'vue-class-component'
 import Layout from '@/common/layout'
 import { recharge, yq } from '@/api/charge'
@@ -211,7 +218,7 @@ export default class extends mixins(Layout) {
 
 .recharge-form {
   display: grid;
-  grid-template-rows: repeat(4, 40px);
+  grid-template-rows: repeat(5, 40px);
   grid-template-columns: 1fr 3fr;
 
   .charge-info-label {
@@ -295,6 +302,9 @@ export default class extends mixins(Layout) {
 }
 
 .mobile {
+  .card-input {
+    width: 80%;
+  }
   .recharge-container {
     margin-top: 5%;
     padding-left: 0;

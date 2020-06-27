@@ -39,14 +39,27 @@
           <div class="info-value">{{ currImage.title }}</div>
           <div class="info-label">地區:</div>
           <div class="info-value">{{ currImage.city === null? '暫無' : currImage.city }}</div>
+          <div class="info-label">消耗金幣:</div>
+          <div class="info-value">{{ currImage.price }}</div>
           <div class="info-label">{{ contactLabel }}</div>
-          <div v-if="currImage.accessible" class="info-value">{{ contactValue }}</div>
+          <div v-if="currImage.accessible" class="info-value">
+            <div>
+            {{ contactValue }}
+            <div v-show="currImage.type === 'QM'" style="margin-top: 3px;">温馨提示: 加妹子时最好备注【上课的】，若账号被封加不上，可评论区留言，平台会更新联系方式或补偿金币，并通知到您！</div>
+            </div>
+          </div>
           <div v-else-if="!currImage.onService" class="info-value">該教師已下課</div>
           <div v-else-if="currImage.needCharge" class="info-value">
-            消耗 ({{ currImage.price + '金幣'}}) &nbsp;<a style="cursor: pointer; color: #f90;" @click="recharge">&nbsp;->獲取更多金幣</a>
+            <el-button type="primary"
+                       @click="recharge"
+                       size="mini"
+            >您金幣不足，點擊充值</el-button>
           </div>
           <div v-else class="info-value">
-            <a style="cursor: pointer; color: #f90;" @click="buy">消耗</a>({{ currImage.price + '金幣'}})
+            <el-button type="primary"
+                       @click="buy"
+                       size="mini"
+            >點擊購買</el-button>
           </div>
         </div>
         <div class="main-image">
@@ -290,12 +303,12 @@ import { AppModule, DeviceType } from '@/store/modules/app'
 import { GirlDetailResp, GirlResp } from '@/api/girlType'
 import { detail, recommendation, like } from '@/api/girls'
 import { consume } from '@/api/charge'
-import {addComment, CommentResp, getComments, likeComment, hateComment, reply, read} from '@/api/comment'
+import { addComment, CommentResp, getComments, likeComment, hateComment, reply, read } from '@/api/comment'
 import { addCollection, deleteByGirlId } from '@/api/collection'
 import { LikesModule } from '@/store/modules/like'
 import { Message } from 'element-ui'
-import { UserModule } from "@/store/modules/user";
-import { MessageModule } from "@/store/modules/message";
+import { UserModule } from '@/store/modules/user'
+import { MessageModule } from '@/store/modules/message'
 import Pagination from '@/components/Pagination/index.vue'
 import Ripple from '@/components/Loading/Ripple.vue'
 
@@ -421,16 +434,16 @@ export default class extends Vue {
         aspectRatio: '16:9',
         fluid: true,
         sources: [{
-          type: "video/mp4",
-          src: v + '#t=0.5',
+          type: 'video/mp4',
+          src: v + '#t=0.5'
         }],
-        poster: "",
+        poster: '',
         notSupportedMessage: '此視頻暫無法播放，請稍後再試',
         controlBar: {
-        timeDivider: true,
+          timeDivider: true,
           durationDisplay: true,
           remainingTimeDisplay: false,
-          fullscreenToggle: true  //全屏按钮
+          fullscreenToggle: true
         }
       }
     })
@@ -503,7 +516,7 @@ export default class extends Vue {
       this.$confirm('確定購買？')
         .then(async _ => {
           const data = await consume({ girlId: this.currImage.id })
-          if(data.code == 200) {
+          if (data.code === 200) {
             Message({
               message: '購買成功！',
               type: 'success',
@@ -1124,7 +1137,7 @@ export default class extends Vue {
     .girl-info {
       width: 100%;
       display: grid;
-      grid-template-rows: repeat(4, auto);
+      grid-template-rows: repeat(5, auto);
       grid-template-columns: 1fr 5fr;
       margin-top: 25px;
 
