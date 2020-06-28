@@ -24,7 +24,11 @@
           </el-form>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="评论人" width="150" prop="commentatorName" />
+      <el-table-column align="center" label="评论人" width="150" prop="commentatorName">
+        <template slot-scope="scope">
+          <span><a href="#" @click="toUser(scope.row.commentatorName)">{{ scope.row.commentatorName }}</a></span>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="被回复人" width="150" prop="replierName" />
       <el-table-column align="center" label="评论内容" prop="content" />
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
@@ -91,6 +95,9 @@ export default {
         })
         this.getList()
       })
+    },
+    toUser(userName) {
+      this.$router.push({ path: '/user-list', query: { userName: userName } })
     },
     timestampToTime(timestamp) {
       let date = new Date(timestamp);
