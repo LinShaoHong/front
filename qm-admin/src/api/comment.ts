@@ -14,6 +14,12 @@ export const deleteComment = (id: string): Resp | any =>
     method: 'delete'
   })
 
+export const privateComment = (id: string): Resp | any =>
+  request({
+    url: '/v1/qm/admin/comment/private/$' + id,
+    method: 'put'
+  })
+
 export const noticeComment = (data: any): Resp | any =>
   request({
     url: '/v1/qm/admin/comment',

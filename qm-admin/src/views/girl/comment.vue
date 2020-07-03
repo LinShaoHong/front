@@ -31,8 +31,14 @@
       </el-table-column>
       <el-table-column align="center" label="被回复人" width="150" prop="replierName" />
       <el-table-column align="center" label="评论内容" prop="content" />
+      <el-table-column align="center" width="70px;" label="禁开" prop="privately">
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.privately ? 'success' : 'danger' ">{{ scope.row.privately ? '是' : '否' }}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
+          <el-button v-show="!scope.row.privately" type="warning" size="mini" @click="handlePrivated(scope.row)">禁开</el-button>
           <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -43,7 +49,7 @@
 </template>
 
 <script>
-import { listComments, deleteComment } from '@/api/comment'
+import { listComments, deleteComment, privateComment } from '@/api/comment'
 import Pagination from '@/components/Pagination'
 
 export default {
@@ -90,6 +96,17 @@ export default {
         this.$notify({
           title: '成功',
           message: '删除成功',
+          type: 'success',
+          duration: 2000
+        })
+        this.getList()
+      })
+    },
+    handlePrivated(row) {
+      privateComment(row.id).then(response => {
+        this.$notify({
+          title: '成功',
+          message: '禁开成功',
           type: 'success',
           duration: 2000
         })

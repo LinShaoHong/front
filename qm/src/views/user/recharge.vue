@@ -74,7 +74,7 @@ import { Message } from 'element-ui'
 })
 export default class extends mixins(Layout) {
   private cardNo: string = ''
-  private type: string = 'THIRTY'
+  private type: string = 'VIP_MONTH'
   private yqs = []
 
   get amount() {
