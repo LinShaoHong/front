@@ -1,6 +1,6 @@
 <template>
   <div :class="mobile ? 'app-container mobile' : 'app-container'">
-    <div v-if="user != null" class="recharge-container" >
+    <div v-if="user !== null" class="recharge-container" >
       <el-divider><span style="color: #f90; font-size: 20px; margin-bottom: 10px;">充值中心</span></el-divider>
       <div class="recharge-form">
         <div class="charge-info-label">说明:</div>
@@ -97,6 +97,8 @@ export default class extends mixins(Layout) {
         return '256 人民幣'
       case 'VIP_FOREVER':
         return '398 人民幣'
+      default:
+        return ''
     }
   }
 
@@ -106,7 +108,7 @@ export default class extends mixins(Layout) {
 
   get yqUrl() {
     const v = this.yqs.find(v => v.type === this.type)
-    if(v) {
+    if (v) {
       return v.url
     }
     return '#'
@@ -123,7 +125,7 @@ export default class extends mixins(Layout) {
           })
         } else {
           const data = await recharge({ cardNo: this.cardNo, type: this.type })
-          if(data.code == 200) {
+          if (data.code === 200) {
             Message({
               message: '充值成功！',
               type: 'success',
