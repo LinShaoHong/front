@@ -71,6 +71,7 @@
               {{ scope.row.createTime | parseTime }}
             </template>
           </el-table-column>
+          <el-table-column align="center" label="IP" prop="lastLoginIp" />
         </el-table>
       <pagination v-show="total>0" :total="total" :start.sync="listQuery.start" :count.sync="listQuery.count" @pagination="getList" />
     </el-card>
