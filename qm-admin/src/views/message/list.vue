@@ -122,16 +122,16 @@ export default class extends Vue {
   private id: string = ''
   private content: string = ''
 
-  private emailForm =  {
+  private emailForm = {
     to: '',
     title: '',
     body: '',
     format: 'TEXT'
   }
 
-  private noticeForm =  {
+  private noticeForm = {
     username: '',
-    content: '',
+    content: ''
   }
 
   private async getList() {
@@ -151,10 +151,10 @@ export default class extends Vue {
   }
 
   private async addOrUpdate() {
-    if(this.id === '') {
-     await addMessage({ content: this.content })
+    if (this.id === '') {
+      await addMessage({ content: this.content })
     } else {
-     await updateMessage(this.id, { content: this.content })
+      await updateMessage(this.id, { content: this.content })
     }
     this.id = ''
     this.content = ''
