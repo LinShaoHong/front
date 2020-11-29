@@ -17,23 +17,11 @@
           <el-select v-model="type"
                      style="width: 105px;"
                      size="medium">
-            <el-option label="30 金幣" value="THIRTY">
-              30 金幣
-            </el-option>
-            <el-option label="50 金幣" value="FIFTY">
-              50 金幣
-            </el-option>
-            <el-option label="月VIP" value="VIP_MONTH">
-              月 VIP
-            </el-option>
-            <el-option label="季VIP" value="VIP_QUARTER">
-              季 VIP
-            </el-option>
-            <el-option label="年VIP" value="VIP_YEAR">
-              年 VIP
-            </el-option>
-            <el-option label="永久VIP" value="VIP_FOREVER">
-              永久 VIP
+            <el-option
+              v-for="yq in yqs"
+              :key="yq.type"
+              :label="yqLabel(yq.type)"
+              :value="yq.type">
             </el-option>
           </el-select>
           <a style="color: #f90; font-size: 18px; cursor: pointer" :href="yqUrl" target="_Blank">-->購買相應卡號</a>
@@ -102,6 +90,27 @@ export default class extends mixins(Layout) {
     }
   }
 
+  private yqLabel(type: string) {
+    switch (type) {
+      case 'TEN':
+        return '10 金幣'
+      case 'THIRTY':
+        return '30 金幣'
+      case 'FIFTY':
+        return '50 金幣'
+      case 'VIP_MONTH':
+        return '月VIP'
+      case 'VIP_QUARTER':
+        return '季VIP'
+      case 'VIP_YEAR':
+        return '年VIP'
+      case 'VIP_FOREVER':
+        return '永久VIP'
+      default:
+        return ''
+    }
+  }
+
   get user() {
     return UserModule.user
   }
@@ -163,6 +172,12 @@ export default class extends mixins(Layout) {
     if (UserModule.user !== null) {
       const data = await yq()
       this.yqs = data.values
+      this.yqs.sort((y1, y2) => {
+        const tps = ['TEN', 'THIRTY', 'FIFTY', 'VIP_MONTH', 'VIP_QUARTER', 'VIP_YEAR', 'VIP_FOREVER']
+        const i1 = tps.findIndex(t => t === y1.type)
+        const i2 = tps.findIndex(t => t === y2.type)
+        return i1 - i2
+      })
     }
   }
 

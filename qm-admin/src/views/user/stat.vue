@@ -167,7 +167,7 @@ export default class extends Vue {
           borderWidth: 12
         },
         data: this.stat.totals
-      },{
+      }, {
         name: '增量',
         type: 'line',
         smooth: true,

@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import echarts, { EChartOption, ECharts } from 'echarts'
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import { stat } from '@/api/girl'
 
 @Component({
@@ -42,19 +42,17 @@ import { stat } from '@/api/girl'
 })
 export default class extends Vue {
   private chart!: ECharts | null
-  private sidebarElm?: Element
 
   private timeType: string = '1'
   private type: string = 'QM'
 
-  private stat: { times: string[], visits: number[] } = {
-    times: [],
-    visits: []
-  }
+  private stat: [{ city: string, times: string[], visits: number[] }] = []
 
   private async fetchStat() {
+    const el = document.getElementById('chart') as HTMLDivElement
+    el.removeAttribute('_echarts_instance_')
     const data = await stat({ timeType: this.timeType, type: this.type })
-    this.stat = data.value
+    this.stat = data.values
     this.initChart()
   }
 
@@ -77,15 +75,6 @@ export default class extends Vue {
   private initChart() {
     this.chart = echarts.init(document.getElementById('chart') as HTMLDivElement)
     this.chart.setOption({
-      // dataZoom: [
-      //   {
-      //     type: 'slider',
-      //     xAxisIndex: 0,
-      //     filterMode: 'filter',
-      //     startValue:0,
-      //     endValue:4000
-      //   }
-      // ],
       backgroundColor: '#394056',
       title: {
         top: 20,
@@ -105,7 +94,7 @@ export default class extends Vue {
         itemWidth: 14,
         itemHeight: 5,
         itemGap: 13,
-        data: ['增量', '总量'],
+        data: this.stat.map(v => v.city === 'TOTAL' ? '总量' : v.city),
         right: '4%',
         textStyle: {
           fontSize: 12,
@@ -128,7 +117,7 @@ export default class extends Vue {
             color: '#57617B'
           }
         },
-        data: this.stat.times
+        data: this.stat[this.stat.length - 1].times
       }],
       yAxis: [{
         type: 'value',
@@ -141,7 +130,7 @@ export default class extends Vue {
           }
         },
         axisLabel: {
-          show:true,
+          show: true,
           interval: 0,
           margin: 10,
           fontSize: 14
@@ -152,35 +141,46 @@ export default class extends Vue {
           }
         }
       }],
-      series: [{
-        name: '访问量',
-        type: 'line',
-        smooth: true,
-        symbol: 'circle',
-        symbolSize: 5,
-        showSymbol: false,
-        lineStyle: {
-          width: 1
-        },
-        areaStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-            offset: 0,
-            color: 'rgba(0, 136, 212, 0.3)'
-          }, {
-            offset: 0.8,
-            color: 'rgba(0, 136, 212, 0)'
-          }], false) as any,
-          shadowColor: 'rgba(0, 0, 0, 0.1)',
-          shadowBlur: 10
-        },
-        itemStyle: {
-          color: 'rgb(0,136,212)',
-          borderColor: 'rgba(0,136,212,0.2)',
-          borderWidth: 12
-        },
-        data: this.stat.visits
-      }]
+      series: this.stat.map((v, i) => {
+        return {
+          name: v.city === 'TOTAL' ? '总量' : v.city,
+          type: 'line',
+          smooth: true,
+          symbol: 'circle',
+          symbolSize: 5,
+          showSymbol: false,
+          lineStyle: {
+            width: 1
+          },
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+              offset: 0,
+              color: 'rgba(0, 136, 212, 0.3)'
+            }, {
+              offset: 0.8,
+              color: 'rgba(0, 136, 212, 0)'
+            }], false) as any,
+            shadowColor: 'rgba(0, 0, 0, 0.1)',
+            shadowBlur: 10
+          },
+          itemStyle: {
+            color: this.randomBG(this.stat.length, i),
+            borderColor: 'rgba(0, 136, 212, 0.2)',
+            borderWidth: 12
+          },
+          data: v.visits
+        }
+      })
     } as EChartOption<EChartOption.SeriesLine>)
+  }
+
+  private randomBG(len: number, i: number) {
+    const step = 255 / len
+    const j = i + 1
+    const r = Math.floor(Math.random() * j * step + step)
+    const g = Math.floor(Math.random() * j * step + step)
+    const b = Math.floor(Math.random() * j * step + step)
+    return 'rgb(' + r + ',' + g + ',' + b + ')'
   }
 }
 </script>
