@@ -208,7 +208,7 @@ export default class extends Vue {
 
   private async handlePublish() {
     const data = await updateGirl(this.$route.query.id, this.girl)
-    if (data.code == 200) {
+    if (data.code === 200) {
       this.$notify.success({
         title: '成功',
         message: '修改成功'

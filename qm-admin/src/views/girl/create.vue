@@ -209,11 +209,12 @@ export default class extends Vue {
 
   private async handlePublish() {
     const data = await createGirl(this.girl)
-    if (data.code == 200) {
+    if (data.code === 200) {
       this.$message({
         type: 'success',
         message: '上课成功!'
       })
+      this.$router.push({ path: '/girl-list' })
     }
   }
 
