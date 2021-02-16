@@ -68,21 +68,18 @@
               {{ scope.row.city === null? scope.row.name : (scope.row.city + ' ' + scope.row.name) }}
             </template>
           </el-table-column>
-          <el-table-column align="center" min-width="100" label="价格" prop="price" />
+          <el-table-column align="center" min-width="50" label="价格" prop="price" />
           <el-table-column align="center" min-width="100" label="浏览时间" prop="updateTime">
             <template slot-scope="scope">
               {{ scope.row.updateTime | parseTime }}
             </template>
           </el-table-column>
-          <el-table-column align="center" min-width="80" label="浏览量" prop="visits" />
-          <el-table-column align="center" label="上课状态" prop="onService">
+          <el-table-column align="center" min-width="70" label="浏览量" prop="visits" />
+          <el-table-column align="center" min-width="100" label="IP" prop="lastVisitIP"></el-table-column>
+          <el-table-column align="center" min-width="100" label="地址" prop="lastVisitLo"></el-table-column>
+          <el-table-column align="center" min-width="50" label="上课状态" prop="onService">
             <template slot-scope="scope">
               <el-tag :type="scope.row.onService ? 'success' : 'danger' ">{{ scope.row.onService ? '上课' : '已下课' }}</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" min-width="60" label="类型" prop="type">
-            <template slot-scope="scope">
-              {{ type(scope.row.type) }}
             </template>
           </el-table-column>
           <el-table-column align="center" label="操作" width="110" class-name="small-padding fixed-width">

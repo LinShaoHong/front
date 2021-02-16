@@ -59,19 +59,13 @@
             </template>
           </el-table-column>
 
-          <el-table-column align="center" label="上次签到时间" prop="signInTime">
-            <template slot-scope="scope">
-              <span v-if="scope.row.signInTime !== null">
-                {{ scope.row.signInTime | parseTime }}
-              </span>
-            </template>
-          </el-table-column>
           <el-table-column align="center" label="注册时间" prop="createTime">
             <template slot-scope="scope">
               {{ scope.row.createTime | parseTime }}
             </template>
           </el-table-column>
           <el-table-column align="center" label="IP" prop="lastLoginIp" />
+          <el-table-column align="center" label="地址" prop="location" />
         </el-table>
       <pagination v-show="total>0" :total="total" :start.sync="listQuery.start" :count.sync="listQuery.count" @pagination="getList" />
     </el-card>
