@@ -107,7 +107,7 @@ export default class extends Vue {
     if (!this.listQuery.vip) {
       delete this.listQuery.vip
     }
-    if (this.listQuery.username.endsWith('(VIP)')) {
+    if (this.listQuery.username && this.listQuery.username.endsWith('(VIP)')) {
       const len = this.listQuery.username.length
       this.listQuery.username = this.listQuery.username.substr(0, len - 5)
     }
