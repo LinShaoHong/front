@@ -91,7 +91,7 @@
                   </div>
                 </div>
               </el-tab-pane>
-              <el-tab-pane v-else label="視頻" name="videoTab">
+              <el-tab-pane v-if="currImage.type !== 'VIDEO' || currImage.accessible" label="視頻" name="videoTab">
                 <div>
                   <video-player  v-for="playerOptions in playerOptionsList"
                                  style="margin-bottom: 20px;"
