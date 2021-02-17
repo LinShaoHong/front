@@ -107,6 +107,10 @@ export default class extends Vue {
     if (!this.listQuery.vip) {
       delete this.listQuery.vip
     }
+    if (this.listQuery.username.endsWith('(VIP)')) {
+      const len = this.listQuery.username.length
+      this.listQuery.username = this.listQuery.username.substr(0, len - 5)
+    }
     paged(this.listQuery).then(response => {
       this.list = response.values.map((v: any) => {
         this.$set(v, 'editAmount', false)
