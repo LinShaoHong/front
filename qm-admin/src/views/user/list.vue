@@ -5,6 +5,7 @@
         <el-input v-model="listQuery.id" clearable class="filter-item" style="width: 200px;" placeholder="用户ID" />
         <el-input v-model="listQuery.username" clearable class="filter-item" style="width: 200px;" placeholder="用户名" />
         <el-input v-model="listQuery.email" clearable class="filter-item" style="width: 200px;" placeholder="邮箱" />
+        <el-input v-model="listQuery.lastLoginIp" clearable class="filter-item" style="width: 200px;" placeholder="IP" />
         <el-select v-model="listQuery.vip" clearable placeholder="vip" class="filter-item" style="width: 70px;">
           <el-option label="是" value="true"></el-option>
           <el-option label="否" value="false"></el-option>
@@ -95,6 +96,7 @@ export default class extends Vue {
     username: '',
     vip: null,
     email: '',
+    lastLoginIp: '',
     start: 0,
     count: 10
   }
