@@ -75,7 +75,6 @@
                     :src="url"
                   >
                   <img
-                    v-if="!loading"
                     id="imgId"
                     ref="img"
                     class="image-viewer-img"
@@ -85,10 +84,6 @@
                     @error="handleImgError"
                     @click="handleClick"
                   >
-                  <div v-else class="loading"
-                  >
-                    <ripple />
-                  </div>
                 </div>
               </el-tab-pane>
               <el-tab-pane v-if="currImage.type !== 'VIDEO' || currImage.accessible" label="視頻" name="videoTab">
@@ -114,7 +109,6 @@
                 :src="url"
               >
               <img
-                v-if="!loading"
                 id="imgId"
                 ref="img"
                 class="image-viewer-img"
@@ -124,10 +118,6 @@
                 @error="handleImgError"
                 @click="handleClick"
               >
-              <div v-else class="loading"
-              >
-                <ripple />
-              </div>
             </div>
           </div>
           <div class="main-image-op">
@@ -335,9 +325,7 @@ export default class extends Vue {
 
   private like: boolean = this.liked
   private index = 0
-  private isShow = false
   private infinite = true
-  private loading = false
   private showPrevNext = true
   private showActions = true
   private showActionTools = false
@@ -486,15 +474,6 @@ export default class extends Vue {
     if (this.onSwitch) {
       this.onSwitch(v)
     }
-  }
-
-  @Watch('currentImg')
-  onCurrentImg(v: any) {
-    this.$nextTick(() => {
-      if (!(this.$refs.img as HTMLImageElement).complete) {
-        this.loading = true
-      }
-    })
   }
 
   private recharge() {
@@ -922,16 +901,13 @@ export default class extends Vue {
   }
 
   private handleImgLoad(e: any) {
-    this.loading = false
   }
 
   private handleImgError(e: any) {
-    this.loading = false
     e.target.alt = '加載失敗'
   }
 
   private handleActions(action: any, options = {}) {
-    if (this.loading) return
     const { zoomRate, rotateDeg, enableTransition } = {
       zoomRate: 0.2,
       rotateDeg: 90,
@@ -968,18 +944,16 @@ export default class extends Vue {
   private btnViewIconScale = 0
 
   private hideBtnPrevAndNext() {
-    if (!this.loading) {
-      const handler = setInterval(() => {
-        this.btnViewScale = this.btnViewScale === 1 ? 0.5 : 1
-        this.btnViewIconScale = 0.8
-      }, 500)
+    const handler = setInterval(() => {
+      this.btnViewScale = this.btnViewScale === 1 ? 0.5 : 1
+      this.btnViewIconScale = 0.8
+    }, 500)
 
-      setTimeout(() => {
-        clearInterval(handler)
-        this.btnViewScale = 0
-        this.btnViewIconScale = 0
-      }, 5000)
-    }
+    setTimeout(() => {
+      clearInterval(handler)
+      this.btnViewScale = 0
+      this.btnViewIconScale = 0
+    }, 5000)
   }
 
   private async chooseRec(img: GirlResp) {
