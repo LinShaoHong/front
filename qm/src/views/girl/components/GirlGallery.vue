@@ -66,7 +66,7 @@
           <div v-if="videos.length > 0">
             <el-tabs v-model="activeTab"
                      @tab-click="handleTab">
-              <el-tab-pane v-if="currImage.type !== 'VIDEO' || !currImage.accessible " label="圖片" name="imageTab">
+              <el-tab-pane v-if="currImage.detailImages.length > 0" label="圖片" name="imageTab">
                 <span v-if="mobile" style="color: whitesmoke; font-size: 11px;">{{ '點擊圖片翻頁 (' + (index + 1)  + '/' + currImage.detailImages.length + ')'}}</span>
                 <div class="main-image-pic">
                   <img
@@ -86,7 +86,7 @@
                   >
                 </div>
               </el-tab-pane>
-              <el-tab-pane v-if="currImage.type !== 'VIDEO' || currImage.accessible" label="視頻" name="videoTab">
+              <el-tab-pane v-if="currImage.videos.length > 0" label="視頻" name="videoTab">
                 <div>
                   <video-player  v-for="playerOptions in playerOptionsList"
                                  style="margin-bottom: 20px;"
@@ -301,6 +301,7 @@ import { UserModule } from '@/store/modules/user'
 import { MessageModule } from '@/store/modules/message'
 import Pagination from '@/components/Pagination/index.vue'
 import Ripple from '@/components/Loading/Ripple.vue'
+import 'videojs-contrib-hls'
 
 @Component({
   name: 'GirlGallery',
@@ -320,8 +321,8 @@ export default class extends Vue {
 
   private urls: string[] = []
   private videos: string[] = []
-  private activeTab: string = 'imageTab'
   private currImage: GirlDetailResp = this.image
+  private activeTab: string = this.currImage.type === 'VIDEO' ? 'videoTab' : 'imageTab'
 
   private like: boolean = this.liked
   private index = 0
@@ -351,6 +352,9 @@ export default class extends Vue {
   private replyId: string = ''
   private replyTitle: string = ''
   private replyContent = ''
+
+  private handleFullscreen() {
+  }
 
   get collected() {
     return this.currImage.collected
@@ -394,11 +398,11 @@ export default class extends Vue {
 
   get contactLabel() {
     const type = this.currImage.type
-    switch(type) {
+    switch (type) {
       case 'PIC':
         return '更多美圖:'
       case 'VIDEO':
-        return '在線觀看:'
+        return '完整觀看:'
     }
     return '聯系方式:'
   }
@@ -422,10 +426,10 @@ export default class extends Vue {
         aspectRatio: '16:9',
         fluid: true,
         sources: [{
-          type: 'video/mp4',
+          type: this.currImage.type === 'VIDEO' ? 'application/x-mpegURL' : 'video/mp4',
           src: v + '#t=0.5'
         }],
-        poster: '',
+        poster: this.currImage.type === 'VIDEO' ? process.env.VUE_APP_IMAGE_SERVER + this.currImage.mainImage : '',
         notSupportedMessage: '此視頻暫無法播放，請稍後再試',
         controlBar: {
           timeDivider: true,
@@ -964,7 +968,7 @@ export default class extends Vue {
     this.actives[this.index] = true
     const data = await detail(img.id)
     if (data.code === 200) {
-      this.activeTab = this.activeTab = (this.currImage.type === 'VIDEO' && this.currImage.accessible) ? 'videoTab' : 'imageTab'
+      this.activeTab = this.activeTab = this.currImage.type === 'VIDEO' ? 'videoTab' : 'imageTab'
       this.currImage = data.value
       this.urls = this.currImage.detailImages.map(v => process.env.VUE_APP_IMAGE_SERVER + v)
       if (this.currImage.videos !== null && this.currImage.videos !== undefined && this.currImage.videos.length > 0) {
@@ -985,7 +989,7 @@ export default class extends Vue {
   created() {
     this.actives[this.index] = true
     this.loadRecommendations()
-    this.activeTab = this.activeTab = this.activeTab = (this.currImage.type === 'VIDEO' && this.currImage.accessible) ? 'videoTab' : 'imageTab'
+    this.activeTab = this.activeTab = this.activeTab = this.currImage.type === 'VIDEO' ? 'videoTab' : 'imageTab'
     this.urls = this.image.detailImages.map(v => process.env.VUE_APP_IMAGE_SERVER + v)
     if (this.currImage.videos !== null && this.currImage.videos !== undefined && this.currImage.videos.length > 0) {
       this.videos = this.currImage.videos.map(v => process.env.VUE_APP_IMAGE_SERVER + v)
@@ -1393,6 +1397,22 @@ export default class extends Vue {
 
 .vjs-button:focus {
   outline: 0;
+}
+
+.mobile .vjs-custom-skin>.video-js .vjs-control-bar {
+  display: flex;
+
+  .vjs-time-divider {
+    display: none;
+  }
+
+  .vjs-remaining-time {
+    display: none;
+  }
+
+  .vjs-volume-panel {
+    display: none;
+  }
 }
 
 .avatar {

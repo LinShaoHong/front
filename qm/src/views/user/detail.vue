@@ -29,9 +29,9 @@
             <div class="info-value">{{ user.vip? '是' : '否' }}</div>
             <div class="info-label">VIP到期時間:</div>
             <div v-if="user.vipEndTime === null" class="info-value" style="float: left">
-              您還不是VIP 點擊
+              您還不是VIP，點擊
               <a style="cursor: pointer; color: #f90;" @click="toRecharge">充值</a>
-              成爲會員
+              升級
             </div>
             <div v-else class="info-value">
               {{ user.vipEndTime }}
@@ -502,7 +502,7 @@ export default class extends mixins(Layout) {
 
 .user-info {
   display: grid;
-  grid-template-rows: 110px repeat(6, 40px);
+  grid-template-rows: 110px repeat(6, 30px);
   grid-template-columns: 2fr 3fr;
   font-size: 15px;
 
@@ -512,7 +512,7 @@ export default class extends mixins(Layout) {
   }
 
   .info-value {
-    margin-left: 50px;
+    margin-left: 10px;
     text-align: left;
     color: whitesmoke;
   }
@@ -651,6 +651,10 @@ export default class extends mixins(Layout) {
   border-radius: 6px;
 }
 
+.el-radio {
+  margin-right: 10px;
+}
+
 .mobile {
   .detail-container {
     margin-top: 5%;
@@ -669,7 +673,7 @@ export default class extends mixins(Layout) {
       }
 
       .info-value {
-        margin-left: 10px;
+        margin-left: 5px;
         text-align: left;
         color: whitesmoke;
       }

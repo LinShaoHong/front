@@ -1,5 +1,4 @@
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
-import { getToken, setToken, removeToken } from '@/utils/cookies'
 import router, { resetRouter } from '@/router'
 import { PermissionModule } from './permission'
 import { TagsViewModule } from './tags-view'
@@ -18,7 +17,7 @@ export interface IUserState {
 
 @Module({ dynamic: true, store, name: 'user' })
 class User extends VuexModule implements IUserState {
-  public token = getToken() || ''
+  public token = Cookies.get('ADMIN-QM-TOKEN') || ''
   public name = ''
   public avatar = ''
   public introduction = ''
@@ -61,15 +60,14 @@ class User extends VuexModule implements IUserState {
     username = username.trim()
     const data = await login({ username: username, password: password })
     if (data.code === 200) {
-      Cookies.set('ADMIN_QM_TOKEN',data.value, { expires: 170, path: '/' })
-      setToken(data.value)
+      Cookies.set('ADMIN-QM-TOKEN', data.value)
       this.SET_TOKEN(data.value)
     }
   }
 
   @Action
   public ResetToken() {
-    removeToken()
+    Cookies.remove('ADMIN-QM-TOKEN')
     this.SET_TOKEN('')
     this.SET_ROLES([])
   }
@@ -98,8 +96,8 @@ class User extends VuexModule implements IUserState {
   public async ChangeRoles(role: string) {
     // Dynamically modify permissions
     const token = role + '-token'
+    Cookies.set('ADMIN-QM-TOKEN', token)
     this.SET_TOKEN(token)
-    setToken(token)
     await this.GetUserInfo()
     resetRouter()
     // Generate dynamic accessible routes based on roles
@@ -115,7 +113,7 @@ class User extends VuexModule implements IUserState {
     if (this.token === '') {
       throw Error('LogOut: token is undefined!')
     }
-    removeToken()
+    Cookies.remove('ADMIN-QM-TOKEN')
     resetRouter()
     this.SET_TOKEN('')
     this.SET_ROLES([])

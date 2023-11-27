@@ -105,7 +105,7 @@
             name="cry"
           /></span>
         </div>
-        <div v-if="!loadedAll && !mobile" class="loading"
+        <div v-if="!loadedAll && !mobile" class="loading" @click="pull"
         >
           <ripple />
         </div>

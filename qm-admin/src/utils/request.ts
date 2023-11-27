@@ -13,9 +13,9 @@ const service = axios.create({
 service.interceptors.request.use(
   (config) => {
     // Add X-Access-Token header to every request, you can add other custom headers here
-    const c = Cookies.get('ADMIN_QM_TOKEN')
+    const c = Cookies.get('ADMIN-QM-TOKEN')
     if (c !== undefined && c !== null && c !== '') {
-      config.headers['ADMIN_QM_TOKEN'] = c
+      config.headers['ADMIN-QM-TOKEN'] = c
     }
     return config
   },

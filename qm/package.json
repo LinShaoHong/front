@@ -12,6 +12,7 @@
     "svg": "vsvg -s ./src/icons/svg -t ./src/icons/components --ext ts --es6"
   },
   "dependencies": {
+    "@videojs-player/vue": "^1.0.0",
     "axios": "^0.19.0",
     "clipboard": "^2.0.4",
     "cors": "^2.8.5",
@@ -29,10 +30,12 @@
     "path-to-regexp": "^3.0.0",
     "register-service-worker": "^1.6.2",
     "script-loader": "^0.7.2",
+    "videojs-contrib-hls": "^5.15.0",
     "vue": "^2.6.10",
     "vue-class-component": "^7.1.0",
     "vue-clipboard2": "^0.3.1",
     "vue-i18n": "^8.11.2",
+    "vue-mini-player": "^0.2.1",
     "vue-property-decorator": "^8.2.1",
     "vue-router": "^3.0.7",
     "vue-splitpane": "^1.0.4",

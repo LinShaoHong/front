@@ -94,9 +94,9 @@
           /></span>
         </div>
       </div>
-      <div v-if="!loadedAll && !mobile" class="loading"
+      <div v-if="!loadedAll && !mobile" class="loading" @click="pull"
       >
-        <ripple />
+        <ripple @click="pull"/>
       </div>
       <div v-if="!loadedAll && mobile" class="pull"
       >

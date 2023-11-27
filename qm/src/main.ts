@@ -6,13 +6,11 @@ import SvgIcon from 'vue-svgicon'
 import VueLazyLoad from 'vue-lazyload'
 import VueClipboard from 'vue-clipboard2'
 
+import VideoPlayer from 'vue-video-player/src'
+
 import 'jssor-slider/js/jssor.slider.min'
 import '@/styles/element-variables.scss'
 import '@/styles/index.scss'
-
-import VideoPlayer from 'vue-video-player'
-require('video.js/dist/video-js.css')
-require('vue-video-player/src/custom-theme.css')
 
 import App from '@/App.vue'
 import store from '@/store'
@@ -25,6 +23,9 @@ import '@/utils/error-log'
 import '@/pwa/register-service-worker'
 import * as directives from '@/directives'
 import * as filters from '@/filters'
+
+require('video.js/dist/video-js.css')
+require('vue-video-player/src/custom-theme.css')
 
 Vue.use(ElementUI, {
   size: AppModule.size, // Set element-ui default size

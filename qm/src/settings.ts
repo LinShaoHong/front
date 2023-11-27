@@ -12,7 +12,7 @@ interface ISettings {
 
 // You can customize below settings :)
 const settings: ISettings = {
-  title: '尋芳閣',
+  title: '幸福驿站',
   showSettings: true,
   showTagsView: true,
   fixedHeader: false,

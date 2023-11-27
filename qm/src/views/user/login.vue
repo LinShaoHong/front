@@ -93,10 +93,10 @@ export default class extends mixins(Layout) {
         const data = await login(this.loginForm)
         this.$set(this.code, 0, data.code)
         if (this.code[0] === 200) {
-          Cookies.set('QM-TOKEN',data.value, { expires: 7, path: '/' })
+          Cookies.set('QM-TOKEN', data.value, { expires: 7, path: '/' })
           await UserModule.GetUserInfo()
-          await MessageModule.GetMessages({ start:0, count: 10, isComment: true })
-          await MessageModule.GetMessages({ start:0, count: 10, isComment: false })
+          await MessageModule.GetMessages({ start: 0, count: 10, isComment: true })
+          await MessageModule.GetMessages({ start: 0, count: 10, isComment: false })
           this.$router.push({ path: '/' })
           MenuModule.SetIndex(0)
         } else {

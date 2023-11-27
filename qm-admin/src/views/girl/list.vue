@@ -31,6 +31,7 @@
         </el-select>
         <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">查找</el-button>
         <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
+        <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="copySentence">文案</el-button>
       </div>
 
         <el-table v-loading="listLoading" :data="list" element-loading-text="正在查询中。。。" border fit highlight-current-row>
@@ -127,6 +128,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import Pagination from '@/components/Pagination/index.vue'
+import { genSentence } from '@/api/ad'
 import { listGirls, deleteGirl, publishGirl, unShelveGirl } from '@/api/girl'
 import { imageServer } from '@/api/storage'
 
@@ -216,6 +218,16 @@ export default class extends Vue {
 
   private handleUpdate(id: string) {
     this.$router.push({ path: '/girl-edit', query: { id: id } })
+  }
+
+  private async copySentence() {
+    const data = await genSentence()
+    navigator.clipboard.writeText(data.value)
+    this.$message({
+      type: 'info',
+      message: '复制完成',
+      duration: 500
+    })
   }
 
   private created() {
