@@ -28,4 +28,5 @@ export default {
 
 <style>
 @import "styles/tailwind.css";
+@import "uview-ui/index.scss";
 </style>
