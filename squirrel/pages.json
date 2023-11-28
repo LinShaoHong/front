@@ -1,0 +1,98 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/login",
+      "style": {
+        "navigationBarTitleText": "松鼠学院",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "松鼠学院",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/library/index",
+      "style": {
+        "navigationBarTitleText": "松鼠学院",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/kids/index",
+      "style": {
+        "navigationBarTitleText": "松鼠学院",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/kids/addKidsName",
+      "style": {
+        "navigationBarTitleText": "松鼠学院",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/kids/addKids",
+      "style": {
+        "navigationBarTitleText": "松鼠学院",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/library/category/caBook",
+      "style": {
+        "navigationBarTitleText": "松鼠学院",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/library/category/caBookDetail",
+      "style": {
+        "navigationBarTitleText": "松鼠学院",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/library/category/caRead",
+      "style": {
+        "navigationBarTitleText": "松鼠学院",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/library/category/caRead2",
+      "style": {
+        "navigationBarTitleText": "松鼠学院",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/library/category/caWord",
+      "style": {
+        "navigationBarTitleText": "松鼠学院",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/library/category/caVideo",
+      "style": {
+        "navigationBarTitleText": "松鼠学院",
+        "navigationStyle": "custom"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8",
+    "scrollIndicator": "none",
+    "app-plus": {
+      "scrollIndicator": "none"
+    }
+  }
+}
