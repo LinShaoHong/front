@@ -103,10 +103,10 @@ export default {
   position: fixed;
   bottom: 10vh;
   right: 20vw;
-  width: 4rem;
-  height: 4rem;
+  width: 15vh;
+  height: 15vh;
   background: url('../../static/squirrel.png') center;
-  background-size: 4rem 4rem;
+  background-size: 15vh 15vh;
   background-repeat: no-repeat;
   transition: all 0.4s ease-in-out;
   transform: scale(1);

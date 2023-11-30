@@ -18,8 +18,9 @@ export default {
 
 <style lang="scss" scoped>
 .av {
-  width: 50px;
-  height: 50px;
+  width: 7vw;
+  height: 7vw;
+  background-size: 7vw 7vw center;
   border-radius: 50%;
   box-shadow: 0px 2px 2px #888888;
   transition: all 0.4s ease-in-out;

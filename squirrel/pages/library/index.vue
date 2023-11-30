@@ -15,7 +15,7 @@
     <view :class="[containerTop < scrollTop * 2 ? 'nav-top-vis' : 'nav-top-transparent', 'nav-top']">
       <view class="in search">
         <image src="../../static/search.png"></image>
-        <input placeholder="输入你要搜索的书本" placeholder-style="color: #F48E00; font-size: 13px;"/>
+        <input placeholder="输入你要搜索的书本" placeholder-style="color: #F48E00; font-size: 13px;" />
       </view>
       <view class="in latest-read">
         <image src="../../static/latest.png"></image>
@@ -90,15 +90,15 @@
           <view v-for=" item  in  5 " :key="item">
             <view class="books">
               <book-card class="book" :url="$media('oxford.jpg')" :title="'Happy Birthday'"
-                         @click.native="toWord"></book-card>
+                @click.native="toWord"></book-card>
               <book-card class="book" :url="$media('raz-a-post.jpg')" :title="'Fruits in the market and box'"
-                         @click.native="toRead"></book-card>
+                @click.native="toRead"></book-card>
               <book-card class="book" :url="$media('oxford3.jpg')" :title="'Oxford Three'"
-                         @click.native="toBookDetail"></book-card>
+                @click.native="toBookDetail"></book-card>
               <book-card class="book" :url="$media('oxford4.jpg')" :title="'Oxford Four'"
-                         @click.native="toRead2"></book-card>
+                @click.native="toRead2"></book-card>
               <book-card class="book" :url="$media('oxford5.jpg')" :title="'Oxford Five'"
-                         @click.native="toBook"></book-card>
+                @click.native="toBook"></book-card>
             </view>
             <view class="shelf"></view>
             <view class="shelf-front"></view>
@@ -419,12 +419,11 @@ export default {
     .books {
       z-index: 5;
       display: grid;
-      justify-content: space-between;
+      justify-content: space-around;
+      grid-template-columns: repeat(5, 7rem);
       padding-left: 1.5rem;
       padding-right: 1.5rem;
       box-sizing: border-box;
-      grid-template-columns: repeat(5, 1fr);
-      column-gap: 1.5rem;
 
       .book {
         margin-bottom: -10px;

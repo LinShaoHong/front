@@ -38,7 +38,7 @@ export default {
   justify-content: center;
   align-items: center;
   outline: 0;
-  box-shadow: 0px 2px 3px #888888;
+  box-shadow: 0 5px 7px 0 rgba(86, 119, 252, 0.2);
 }
 
 .bt:before {

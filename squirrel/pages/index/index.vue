@@ -1,6 +1,6 @@
 <template>
   <view>
-    <logo :top="'1rem'"></logo>
+    <logo :top="'3vh'"></logo>
     <view class="_back">
       <view class="_back-bottom"></view>
     </view>
@@ -62,15 +62,15 @@ export default {
 
 .house {
   position: absolute;
-  width: 20rem;
-  height: 16rem;
+  width: 80vh;
+  height: 70vh;
   left: 0;
   right: 0;
   bottom: 6vh;
   margin-left: auto;
   margin-right: auto;
   background: url('../../static/hose.png') center;
-  background-size: 20rem 16rem;
+  background-size: 80vh 70vh;
   background-repeat: no-repeat;
   transition: all 0.4s ease-in-out;
   transform: scale(1);
