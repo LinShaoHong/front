@@ -1,0 +1,12 @@
+
+@font-face {
+	font-display: block;
+	font-family: "kaiti";
+	/* src: url("https://hkskp.nmdx123.cn/app/kaiti.ttf"); */
+	/* src: url("https://jzzzz.nmdx123.cn/app/kaiti.ttf"); */
+	src: url("https://jfzzz.nmdx123.cn/app/kaiti.ttf");
+}
+
+.fm-kt {
+	font-family: "kaiti";
+}

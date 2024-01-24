@@ -10,7 +10,7 @@ import { accessTokenAuth } from './security'
 
 const app = express()
 const port = 1339
-const { connector, summarise } = require('swagger-routes-express')
+const { summarise } = require('swagger-routes-express')
 
 // Compression
 app.use(compression())
@@ -25,29 +25,15 @@ app.use(bodyParser.urlencoded({
   extended: false
 }))
 // No cache
-app.use((req, res, next) => {
+app.use((req:any, res:any, next:any) => {
   res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate')
   res.header('Pragma', 'no-cache')
   res.header('Expires', '-1')
   next()
 })
 
-// Read and swagger config file
-const apiDefinition = yaml.load(path.resolve(__dirname, 'swagger.yml'))
-// Create mock functions based on swaggerConfig
-const options = {
-  security: {
-    AccessTokenAuth: accessTokenAuth
-  }
-}
-const connectSwagger = connector(apiDefinition, options)
-connectSwagger(app)
-// Print swagger router api summary
-const apiSummary = summarise(apiDefinition)
-console.log(apiSummary)
-
 // Catch 404 error
-app.use((req, res, next) => {
+app.use((req:any, res:any, next:any) => {
   const err = new Error('Not Found')
   res.status(404).json({
     message: err.message,
@@ -68,15 +54,17 @@ function onError(error: any) {
   if (error.syscall !== 'listen') {
     throw error
   }
-  const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port
+  const bind = 'Port ' + port
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case 'EACCES':
       console.error('Express ERROR (app) : %s requires elevated privileges', bind)
       process.exit(1)
+      break
     case 'EADDRINUSE':
       console.error('Express ERROR (app) : %s is already in use', bind)
       process.exit(1)
+      break
     default:
       throw error
   }

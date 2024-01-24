@@ -29,10 +29,10 @@
           class="search-button"
           @click="search"
         >
-          <i class="el-icon-search" />
+          <i class="el-icon-search"/>
         </button>
       </div>
-      <div  class="mobile-messages">
+      <div class="mobile-messages">
         <div :style="user === null? 'display: none; z-index: 18;' : 'z-index: 18;'">
           <div style="float: left; z-index: 10; margin-right: 5px;">
             <div style="display: inline-block; position: relative; margin-left: 5px;">
@@ -75,15 +75,19 @@
                       @click="doRead(item.read, item.id)"
                     >
                       <div class="message-item-header">
-                        <div v-if="!item.read" style="width: 6px; height: 6px; border-radius: 3px; background-color: red"></div>
+                        <div v-if="!item.read"
+                             style="width: 6px; height: 6px; border-radius: 3px; background-color: red"></div>
                       </div>
                       <div class="message-item-content">
                         <div style="float: left; height: 17px; padding-top: 2px;">
-                          <img v-if="item.avatar" style="width: 15px; height: 15px; margin-right: 5px;" class="avatar" :src="SERVER + item.avatar">
+                          <img v-if="item.avatar" style="width: 15px; height: 15px; margin-right: 5px;" class="avatar"
+                               :src="SERVER + item.avatar">
                         </div>
                         <span style="color: #f90; font-size: 15px; margin-right: 2px;">
-                      {{ item.system? '系統消息: ' : item.commentatorName }}</span>
-                        <span v-if="!item.system" style="color: whitesmoke; font-size: 12px; margin-right: 2px;">&nbsp;{{ item.time }}</span><br/>
+                      {{ item.system ? '系統消息: ' : item.commentatorName }}</span>
+                        <span v-if="!item.system" style="color: whitesmoke; font-size: 12px; margin-right: 2px;">&nbsp;{{
+                            item.time
+                          }}</span><br/>
                         <a v-if="!item.system" class="message-reply-content"
                            href="#"
                            @click="toComment(item.girlId, item.id)">{{ item.content }}</a>
@@ -111,11 +115,14 @@
                       @click="doRead(item.read, item.id)"
                     >
                       <div class="message-item-header">
-                        <div v-if="!item.read" style="width: 6px; height: 6px; border-radius: 3px; background-color: red"></div>
+                        <div v-if="!item.read"
+                             style="width: 6px; height: 6px; border-radius: 3px; background-color: red"></div>
                       </div>
                       <div class="message-item-content">
                         <span style="color: #f90; font-size: 15px; margin-right: 2px;">幸福驿站
-                          <span v-if="item.system" style="color: whitesmoke; font-size: 12px; margin-right: 2px;">&nbsp;{{ item.time }}</span>
+                          <span v-if="item.system" style="color: whitesmoke; font-size: 12px; margin-right: 2px;">&nbsp;{{
+                              item.time
+                            }}</span>
                         </span><br/>
                         <span style="color: whitesmoke" :id="item.id">{{ item.content }}</span>
                       </div>
@@ -168,7 +175,7 @@
             class="search-button"
             @click="search"
           >
-            <i class="el-icon-search" />
+            <i class="el-icon-search"/>
           </button>
         </div>
         <div
@@ -222,15 +229,19 @@
                       @click="doRead(item.read, item.id)"
                     >
                       <div class="message-item-header">
-                        <div v-if="!item.read" style="width: 6px; height: 6px; border-radius: 3px; background-color: red"></div>
+                        <div v-if="!item.read"
+                             style="width: 6px; height: 6px; border-radius: 3px; background-color: red"></div>
                       </div>
                       <div class="message-item-content">
                         <div style="float: left; height: 17px; padding-top: 2px;">
-                          <img v-if="item.avatar" style="width: 15px; height: 15px; margin-right: 5px;" class="avatar" :src="SERVER + item.avatar">
+                          <img v-if="item.avatar" style="width: 15px; height: 15px; margin-right: 5px;" class="avatar"
+                               :src="SERVER + item.avatar">
                         </div>
                         <span style="color: #f90; font-size: 15px; margin-right: 2px;">
-                      {{ item.system? '系統消息: ' : item.commentatorName }}</span>
-                        <span v-if="!item.system" style="color: whitesmoke; font-size: 12px; margin-right: 2px;">&nbsp;{{ item.time }}</span><br/>
+                      {{ item.system ? '系統消息: ' : item.commentatorName }}</span>
+                        <span v-if="!item.system" style="color: whitesmoke; font-size: 12px; margin-right: 2px;">&nbsp;{{
+                            item.time
+                          }}</span><br/>
                         <a v-if="!item.system" class="message-reply-content"
                            href="#"
                            @click="toComment(item.girlId, item.id)">{{ item.content }}</a>
@@ -258,11 +269,14 @@
                       @click="doRead(item.read, item.id)"
                     >
                       <div class="message-item-header">
-                        <div v-if="!item.read" style="width: 6px; height: 6px; border-radius: 3px; background-color: red"></div>
+                        <div v-if="!item.read"
+                             style="width: 6px; height: 6px; border-radius: 3px; background-color: red"></div>
                       </div>
                       <div class="message-item-content">
                         <span style="color: #f90; font-size: 15px; margin-right: 2px;">幸福驿站
-                          <span v-if="item.system" style="color: whitesmoke; font-size: 12px; margin-right: 2px;">&nbsp;{{ item.time }}</span></span><br/>
+                          <span v-if="item.system" style="color: whitesmoke; font-size: 12px; margin-right: 2px;">&nbsp;{{
+                              item.time
+                            }}</span></span><br/>
                         <span style="color: whitesmoke" :id="item.id">{{ item.content }}</span>
                       </div>
                     </div>
@@ -282,7 +296,8 @@
                 <img v-if="user.avatar" class="user-avatar" :src="SERVER + user.avatar">
                 <el-button
                   style="color: whitesmoke; background-color: #f90; border: solid 1px #f90;"
-                  v-if="!user.avatar" size="mini">{{ user.name }}</el-button>
+                  v-if="!user.avatar" size="mini">{{ user.name }}
+                </el-button>
               </div>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item class="avatar-header" style="cursor: default;">
@@ -300,15 +315,17 @@
                         name="bi"
                         style="font-size: 15px; margin-right: 3px;"
                       />
-                      {{ (user.amount === null? 0 : user.amount) }}
+                      {{ (user.amount === null ? 0 : user.amount) }}
                     </span>
                   </div>
                 </el-dropdown-item>
                 <el-dropdown-item>
-                  <span style="display:block; cursor: pointer;" @click="toUserDetail(1)"><i class="el-icon-s-custom"></i>我的主頁</span>
+                  <span style="display:block; cursor: pointer;" @click="toUserDetail(1)"><i
+                    class="el-icon-s-custom"></i>我的主頁</span>
                 </el-dropdown-item>
                 <el-dropdown-item>
-                  <span style="display:block; cursor: pointer;" @click="toUserDetail(2)"><i class="el-icon-collection"></i>我的收藏</span>
+                  <span style="display:block; cursor: pointer;" @click="toUserDetail(2)"><i
+                    class="el-icon-collection"></i>我的收藏</span>
                 </el-dropdown-item>
                 <el-dropdown-item>
                   <span style="display:block; cursor: pointer;" @click="toUserDetail(3)"><i class="el-icon-view"></i>最近浏覽</span>
@@ -317,7 +334,7 @@
                   <span style="display:block; cursor: pointer;" @click="toUserDetail(4)"><i class="el-icon-money"></i>金幣收支</span>
                 </el-dropdown-item>
                 <el-dropdown-item style="border-top: solid 1px #2F2F2F;">
-                   <span style="display:block;" @click="logout"> <i class="el-icon-remove"></i>退出</span>
+                  <span style="display:block;" @click="logout"> <i class="el-icon-remove"></i>退出</span>
                 </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -355,19 +372,19 @@
 
 <script lang="ts">
 import path from 'path'
-import { Component, Vue, Watch } from 'vue-property-decorator'
-import { isExternal } from '@/utils/validate'
-import { DeviceType, AppModule } from '@/store/modules/app'
-import { slider } from '@/utils/mobile'
-import { UserModule } from '@/store/modules/user'
-import { MenuModule } from '@/store/modules/menu'
-import { MessageModule } from '@/store/modules/message'
+import {Component, Vue, Watch} from 'vue-property-decorator'
+import {isExternal} from '@/utils/validate'
+import {DeviceType, AppModule} from '@/store/modules/app'
+import {slider} from '@/utils/mobile'
+import {UserModule} from '@/store/modules/user'
+import {MenuModule} from '@/store/modules/menu'
+import {MessageModule} from '@/store/modules/message'
 import Hamburger from '@/components/Hamburger/index.vue'
 import ErrorLog from '@/components/ErrorLog/index.vue'
 import LangSelect from '@/components/LangSelect/index.vue'
-import { constantRoutes } from '@/router'
-import { logout } from '@/api/session'
-import { read, replyMessage, reply } from '@/api/comment'
+import {constantRoutes} from '@/router'
+import {logout} from '@/api/session'
+import {read, replyMessage, reply} from '@/api/comment'
 import Pagination from '@/components/Pagination/index.vue'
 import Cookies from 'js-cookie'
 
@@ -434,7 +451,7 @@ export default class extends Vue {
   }
 
   get messages() {
-    return this.isComment?  MessageModule.comment.messages : MessageModule.notice.messages
+    return this.isComment ? MessageModule.comment.messages : MessageModule.notice.messages
   }
 
   get unReads() {
@@ -497,17 +514,17 @@ export default class extends Vue {
     MessageModule.Clear()
     Cookies.remove('QM-TOKEN')
     this.toIndex(0)
-    this.$router.push({ path: '/' })
+    this.$router.push({path: '/'})
   }
 
   private toLogin() {
     MenuModule.SetIndex(-1)
-    this.$router.push({ path: '/user/login' })
+    this.$router.push({path: '/user/login'})
   }
 
   private toRegister() {
     MenuModule.SetIndex(-1)
-    this.$router.push({ path: '/user/register' })
+    this.$router.push({path: '/user/register'})
   }
 
   private toUserDetail(name) {
@@ -517,9 +534,9 @@ export default class extends Vue {
 
   private async search() {
     if (this.q !== null && this.q.trim().length > 0) {
-      this.$router.push({ path: '/girl/search', query: { q: this.q.trim() } })
+      this.$router.push({path: '/girl/search', query: {q: this.q.trim()}})
     } else {
-      this.$router.push({ path: '/' })
+      this.$router.push({path: '/'})
     }
   }
 
@@ -559,10 +576,10 @@ export default class extends Vue {
   }
 
   private async getMessages(isComment: boolean) {
-    if (UserModule.user !== null && (isComment? !this.loadCommentMessageAll : !this.loadNoticeMessageAll)) {
-      const start = isComment? this.commentStart : this.noticeStart
-      await MessageModule.GetMessages({ start: start, count: this.messageCount, isComment: isComment })
-      if (start + this.messageCount >= (isComment? this.commentTotal : this.noticeTotal)) {
+    if (UserModule.user !== null && (isComment ? !this.loadCommentMessageAll : !this.loadNoticeMessageAll)) {
+      const start = isComment ? this.commentStart : this.noticeStart
+      await MessageModule.GetMessages({start: start, count: this.messageCount, isComment: isComment})
+      if (start + this.messageCount >= (isComment ? this.commentTotal : this.noticeTotal)) {
         if (isComment) {
           this.loadCommentMessageAll = true
         } else {
@@ -583,7 +600,7 @@ export default class extends Vue {
       const data = await read(id)
       if (data.code === 200) {
 
-        const m = this.isComment? this.commentMessages.find(v => v.id === id) : this.noticeMessages.find(v => v.id === id)
+        const m = this.isComment ? this.commentMessages.find(v => v.id === id) : this.noticeMessages.find(v => v.id === id)
         if (m) {
           m.read = true
           MessageModule.decUnReads(this.isComment)
@@ -606,7 +623,7 @@ export default class extends Vue {
               let scrollTop = ele.scrollTop
               let clientHeight = ele.clientHeight
               let scrollHeight = ele.scrollHeight
-              if(scrollHeight > clientHeight && scrollTop + clientHeight === scrollHeight) {
+              if (scrollHeight > clientHeight && scrollTop + clientHeight === scrollHeight) {
                 this.getMessages(this.isComment)
               }
             }
@@ -617,12 +634,12 @@ export default class extends Vue {
   }
 
   private toComment(girlId: string, commentId: string) {
-    window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/girl/detail?liked=false&id=' + girlId+"&commentId="+commentId)
+    window.open(window.location.origin + process.env.VUE_APP_PUBLIC_PATH + '/#/girl/detail?liked=false&id=' + girlId + "&commentId=" + commentId)
   }
 
   private fetchMessage() {
     setInterval(async() => {
-      const latestId = this.commentMessages.length > 0? this.commentMessages[0].id : null
+      const latestId = this.commentMessages.length > 0 ? this.commentMessages[0].id : null
       if (UserModule.user !== null) {
         const data = await replyMessage({ start: 0, count: 20, latestId: latestId, isComment: true })
         if (data.code === 200) {
@@ -633,9 +650,8 @@ export default class extends Vue {
       }
     }, 60000)
 
-
     setInterval(async() => {
-      const latestId = this.noticeMessages.length > 0? this.noticeMessages[0].id : null
+      const latestId = this.noticeMessages.length > 0 ? this.noticeMessages[0].id : null
       if (UserModule.user !== null) {
         const data = await replyMessage({ start: 0, count: 20, latestId: latestId, isComment: false })
         if (data.code === 200) {
@@ -854,6 +870,7 @@ export default class extends Vue {
   .search {
     width: 95%;
     transition: transform .38s;
+
     .search-input {
       width: 80%;
     }
@@ -969,7 +986,7 @@ export default class extends Vue {
     border-bottom: solid 1px #363636;
 
     .message-menu-header__comment {
-      grid-column: 1 / 2 ;
+      grid-column: 1 / 2;
       height: 30px;
       cursor: pointer;
       align-content: center;
@@ -985,7 +1002,7 @@ export default class extends Vue {
     }
 
     .message-menu-header__notice {
-      grid-column: 2 / 3 ;
+      grid-column: 2 / 3;
       height: 30px;
       cursor: pointer;
       align-content: center;
@@ -1026,17 +1043,17 @@ export default class extends Vue {
         align-items: center;
         justify-content: center;
 
-        white-space:normal;
-        word-break:break-all;
-        word-wrap:break-word;
+        white-space: normal;
+        word-break: break-all;
+        word-wrap: break-word;
       }
 
       .message-item-content {
         grid-column: 2 / 3;
         justify-content: flex-start;
-        white-space:normal;
-        word-break:break-all;
-        word-wrap:break-word;
+        white-space: normal;
+        word-break: break-all;
+        word-wrap: break-word;
         padding-right: 2px;
         line-height: 20px;
 
@@ -1120,6 +1137,7 @@ export default class extends Vue {
   width: 36px;
   height: 36px;
 }
+
 .el-dropdown-menu {
   background-color: #101010;
   border: solid 1px #f90;
