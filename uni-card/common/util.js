@@ -44,7 +44,7 @@ function getUrlParam(url, name) {
 util.request = function(option) {
 	if (option.mask) {
 		uni.showLoading({
-			title: option.mask == 1 ? '加载中' : option.mask,
+			title: option.mask === 1 ? '加载中' : option.mask,
 			mask: true
 		});
 	}
@@ -65,7 +65,7 @@ util.request = function(option) {
 		}).then(res=> {
 			if (option.mask) uni.hideLoading();
 			if (option.nbarLoad) uni.hideNavigationBarLoading()
-			if (res.data.status == 100) {
+			if (res.data.status === 100) {
 				resolve(res.data.data)
 			} else {
 				if (!option.noToast && res.data && res.data.msg) {
