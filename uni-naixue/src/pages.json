@@ -1,0 +1,201 @@
+{
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar": {
+		"color": "#919293",
+		"selectedColor": "#97AF13",
+		"backgroundColor": "#fff",
+		"borderStyle": "black",
+		"list": [
+			{
+				"pagePath": "pages/index/Index",
+				"text": "首页",
+				"iconPath": "static/images/tab-bar/index.png",
+				"selectedIconPath": "static/images/tab-bar/index-selected.png"
+			},
+			{
+				"pagePath": "pages/drink/drink",
+				"text": "点餐",
+				"iconPath": "static/images/tab-bar/drink.png",
+				"selectedIconPath": "static/images/tab-bar/drink-selected.png"
+			},
+			{
+				"pagePath": "pages/take-foods/TakeFoods",
+				"text": "取餐",
+				"iconPath": "static/images/tab-bar/take-foods.png",
+				"selectedIconPath": "static/images/tab-bar/take-foods-selected.png"
+			},
+			{
+				"pagePath": "pages/mine/mine",
+				"text": "我的",
+				"iconPath": "static/images/tab-bar/mine.png",
+				"selectedIconPath": "static/images/tab-bar/mine-selected.png"
+			}
+		]
+	},
+	"pages": [
+		{
+			"path": "pages/index/Index",
+			"style": {
+				"navigationStyle": "custom",
+				"mp-alipay": {
+					"transparentTitle": "always",
+					"titlePenetrate": "YES"
+				}
+			}
+		},
+		{
+			"path": "pages/drink/drink",
+			"style": {
+				"navigationBarTitleText": "菜单",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path": "pages/take-foods/TakeFoods",
+			"style": {
+				"navigationBarTitleText": "取餐",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path": "pages/mine/mine",
+			"style": {
+				"navigationBarTitleText": "奈雪乐园",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path": "pages/index/invite/Invite",
+			"style": {
+				"navigationBarTitleText": "买茶送包",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path": "pages/index/packages/Packages",
+			"style": {
+				"navigationBarTitleText": "券包商品",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#ffffff",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/index/package-detail/PackageDetail",
+			"style": {
+				"navigationBarTitleText": "购买劵包",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path": "pages/history-order/HistoryOrder",
+			"style": {
+				"navigationBarTitleText": "历史订单",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#ffffff",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/history-order/order-detail/OrderDetail",
+			"style": {
+				"navigationBarTitleText": "订单详情",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path": "pages/history-order/review/Review",
+			"style": {
+				"navigationBarTitleText": "评价",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path": "pages/mine/member-code/MemberCode",
+			"style": {
+				"navigationBarTitleText": "会员码",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path": "pages/coupons/Coupons",
+			"style": {
+				"navigationBarTitleText": "我的卡券",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path": "pages/integrals/Integrals",
+			"style": {
+				"navigationStyle": "custom",
+				"onReachBottomDistance": 50,
+				"mp-alipay": {
+					"transparentTitle": "always",
+					"titlePenetrate": "YES"
+				}
+			}
+		},
+		{
+			"path": "pages/integrals/flow/Flow",
+			"style": {
+				"navigationBarTitleText": "积分明细",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path": "pages/balance/Balance",
+			"style": {
+				"navigationBarTitleText": "余额储值",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path": "pages/gift-card/GiftCard",
+			"style": {
+				"navigationBarTitleText": "礼品卡列表",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path": "pages/mine/services/Services",
+			"style": {
+				"navigationBarTitleText": "更多服务",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path": "pages/mine/services/help-center/HelpCenter",
+			"style": {
+				"navigationBarTitleText": "帮助中心",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		},
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		}
+	]
+}
