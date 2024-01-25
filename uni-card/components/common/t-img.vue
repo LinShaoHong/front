@@ -23,7 +23,7 @@
 		methods: {
 			getUrl(src) {
 				if (src) {
-					return src.indexOf('http') > -1 || src.indexOf('/static/') > -1 || src.indexOf('base64') > -1 || this.local == 1 ?
+					return src.indexOf('http') > -1 || src.indexOf('/static/') > -1 || src.indexOf('base64') > -1 || this.local === 1 ?
 						src : this.url + src
 				} else {
 					return '/static/no.png'
