@@ -37,9 +37,9 @@
     </div>
     <footer>
       <div class="footer">
-        <p style="color: whitesmoke; font-size: 18px;">尋芳閣</p>
-        <p :style="mobile? 'color: whitesmoke; font-size: 10px;' : 'color: whitesmoke; font-size: 13px;'">Copyright@ 2020-2021 xFangGirl All Rights Reserved. <a style="color: #f90; cursor: pointer" @click="toCopyright">版權聲明</a></p>
-        <p :style="mobile? 'color: whitesmoke; font-size: 10px;' : 'color: whitesmoke; font-size: 13px;'">Contact information: <a href="mailto:someone@example.com">xfanggirl2@gmail.com</a></p>
+        <p style="color: whitesmoke; font-size: 18px;">幸福驿站</p>
+        <p :style="mobile? 'color: whitesmoke; font-size: 10px;' : 'color: whitesmoke; font-size: 13px;'">Copyright@ 2023-2024 xFangGirl All Rights Reserved. <a style="color: #f90; cursor: pointer" @click="toCopyright">版權聲明</a></p>
+        <p :style="mobile? 'color: whitesmoke; font-size: 10px;' : 'color: whitesmoke; font-size: 13px;'">Contact information: <a href="mailto:someone@example.com">lieyfloor@gmail.com</a></p>
       </div>
     </footer>
   </div>

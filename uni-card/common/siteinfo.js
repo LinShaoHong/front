@@ -1,6 +1,6 @@
 var siteinfo = {
 	"name" : "海克斯喝酒卡牌",
-	"appId": "wxe8ee08a67eac2645",
+	"appId": "wx2c2cc1c85657325a",
 	"siteroot": "https://hkskp.nmdx123.cn",
 	"shareTitle": '喝酒卡牌，海克斯喝酒卡牌，趣味无限',
 	"logo": '/static/logo.png',
