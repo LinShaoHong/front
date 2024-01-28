@@ -103,3 +103,6 @@ app.*.map.json
 # Android Studio will place build artifacts here
 **/ios/
 **/android/
+
+.hbuilderx
+.eslintrc-auto-import.json
