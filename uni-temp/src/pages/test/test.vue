@@ -27,6 +27,7 @@ async function getTest() {
   // getTest.data?.name
   console.log(getTest, 'getTest');
 }
+
 async function postTest() {
   const postTest = await apiTest.postTest({ a: 1 });
   if (!postTest) return;
@@ -37,6 +38,7 @@ async function postTest() {
 function getCommonParam() {
   console.log(getCommonParams());
 }
+
 function setCommonParam() {
   setCommonParams({ channel: 'test' });
   getCommonParam();
