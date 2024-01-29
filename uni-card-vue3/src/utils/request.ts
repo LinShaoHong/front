@@ -1,6 +1,5 @@
 import { isDevelopment, isH5 } from './platform';
 import { forward } from './router';
-import { getCommonParams } from '@/config/commonParams';
 import env from '@/config/env';
 import { hideLoading, showLoading } from '@/config/serviceLoading';
 
@@ -84,12 +83,10 @@ function baseRequest(
 const http = {
   get: <T>(api: string, params: any) =>
     baseRequest('GET', api, {
-      ...getCommonParams(),
       ...params
     }) as Http.Response<T>,
   post: <T>(api: string, params: any) =>
     baseRequest('POST', api, {
-      ...getCommonParams(),
       ...params
     }) as Http.Response<T>
 };

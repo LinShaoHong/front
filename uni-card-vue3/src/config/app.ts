@@ -1,3 +1,7 @@
-export const APP_NAME = '好食期';
-export const APP_ID = 'xxxxx';
-export const APP_VERSION = '1.0.0';
+export default {
+  name: 'xxxxx',
+  shareTitle: 'xxxxx',
+  logo: 'xxxxx',
+  adUnitId: 'xxxxx',
+  adText: '<div style="letter-spacing: 1px">游戏开发不易，观看广告享抽牌次数</div>'
+}

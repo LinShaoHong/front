@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import apiTest from '@/api/apiTest';
-import { getCommonParams, setCommonParams } from '@/config/commonParams';
 import { useInit } from '@/hooks/useInit';
 import { useTitle } from '@/hooks/useTitle';
 import { onUrlPage } from '@/utils/router';
@@ -35,15 +34,6 @@ async function postTest() {
   console.log(postTest, 'postTest');
 }
 
-function getCommonParam() {
-  console.log(getCommonParams());
-}
-
-function setCommonParam() {
-  setCommonParams({ channel: 'test' });
-  getCommonParam();
-}
-
 async function uniAsyncTest() {
   const systemInfo = await uniAsync.getSystemInfo();
   console.log(systemInfo, 'systemInfo');
@@ -65,8 +55,6 @@ function onScrollToLower() {
         <view @click="changeTitle">changeTitle</view>
         <view @click="getTest">getTest</view>
         <view @click="postTest">postTest</view>
-        <view @click="getCommonParam">getCommonParams</view>
-        <view @click="setCommonParam">setCommonParams</view>
         <view @click="uniAsyncTest">uniAsyncTest</view>
         <view data-url="index?a=1" @click="onUrlPage">onUrlPage</view>
         <view class="p-10">unocss-test</view>
