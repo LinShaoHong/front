@@ -31,10 +31,7 @@ function goTest() {
 }
 
 .logo {
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 200rpx;
-  margin-bottom: 50rpx;
+  margin: 200rpx auto 50rpx;
   width: 200rpx;
   height: 200rpx;
 }
