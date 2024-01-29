@@ -1,6 +1,17 @@
 declare namespace User {
   interface UserInfo {
-    token: string
-    user_id: Number
+    id: String
+    code: String
+    openId: String
+    nickName: String
+    vip: Boolean
+  }
+}
+
+declare namespace Config {
+  interface ConfigInfo {
+    playLimit: Number
+    price: String
+    willPrice: String
   }
 }

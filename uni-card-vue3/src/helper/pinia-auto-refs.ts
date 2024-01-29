@@ -1,13 +1,8 @@
-// "https://github.com/Allen-1998/pinia-auto-refs"
-/* eslint-disable */
-/* prettier-ignore */
-// @ts-nocheck
 import type { AutoToRefs, ToRef } from 'vue'
 
-import appStore from '@/store/app'
-import setupStore from '@/store/setup'
-import testStore from '@/store/test'
-import userStore from '@/store/user'
+import appStore from '@/store/appStore'
+import configStore from '@/store/configStore'
+import userStore from '@/store/userStore'
 
 import store from '@/store'
 
@@ -19,9 +14,8 @@ declare module 'vue' {
 
 const storeExports = {
   app: appStore,
-  setup: setupStore,
-  test: testStore,
   user: userStore,
+  config: configStore
 }
 
 export function useStore<T extends keyof typeof storeExports>(storeName: T) {
