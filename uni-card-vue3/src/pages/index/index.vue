@@ -1,48 +1,24 @@
 <script setup lang="ts">
-import { useTitle } from '@/hooks/useTitle';
-import { forward } from '@/utils/router';
+import { useRewardedVideoAd } from '@/hooks/useRewardedVideoAd';
+import { delay } from '@/utils/calls'
 
-const { title, changeTitle } = useTitle();
+//const { ad, adLoaded, adClosed } = useRewardedVideoAd();
+const imgUri = inject('$imgUri');
+const showDesc = ref(false);
 
-function goTest() {
-  forward('test', {
-    a: 1
-  });
-}
+onLoad(() => {
+  delay(() => {
+    showDesc.value = true;
+  }, 500);
+});
+
 </script>
 
 <template>
-  <view class="content">
-    <image class="logo" src="/static/logo.png"/>
-    <view class="text-area">
-      <text class="title">{{ title }}</text>
-    </view>
-    <view @click="changeTitle">changeTitle</view>
-    <view @click="goTest">测试页</view>
+  <view class="relative">
+    <image class="h-screen w-screen" src="../../../static/back.png" mode="scaleToFill"></image>
   </view>
 </template>
 
 <style scoped lang="scss">
-.content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.logo {
-  margin: 200rpx auto 50rpx;
-  width: 200rpx;
-  height: 200rpx;
-}
-
-.text-area {
-  display: flex;
-  justify-content: center;
-}
-
-.title {
-  font-size: 36rpx;
-  color: #8f8f94;
-}
 </style>

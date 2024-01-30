@@ -16,18 +16,6 @@
     }
   ],
   "subPackages": [
-    {
-      "root": "pages/test",
-      "pages": [
-        {
-          "name": "test",
-          "path": "test",
-          "style": {
-            "navigationBarTitleText": "测试"
-          }
-        }
-      ]
-    }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",

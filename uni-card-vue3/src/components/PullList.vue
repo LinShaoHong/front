@@ -21,15 +21,15 @@ defineProps({
 
 <template>
   <scroll-view
-    :style="{
+      :style="{
       height: '100%',
       width: '100%'
     }"
-    :scroll-y="true"
-    :lower-threshold="300"
-    :scroll-top="scrollTop"
-    @scrolltolower="onScrollToLower"
-    @scroll="onScroll"
+      :scroll-y="true"
+      :lower-threshold="300"
+      :scroll-top="scrollTop"
+      @scrolltolower="onScrollToLower"
+      @scroll="onScroll"
   >
     <slot name="list"></slot>
   </scroll-view>
