@@ -4,7 +4,7 @@ import env from '@/config/env';
 import { hideLoading, showLoading } from '@/config/serviceLoading';
 
 function reject(err: { errno: number; errmsg: string }) {
-  const { errmsg = '抢购火爆，稍候片刻！', errno = -1 } = err;
+  const { errmsg = '网络不给力', errno = -1 } = err;
   switch (errno) {
     case 10000:
       // 特殊异常处理
@@ -61,14 +61,14 @@ function baseRequest(
         } else {
           reject({
             errno: -1,
-            errmsg: '抢购火爆，稍候片刻！'
+            errmsg: '系统异常'
           });
         }
       },
       fail: () => {
         reject({
           errno: -1,
-          errmsg: '网络不给力，请检查你的网络设置~'
+          errmsg: '网络不给力'
         });
       },
       complete: (data) => {
