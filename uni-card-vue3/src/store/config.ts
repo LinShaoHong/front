@@ -9,21 +9,11 @@ export default defineStore({
       willPrice: "11.99"
     } as Config.ConfigInfo;
   },
-  getters: {
-    playLimit: (state) => {
-      return state.playLimit;
-    },
-    price: (state) => {
-      return state.price;
-    },
-    willPrice: (state) => {
-      return state.willPrice;
-    }
-  },
   actions: {
-    async getConfigInfo() {
-      const resp = await apiConfig.getConfig()
-      this.setConfigInfo(resp.data)
+    getConfigInfo() {
+      apiConfig.getConfig().then(data => {
+        this.setConfigInfo(data.value)
+      })
     },
 
     setConfigInfo(configInfo: Config.ConfigInfo) {

@@ -4,9 +4,9 @@
 // @ts-nocheck
 import type { AutoToRefs, ToRef } from 'vue'
 
-import appStoreStore from '@/store/appStore'
-import configStoreStore from '@/store/configStore'
-import userStoreStore from '@/store/userStore'
+import appStore from '@/store/app'
+import configStore from '@/store/config'
+import userStore from '@/store/user'
 
 import store from '@/store'
 
@@ -17,9 +17,9 @@ declare module 'vue' {
 }
 
 const storeExports = {
-  appStore: appStoreStore,
-  configStore: configStoreStore,
-  userStore: userStoreStore,
+  app: appStore,
+  config: configStore,
+  user: userStore,
 }
 
 export function useStore<T extends keyof typeof storeExports>(storeName: T) {

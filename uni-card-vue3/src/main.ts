@@ -1,4 +1,5 @@
 import 'uno.css';
+import './style/index.css'
 import { createSSRApp } from 'vue';
 import App from './App.vue';
 import store from '@/store';

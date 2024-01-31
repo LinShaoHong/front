@@ -53,7 +53,7 @@ function baseRequest(
       data,
       success: (res: any) => {
         if (res.statusCode >= 200 && res.statusCode < 400) {
-          if (res.data.errno === 0) {
+          if (res.data.code >= 200 && res.data.code < 400) {
             responseData = res.data;
           } else {
             reject(res.data);
@@ -72,7 +72,6 @@ function baseRequest(
         });
       },
       complete: (data) => {
-        console.log(data, 'data');
         resolve(responseData);
         hideLoading();
       }

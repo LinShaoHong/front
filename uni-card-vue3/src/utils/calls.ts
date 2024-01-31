@@ -1,7 +1,2 @@
 //延迟执行
-export function delay(callback: () => void, mills: number): void {
-  let timer = setTimeout(() => {
-    clearTimeout(timer);
-    callback();
-  }, mills);
-}
+export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
