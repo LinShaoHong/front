@@ -2,16 +2,21 @@
 import { delay } from '@/utils/calls'
 
 //const { ad, adLoaded, adClosed } = useRewardedVideoAd();
+
+const user = useStore('user');
+const config = useStore('config');
+
 const imgUri = inject('$imgUri');
 const showRule = ref(false);
 const banners = ref([] as string[]);
-banners.value = ['/static/banner/1.jpg', '/static/banner/2.jpg']
 
 onLoad(async () => {
   await delay(500).then(() => {
     showRule.value = true;
   })
 });
+
+banners.value = ['/static/banner/1.jpg', '/static/banner/2.jpg']
 
 const backCardStyle = computed(() => (index) => {
   return {
@@ -33,11 +38,6 @@ shuffleAudio.obeyMuteSwitch = false;
 const inShuffle = ref(false);
 const onShuffle = async () => {
   if (inShuffle.value) return;
-  if (open.value) {
-    open.value = false;
-    await delay(300).then(() => {
-    })
-  }
   inShuffle.value = true;
   shuffleAudio.src = '/static/media/vod1.m4a';
   shuffleAudio.play();
@@ -57,18 +57,17 @@ const onShuffle = async () => {
   })
 };
 
-const config = useStore('config');
 const openAudio = uni.createInnerAudioContext();
 openAudio.obeyMuteSwitch = false;
 const open = ref(false);
 const onOpenCard = async () => {
   if (inShuffle.value) return;
+  config.getConfigInfo();
   open.value = !open.value;
   if (open.value) {
     openAudio.src = '/static/media/vod2.m4a';
     openAudio.play();
   }
-  config.getConfigInfo();
 }
 
 </script>
@@ -137,7 +136,6 @@ const onOpenCard = async () => {
       <image class="h-90" src="/static/xp.png" mode="heightFix" @click="onShuffle"></image>
       <image class="h-90" src="/static/kp.png" mode="heightFix" @click="onOpenCard"></image>
     </view>
-    <view>{{ config.price }}</view>
   </view>
 </template>
 

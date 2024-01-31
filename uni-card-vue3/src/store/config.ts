@@ -1,4 +1,5 @@
 import apiConfig from '@/api/apiConfig';
+import { networkError } from "@/utils/request";
 
 export default defineStore({
   id: 'config',
@@ -13,6 +14,8 @@ export default defineStore({
     getConfigInfo() {
       apiConfig.getConfig().then(data => {
         this.setConfigInfo(data.value)
+      }).catch(err => {
+        networkError();
       })
     },
 

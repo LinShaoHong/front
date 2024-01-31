@@ -1,22 +1,11 @@
 import { isDevelopment, isH5 } from './platform';
-import { forward } from './router';
 import env from '@/config/env';
 import { hideLoading, showLoading } from '@/config/serviceLoading';
 
-function reject(err: { errno: number; errmsg: string }) {
-  const { errmsg = '网络不给力', errno = -1 } = err;
-  switch (errno) {
-    case 10000:
-      // 特殊异常处理
-      forward('login');
-      break;
-
-    default:
-      uni.showToast({
-        title: errmsg
-      });
-      break;
-  }
+export const networkError = () => {
+  uni.showToast({
+    title: '网络不给力'
+  });
 }
 
 // h5环境开启代理
@@ -36,7 +25,7 @@ function baseRequest(
   url: string,
   data: { isLoading: any }
 ) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     showLoading(data.isLoading);
     delete data.isLoading;
     let responseData: unknown;
@@ -59,17 +48,11 @@ function baseRequest(
             reject(res.data);
           }
         } else {
-          reject({
-            errno: -1,
-            errmsg: '系统异常'
-          });
+          reject(res.data);
         }
       },
       fail: () => {
-        reject({
-          errno: -1,
-          errmsg: '网络不给力'
-        });
+        networkError();
       },
       complete: (data) => {
         resolve(responseData);
