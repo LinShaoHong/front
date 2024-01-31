@@ -52,7 +52,7 @@ function baseRequest(
         }
       },
       fail: () => {
-        networkError();
+        reject('网络不给力');
       },
       complete: (data) => {
         resolve(responseData);

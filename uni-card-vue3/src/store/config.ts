@@ -1,5 +1,4 @@
 import apiConfig from '@/api/apiConfig';
-import { networkError } from "@/utils/request";
 
 export default defineStore({
   id: 'config',
@@ -11,12 +10,14 @@ export default defineStore({
     } as Config.ConfigInfo;
   },
   actions: {
-    getConfigInfo() {
-      apiConfig.getConfig().then(data => {
-        this.setConfigInfo(data.value)
-      }).catch(err => {
-        networkError();
-      })
+    async getConfigInfo() {
+      return new Promise((resolve, reject) => {
+        apiConfig.getConfig().then(data => {
+          this.setConfigInfo(data.value)
+        }).catch(err => {
+          reject(err);
+        })
+      });
     },
 
     setConfigInfo(configInfo: Config.ConfigInfo) {

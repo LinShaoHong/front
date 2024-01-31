@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { delay } from '@/utils/calls'
+import { networkError } from "@/utils/request";
 
 //const { ad, adLoaded, adClosed } = useRewardedVideoAd();
 
@@ -62,12 +63,15 @@ openAudio.obeyMuteSwitch = false;
 const open = ref(false);
 const onOpenCard = async () => {
   if (inShuffle.value) return;
-  config.getConfigInfo();
-  open.value = !open.value;
-  if (open.value) {
-    openAudio.src = '/static/media/vod2.m4a';
-    openAudio.play();
-  }
+  config.getConfigInfo().then(() => {
+    open.value = !open.value;
+    if (open.value) {
+      openAudio.src = '/static/media/vod2.m4a';
+      openAudio.play();
+    }
+  }).catch(err => {
+    networkError();
+  })
 }
 
 </script>
