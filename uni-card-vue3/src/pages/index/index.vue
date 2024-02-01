@@ -37,11 +37,12 @@ watch(() => cards.value.length, (n, o) => {
 });
 
 banners.value = []
+// banners.value = ['/static/banner/1.jpg', '/static/banner/2.jpg']
 
 const backCardsCount = ref(6);
 const backCardStyle = computed(() => (index) => {
   return {
-    top: (index * 20) + 'rpx',
+    top: ((index-1) * 18) + 'rpx',
     transform: 'scale(' + (0.9 + index * 0.03) + ')' + (open.value && index === backCardsCount.value ? 'rotateY(180deg)' : ''),
     'z-index': index + 10,
     transition: 'transform .4s ease'
@@ -121,7 +122,7 @@ const openPayDialog = () => {
   showPayDialog.value = true;
 }
 
-const showQR = ref(true);
+const showQR = ref(false);
 </script>
 
 <template>
@@ -141,16 +142,16 @@ const showQR = ref(true);
   </Popup>
 
   <button class="fixed right-0 w-200 h-66 z-6"
-          :style="{top: banners.length > 0 ? '300rpx' : '60rpx', background: 'transparent'}"
+          :style="{top: banners.length > 0 ? '220rpx' : '60rpx', background: 'transparent'}"
           openType="contact">
     <image class="w-full h-full absolute left-0" src="/static/mask_bg.png"></image>
     <image class="w-76 h-66 absolute left-4" src="/static/message.png"></image>
     <text class="color-white absolute left-80" style="font-size: 28rpx;">联系客服</text>
   </button>
 
-  <view class="relative flex flex-col items-center justify-center">
+  <view class="relative flex flex-col items-center h-100vh">
     <view v-if="banners.length > 0"
-          class="w-full px-20 py-10 h-400">
+          class="w-full px-20 py-10" style="height: 20%">
       <swiper :indicator-dots="false"
               :autoplay="true"
               :interval="3500"
@@ -159,37 +160,38 @@ const showQR = ref(true);
               indicator-color="rgba(255, 255, 255, 0.8)"
               indicator-active-color="#fff">
         <swiper-item v-for="(item, index) in banners" :key="index">
-          <image :src="item" class="h-240 block w-full border-rd-20" mode="aspectFill"></image>
+          <image :src="item" class="h-180 w-full block border-rd-20" mode="scaleToFill"></image>
         </swiper-item>
       </swiper>
     </view>
 
-    <view class="relative flex items-center justify-center bottom-35 w-full"
-          :style="{'margin-top': banners.length > 0? '-30rpx':'300rpx' }"
-    >
-      <image class="w-80vw" src="/static/p_bg.png"></image>
-      <view class="absolute top--180 flex items-center justify-center">
+    <view class="absolute flex flex-col items-center bottom-50" style="height: 70%; background-color: red">
+      <image class="absolute top-0 bottom-80 w-90vw" style="height: 80%;" src="/static/p_bg.png"></image>
+
+      <view class="absolute top--50 flex items-center justify-center">
         <view v-for="index in backCardsCount"
               :class="['absolute', shuffle && index===backCardsCount && 'swap']"
               :key="'card-back-' + index"
               :style="backCardStyle(index)"
         >
           <image src="/static/card-back.png"
-                 :style="{'backface-visibility': index === backCardsCount? 'hidden':''}"
-                 mode="heightFix"></image>
+                 class="w-50vw"
+                 mode="widthFix"
+                 :style="{'backface-visibility': index === backCardsCount? 'hidden':''}"></image>
         </view>
       </view>
-      <view class="absolute top--100 z-100 flex items-center justify-center"
+
+      <view class="absolute top--80 z-100 flex items-center justify-center"
             :style="{transform: open? 'rotateY(180deg)' : '', transition: '.3s linear', 'transform-style': 'preserve-3d'}">
         <image
             style="transform: rotateY(180deg); backface-visibility: hidden"
             class="absolute h-75vh top--100" src="/static/front.png" mode="heightFix"></image>
       </view>
-    </view>
 
-    <view class="w-full relative flex items-center justify-center gap-50 mt-30">
-      <image class="h-90" src="/static/xp.png" mode="heightFix" @click="onShuffle"></image>
-      <image class="h-90" src="/static/kp.png" mode="heightFix" @click="onOpenCard"></image>
+      <view class="absolute bottom-0 flex items-center justify-center gap-50 mt-200">
+        <image class="h-90" src="/static/xp.png" mode="heightFix" @click="onShuffle"></image>
+        <image class="h-90" src="/static/kp.png" mode="heightFix" @click="onOpenCard"></image>
+      </view>
     </view>
   </view>
 
