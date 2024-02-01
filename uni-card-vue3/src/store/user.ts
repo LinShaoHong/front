@@ -5,7 +5,7 @@ export default defineStore({
   state: () => {
     return {
       data: {
-        id: "1",
+        id: "",
         code: "",
         openId: "",
         nickname: "",
