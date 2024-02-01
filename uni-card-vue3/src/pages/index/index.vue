@@ -15,11 +15,11 @@ const banners = ref([] as string[]);
 
 onLoad(async () => {
   await delay(500).then(() => {
-    showRule.value = true;
+    showRule.value = false;
   })
 });
 
-banners.value = ['/static/banner/1.jpg', '/static/banner/2.jpg']
+banners.value = []
 
 const backCardStyle = computed(() => (index) => {
   return {
@@ -73,7 +73,8 @@ const doOpen = () => {
   openAudio.src = '/static/media/vod2.m4a';
   openAudio.play();
   if (!user.data.value.vip) {
-    user.inc().catch(() => networkError());
+    user.inc().catch(() => {
+    });
   }
 }
 
@@ -88,15 +89,21 @@ const onOpenCard = () => {
             user.data.value.playCount < config.data.value.playLimit) {
           doOpen();
         } else {
-          wxPay();
+          openPayDialog();
         }
       }).catch(() => networkError());
     }).catch(() => networkError())
   }
 }
 
-const showPayDialog = ref(true);
+const showPayDialog = ref(false);
+const openPayDialog = () => {
+  if (showPayDialog.value) return;
+  config.getConfigInfo();
+  showPayDialog.value = true;
+}
 
+const showQR = ref(true);
 </script>
 
 <template>
@@ -138,6 +145,7 @@ const showPayDialog = ref(true);
         </swiper-item>
       </swiper>
     </view>
+
     <view class="relative flex items-center justify-center bottom-35 w-full"
           :style="{'margin-top': banners.length > 0? '-30rpx':'300rpx' }"
     >
@@ -166,6 +174,24 @@ const showPayDialog = ref(true);
       <image class="h-90" src="/static/kp.png" mode="heightFix" @click="onOpenCard"></image>
     </view>
   </view>
+
+  <Popup position="center" :show="showPayDialog">
+    <view class="relative w-85vw flex flex-col items-center justify-center bg-white rd-10 gap-20 p-20">
+      <text class="font-bold" style="font-size: 36rpx">游戏需知</text>
+      <uni-icons class="absolute right-10 top-10" type="closeempty" size="20"
+                 @click="showPayDialog.value = false"></uni-icons>
+      <view class="break-all" v-html="config.data.value.payText"></view>
+      <view class="h-65 w-250 mt-10 rd-40 text-white flex items-center justify-center"
+            style="background: #482380; font-size: 32rpx; letter-spacing: 3rpx;" @click="wxPay">立即解锁
+      </view>
+    </view>
+  </Popup>
+
+  <QRCode :show="showQR"
+          @close="showQR=false"
+          :src="'/static/qr.jpg'"
+          :title="'公众号二维码'"
+          :label="'长按识别二维码，打开公众号'"></QRCode>
 </template>
 
 <style scoped lang="scss">

@@ -7,15 +7,16 @@ export default defineStore({
       data: {
         playLimit: 5,
         price: "1.99",
-        payText: "11.99"
+        payText: "",
       }
     } as { data: Config.ConfigInfo };
   },
   actions: {
     getConfigInfo() {
+      const that = this;
       return new Promise((resolve, reject) => {
         apiConfig.getConfig().then(data => {
-          this.setConfigInfo(data.value)
+          that.setConfigInfo(data.value)
           resolve(data.value);
         }).catch(err => {
           reject(err);
@@ -24,7 +25,7 @@ export default defineStore({
     },
 
     setConfigInfo(config: Config.ConfigInfo) {
-      Object.assign(this.data, config)
+      Object.assign(this.data['value'], config)
     }
   }
 });

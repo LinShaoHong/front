@@ -8,7 +8,7 @@ import plugin from '@/plugin';
 export function createApp() {
   const app = createSSRApp(App);
   app.use(store);
-  app.use(plugin)
+  app.use(plugin);
   return {
     app
   };

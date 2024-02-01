@@ -41,7 +41,7 @@ export default defineStore({
       });
     },
     setUserInfo(user: User.UserInfo) {
-      Object.assign(this.data, user);
+      Object.assign(this.data['value'], user);
     },
     inc() {
       const that = this;

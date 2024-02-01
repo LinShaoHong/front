@@ -11,6 +11,7 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     Popup: typeof import('./components/Popup.vue')['default']
     PullList: typeof import('./components/PullList.vue')['default']
+    QRCode: typeof import('./components/QRCode.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
