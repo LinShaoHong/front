@@ -164,6 +164,7 @@ const onOpenCard = () => {
       <image class="h-90" src="/static/kp.png" mode="heightFix" @click="onOpenCard"></image>
     </view>
   </view>
+  <van-button type="primary" @click="">默认按钮</van-button>
 </template>
 
 <style scoped lang="scss">
