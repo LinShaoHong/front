@@ -11,6 +11,7 @@ declare namespace User {
 
 declare namespace Config {
   interface ConfigInfo {
+    cardCount: number
     playLimit: number
     price: string
     payText: string

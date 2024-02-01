@@ -5,6 +5,7 @@ export default defineStore({
   state: () => {
     return {
       data: {
+        cardCount: 5,
         playLimit: 5,
         price: "1.99",
         payText: "",

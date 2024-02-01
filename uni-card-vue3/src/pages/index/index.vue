@@ -12,19 +12,37 @@ const config = useStore('config');
 const imgUri = inject('$imgUri');
 const showRule = ref(false);
 const banners = ref([] as string[]);
+const cards = ref([] as number[]);
+const shuffleCards = () => {
+  if (cards.value.length === 0) {
+    config.getConfigInfo();
+    for (let i = 1; i <= config.data.value.cardCount; i++) {
+      cards.value.push(i);
+    }
+    cards.value.sort(() => 0.5 - Math.random());
+  }
+}
 
 onLoad(async () => {
   await delay(500).then(() => {
     showRule.value = false;
   })
+  shuffleCards();
+});
+
+watch(() => cards.value.length, (n, o) => {
+  if (n === 0) {
+    shuffleCards();
+  }
 });
 
 banners.value = []
 
+const backCardsCount = ref(6);
 const backCardStyle = computed(() => (index) => {
   return {
-    top: (index * 18) + 'rpx',
-    transform: 'scale(' + (0.9 + index * 0.03) + ')' + (open.value && index === 5 ? 'rotateY(180deg)' : ''),
+    top: (index * 20) + 'rpx',
+    transform: 'scale(' + (0.9 + index * 0.03) + ')' + (open.value && index === backCardsCount.value ? 'rotateY(180deg)' : ''),
     'z-index': index + 10,
     transition: 'transform .4s ease'
   }
@@ -150,14 +168,14 @@ const showQR = ref(true);
           :style="{'margin-top': banners.length > 0? '-30rpx':'300rpx' }"
     >
       <image class="w-80vw" src="/static/p_bg.png"></image>
-      <view class="absolute top--100 flex items-center justify-center">
-        <view v-for="index in 5"
-              :class="['absolute', shuffle && index===5 && 'swap']"
+      <view class="absolute top--180 flex items-center justify-center">
+        <view v-for="index in backCardsCount"
+              :class="['absolute', shuffle && index===backCardsCount && 'swap']"
               :key="'card-back-' + index"
               :style="backCardStyle(index)"
         >
           <image src="/static/card-back.png"
-                 :style="{'backface-visibility': index === 5? 'hidden':''}"
+                 :style="{'backface-visibility': index === backCardsCount? 'hidden':''}"
                  mode="heightFix"></image>
         </view>
       </view>
@@ -169,7 +187,7 @@ const showQR = ref(true);
       </view>
     </view>
 
-    <view class="w-full relative flex items-center justify-center gap-50">
+    <view class="w-full relative flex items-center justify-center gap-50 mt-30">
       <image class="h-90" src="/static/xp.png" mode="heightFix" @click="onShuffle"></image>
       <image class="h-90" src="/static/kp.png" mode="heightFix" @click="onOpenCard"></image>
     </view>
@@ -179,7 +197,7 @@ const showQR = ref(true);
     <view class="relative w-85vw flex flex-col items-center justify-center bg-white rd-10 gap-20 p-20">
       <text class="font-bold" style="font-size: 36rpx">游戏需知</text>
       <uni-icons class="absolute right-10 top-10" type="closeempty" size="20"
-                 @click="showPayDialog.value = false"></uni-icons>
+                 @click="showPayDialog = false"></uni-icons>
       <view class="break-all" v-html="config.data.value.payText"></view>
       <view class="h-65 w-250 mt-10 rd-40 text-white flex items-center justify-center"
             style="background: #482380; font-size: 32rpx; letter-spacing: 3rpx;" @click="wxPay">立即解锁
@@ -188,10 +206,10 @@ const showQR = ref(true);
   </Popup>
 
   <QRCode :show="showQR"
-          @close="showQR=false"
           :src="'/static/qr.jpg'"
           :title="'公众号二维码'"
-          :label="'长按识别二维码，打开公众号'"></QRCode>
+          :label="'长按识别二维码，打开公众号'"
+          @close="showQR=false"/>
 </template>
 
 <style scoped lang="scss">
