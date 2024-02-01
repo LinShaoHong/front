@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { delay } from '@/utils/calls'
 import { networkError } from "@/utils/request";
+import { useWxPay } from "@/hooks/useWxPay";
 
 //const { ad, adLoaded, adClosed } = useRewardedVideoAd();
+const { wxPay } = useWxPay();
 
 const user = useStore('user');
 const config = useStore('config');
@@ -22,23 +24,27 @@ banners.value = ['/static/banner/1.jpg', '/static/banner/2.jpg']
 const backCardStyle = computed(() => (index) => {
   return {
     top: (index * 18) + 'rpx',
-    transform: 'scale(' + (0.9 + index * 0.03) + ')',
+    transform: 'scale(' + (0.9 + index * 0.03) + ')' + (open.value && index === 5 ? 'rotateY(180deg)' : ''),
     'z-index': index + 10,
     transition: 'transform .4s ease'
   }
 });
 
 const shuffle = ref(false);
+const inShuffle = ref(false);
+const shuffleAudio = uni.createInnerAudioContext();
+shuffleAudio.obeyMuteSwitch = false;
+
 const doShuffle = async () => {
   shuffle.value = true;
   await delay(300).then(() => shuffle.value = false);
 };
 
-const shuffleAudio = uni.createInnerAudioContext();
-shuffleAudio.obeyMuteSwitch = false;
-const inShuffle = ref(false);
 const onShuffle = async () => {
   if (inShuffle.value) return;
+  if (open.value) {
+    await delay(100).then(() => open.value = false);
+  }
   inShuffle.value = true;
   shuffleAudio.src = '/static/media/vod1.m4a';
   shuffleAudio.play();
@@ -58,20 +64,35 @@ const onShuffle = async () => {
   })
 };
 
+const open = ref(false);
 const openAudio = uni.createInnerAudioContext();
 openAudio.obeyMuteSwitch = false;
-const open = ref(false);
-const onOpenCard = async () => {
+
+const doOpen = () => {
+  open.value = true;
+  openAudio.src = '/static/media/vod2.m4a';
+  openAudio.play();
+  if (!user.data.value.vip) {
+    user.inc().catch(() => networkError());
+  }
+}
+
+const onOpenCard = () => {
   if (inShuffle.value) return;
-  config.getConfigInfo().then(() => {
-    open.value = !open.value;
-    if (open.value) {
-      openAudio.src = '/static/media/vod2.m4a';
-      openAudio.play();
-    }
-  }).catch(err => {
-    networkError();
-  })
+  if (open.value) {
+    open.value = false;
+  } else {
+    config.getConfigInfo().then(() => {
+      user.getUserInfo().then(() => {
+        if (user.data.value.vip ||
+            user.data.value.playCount < config.data.value.playLimit) {
+          doOpen();
+        } else {
+          wxPay();
+        }
+      }).catch(() => networkError());
+    }).catch(() => networkError())
+  }
 }
 
 </script>
@@ -125,7 +146,9 @@ const onOpenCard = async () => {
               :key="'card-back-' + index"
               :style="backCardStyle(index)"
         >
-          <image src="/static/card-back.png" mode="heightFix"></image>
+          <image src="/static/card-back.png"
+                 :style="{'backface-visibility': index === 5? 'hidden':''}"
+                 mode="heightFix"></image>
         </view>
       </view>
       <view class="absolute top--100 z-100 flex items-center justify-center"

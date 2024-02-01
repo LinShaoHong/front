@@ -7,3 +7,13 @@ declare namespace Http {
     total: number
   }>
 }
+
+declare namespace Pay {
+  interface WxPayResp {
+    timeStamp: string
+    nonceStr: string
+    packages: string
+    paySign: string
+    signType: string
+  }
+}

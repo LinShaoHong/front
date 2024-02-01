@@ -1,17 +1,18 @@
 declare namespace User {
   interface UserInfo {
-    id: String
-    code: String
-    openId: String
-    nickName: String
-    vip: Boolean
+    id: string
+    code: string
+    openId: string
+    nickname: string
+    playCount: number
+    vip: boolean
   }
 }
 
 declare namespace Config {
   interface ConfigInfo {
-    playLimit: Number
-    price: String
-    willPrice: String
+    playLimit: number
+    price: string
+    payText: string
   }
 }

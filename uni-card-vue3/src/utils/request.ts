@@ -34,10 +34,7 @@ function baseRequest(
       method,
       timeout: 20000,
       header: {
-        'content-type':
-          method === 'GET'
-            ? 'application/json; charset=utf-8'
-            : 'application/x-www-form-urlencoded'
+        'content-type': 'application/json; charset=utf-8'
       },
       data,
       success: (res: any) => {
