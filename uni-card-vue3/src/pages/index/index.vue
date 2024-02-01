@@ -37,9 +37,9 @@ watch(() => cards.value.length, (n, o) => {
 });
 
 banners.value = []
-// banners.value = ['/static/banner/1.jpg', '/static/banner/2.jpg']
+banners.value = ['/static/banner/1.jpg', '/static/banner/2.jpg']
 
-const backCardsCount = ref(6);
+const backCardsCount = ref(5);
 const backCardStyle = computed(() => (index) => {
   return {
     top: ((index-1) * 18) + 'rpx',
