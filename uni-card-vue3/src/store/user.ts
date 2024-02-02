@@ -6,7 +6,6 @@ export default defineStore({
     return {
       data: {
         id: "",
-        code: "",
         openId: "",
         nickname: "微信用户-12345",
         playCount: 0,
