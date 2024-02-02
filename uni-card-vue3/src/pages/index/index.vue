@@ -33,6 +33,21 @@ onLoad(async () => {
     showRule.value = true;
   })
   shuffleCards();
+  // const d = wx.request({
+  //   url: 'http://localhost:9939/api/room?id=1',
+  //   enableChunked: true,
+  //   headers: {
+  //     'Transfer-Encoding': 'chunked'
+  //   },
+  //   responseType: 'text',
+  //   method: 'GET',
+  // });
+  //
+  // const l = data => {
+  //   const event = new TextDecoder().decode(data.data);
+  //   console.log(event.split("\n")[1].substring(6))
+  // };
+  // d.onChunkReceived(l);
 });
 
 watch(() => cards.value.length, (n, o) => {

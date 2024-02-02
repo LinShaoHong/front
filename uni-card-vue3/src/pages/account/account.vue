@@ -38,7 +38,7 @@ const onUpdateUser = () => {
     </view>
   </view>
   <button
-      class="ma m-0 w-80vw h-70 rd-50 mt-60 text-white flex items-center justify-center"
+      class="btn ma m-0 w-80vw h-70 rd-50 mt-60 text-white flex items-center justify-center"
       :disabled="loading"
       :loading="loading"
       @tap.stop="onUpdateUser"
@@ -49,4 +49,8 @@ const onUpdateUser = () => {
 </template>
 
 <style lang="scss" scoped>
+.btn[disabled] {
+  color: #ffffff;
+  background-color: #482380;
+}
 </style>
