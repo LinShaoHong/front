@@ -11,6 +11,8 @@ const config = useStore('config');
 
 const imgUri = inject('$imgUri');
 const showRule = ref(false);
+
+const card = ref<number | undefined>(1);
 const cards = ref([] as number[]);
 const shuffleCards = () => {
   if (cards.value.length === 0) {
@@ -19,6 +21,9 @@ const shuffleCards = () => {
       cards.value.push(i);
     }
     cards.value.sort(() => 0.5 - Math.random());
+    while (cards.value[config.data.value.cardCount - 1] === card.value) {
+      cards.value.sort(() => 0.5 - Math.random());
+    }
   }
 }
 
@@ -92,6 +97,7 @@ const openAudio = uni.createInnerAudioContext();
 openAudio.obeyMuteSwitch = false;
 
 const doOpen = () => {
+  card.value = cards.value.pop();
   open.value = true;
   openAudio.src = '/static/media/vod2.m4a';
   openAudio.play();
@@ -188,7 +194,7 @@ const openPayDialog = () => {
             :style="{transform: open? 'rotateY(180deg)' : '', transition: '.3s linear', 'transform-style': 'preserve-3d'}">
         <image
             style="transform: rotateY(180deg); backface-visibility: hidden"
-            class="absolute h-75vh top--100" src="/static/front.png" mode="heightFix"></image>
+            class="absolute h-75vh top--100" :src="`${imgUri}/${card}.png`" mode="heightFix"></image>
       </view>
 
       <view class="absolute bottom-0 flex items-center justify-center gap-50 mt-200">
