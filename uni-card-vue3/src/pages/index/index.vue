@@ -2,6 +2,7 @@
 import { delay } from '@/utils/calls'
 import { networkError } from "@/utils/request";
 import { useWxPay } from "@/hooks/useWxPay";
+import { message } from "@/utils/unis";
 
 //const { ad, adLoaded, adClosed } = useRewardedVideoAd();
 const { wxPay } = useWxPay();
@@ -72,6 +73,7 @@ const onShuffle = async () => {
   if (inShuffle.value) return;
   if (open.value) {
     await delay(100).then(() => open.value = false);
+    return;
   }
   inShuffle.value = true;
   shuffleAudio.src = '/static/media/vod1.m4a';
@@ -125,6 +127,12 @@ const onOpenCard = () => {
   }
 }
 
+const doPay = () => {
+  wxPay().catch(err => {
+    message('解锁失败', 4);
+  })
+}
+
 const showPayDialog = ref(false);
 const openPayDialog = () => {
   if (showPayDialog.value) return;
@@ -150,7 +158,7 @@ const openPayDialog = () => {
   </Popup>
 
   <button class="fixed right-0 w-200 h-66 z-6"
-          :style="{top: hasBanner ? '220rpx' : '60rpx', background: 'transparent'}"
+          :style="{top: hasBanner ? '240rpx' : '60rpx', background: 'transparent'}"
           openType="contact">
     <image class="w-full h-full absolute left-0" src="/static/mask_bg.png"></image>
     <image class="w-76 h-66 absolute left-4" src="/static/message.png"></image>
@@ -168,7 +176,7 @@ const openPayDialog = () => {
               indicator-color="rgba(255, 255, 255, 0.8)"
               indicator-active-color="#fff">
         <swiper-item v-for="(item, index) in config.data.value.banners" :key="index">
-          <image :src="item.src" class="h-180 w-full block border-rd-20" mode="scaleToFill"
+          <image :src="item.src" class="h-220 w-full block border-rd-20" mode="scaleToFill"
                  @click="onBanner(item)"></image>
         </swiper-item>
       </swiper>
@@ -184,7 +192,7 @@ const openPayDialog = () => {
               :style="backCardStyle(index)"
         >
           <image src="/static/card-back.png"
-                 class="w-50vw"
+                 class="w-55vw"
                  mode="widthFix"
                  :style="{'backface-visibility': index === backCardsCount? 'hidden':''}"></image>
         </view>
@@ -211,7 +219,7 @@ const openPayDialog = () => {
                  @click="showPayDialog = false"></uni-icons>
       <view class="break-all" v-html="config.data.value.payText"></view>
       <view class="h-65 w-250 mt-10 rd-40 text-white flex items-center justify-center"
-            style="background: #482380; font-size: 32rpx; letter-spacing: 3rpx;" @click="wxPay">立即解锁
+            style="background: #482380; font-size: 32rpx; letter-spacing: 3rpx;" @click="doPay">立即解锁
       </view>
     </view>
   </Popup>

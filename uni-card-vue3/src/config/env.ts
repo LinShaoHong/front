@@ -2,8 +2,8 @@ const apiEnv: ApiEnv = 'dev';
 
 const envMap = {
   dev: {
-    baseUrl: 'http://127.0.0.1',
-    apiBaseUrl: 'http://127.0.0.1:9939/api',
+    baseUrl: 'http://192.168.10.107',
+    apiBaseUrl: 'http://192.168.10.107:9939/api',
   },
   beta: {
     baseUrl: 'http://m.beta.xxx.com',
@@ -14,8 +14,8 @@ const envMap = {
     apiBaseUrl: 'https://m.api.xxx.com'
   },
   local: {
-    baseUrl: 'http://127.0.0.1:9939',
-    apiBaseUrl: 'http://127.0.0.1:9939/api',
+    baseUrl: 'http://192.168.10.107:9939',
+    apiBaseUrl: 'http://192.168.10.107:9939/api',
   }
 };
 
