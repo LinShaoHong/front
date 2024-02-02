@@ -36,6 +36,7 @@ export function forward(name: string, query: Types.Query = {}): any {
   const isReplace = query.replace;
   delete query.replace;
   const { type, path } = targetPage;
+  console.log(type+path);
   const url = restoreUrl(path, query);
   const params = { url };
   if (type === 'tabBarPage') return uni.switchTab(params);

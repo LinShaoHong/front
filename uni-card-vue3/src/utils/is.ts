@@ -28,4 +28,24 @@ export const isIntegerKey = (key: unknown) =>
   isString(key) &&
   key !== 'NaN' &&
   key[0] !== '-' &&
-  `${parseInt(key, 10)}` === key;
+  `${ parseInt(key, 10) }` === key;
+
+export const isEmpty = (value) => {
+  switch (typeof value) {
+    case 'undefined':
+      return true
+    case 'string':
+      if (value.replace(/(^[ \t\n\r]*)|([ \t\n\r]*$)/g, '').length === 0) return true
+      break
+    case 'boolean':
+      if (!value) return true
+      break
+    case 'number':
+      if (value === 0 || isNaN(value)) return true
+      break
+    case 'object':
+      return value === null || value.length === 0;
+
+  }
+  return false
+}

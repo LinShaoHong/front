@@ -6,7 +6,9 @@ import { isMpWeixin } from "@/utils/platform";
 
 onLaunch(() => {
   const user = useStore('user');
+  const config = useStore('config');
   user.getUserInfo().catch(() => networkError());
+  config.getConfigInfo().catch(() => networkError());
   if (isMpWeixin) {
     autoUpdate();
   }

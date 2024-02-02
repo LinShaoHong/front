@@ -16,15 +16,33 @@
     }
   ],
   "subPackages": [
+    {
+      "root": "pages/account",
+      "pages": [
+        {
+          "name": "account",
+          "path": "account",
+          "style": {
+            "navigationBarTitleText": "编辑资料"
+          }
+        }
+      ]
+    }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "uni-app",
     "navigationBarBackgroundColor": "#1AA86C",
-    "backgroundColor": "#F8F8F8"
+    "backgroundColor": "#F8F8F8",
+    "usingComponents": {
+      "van-cell": "/wxcomponents/vant/cell/index",
+      "van-cell-group": "/wxcomponents/vant/cell-group/index",
+      "van-divider": "/wxcomponents/vant/divider/index"
+    }
   },
   "tabBar": {
     "color": "#000000",
+    "backgroundColor": "#ffffff",
     "selectedColor": "#482380",
     "borderStyle": "black",
     "list": [

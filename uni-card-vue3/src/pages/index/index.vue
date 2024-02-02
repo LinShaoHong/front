@@ -11,7 +11,6 @@ const config = useStore('config');
 
 const imgUri = inject('$imgUri');
 const showRule = ref(false);
-const banners = ref([] as string[]);
 const cards = ref([] as number[]);
 const shuffleCards = () => {
   if (cards.value.length === 0) {
@@ -25,7 +24,7 @@ const shuffleCards = () => {
 
 onLoad(async () => {
   await delay(500).then(() => {
-    showRule.value = false;
+    showRule.value = true;
   })
   shuffleCards();
 });
@@ -36,13 +35,18 @@ watch(() => cards.value.length, (n, o) => {
   }
 });
 
-banners.value = []
-banners.value = ['/static/banner/1.jpg', '/static/banner/2.jpg']
+const banner = ref({});
+const showQR = ref(false);
+const hasBanner = computed(() => config.data.value.banners.length > 0);
+const onBanner = (item) => {
+  banner.value = item;
+  showQR.value = true;
+};
 
 const backCardsCount = ref(5);
 const backCardStyle = computed(() => (index) => {
   return {
-    top: ((index-1) * 18) + 'rpx',
+    top: ((index - 1) * 18) + 'rpx',
     transform: 'scale(' + (0.9 + index * 0.03) + ')' + (open.value && index === backCardsCount.value ? 'rotateY(180deg)' : ''),
     'z-index': index + 10,
     transition: 'transform .4s ease'
@@ -121,8 +125,6 @@ const openPayDialog = () => {
   config.getConfigInfo();
   showPayDialog.value = true;
 }
-
-const showQR = ref(false);
 </script>
 
 <template>
@@ -142,7 +144,7 @@ const showQR = ref(false);
   </Popup>
 
   <button class="fixed right-0 w-200 h-66 z-6"
-          :style="{top: banners.length > 0 ? '220rpx' : '60rpx', background: 'transparent'}"
+          :style="{top: hasBanner ? '220rpx' : '60rpx', background: 'transparent'}"
           openType="contact">
     <image class="w-full h-full absolute left-0" src="/static/mask_bg.png"></image>
     <image class="w-76 h-66 absolute left-4" src="/static/message.png"></image>
@@ -150,7 +152,7 @@ const showQR = ref(false);
   </button>
 
   <view class="relative flex flex-col items-center h-100vh">
-    <view v-if="banners.length > 0"
+    <view v-if="hasBanner"
           class="w-full px-20 py-10" style="height: 20%">
       <swiper :indicator-dots="false"
               :autoplay="true"
@@ -159,8 +161,9 @@ const showQR = ref(false);
               :circular="true"
               indicator-color="rgba(255, 255, 255, 0.8)"
               indicator-active-color="#fff">
-        <swiper-item v-for="(item, index) in banners" :key="index">
-          <image :src="item" class="h-180 w-full block border-rd-20" mode="scaleToFill"></image>
+        <swiper-item v-for="(item, index) in config.data.value.banners" :key="index">
+          <image :src="item.src" class="h-180 w-full block border-rd-20" mode="scaleToFill"
+                 @click="onBanner(item)"></image>
         </swiper-item>
       </swiper>
     </view>
@@ -208,9 +211,9 @@ const showQR = ref(false);
   </Popup>
 
   <QRCode :show="showQR"
-          :src="'/static/qr.jpg'"
-          :title="'公众号二维码'"
-          :label="'长按识别二维码，打开公众号'"
+          :src="banner.qr"
+          :title="banner.title"
+          :label="banner.label"
           @close="showQR=false"/>
 </template>
 

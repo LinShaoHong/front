@@ -8,7 +8,7 @@ export default defineStore({
         id: "",
         code: "",
         openId: "",
-        nickname: "",
+        nickname: "微信用户-12345",
         playCount: 0,
         vip: false
       }
@@ -63,6 +63,18 @@ export default defineStore({
           that.data['value'].vip = true;
         }).catch(() => {
           that.data['value'].vip = true;
+        })
+      });
+    },
+    updateNickname(nickname: string) {
+      const that = this;
+      const userId = this.data['value'].id;
+      return new Promise((resolve, reject) => {
+        apiUser.updateNickname(userId, nickname).then((res) => {
+          resolve(res);
+          that.data['value'].nickname = nickname;
+        }).catch(() => {
+          reject();
         })
       });
     }
