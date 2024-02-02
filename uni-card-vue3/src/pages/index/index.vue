@@ -61,6 +61,7 @@ const backCardStyle = computed(() => (index) => {
 
 const shuffle = ref(false);
 const inShuffle = ref(false);
+const hasShuffled = ref(false);
 const shuffleAudio = uni.createInnerAudioContext();
 shuffleAudio.obeyMuteSwitch = false;
 
@@ -87,6 +88,7 @@ const onShuffle = async () => {
         await delay(20).then(async () => {
           await doShuffle();
           inShuffle.value = false;
+          hasShuffled.value = true;
           shuffleAudio.stop();
         })
       })
@@ -101,6 +103,7 @@ openAudio.obeyMuteSwitch = false;
 const doOpen = () => {
   card.value = cards.value.pop();
   open.value = true;
+  hasShuffled.value = false;
   openAudio.src = '/static/media/vod2.m4a';
   openAudio.play();
   if (!user.data.value.vip) {
@@ -114,6 +117,7 @@ const onOpenCard = () => {
   if (open.value) {
     open.value = false;
   } else {
+    if (!hasShuffled.value) return;
     config.getConfigInfo().then(() => {
       user.getUserInfo().then(() => {
         if (user.data.value.vip ||
