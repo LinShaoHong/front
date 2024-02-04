@@ -49,9 +49,9 @@ VantComponent({
     methods: {
         onClick(event) {
             this.$emit('click', event);
-            const { canIUseGetUserProfile, openType, getUserProfileDesc, lang, } = this.data;
+            const { canIUseGetUserProfile, openType, getUserProfileDesc, lang } = this.data;
             if (openType === 'getUserInfo' && canIUseGetUserProfile) {
-                wx.getUserProfile({
+                tt.getUserProfile({
                     desc: getUserProfileDesc || '  ',
                     lang: lang || 'en',
                     complete: (userProfile) => {

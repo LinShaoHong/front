@@ -1,10 +1,4 @@
-let systemInfo;
-export function getSystemInfoSync() {
-    if (systemInfo == null) {
-        systemInfo = wx.getSystemInfoSync();
-    }
-    return systemInfo;
-}
+import { getSystemInfoSync } from './utils';
 function compareVersion(v1, v2) {
     v1 = v1.split('.');
     v2 = v2.split('.');
@@ -44,16 +38,11 @@ export function canIUseGroupSetData() {
     return gte('2.4.0');
 }
 export function canIUseNextTick() {
-    try {
-        return wx.canIUse('nextTick');
-    }
-    catch (e) {
-        return gte('2.7.1');
-    }
+    return tt.canIUse('nextTick');
 }
 export function canIUseCanvas2d() {
     return gte('2.9.0');
 }
 export function canIUseGetUserProfile() {
-    return !!wx.getUserProfile;
+    return !!tt.getUserProfile;
 }

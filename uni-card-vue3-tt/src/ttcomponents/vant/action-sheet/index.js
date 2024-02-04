@@ -1,7 +1,6 @@
 import { VantComponent } from '../common/component';
 import { button } from '../mixins/button';
 VantComponent({
-    classes: ['list-class'],
     mixins: [button],
     props: {
         show: Boolean,
@@ -36,10 +35,6 @@ VantComponent({
             type: Boolean,
             value: true,
         },
-        rootPortal: {
-            type: Boolean,
-            value: false,
-        },
     },
     methods: {
         onSelect(event) {
@@ -52,7 +47,7 @@ VantComponent({
                     this.onClose();
                 }
                 if (item.openType === 'getUserInfo' && canIUseGetUserProfile) {
-                    wx.getUserProfile({
+                    tt.getUserProfile({
                         desc: item.getUserProfileDesc || '  ',
                         complete: (userProfile) => {
                             this.$emit('getuserinfo', userProfile);

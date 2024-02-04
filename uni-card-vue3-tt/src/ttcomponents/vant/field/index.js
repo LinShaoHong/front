@@ -22,9 +22,6 @@ VantComponent({
         }, clearIcon: {
             type: String,
             value: 'clear',
-        }, extraEventParams: {
-            type: Boolean,
-            value: false,
         } }),
     data: {
         focused: false,
@@ -36,19 +33,11 @@ VantComponent({
         this.setData({ innerValue: this.value });
     },
     methods: {
-        formatValue(value) {
-            const { maxlength } = this.data;
-            if (maxlength !== -1 && value.length > maxlength) {
-                return value.slice(0, maxlength);
-            }
-            return value;
-        },
         onInput(event) {
             const { value = '' } = event.detail || {};
-            const formatValue = this.formatValue(value);
-            this.value = formatValue;
+            this.value = value;
             this.setShowClear();
-            return this.emitChange(Object.assign(Object.assign({}, event.detail), { value: formatValue }));
+            this.emitChange();
         },
         onFocus(event) {
             this.focused = true;
@@ -71,7 +60,7 @@ VantComponent({
             this.value = '';
             this.setShowClear();
             nextTick(() => {
-                this.emitChange({ value: '' });
+                this.emitChange();
                 this.$emit('clear', '');
             });
         },
@@ -87,7 +76,7 @@ VantComponent({
             if (value === '') {
                 this.setData({ innerValue: '' });
             }
-            this.emitChange({ value });
+            this.emitChange();
         },
         onLineChange(event) {
             this.$emit('linechange', event.detail);
@@ -95,17 +84,12 @@ VantComponent({
         onKeyboardHeightChange(event) {
             this.$emit('keyboardheightchange', event.detail);
         },
-        emitChange(detail) {
-            const { extraEventParams } = this.data;
-            this.setData({ value: detail.value });
-            let result;
-            const data = extraEventParams
-                ? Object.assign(Object.assign({}, detail), { callback: (data) => {
-                        result = data;
-                    } }) : detail.value;
-            this.$emit('input', data);
-            this.$emit('change', data);
-            return result;
+        emitChange() {
+            this.setData({ value: this.value, innerValue: this.value });
+            nextTick(() => {
+                this.$emit('input', this.value);
+                this.$emit('change', this.value);
+            });
         },
         setShowClear() {
             const { clearable, readonly, clearTrigger } = this.data;

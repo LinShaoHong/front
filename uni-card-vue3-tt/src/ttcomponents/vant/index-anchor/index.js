@@ -15,7 +15,7 @@ VantComponent({
     methods: {
         scrollIntoView(scrollTop) {
             getRect(this, '.van-index-anchor-wrapper').then((rect) => {
-                wx.pageScrollTo({
+                tt.pageScrollTo({
                     duration: 0,
                     scrollTop: scrollTop + rect.top - this.parent.data.stickyOffsetTop,
                 });

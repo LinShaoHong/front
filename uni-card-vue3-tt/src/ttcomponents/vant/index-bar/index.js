@@ -1,7 +1,7 @@
 import { GREEN } from '../common/color';
 import { VantComponent } from '../common/component';
 import { useChildren } from '../common/relation';
-import { getRect, isDef } from '../common/utils';
+import { getRect, isDef, nextTick } from '../common/utils';
 import { pageScrollMixin } from '../mixins/page-scroll';
 const indexList = () => {
     const indexList = [];
@@ -52,7 +52,7 @@ VantComponent({
     },
     methods: {
         updateData() {
-            wx.nextTick(() => {
+            nextTick(() => {
                 if (this.timer != null) {
                     clearTimeout(this.timer);
                 }

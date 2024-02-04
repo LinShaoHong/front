@@ -47,9 +47,10 @@ VantComponent({
     },
     methods: {
         updateChildren() {
-            this.children.forEach((child) => {
-                child.updateStyle();
-            });
+            Array.isArray(this.children) &&
+                this.children.forEach((child) => {
+                    child.updateStyle();
+                });
         },
     },
 });

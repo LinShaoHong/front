@@ -1,4 +1,4 @@
-import { pickExclude, isPC, isWxWork } from '../common/utils';
+import { pickExclude } from '../common/utils';
 import { isImageUrl, isVideoUrl } from '../common/validator';
 export function isImageFile(item) {
     if (item.isImage != null) {
@@ -25,7 +25,7 @@ export function isVideoFile(item) {
     return false;
 }
 function formatImage(res) {
-    return res.tempFiles.map((item) => (Object.assign(Object.assign({}, pickExclude(item, ['path'])), { type: 'image', url: item.tempFilePath || item.path, thumb: item.tempFilePath || item.path })));
+    return res.tempFiles.map((item) => (Object.assign(Object.assign({}, pickExclude(item, ['path'])), { type: 'image', url: item.path, thumb: item.path })));
 }
 function formatVideo(res) {
     return [
@@ -33,41 +33,26 @@ function formatVideo(res) {
     ];
 }
 function formatMedia(res) {
-    return res.tempFiles.map((item) => (Object.assign(Object.assign({}, pickExclude(item, ['fileType', 'thumbTempFilePath', 'tempFilePath'])), { type: item.fileType, url: item.tempFilePath, thumb: item.fileType === 'video' ? item.thumbTempFilePath : item.tempFilePath })));
+    return res.tempFiles.map((item) => (Object.assign(Object.assign({}, pickExclude(item, ['fileType', 'thumbTempFilePath', 'tempFilePath'])), { type: res.type, url: item.tempFilePath, thumb: res.type === 'video' ? item.thumbTempFilePath : item.tempFilePath })));
 }
 function formatFile(res) {
     return res.tempFiles.map((item) => (Object.assign(Object.assign({}, pickExclude(item, ['path'])), { url: item.path })));
 }
-export function chooseFile({ accept, multiple, capture, compressed, maxDuration, sizeType, camera, maxCount, mediaType, extension, }) {
+export function chooseFile({ accept, multiple, capture, compressed, maxDuration, sizeType, camera, maxCount, }) {
     return new Promise((resolve, reject) => {
         switch (accept) {
             case 'image':
-                if (isPC || isWxWork) {
-                    wx.chooseImage({
-                        count: multiple ? Math.min(maxCount, 9) : 1,
-                        sourceType: capture,
-                        sizeType,
-                        success: (res) => resolve(formatImage(res)),
-                        fail: reject,
-                    });
-                }
-                else {
-                    wx.chooseMedia({
-                        count: multiple ? Math.min(maxCount, 9) : 1,
-                        mediaType: ['image'],
-                        sourceType: capture,
-                        maxDuration,
-                        sizeType,
-                        camera,
-                        success: (res) => resolve(formatImage(res)),
-                        fail: reject,
-                    });
-                }
+                tt.chooseImage({
+                    count: multiple ? Math.min(maxCount, 9) : 1,
+                    sourceType: capture,
+                    sizeType,
+                    success: (res) => resolve(formatImage(res)),
+                    fail: reject,
+                });
                 break;
             case 'media':
-                wx.chooseMedia({
+                tt.chooseMedia({
                     count: multiple ? Math.min(maxCount, 9) : 1,
-                    mediaType,
                     sourceType: capture,
                     maxDuration,
                     sizeType,
@@ -77,7 +62,7 @@ export function chooseFile({ accept, multiple, capture, compressed, maxDuration,
                 });
                 break;
             case 'video':
-                wx.chooseVideo({
+                tt.chooseVideo({
                     sourceType: capture,
                     compressed,
                     maxDuration,
@@ -87,7 +72,12 @@ export function chooseFile({ accept, multiple, capture, compressed, maxDuration,
                 });
                 break;
             default:
-                wx.chooseMessageFile(Object.assign(Object.assign({ count: multiple ? maxCount : 1, type: accept }, (extension ? { extension } : {})), { success: (res) => resolve(formatFile(res)), fail: reject }));
+                tt.chooseMessageFile({
+                    count: multiple ? maxCount : 1,
+                    type: accept,
+                    success: (res) => resolve(formatFile(res)),
+                    fail: reject,
+                });
                 break;
         }
     });

@@ -1,6 +1,6 @@
 import { VantComponent } from '../common/component';
 import { useChildren } from '../common/relation';
-import { getRect } from '../common/utils';
+import { getRect, nextTick } from '../common/utils';
 VantComponent({
     relation: useChildren('tabbar-item', function () {
         this.updateChildren();
@@ -8,43 +8,52 @@ VantComponent({
     props: {
         active: {
             type: null,
-            observer: 'updateChildren',
+            observer: 'updateChildren'
         },
         activeColor: {
             type: String,
-            observer: 'updateChildren',
+            observer: 'updateChildren'
         },
         inactiveColor: {
             type: String,
-            observer: 'updateChildren',
+            observer: 'updateChildren'
         },
         fixed: {
             type: Boolean,
             value: true,
-            observer: 'setHeight',
+            observer: 'setHeight'
         },
         placeholder: {
             type: Boolean,
-            observer: 'setHeight',
+            observer: 'setHeight'
         },
         border: {
             type: Boolean,
-            value: true,
+            value: true
         },
         zIndex: {
             type: Number,
-            value: 1,
+            value: 1
         },
         safeAreaInsetBottom: {
             type: Boolean,
-            value: true,
-        },
+            value: true
+        }
     },
     data: {
-        height: 50,
+        height: 50
+    },
+    mounted() {
     },
     methods: {
         updateChildren() {
+            nextTick(() => {
+                const query = this.createSelectorQuery();
+                query.select('#tabbar');
+                query.exec(res => {
+                    console.log(res);
+                });
+            }, 1000);
             const { children } = this;
             if (!Array.isArray(children) || !children.length) {
                 return;
@@ -55,11 +64,11 @@ VantComponent({
             if (!this.data.fixed || !this.data.placeholder) {
                 return;
             }
-            wx.nextTick(() => {
+            nextTick(() => {
                 getRect(this, '.van-tabbar').then((res) => {
                     this.setData({ height: res.height });
                 });
             });
-        },
-    },
+        }
+    }
 });

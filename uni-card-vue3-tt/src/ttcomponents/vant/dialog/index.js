@@ -1,10 +1,9 @@
 import { VantComponent } from '../common/component';
 import { button } from '../mixins/button';
 import { GRAY, RED } from '../common/color';
-import { toPromise } from '../common/utils';
+import { toPromise, nextTick } from '../common/utils';
 VantComponent({
     mixins: [button],
-    classes: ['cancle-button-class', 'confirm-button-class'],
     props: {
         show: {
             type: Boolean,
@@ -18,17 +17,14 @@ VantComponent({
             type: String,
             value: 'default',
         },
-        confirmButtonId: String,
+        useSlot: Boolean,
         className: String,
         customStyle: String,
         asyncClose: Boolean,
         messageAlign: String,
         beforeClose: null,
         overlayStyle: String,
-        useSlot: Boolean,
         useTitleSlot: Boolean,
-        useConfirmButtonSlot: Boolean,
-        useCancelButtonSlot: Boolean,
         showCancelButton: Boolean,
         closeOnClickOverlay: Boolean,
         confirmButtonOpenType: String,
@@ -65,10 +61,6 @@ VantComponent({
             type: String,
             value: 'scale',
         },
-        rootPortal: {
-            type: Boolean,
-            value: false,
-        },
     },
     data: {
         loading: {
@@ -89,7 +81,7 @@ VantComponent({
         },
         close(action) {
             this.setData({ show: false });
-            wx.nextTick(() => {
+            nextTick(() => {
                 this.$emit('close', action);
                 const { callback } = this.data;
                 if (callback) {

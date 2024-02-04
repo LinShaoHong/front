@@ -16,7 +16,8 @@ VantComponent({
     },
     methods: {
         updateChildren() {
-            this.children.forEach((child) => child.updateFromParent());
+            Array.isArray(Array.from(this.children)) &&
+                this.children.forEach((child) => child.updateFromParent());
         },
     },
 });

@@ -22,9 +22,7 @@ function getContext() {
 }
 function Toast(toastOptions) {
     const options = Object.assign(Object.assign({}, currentOptions), parseOptions(toastOptions));
-    const context = (typeof options.context === 'function'
-        ? options.context()
-        : options.context) || getContext();
+    const context = options.context || getContext();
     const toast = context.selectComponent(options.selector);
     if (!toast) {
         console.warn('未找到 van-toast 节点，请确认 selector 及 context 是否正确');

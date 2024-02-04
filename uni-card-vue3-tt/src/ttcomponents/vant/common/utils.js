@@ -1,19 +1,25 @@
 import { isDef, isNumber, isPlainObject, isPromise } from './validator';
-import { canIUseGroupSetData, canIUseNextTick, getSystemInfoSync, } from './version';
+import { canIUseGroupSetData, canIUseNextTick } from './version';
 export { isDef } from './validator';
-export { getSystemInfoSync } from './version';
 export function range(num, min, max) {
     return Math.min(Math.max(num, min), max);
 }
-export function nextTick(cb) {
+export function nextTick(cb, time = 1000 / 30) {
     if (canIUseNextTick()) {
-        wx.nextTick(cb);
+        tt.nextTick(cb);
     }
     else {
         setTimeout(() => {
             cb();
-        }, 1000 / 30);
+        }, time);
     }
+}
+let systemInfo;
+export function getSystemInfoSync() {
+    if (systemInfo == null) {
+        systemInfo = tt.getSystemInfoSync();
+    }
+    return systemInfo;
 }
 export function addUnit(value) {
     if (!isDef(value)) {
@@ -23,9 +29,19 @@ export function addUnit(value) {
     return isNumber(value) ? `${value}px` : value;
 }
 export function requestAnimationFrame(cb) {
-    return setTimeout(() => {
+    const systemInfo = getSystemInfoSync();
+    if (systemInfo.platform === 'devtools') {
+        return setTimeout(() => {
+            cb();
+        }, 1000 / 30);
+    }
+    return wx
+        .createSelectorQuery()
+        .selectViewport()
+        .boundingClientRect()
+        .exec(() => {
         cb();
-    }, 1000 / 30);
+    });
 }
 export function pickExclude(obj, keys) {
     if (!isPlainObject(obj)) {
@@ -40,7 +56,7 @@ export function pickExclude(obj, keys) {
 }
 export function getRect(context, selector) {
     return new Promise((resolve) => {
-        wx.createSelectorQuery()
+        tt.createSelectorQuery()
             .in(context)
             .select(selector)
             .boundingClientRect()
@@ -49,7 +65,7 @@ export function getRect(context, selector) {
 }
 export function getAllRect(context, selector) {
     return new Promise((resolve) => {
-        wx.createSelectorQuery()
+        tt.createSelectorQuery()
             .in(context)
             .selectAll(selector)
             .boundingClientRect()
@@ -70,17 +86,7 @@ export function toPromise(promiseLike) {
     }
     return Promise.resolve(promiseLike);
 }
-// 浮点数精度处理
-export function addNumber(num1, num2) {
-    const cardinal = Math.pow(10, 10);
-    return Math.round((num1 + num2) * cardinal) / cardinal;
-}
-// 限制value在[min, max]之间
-export const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 export function getCurrentPage() {
     const pages = getCurrentPages();
     return pages[pages.length - 1];
 }
-export const isPC = ['mac', 'windows'].includes(getSystemInfoSync().platform);
-// 是否企业微信
-export const isWxWork = getSystemInfoSync().environment === 'wxwork';

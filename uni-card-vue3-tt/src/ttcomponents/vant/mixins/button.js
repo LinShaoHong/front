@@ -3,7 +3,6 @@ export const button = Behavior({
     externalClasses: ['hover-class'],
     properties: {
         id: String,
-        buttonId: String,
         lang: String,
         businessId: Number,
         sessionFrom: String,
@@ -29,9 +28,6 @@ export const button = Behavior({
         onGetPhoneNumber(event) {
             this.triggerEvent('getphonenumber', event.detail);
         },
-        onGetRealTimePhoneNumber(event) {
-            this.triggerEvent('getrealtimephonenumber', event.detail);
-        },
         onError(event) {
             this.triggerEvent('error', event.detail);
         },
@@ -40,12 +36,6 @@ export const button = Behavior({
         },
         onOpenSetting(event) {
             this.triggerEvent('opensetting', event.detail);
-        },
-        onAgreePrivacyAuthorization(event) {
-            this.triggerEvent('agreeprivacyauthorization', event.detail);
-        },
-        onChooseAvatar(event) {
-            this.triggerEvent('chooseavatar', event.detail);
         },
     },
 });

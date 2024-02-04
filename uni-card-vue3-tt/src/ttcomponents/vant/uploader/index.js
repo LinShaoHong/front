@@ -1,9 +1,9 @@
 import { VantComponent } from '../common/component';
 import { isImageFile, chooseFile, isVideoFile } from './utils';
-import { imageProps, videoProps, mediaProps, messageFileProps } from './shared';
+import { chooseImageProps, chooseVideoProps } from './shared';
 import { isBoolean, isPromise } from '../common/validator';
 VantComponent({
-    props: Object.assign(Object.assign(Object.assign(Object.assign({ disabled: Boolean, multiple: Boolean, uploadText: String, useBeforeRead: Boolean, afterRead: null, beforeRead: null, previewSize: {
+    props: Object.assign(Object.assign({ disabled: Boolean, multiple: Boolean, uploadText: String, useBeforeRead: Boolean, afterRead: null, beforeRead: null, previewSize: {
             type: null,
             value: 80,
         }, name: {
@@ -34,16 +34,13 @@ VantComponent({
         }, previewFullImage: {
             type: Boolean,
             value: true,
-        }, videoFit: {
-            type: String,
-            value: 'contain',
         }, imageFit: {
             type: String,
             value: 'scaleToFill',
         }, uploadIcon: {
             type: String,
             value: 'photograph',
-        } }, imageProps), videoProps), mediaProps), messageFileProps),
+        } }, chooseImageProps), chooseVideoProps),
     data: {
         lists: [],
         isInCount: true,
@@ -117,14 +114,13 @@ VantComponent({
             if (!this.data.previewFullImage)
                 return;
             const { index } = event.currentTarget.dataset;
-            const { lists, showmenu } = this.data;
+            const { lists } = this.data;
             const item = lists[index];
-            wx.previewImage({
+            tt.previewImage({
                 urls: lists.filter((item) => isImageFile(item)).map((item) => item.url),
                 current: item.url,
-                showmenu,
                 fail() {
-                    wx.showToast({ title: '预览图片失败', icon: 'none' });
+                    tt.showToast({ title: '预览图片失败', icon: 'none' });
                 },
             });
         },
@@ -133,28 +129,19 @@ VantComponent({
                 return;
             const { index } = event.currentTarget.dataset;
             const { lists } = this.data;
-            const sources = [];
-            const current = lists.reduce((sum, cur, curIndex) => {
-                if (!isVideoFile(cur)) {
-                    return sum;
-                }
-                sources.push(Object.assign(Object.assign({}, cur), { type: 'video' }));
-                if (curIndex < index) {
-                    sum++;
-                }
-                return sum;
-            }, 0);
-            wx.previewMedia({
-                sources,
-                current,
+            tt.previewMedia({
+                sources: lists
+                    .filter((item) => isVideoFile(item))
+                    .map((item) => (Object.assign(Object.assign({}, item), { type: 'video' }))),
+                current: index,
                 fail() {
-                    wx.showToast({ title: '预览视频失败', icon: 'none' });
+                    tt.showToast({ title: '预览视频失败', icon: 'none' });
                 },
             });
         },
         onPreviewFile(event) {
             const { index } = event.currentTarget.dataset;
-            wx.openDocument({
+            tt.openDocument({
                 filePath: this.data.lists[index].url,
                 showMenu: true,
             });

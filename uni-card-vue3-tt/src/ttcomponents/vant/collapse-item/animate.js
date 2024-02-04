@@ -1,6 +1,6 @@
 import { getRect } from '../common/utils';
 function useAnimation(context, expanded, mounted, height) {
-    const animation = wx.createAnimation({
+    const animation = tt.createAnimation({
         duration: 0,
         timingFunction: 'ease-in-out',
     });

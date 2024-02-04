@@ -49,7 +49,7 @@ VantComponent({
         },
         type: {
             type: String,
-            value: '',
+            value: '2d',
         },
         strokeWidth: {
             type: Number,
@@ -67,12 +67,12 @@ VantComponent({
         getContext() {
             const { type, size } = this.data;
             if (type === '' || !canIUseCanvas2d()) {
-                const ctx = wx.createCanvasContext('van-circle', this);
+                const ctx = tt.createCanvasContext('van-circle');
                 return Promise.resolve(ctx);
             }
             const dpr = getSystemInfoSync().pixelRatio;
             return new Promise((resolve) => {
-                wx.createSelectorQuery()
+                tt.createSelectorQuery()
                     .in(this)
                     .select('#van-circle')
                     .node()
@@ -93,8 +93,6 @@ VantComponent({
             const { color, size } = this.data;
             if (isObj(color)) {
                 return this.getContext().then((context) => {
-                    if (!context)
-                        return;
                     const LinearColor = context.createLinearGradient(size, 0, 0, 0);
                     Object.keys(color)
                         .sort((a, b) => parseFloat(a) - parseFloat(b))
@@ -136,8 +134,6 @@ VantComponent({
         drawCircle(currentValue) {
             const { size } = this.data;
             this.getContext().then((context) => {
-                if (!context)
-                    return;
                 context.clearRect(0, 0, size, size);
                 this.renderLayerCircle(context);
                 const formatValue = format(currentValue);

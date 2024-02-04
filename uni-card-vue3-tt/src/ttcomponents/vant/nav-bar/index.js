@@ -1,5 +1,5 @@
 import { VantComponent } from '../common/component';
-import { getRect, getSystemInfoSync } from '../common/utils';
+import { getRect, getSystemInfoSync, nextTick } from '../common/utils';
 VantComponent({
     classes: ['title-class'],
     props: {
@@ -53,7 +53,7 @@ VantComponent({
             if (!this.data.fixed || !this.data.placeholder) {
                 return;
             }
-            wx.nextTick(() => {
+            nextTick(() => {
                 getRect(this, '.van-nav-bar').then((res) => {
                     if (res && 'height' in res) {
                         this.setData({ height: res.height });

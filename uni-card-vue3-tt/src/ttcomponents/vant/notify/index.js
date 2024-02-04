@@ -1,6 +1,6 @@
 import { VantComponent } from '../common/component';
 import { WHITE } from '../common/color';
-import { getSystemInfoSync } from '../common/utils';
+import { getSystemInfoSync, nextTick } from '../common/utils';
 VantComponent({
     props: {
         message: String,
@@ -42,7 +42,7 @@ VantComponent({
             const { duration, onOpened } = this.data;
             clearTimeout(this.timer);
             this.setData({ show: true });
-            wx.nextTick(onOpened);
+            nextTick(onOpened);
             if (duration > 0 && duration !== Infinity) {
                 this.timer = setTimeout(() => {
                     this.hide();
@@ -53,7 +53,7 @@ VantComponent({
             const { onClose } = this.data;
             clearTimeout(this.timer);
             this.setData({ show: false });
-            wx.nextTick(onClose);
+            nextTick(onClose);
         },
         onTap(event) {
             const { onClick } = this.data;

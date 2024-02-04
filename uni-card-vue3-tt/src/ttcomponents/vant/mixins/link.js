@@ -12,10 +12,10 @@ export const link = Behavior({
             if (url) {
                 if (this.data.linkType === 'navigateTo' &&
                     getCurrentPages().length > 9) {
-                    wx.redirectTo({ url });
+                    tt.redirectTo({ url });
                 }
                 else {
-                    wx[this.data.linkType]({ url });
+                    tt[this.data.linkType]({ url });
                 }
             }
         },

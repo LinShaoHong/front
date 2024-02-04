@@ -42,7 +42,7 @@ VantComponent({
         show: true,
     },
     created() {
-        this.resetAnimation = wx.createAnimation({
+        this.resetAnimation = tt.createAnimation({
             duration: 0,
             timingFunction: 'linear',
         });
@@ -74,7 +74,7 @@ VantComponent({
                         this.wrapWidth = wrapRect.width;
                         this.contentWidth = contentRect.width;
                         this.duration = duration;
-                        this.animation = wx.createAnimation({
+                        this.animation = tt.createAnimation({
                             duration,
                             timingFunction: 'linear',
                             delay,
@@ -103,7 +103,7 @@ VantComponent({
             });
             this.timer = setTimeout(() => {
                 this.scroll();
-            }, this.duration + this.data.delay);
+            }, this.duration);
         },
         onClickIcon(event) {
             if (this.data.mode === 'closeable') {

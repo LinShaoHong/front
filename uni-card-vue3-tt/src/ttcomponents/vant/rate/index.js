@@ -1,4 +1,4 @@
-import { getAllRect } from '../common/utils';
+import { getAllRect, nextTick } from '../common/utils';
 import { VantComponent } from '../common/component';
 import { canIUseModel } from '../common/version';
 VantComponent({
@@ -54,7 +54,7 @@ VantComponent({
                 if (canIUseModel()) {
                     this.setData({ value: score + 1 });
                 }
-                wx.nextTick(() => {
+                nextTick(() => {
                     this.$emit('input', score + 1);
                     this.$emit('change', score + 1);
                 });

@@ -25,7 +25,8 @@
       "van-cell": "/ttcomponents/vant/cell/index",
       "van-cell-group": "/ttcomponents/vant/cell-group/index",
       "van-divider": "/ttcomponents/vant/divider/index",
-      "van-popup": "/ttcomponents/vant/popup/index"
+      "van-popup": "/ttcomponents/vant/popup/index",
+      "van-overlay": "/ttcomponents/vant/overlay/index"
     }
   },
   "tabBar": {

@@ -1,3 +1,4 @@
+import { nextTick } from '../common/utils';
 let queue = [];
 const defaultOptions = {
     show: false,
@@ -30,9 +31,7 @@ function getContext() {
 const Dialog = (options) => {
     options = Object.assign(Object.assign({}, currentOptions), options);
     return new Promise((resolve, reject) => {
-        const context = (typeof options.context === 'function'
-            ? options.context()
-            : options.context) || getContext();
+        const context = options.context || getContext();
         const dialog = context.selectComponent(options.selector);
         delete options.context;
         delete options.selector;
@@ -40,7 +39,7 @@ const Dialog = (options) => {
             dialog.setData(Object.assign({ callback: (action, instance) => {
                     action === 'confirm' ? resolve(instance) : reject(instance);
                 } }, options));
-            wx.nextTick(() => {
+            nextTick(() => {
                 dialog.setData({ show: true });
             });
             queue.push(dialog);

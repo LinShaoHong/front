@@ -1,4 +1,4 @@
-import { getRect } from '../common/utils';
+import { getRect, nextTick } from '../common/utils';
 import { VantComponent } from '../common/component';
 import { isDef } from '../common/validator';
 import { pageScrollMixin } from '../mixins/page-scroll';
@@ -57,8 +57,10 @@ VantComponent({
             }
             this.scrollTop = scrollTop || this.scrollTop;
             if (typeof container === 'function') {
-                Promise.all([getRect(this, ROOT_ELEMENT), this.getContainerRect()])
-                    .then(([root, container]) => {
+                Promise.all([
+                    getRect(this, ROOT_ELEMENT),
+                    this.getContainerRect(),
+                ]).then(([root, container]) => {
                     if (offsetTop + root.height > container.height + container.top) {
                         this.setDataAfterDiff({
                             fixed: false,
@@ -75,12 +77,11 @@ VantComponent({
                     else {
                         this.setDataAfterDiff({ fixed: false, transform: 0 });
                     }
-                })
-                    .catch(() => { });
+                });
                 return;
             }
             getRect(this, ROOT_ELEMENT).then((root) => {
-                if (!isDef(root) || (!root.width && !root.height)) {
+                if (!isDef(root)) {
                     return;
                 }
                 if (offsetTop >= root.top) {
@@ -93,7 +94,7 @@ VantComponent({
             });
         },
         setDataAfterDiff(data) {
-            wx.nextTick(() => {
+            nextTick(() => {
                 const diff = Object.keys(data).reduce((prev, key) => {
                     if (data[key] !== this.data[key]) {
                         prev[key] = data[key];
@@ -111,9 +112,6 @@ VantComponent({
         },
         getContainerRect() {
             const nodesRef = this.data.container();
-            if (!nodesRef) {
-                return Promise.reject(new Error('not found container'));
-            }
             return new Promise((resolve) => nodesRef.boundingClientRect(resolve).exec());
         },
     },

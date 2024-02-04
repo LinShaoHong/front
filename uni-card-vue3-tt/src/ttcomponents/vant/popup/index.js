@@ -53,17 +53,9 @@ VantComponent({
             type: Boolean,
             value: false,
         },
-        safeAreaTabBar: {
-            type: Boolean,
-            value: false,
-        },
         lockScroll: {
             type: Boolean,
             value: true,
-        },
-        rootPortal: {
-            type: Boolean,
-            value: false,
         },
     },
     created() {

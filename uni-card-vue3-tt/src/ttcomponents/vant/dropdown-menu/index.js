@@ -4,7 +4,6 @@ import { addUnit, getRect, getSystemInfoSync } from '../common/utils';
 let ARRAY = [];
 VantComponent({
     field: true,
-    classes: ['title-class'],
     relation: useChildren('dropdown-item', function () {
         this.updateItemListData();
     }),
@@ -31,10 +30,6 @@ VantComponent({
             type: String,
             value: 'down',
             observer: 'updateChildrenData',
-        },
-        safeAreaTabBar: {
-            type: Boolean,
-            value: false,
         },
         closeOnClickOverlay: {
             type: Boolean,
@@ -64,25 +59,28 @@ VantComponent({
             });
         },
         updateChildrenData() {
-            this.children.forEach((child) => {
-                child.updateDataFromParent();
-            });
+            Array.isArray(Array.from(this.children)) &&
+                this.children.forEach((child) => {
+                    child.updateDataFromParent();
+                });
         },
         toggleItem(active) {
-            this.children.forEach((item, index) => {
-                const { showPopup } = item.data;
-                if (index === active) {
-                    item.toggle();
-                }
-                else if (showPopup) {
-                    item.toggle(false, { immediate: true });
-                }
-            });
+            Array.isArray(Array.from(this.children)) &&
+                this.children.forEach((item, index) => {
+                    const { showPopup } = item.data;
+                    if (index === active) {
+                        item.toggle();
+                    }
+                    else if (showPopup) {
+                        item.toggle(false, { immediate: true });
+                    }
+                });
         },
         close() {
-            this.children.forEach((child) => {
-                child.toggle(false, { immediate: true });
-            });
+            Array.isArray(Array.from(this.children)) &&
+                this.children.forEach((child) => {
+                    child.toggle(false, { immediate: true });
+                });
         },
         getChildWrapperStyle() {
             const { zIndex, direction } = this.data;

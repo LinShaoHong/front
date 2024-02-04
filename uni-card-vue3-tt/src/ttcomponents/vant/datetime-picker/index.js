@@ -98,6 +98,8 @@ VantComponent({
         },
         updateColumns() {
             const { formatter = defaultFormatter } = this.data;
+            if (!formatter)
+                return;
             const results = this.getOriginColumns().map((column) => ({
                 values: column.values.map((value) => formatter(column.type, value)),
             }));
@@ -131,8 +133,8 @@ VantComponent({
                     },
                 ];
             }
-            const { maxYear, maxDate, maxMonth, maxHour, maxMinute, } = this.getBoundary('max', data.innerValue);
-            const { minYear, minDate, minMonth, minHour, minMinute, } = this.getBoundary('min', data.innerValue);
+            const { maxYear, maxDate, maxMonth, maxHour, maxMinute } = this.getBoundary('max', data.innerValue);
+            const { minYear, minDate, minMonth, minHour, minMinute } = this.getBoundary('min', data.innerValue);
             const result = [
                 {
                     type: 'year',

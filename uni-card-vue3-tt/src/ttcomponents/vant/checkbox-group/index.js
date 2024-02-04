@@ -22,7 +22,8 @@ VantComponent({
     },
     methods: {
         updateChildren() {
-            this.children.forEach((child) => this.updateChild(child));
+            Array.isArray(this.children) &&
+                this.children.forEach((child) => this.updateChild(child));
         },
         updateChild(child) {
             const { value, disabled, direction } = this.data;
