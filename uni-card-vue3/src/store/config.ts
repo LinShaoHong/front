@@ -6,6 +6,7 @@ export default defineStore({
     return {
       data: {
         cardCount: 5,
+        avaCount: 10,
         playLimit: 5,
         price: "1.99",
         payText: "",

@@ -4,6 +4,7 @@ import { message } from "@/utils/unis";
 import { networkError } from "@/utils/request";
 
 const user = useStore('user')
+const config = useStore('config')
 const imgUri = inject('$imgUri');
 const showRule = ref(false);
 
@@ -129,9 +130,10 @@ const onUpdateAva = () => {
       >
         {{ avaLoading ? '' : '保存' }}
       </button>
-      <view class="avatar absolute top-100 w-600 flex flex-wrap justify-between gap-10 items-center">
-        <view v-for="i in 40" :class="['ava-item h-110 w-110',i===chooseAva? 'active':'']" @click="chooseAva=i" :key="i">
-          <image class="w-full h-full" style="border-radius: 50%" :src="`${imgUri}/avatar/${1}.png`"
+      <view class="avatar absolute top-100 w-600 flex flex-wrap justify-between gap-10">
+        <view v-for="i in config.data.value.avaCount"
+              :class="['ava-item h-110 w-110',i===chooseAva? 'active':'']" @click="chooseAva=i" :key="i">
+          <image class="w-full h-full" style="border-radius: 50%" :src="`${imgUri}/avatar/${i}.png`"
                  mode="aspectFill"></image>
         </view>
       </view>
@@ -168,11 +170,15 @@ button:after {
 }
 
 .avatar {
-  height: calc(50vh - 80rpx);
+  max-height: calc(50vh - 80rpx);
+
+  .ava-item {
+    border-radius: 50%;
+  }
 
   .ava-item.active {
-    border-radius: 50%;
     border: 1rpx solid #482380;
   }
+
 }
 </style>
