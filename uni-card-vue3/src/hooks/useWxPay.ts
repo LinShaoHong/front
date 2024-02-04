@@ -41,7 +41,6 @@ export function useWxPay() {
   }
 
   const wxPay = (timeStamp, nonceStr, pkg, paySign, signType) => {
-    console.log('wxPaywxPaywxPaywxPaywxPaywxPay')
     return new Promise((resolve, reject) => {
       uni.requestPayment({
         provider: 'wxpay',
