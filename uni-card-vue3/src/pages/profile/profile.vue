@@ -1,32 +1,144 @@
 <script lang="ts" setup>
-import { forward } from "@/utils/router";
+import { isEmpty } from "@/utils/is";
+import { message } from "@/utils/unis";
+import { networkError } from "@/utils/request";
 
 const user = useStore('user')
+const imgUri = inject('$imgUri');
 const showRule = ref(false);
+
+const nickname = ref(user.data.value.nickname);
+const showNicDialog = ref(false);
+const nicLoading = ref(false);
+const nickChanged = ref(false);
+watch(nickname, (n, o) => {
+  if (n != o) {
+    nickChanged.value = true;
+  }
+});
+
+const closeNicDialog = () => {
+  showNicDialog.value = false;
+  nickChanged.value = false;
+  nickname.value = user.data.value.nickname;
+};
+
+const onUpdateNic = () => {
+  if (isEmpty(nickname.value)) {
+    return message('请输入昵称', 3);
+  }
+  nicLoading.value = true;
+  user.updateNickname(nickname.value)
+      .then(() => {
+        showNicDialog.value = false;
+        nicLoading.value = false;
+      })
+      .catch(() => {
+        nicLoading.value = false;
+        networkError();
+      });
+}
+
+const avatar = ref(user.data.value.avatar);
+const chooseAva = ref(user.data.value.avatar);
+const showAvaDialog = ref(false);
+const avaLoading = ref(false);
+const avaChanged = ref(false);
+const closeAvaDialog = () => {
+  showAvaDialog.value = false;
+  avaChanged.value = false;
+  avatar.value = user.data.value.avatar;
+  chooseAva.value = user.data.value.avatar;
+};
+watch(chooseAva, (n, o) => {
+  avaChanged.value = n !== user.data.value.avatar;
+});
+const onUpdateAva = () => {
+  avaLoading.value = true;
+  user.updateAvatar(chooseAva.value)
+      .then(() => {
+        showAvaDialog.value = false;
+        avaLoading.value = false;
+        avatar.value = chooseAva.value;
+      })
+      .catch(() => {
+        avaLoading.value = false;
+        networkError();
+      });
+}
 </script>
 
 <template>
   <view class="mt-24 ml-24 mr-24">
-    <view class="h-220 rd-24 flex flex-col justify-center" style="background-color: #907BE0">
-      <view class="flex flex-col items-center justify-center gap-10" @click="forward('account')">
-        <image class="h-120 w-120" style="border-radius: 50%" src="/static/avatar.png" mode="aspectFill"></image>
-        <view class="text-white" style="font-size: 24rpx;">{{ user.data.value.nickname }}</view>
-      </view>
-    </view>
     <view class="mt-30 rd-24 pl-20 pr-20" style="background-color: white">
       <van-cell-group>
-        <van-cell title="游戏规则" icon="/static/gz.png" is-link title-style="color: #907BE0" @click="showRule=true"/>
+        <van-cell title="头像" is-link center title-style="color: #907BE0"
+                  @click="() => {showAvaDialog=true;avaChanged=false;}">
+          <slot>
+            <image class="h-120 w-120 mr-10" style="border-radius: 50%" :src="`${imgUri}/avatar/${avatar}.png`"
+                   mode="aspectFill"></image>
+          </slot>
+        </van-cell>
+        <van-cell title="玩家号" center title-style="color: #907BE0">
+          {{ user.data.value.code }}
+        </van-cell>
+        <van-cell title="昵称" is-link center title-style="color: #907BE0"
+                  @click="() => {showNicDialog=true;nickChanged=false;}">
+          {{ user.data.value.nickname }}
+        </van-cell>
+        <van-cell title="游戏规则" is-link center title-style="color: #907BE0" @click="showRule=true"/>
         <button class="p-0 text-left" open-type="share" style="background: transparent;">
-          <van-cell title="推荐给朋友" icon="/static/tj.png" is-link title-style="color: #907BE0"/>
+          <van-cell title="推荐给朋友" is-link center title-style="color: #907BE0"/>
         </button>
         <button class="p-0 text-left" open-type="contact" style="background: transparent;">
-          <van-cell title="联系客服" icon="/static/contact.png" is-link title-style="color: #907BE0"/>
+          <van-cell title="联系客服" is-link center title-style="color: #907BE0"/>
         </button>
       </van-cell-group>
     </view>
   </view>
 
-  <Popup position="center" :show="showRule" :close="false">
+  <van-popup v-model:show="showNicDialog" position="bottom" @click-overlay="closeNicDialog">
+    <view class="p-20 relative">
+      <view class="w-full text-center" style="font-size: 34rpx; color: #907BE0">更改昵称</view>
+      <view class="w-full p-l-10 mt-30" style="border-bottom: 1px solid rgb(235, 237, 240);">
+        <input class="text-left" style="color: #907BE0; font-size: 30rpx;" v-model="nickname"/>
+      </view>
+      <view class="w-full pl-10 mt-15" style="font-size: 24rpx; color:#999;">好名字可以让你的朋友更容易记住你。</view>
+      <view class="w-full h-40vh"></view>
+      <button
+          class="btn absolute top-10 right-10 w-100 h-55 flex items-center justify-center"
+          :disabled="nicLoading || !nickChanged"
+          :loading="nicLoading"
+          @tap.stop="onUpdateNic"
+          :style="{'background-color': nickChanged? '#482380' : 'rgb(235, 237, 240)', color: nickChanged? 'white' : '#c8c7cc'}"
+      >
+        {{ nicLoading ? '' : '保存' }}
+      </button>
+    </view>
+  </van-popup>
+
+  <van-popup v-model:show="showAvaDialog" position="bottom" @click-overlay="closeAvaDialog">
+    <view class="p-20 relative h-50vh flex items-center justify-center">
+      <view class="absolute top-20 w-full text-center" style="font-size: 34rpx; color: #907BE0">更改头像</view>
+      <button
+          class="btn absolute top-10 right-20 w-100 h-55 flex items-center justify-center"
+          :disabled="avaLoading || !avaChanged"
+          :loading="avaLoading"
+          @tap.stop="onUpdateAva"
+          :style="{'background-color': avaChanged? '#482380' : 'rgb(235, 237, 240)', color: avaChanged? 'white' : '#c8c7cc'}"
+      >
+        {{ avaLoading ? '' : '保存' }}
+      </button>
+      <view class="avatar absolute top-100 w-600 flex flex-wrap justify-between gap-10 items-center">
+        <view v-for="i in 40" :class="['ava-item h-110 w-110',i===chooseAva? 'active':'']" @click="chooseAva=i" :key="i">
+          <image class="w-full h-full" style="border-radius: 50%" :src="`${imgUri}/avatar/${1}.png`"
+                 mode="aspectFill"></image>
+        </view>
+      </view>
+    </view>
+  </van-popup>
+
+  <van-popup position="center" v-model:show="showRule" custom-style="background: transparent">
     <view class="pb-40">
       <image class="max-w-screen h-75vh" src="/static/rule.png" mode="heightFix"></image>
       <view class="flex items-center justify-center">
@@ -37,11 +149,30 @@ const showRule = ref(false);
         <text class="color-white absolute font-bold" style="font-size: 30rpx;" @click="showRule=false">确定</text>
       </view>
     </view>
-  </Popup>
+  </van-popup>
 </template>
 
 <style lang="scss" scoped>
 button:after {
   border: 0;
+}
+
+.btn {
+  font-size: 21rpx;
+}
+
+.btn[disabled] {
+  color: #ffffff;
+  background-color: #482380;
+  overflow: scroll;
+}
+
+.avatar {
+  height: calc(50vh - 80rpx);
+
+  .ava-item.active {
+    border-radius: 50%;
+    border: 1rpx solid #482380;
+  }
 }
 </style>

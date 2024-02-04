@@ -2,6 +2,8 @@ declare namespace User {
   interface UserInfo {
     id: string
     openId: string
+    code: string
+    avatar: number
     nickname: string
     playCount: number
     vip: boolean

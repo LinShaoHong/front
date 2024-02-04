@@ -4,7 +4,8 @@ import { hideLoading, showLoading } from '@/config/serviceLoading';
 
 export const networkError = () => {
   uni.showToast({
-    title: '网络不给力'
+    title: '网络不给力',
+    icon: 'error'
   });
 }
 

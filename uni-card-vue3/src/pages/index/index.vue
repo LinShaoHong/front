@@ -13,7 +13,7 @@ const config = useStore('config');
 const imgUri = inject('$imgUri');
 const showRule = ref(false);
 
-const card = ref<number | undefined>(1);
+const card = ref<number | undefined>(0);
 const cards = ref([] as number[]);
 const shuffleCards = () => {
   if (cards.value.length === 0) {
@@ -116,14 +116,22 @@ const openAudio = uni.createInnerAudioContext();
 openAudio.obeyMuteSwitch = false;
 
 const doOpen = () => {
-  card.value = cards.value.pop();
-  open.value = true;
-  hasShuffled.value = false;
-  openAudio.src = '/static/media/vod2.m4a';
-  openAudio.play();
-  if (!user.data.value.vip) {
-    user.inc().catch(() => {
-    });
+  if (hasShuffled.value) {
+    open.value = true;
+    card.value = cards.value.pop();
+    hasShuffled.value = false;
+    openAudio.src = '/static/media/vod2.m4a';
+    openAudio.play();
+    if (!user.data.value.vip) {
+      user.inc().catch(() => {
+      });
+    }
+  } else {
+    if (!card.value || card.value < 1) {
+      message('先洗牌', 3);
+    } else {
+      open.value = true;
+    }
   }
 }
 
@@ -132,7 +140,6 @@ const onOpenCard = () => {
   if (open.value) {
     open.value = false;
   } else {
-    if (!hasShuffled.value) return;
     config.getConfigInfo().then(() => {
       user.getUserInfo().then(() => {
         if (user.data.value.vip ||
@@ -157,13 +164,13 @@ const openPayDialog = () => {
   if (showPayDialog.value) return;
   config.getConfigInfo();
   showPayDialog.value = true;
-}
+};
 </script>
 
 <template>
   <image class="h-screen w-screen fixed" src="/static/back.png" mode="scaleToFill"></image>
 
-  <Popup position="center" :show="showRule" :close="false">
+  <van-popup position="center" v-model:show="showRule" custom-style="background: transparent;">
     <view class="pb-40">
       <image class="max-w-screen h-75vh" src="/static/rule.png" mode="heightFix"></image>
       <view class="flex items-center justify-center">
@@ -174,7 +181,7 @@ const openPayDialog = () => {
         <text class="color-white absolute font-bold" style="font-size: 30rpx;" @click="showRule=false">确定</text>
       </view>
     </view>
-  </Popup>
+  </van-popup>
 
   <button class="fixed right-0 w-200 h-66 z-6"
           :style="{top: hasBanner ? '240rpx' : '60rpx', background: 'transparent'}"
@@ -201,8 +208,9 @@ const openPayDialog = () => {
       </swiper>
     </view>
 
-    <view class="absolute flex flex-col items-center bottom-50" style="height: 70%; background-color: red">
-      <image class="absolute top-0 bottom-80 w-90vw" style="height: 80%;" src="/static/p_bg.png"></image>
+    <view class="absolute flex flex-col items-center bottom-50" style="height: 70%;">
+      <image class="absolute top-0 bottom-80 h-60vh" mode="heightFix" style="height: 80%;"
+             src="/static/p_bg.png"></image>
 
       <view class="absolute top--50 flex items-center justify-center">
         <view v-for="index in backCardsCount"
@@ -211,37 +219,31 @@ const openPayDialog = () => {
               :style="backCardStyle(index)"
         >
           <image src="/static/card-back.png"
-                 class="w-55vw"
-                 mode="widthFix"
+                 class="h-50vh"
+                 mode="heightFix"
                  :style="{'backface-visibility': index === backCardsCount? 'hidden':''}"></image>
         </view>
       </view>
 
-      <view class="absolute top--80 z-100 flex items-center justify-center"
-            :style="{transform: open? 'rotateY(180deg)' : '', transition: '.3s linear', 'transform-style': 'preserve-3d'}">
-        <image
-            style="transform: rotateY(180deg); backface-visibility: hidden"
-            class="absolute h-75vh top--100" :src="`${imgUri}/${card}.png`" mode="heightFix"></image>
-      </view>
-
-      <view class="absolute bottom-0 flex items-center justify-center gap-50 mt-200">
+      <view class="absolute bottom-30 flex items-center justify-center gap-50 z-10">
         <image class="h-90" src="/static/xp.png" mode="heightFix" @click="onShuffle"></image>
         <image class="h-90" src="/static/kp.png" mode="heightFix" @click="onOpenCard"></image>
       </view>
     </view>
   </view>
 
-  <Popup position="center" :show="showPayDialog">
-    <view class="relative w-85vw flex flex-col items-center justify-center bg-white rd-10 gap-20 p-20">
+  <OpenCard :open="open" :title="''" :content="''" :src="`${imgUri}/cards/default/${card}.png`" @close="open=false"/>
+
+  <van-popup position="center" v-model:show="showPayDialog" custom-style="background: transparent;"
+             @click-overlay="showPayDialog = false">
+    <view class="relative w-80vw flex flex-col items-center justify-center bg-white rd-10 gap-20 p-20">
       <text class="font-bold" style="font-size: 36rpx">游戏需知</text>
-      <uni-icons class="absolute right-10 top-10" type="closeempty" size="20"
-                 @click="showPayDialog = false"></uni-icons>
-      <view class="break-all" v-html="config.data.value.payText"></view>
+      <view class="break-all w-full" v-html="config.data.value.payText"></view>
       <view class="h-65 w-250 mt-10 rd-40 text-white flex items-center justify-center"
             style="background: #482380; font-size: 32rpx; letter-spacing: 3rpx;" @click="doPay">立即解锁
       </view>
     </view>
-  </Popup>
+  </van-popup>
 
   <QRCode :show="showQR"
           :src="banner.qr"

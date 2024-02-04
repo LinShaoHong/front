@@ -15,20 +15,7 @@
       }
     }
   ],
-  "subPackages": [
-    {
-      "root": "pages/account",
-      "pages": [
-        {
-          "name": "account",
-          "path": "account",
-          "style": {
-            "navigationBarTitleText": "编辑资料"
-          }
-        }
-      ]
-    }
-  ],
+  "subPackages": [],
   "globalStyle": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "uni-app",
@@ -37,7 +24,8 @@
     "usingComponents": {
       "van-cell": "/wxcomponents/vant/cell/index",
       "van-cell-group": "/wxcomponents/vant/cell-group/index",
-      "van-divider": "/wxcomponents/vant/divider/index"
+      "van-divider": "/wxcomponents/vant/divider/index",
+      "van-popup": "/wxcomponents/vant/popup/index"
     }
   },
   "tabBar": {

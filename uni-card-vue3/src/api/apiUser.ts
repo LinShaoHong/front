@@ -8,6 +8,10 @@ const apiUser = {
   updateNickname: (id: string, nickname: string) => http.post<any>('/account/updateNickname', {
     id: id,
     nickname: nickname
+  }),
+  updateAvatar: (id: string, avatar: number) => http.post<any>('/account/updateAvatar', {
+    id: id,
+    avatar: avatar
   })
 };
 
