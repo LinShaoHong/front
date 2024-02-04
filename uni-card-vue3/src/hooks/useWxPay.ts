@@ -23,15 +23,14 @@ export function useWxPay() {
 
   const pay = (vip: number) => {
     return new Promise((resolve, reject) => {
-      apiPay.wxPay(config.data.value.price, user.data.value.id)
+      apiPay.wxPay(config.data.value.price, user.data.value.id, vip)
         .then((res) => {
           const v = res.value;
           wxPay(v.timeStamp, v.nonceStr, v.packages, v.paySign, v.signType)
             .then(async () => {
               payLoading.value = true;
-              user.vip(vip).then(() => {
-                payLoading.value = false;
-              })
+              user.vip(vip);
+              payLoading.value = false;
             }).catch(err => {
             reject(err);
           })
