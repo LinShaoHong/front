@@ -5,7 +5,8 @@ import { networkError } from "@/utils/request";
 
 const user = useStore('user')
 const config = useStore('config')
-const imgUri = inject('$imgUri');
+// const imgUri = inject('$imgUri');
+const imgUri = ref('http://127.0.0.1/image/');
 const showRule = ref(false);
 
 const nickname = ref(user.data.value.nickname);

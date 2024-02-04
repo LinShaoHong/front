@@ -10,7 +10,8 @@ const { wxPay } = useWxPay();
 const user = useStore('user');
 const config = useStore('config');
 
-const imgUri = inject('$imgUri');
+// const imgUri = inject('$imgUri');
+const imgUri = ref('http://127.0.0.1/image/');
 const showRule = ref(false);
 
 const card = ref<number | undefined>(0);
@@ -92,7 +93,7 @@ const onShuffle = async () => {
     return;
   }
   inShuffle.value = true;
-  shuffleAudio.src = '/static/media/vod1.m4a';
+  shuffleAudio.src = '/static/dist/public/static/media/vod1.m4a';
   shuffleAudio.play();
   shuffleAudio.onPlay(async () => {
     await doShuffle();
@@ -120,7 +121,7 @@ const doOpen = () => {
     open.value = true;
     card.value = cards.value.pop();
     hasShuffled.value = false;
-    openAudio.src = '/static/media/vod2.m4a';
+    openAudio.src = '/static/dist/public/static/media/vod2.m4a';
     openAudio.play();
     if (user.data.value.vip < 1) {
       user.inc().catch(() => {

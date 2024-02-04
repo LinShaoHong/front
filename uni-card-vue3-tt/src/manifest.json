@@ -55,7 +55,7 @@
             "urlCheck" : false
         },
         "usingComponents" : true,
-        "libVersion": "latest"
+        "libVersion" : "latest"
     },
     "mp-alipay" : {
         "usingComponents" : true
@@ -64,7 +64,8 @@
         "usingComponents" : true
     },
     "mp-toutiao" : {
-        "usingComponents" : true
+        "usingComponents" : true,
+        "appid" : "tt204e56f3bf7f94d901"
     },
     "uniStatistics" : {
         "enable" : false
