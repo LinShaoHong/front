@@ -122,7 +122,7 @@ const doOpen = () => {
     hasShuffled.value = false;
     openAudio.src = '/static/media/vod2.m4a';
     openAudio.play();
-    if (!user.data.value.vip) {
+    if (user.data.value.vip < 1) {
       user.inc().catch(() => {
       });
     }
@@ -142,7 +142,7 @@ const onOpenCard = () => {
   } else {
     config.getConfigInfo().then(() => {
       user.getUserInfo().then(() => {
-        if (user.data.value.vip ||
+        if (user.data.value.vip >= 1 ||
             user.data.value.playCount < config.data.value.playLimit) {
           doOpen();
         } else {
@@ -153,8 +153,8 @@ const onOpenCard = () => {
   }
 }
 
-const doPay = () => {
-  wxPay().catch(err => {
+const doPay = (vip: number) => {
+  wxPay(vip).catch(() => {
     message('解锁失败', 4);
   })
 }
@@ -240,7 +240,7 @@ const openPayDialog = () => {
       <text class="font-bold" style="font-size: 36rpx">游戏需知</text>
       <view class="break-all w-full" v-html="config.data.value.payText"></view>
       <view class="h-65 w-250 mt-10 rd-40 text-white flex items-center justify-center"
-            style="background: #482380; font-size: 32rpx; letter-spacing: 3rpx;" @click="doPay">立即解锁
+            style="background: #482380; font-size: 32rpx; letter-spacing: 3rpx;" @click="doPay(1)">立即解锁
       </view>
     </view>
   </van-popup>

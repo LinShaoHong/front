@@ -11,7 +11,7 @@ export default defineStore({
         avatar: 1,
         nickname: "微信用户-12345",
         playCount: 0,
-        vip: false
+        vip: 0
       }
     } as { data: User.UserInfo };
   },
@@ -55,11 +55,11 @@ export default defineStore({
         })
       })
     },
-    vip() {
+    vip(vip: number) {
       const that = this;
       const userId = this.data['value'].id;
       return new Promise((resolve, reject) => {
-        apiUser.vip(userId).then((res) => {
+        apiUser.vip(userId, vip).then((res) => {
           resolve(res);
           that.data['value'].vip = true;
         }).catch(() => {

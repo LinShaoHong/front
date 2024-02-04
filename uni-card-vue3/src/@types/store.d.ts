@@ -6,7 +6,7 @@ declare namespace User {
     avatar: number
     nickname: string
     playCount: number
-    vip: boolean
+    vip: number
   }
 }
 
