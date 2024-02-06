@@ -2,7 +2,7 @@
 import { delay } from '@/utils/calls'
 import { networkError } from "@/utils/request";
 import { useWxPay } from "@/hooks/useWxPay";
-import { message } from "@/utils/unis";
+import { message, modal, setNBT } from "@/utils/unis";
 
 //const { ad, adLoaded, adClosed } = useRewardedVideoAd();
 const { wxPay } = useWxPay();
@@ -29,6 +29,7 @@ const shuffleCards = () => {
 }
 
 onLoad(async () => {
+  setNBT("海卡斯畅饮牌")
   await delay(500).then(() => {
     showRule.value = true;
   })
@@ -154,9 +155,12 @@ const onOpenCard = () => {
 }
 
 const doPay = (vip: number) => {
-  wxPay(vip).catch(() => {
+  wxPay(vip).then(async () => {
+    await modal('', '解锁成功');
+  }).catch(() => {
     message('解锁失败', 4);
   })
+  showPayDialog.value = false;
 }
 
 const showPayDialog = ref(false);

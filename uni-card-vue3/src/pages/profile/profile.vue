@@ -1,12 +1,17 @@
 <script lang="ts" setup>
 import { isEmpty } from "@/utils/is";
-import { message } from "@/utils/unis";
+import { message, setNBT } from "@/utils/unis";
 import { networkError } from "@/utils/request";
+import { onLoad } from "@dcloudio/uni-app";
 
 const user = useStore('user')
 const config = useStore('config')
 const imgUri = inject('$imgUri');
 const showRule = ref(false);
+
+onLoad(() => {
+  setNBT("用户中心")
+})
 
 const nickname = ref(user.data.value.nickname);
 const showNicDialog = ref(false);

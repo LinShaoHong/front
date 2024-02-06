@@ -1,6 +1,8 @@
 // 设置页面标题
-export const setNBT = (name) => {
-  uni.setNavigationBarTitle(name);
+export const setNBT = async (name) => {
+  await uni.setNavigationBarTitle({
+    title: name
+  });
 }
 
 //设置页面导航条颜色

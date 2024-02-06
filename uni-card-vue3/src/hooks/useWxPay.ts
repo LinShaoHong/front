@@ -1,5 +1,5 @@
 import apiPay from "@/api/apiPay";
-import { message, modal } from "@/utils/unis";
+import { message } from "@/utils/unis";
 
 /**
  * 微信支付
@@ -51,16 +51,14 @@ export function useWxPay() {
         signType,
         orderInfo: '',
         success: async (res) => {
-          await modal('', '解锁成功')
           resolve(res);
         },
         fail: async (err) => {
           if (err.errMsg === 'requestPayment:fail cancel') {
             await message('已取消支付', 3)
           } else {
-            await modal(err.errMsg + err.err_desc)
+            reject(err)
           }
-          reject(err)
         },
       })
     })
