@@ -12,7 +12,7 @@ declare namespace Pay {
   interface WxPayResp {
     timeStamp: string
     nonceStr: string
-    packages: string
+    pkg: string
     paySign: string
     signType: string
   }

@@ -26,7 +26,7 @@ export function useWxPay() {
       apiPay.wxPay(config.data.value.price, user.data.value.id, vip)
         .then((res) => {
           const v = res.value;
-          wxPay(v.timeStamp, v.nonceStr, v.packages, v.paySign, v.signType)
+          wxPay(v.timeStamp, v.nonceStr, v.pkg, v.paySign, v.signType)
             .then(async () => {
               payLoading.value = true;
               user.vip(vip);

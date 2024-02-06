@@ -23,9 +23,7 @@
     "backgroundColor": "#F8F8F8",
     "usingComponents": {
       "van-cell": "/wxcomponents/vant/cell/index",
-      "van-cell-group": "/wxcomponents/vant/cell-group/index",
-      "van-divider": "/wxcomponents/vant/divider/index",
-      "van-popup": "/wxcomponents/vant/popup/index"
+      "van-cell-group": "/wxcomponents/vant/cell-group/index"
     }
   },
   "tabBar": {
