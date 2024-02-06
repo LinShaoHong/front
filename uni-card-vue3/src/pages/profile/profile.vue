@@ -119,7 +119,7 @@ const onUpdateAva = () => {
   </Popup>
 
   <Popup :show="showAvaDialog" position="bottom" @clickMask="closeAvaDialog">
-    <view class="p-20 relative h-50vh flex items-center justify-center" style="background: white">
+    <view v-if="showAvaDialog" class="p-20 relative h-50vh flex items-center justify-center" style="background: white">
       <view class="absolute top-20 w-full text-center" style="font-size: 34rpx; color: #907BE0">更改头像</view>
       <button
           class="btn absolute top-10 right-20 w-100 h-55 flex items-center justify-center"
