@@ -1,5 +1,0 @@
-<sjs src="./index.sjs" module="computed" />
-
-<view class="van-config-provider" style="{{ computed.mapThemeVarsToCSSVars(themeVars) }}">
-  <slot />
-</view>

@@ -1,4 +1,0 @@
-<view class="van-count-down">
-  <slot tt:if="{{ useSlot }}" />
-  <block tt:else>{{ formattedTime }}</block>
-</view>
