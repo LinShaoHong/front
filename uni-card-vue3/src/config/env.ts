@@ -1,4 +1,4 @@
-const apiEnv: ApiEnv = 'dev';
+const apiEnv: ApiEnv = 'prod';
 
 const envMap = {
   dev: {
@@ -10,8 +10,8 @@ const envMap = {
     apiBaseUrl: 'https://m.betaapi.xxx.com'
   },
   prod: {
-    baseUrl: 'https://m.xxx.com',
-    apiBaseUrl: 'https://m.api.xxx.com'
+    baseUrl: 'https://gooluky.cn',
+    apiBaseUrl: 'https://gooluky.cn/card/api'
   },
   local: {
     baseUrl: 'http://127.0.0.1:9939',
