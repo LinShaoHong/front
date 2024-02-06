@@ -11,7 +11,7 @@ const user = useStore('user');
 const config = useStore('config');
 
 // const imgUri = inject('$imgUri');
-const imgUri = ref('http://127.0.0.1/image/');
+const imgUri = ref('http://127.0.0.1/images/');
 const showRule = ref(false);
 
 const card = ref<number | undefined>(0);
@@ -121,7 +121,7 @@ const doOpen = () => {
     open.value = true;
     card.value = cards.value.pop();
     hasShuffled.value = false;
-    openAudio.src = '/static/dist/public/static/media/vod2.m4a';
+    openAudio.src = '/static/media/vod2.m4a';
     openAudio.play();
     if (user.data.value.vip < 1) {
       user.inc().catch(() => {
@@ -171,7 +171,7 @@ const openPayDialog = () => {
 <template>
   <image class="h-screen w-screen fixed" src="/static/back.png" mode="scaleToFill"></image>
 
-  <van-popup position="center" v-model:show="showRule" custom-style="background: transparent;">
+  <Popup position="center" :show="showRule">
     <view class="pb-40">
       <image class="max-w-screen h-75vh" src="/static/rule.png" mode="heightFix"></image>
       <view class="flex items-center justify-center">
@@ -182,7 +182,7 @@ const openPayDialog = () => {
         <text class="color-white absolute font-bold" style="font-size: 30rpx;" @click="showRule=false">确定</text>
       </view>
     </view>
-  </van-popup>
+  </Popup>
 
   <button class="fixed right-0 w-200 h-66 z-6"
           :style="{top: hasBanner ? '240rpx' : '60rpx', background: 'transparent'}"
@@ -235,8 +235,7 @@ const openPayDialog = () => {
 
   <OpenCard :open="open" :title="''" :content="''" :src="`${imgUri}/cards/default/${card}.png`" @close="open=false"/>
 
-  <van-popup position="center" v-model:show="showPayDialog" custom-style="background: transparent;"
-             @click-overlay="showPayDialog = false">
+  <Popup position="center" v-model:show="showPayDialog" @clickMask="showPayDialog=false">
     <view class="relative w-80vw flex flex-col items-center justify-center bg-white rd-10 gap-20 p-20">
       <text class="font-bold" style="font-size: 36rpx">游戏需知</text>
       <view class="break-all w-full" v-html="config.data.value.payText"></view>
@@ -244,7 +243,7 @@ const openPayDialog = () => {
             style="background: #482380; font-size: 32rpx; letter-spacing: 3rpx;" @click="doPay(1)">立即解锁
       </view>
     </view>
-  </van-popup>
+  </Popup>
 
   <QRCode :show="showQR"
           :src="banner.qr"

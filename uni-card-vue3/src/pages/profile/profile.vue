@@ -98,8 +98,8 @@ const onUpdateAva = () => {
     </view>
   </view>
 
-  <van-popup v-model:show="showNicDialog" position="bottom" @click-overlay="closeNicDialog">
-    <view class="p-20 relative">
+  <Popup :show="showNicDialog" position="bottom" @clickMask="closeNicDialog">
+    <view class="p-20 relative" style="background-color: white">
       <view class="w-full text-center" style="font-size: 34rpx; color: #907BE0">更改昵称</view>
       <view class="w-full p-l-10 mt-30" style="border-bottom: 1px solid rgb(235, 237, 240);">
         <input class="text-left" style="color: #907BE0; font-size: 30rpx;" v-model="nickname"/>
@@ -116,10 +116,10 @@ const onUpdateAva = () => {
         {{ nicLoading ? '' : '保存' }}
       </button>
     </view>
-  </van-popup>
+  </Popup>
 
-  <van-popup v-model:show="showAvaDialog" position="bottom" @click-overlay="closeAvaDialog">
-    <view class="p-20 relative h-50vh flex items-center justify-center">
+  <Popup :show="showAvaDialog" position="bottom" @clickMask="closeAvaDialog">
+    <view class="p-20 relative h-50vh flex items-center justify-center" style="background: white">
       <view class="absolute top-20 w-full text-center" style="font-size: 34rpx; color: #907BE0">更改头像</view>
       <button
           class="btn absolute top-10 right-20 w-100 h-55 flex items-center justify-center"
@@ -138,9 +138,9 @@ const onUpdateAva = () => {
         </view>
       </view>
     </view>
-  </van-popup>
+  </Popup>
 
-  <van-popup position="center" v-model:show="showRule" custom-style="background: transparent">
+  <Popup position="center" :show="showRule">
     <view class="pb-40">
       <image class="max-w-screen h-75vh" src="/static/rule.png" mode="heightFix"></image>
       <view class="flex items-center justify-center">
@@ -151,7 +151,7 @@ const onUpdateAva = () => {
         <text class="color-white absolute font-bold" style="font-size: 30rpx;" @click="showRule=false">确定</text>
       </view>
     </view>
-  </van-popup>
+  </Popup>
 </template>
 
 <style lang="scss" scoped>
