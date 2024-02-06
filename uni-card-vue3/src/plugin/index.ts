@@ -11,7 +11,7 @@ export default {
       onShareAppMessage() {
         return {
           title: config.data.value.shareTitle,
-          imageUrl: '/static/logo.png',
+          imageUrl: config.data.value.logo,
           path: 'pages/index/index',
 
         };
@@ -20,7 +20,7 @@ export default {
         return {
           title: config.data.value.shareTitle,
           query: '',
-          imageUrl: '/static/logo.png',
+          imageUrl: config.data.value.logo,
         }
       }
     })

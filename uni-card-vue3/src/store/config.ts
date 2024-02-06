@@ -11,6 +11,7 @@ export default defineStore({
         price: "1.99",
         payText: "",
         shareTitle: "",
+        logo: "",
         banners: [{}]
       }
     } as { data: Config.ConfigInfo };

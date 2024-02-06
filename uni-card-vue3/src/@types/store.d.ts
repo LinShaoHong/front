@@ -18,6 +18,7 @@ declare namespace Config {
     price: string
     payText: string
     shareTitle: string
+    logo: string
     banners: [{
       src: string
       qr: string
