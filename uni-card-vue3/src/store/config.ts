@@ -10,6 +10,7 @@ export default defineStore({
         playLimit: 5,
         price: "1.99",
         payText: "",
+        shareTitle: "",
         banners: [{}]
       }
     } as { data: Config.ConfigInfo };

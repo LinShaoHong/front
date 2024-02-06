@@ -17,6 +17,7 @@ declare namespace Config {
     playLimit: number
     price: string
     payText: string
+    shareTitle: string
     banners: [{
       src: string
       qr: string
