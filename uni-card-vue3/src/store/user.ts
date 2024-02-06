@@ -55,8 +55,17 @@ export default defineStore({
         })
       })
     },
-    vip(vip: number) {
-      this.data['value'].vip = vip;
+    vip(vip: number, prepayId: string) {
+      const that = this;
+      const userId = this.data['value'].id;
+      return new Promise((resolve, reject) => {
+        apiUser.vip(userId, prepayId, vip).then((res) => {
+          resolve(res);
+          that.data['value'].vip = vip;
+        }).catch(() => {
+          reject();
+        })
+      });
     },
     updateNickname(nickname: string) {
       const that = this;
