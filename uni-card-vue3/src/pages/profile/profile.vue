@@ -135,13 +135,15 @@ const onUpdateAva = () => {
       >
         {{ avaLoading ? '' : '保存' }}
       </button>
-      <view class="avatar absolute top-100 w-600 flex flex-wrap justify-between gap-10">
-        <view v-for="i in config.data.value.avaCount"
-              :class="['ava-item h-110 w-110',i===chooseAva? 'active':'']" @click="chooseAva=i" :key="i">
-          <image class="w-full h-full" style="border-radius: 50%" :src="`${imgUri}/avatar/${i}.png`"
-                 mode="aspectFill"></image>
+      <scroll-view scroll-y class="avatar absolute top-100 w-600">
+        <view class="flex flex-wrap justify-between gap-10 pb-50">
+          <view v-for="i in config.data.value.avaCount"
+                :class="['ava-item h-110 w-110',i===chooseAva? 'active':'']" @click="chooseAva=i" :key="i">
+            <image class="w-full h-full" style="border-radius: 50%" :src="`${imgUri}/avatar/${i}.png`"
+                   mode="aspectFill"></image>
+          </view>
         </view>
-      </view>
+      </scroll-view>
     </view>
   </Popup>
 
