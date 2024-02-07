@@ -29,7 +29,7 @@ const shuffleCards = () => {
 }
 
 onLoad(async () => {
-  setNBT("海卡斯畅饮牌")
+  await setNBT("金杯之奕喝酒卡牌")
   await delay(500).then(() => {
     showRule.value = true;
   })
