@@ -55,7 +55,7 @@ defineEmits(['close']);
           <text class="font-bold text-white" style="font-size: 32rpx;">金杯之奕</text>
         </view>
         <view class="absolute bottom-25 w-full flex items-center justify-center">
-          <text class="font-bold text-white" style="font-size: 32rpx;">{{ title }}</text>
+          <text class="font-bold text-white" style="font-size: 34rpx;">{{ title }}</text>
         </view>
       </view>
       <view class="content" :style="contentStyle">
@@ -87,9 +87,10 @@ defineEmits(['close']);
 }
 
 .content {
-  width: 48%;
+  width: 55%;
   height: 22%;
   top: 68%;
+  font-size: 30rpx;
   position: absolute;
   word-break: break-all;
   overflow: scroll;

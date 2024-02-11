@@ -3,6 +3,7 @@ import apiUser from '@/api/apiUser';
 import CustomCard from "@/components/CustomCard.vue";
 import { message, modal } from "@/utils/unis";
 import { networkError } from "@/utils/request";
+import { isEmpty } from "@/utils/is";
 
 const user = useStore('user');
 const config = useStore('config');
@@ -15,14 +16,27 @@ const content = ref('');
 const loading = ref(false);
 
 const onEdit = () => {
-  loading.value = true;
+  if (isEmpty(title.value)) {
+    return message('请输入标题', 3);
+  }
+  if (title.value.length > 10) {
+    return message('标题不能超过10个字', 3);
+  }
+  if (isEmpty(content.value)) {
+    return message('请输入内容', 3);
+  }
+  if (content.value.length > 50) {
+    return message('内容不能超过50个字', 3);
+  }
   if (curr.value == null) {
+    loading.value = true;
     apiUser.addDef(user.data.value.id, title.value, content.value).then(() => {
       user.getDefs();
       loading.value = false;
       showEdit.value = false;
     });
   } else {
+    loading.value = true;
     apiUser.editDef(user.data.value.id, curr.value['id'], title.value, content.value).then(() => {
       user.getDefs();
       loading.value = false;
