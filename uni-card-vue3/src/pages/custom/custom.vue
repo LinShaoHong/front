@@ -92,14 +92,20 @@ const onDelete = (item) => {
                       :content="item.content"/>
 
           <view class="w-45vw h-8vw flex justify-around items-center p-10">
-            <image v-if="!item.defaulted" class="h-40" src="/static/edit.png" mode="heightFix"
-                   @click="() => {showEdit=true; title=item.title; content=item.content; curr=item;}"></image>
 
-            <image class="h-35" :src="item.enable? '/static/enable.png':'/static/disable.png'" mode="heightFix"
-                   @click="onEnable(item)"></image>
+            <view v-if="!item.defaulted" class="h-40"
+                  @click="() => {showEdit=true; title=item.title; content=item.content; curr=item;}">
+              <image class="h-full" src="/static/edit.png" mode="heightFix"/>
+            </view>
 
-            <image v-if="!item.defaulted" class="h-40" src="/static/delete.png" mode="heightFix"
-                   @click="onDelete(item)"></image>
+            <view class="h-35" @click="onEnable(item)">
+              <image class="h-full" :src="item.enable? '/static/enable.png':'/static/disable.png'" mode="heightFix"/>
+            </view>
+
+            <view v-if="!item.defaulted" class="h-40" @click="onDelete(item)">
+              <image class="h-full" src="/static/delete.png" mode="heightFix"/>
+            </view>
+
           </view>
         </view>
 
