@@ -12,6 +12,10 @@ const props = defineProps({
   content: {
     type: String,
     default: ''
+  },
+  defaulted: {
+    type: Boolean,
+    default: true
   }
 });
 
@@ -47,6 +51,9 @@ defineEmits(['close']);
                  'z-index': open? 102 : -1}">
     <view class="card w-full flex fle-col items-center justify-center z-200">
       <view class="absolute w-full top-0" style="height: 65%;">
+        <view v-if="!defaulted" class="absolute w-full flex items-center justify-center" style="top: 50%;">
+          <text class="font-bold text-white" style="font-size: 32rpx;">金杯之奕</text>
+        </view>
         <view class="absolute bottom-25 w-full flex items-center justify-center">
           <text class="font-bold text-white" style="font-size: 32rpx;">{{ title }}</text>
         </view>
@@ -80,7 +87,7 @@ defineEmits(['close']);
 }
 
 .content {
-  width: 55%;
+  width: 48%;
   height: 22%;
   top: 68%;
   position: absolute;

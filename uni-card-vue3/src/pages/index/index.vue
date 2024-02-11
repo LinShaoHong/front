@@ -2,7 +2,8 @@
 import { delay } from '@/utils/calls'
 import { networkError } from "@/utils/request";
 import { useWxPay } from "@/hooks/useWxPay";
-import { message, modal, setNBT } from "@/utils/unis";
+import { message, setNBT } from "@/utils/unis";
+import PayDialog from "@/components/PayDialog.vue";
 
 //const { ad, adLoaded, adClosed } = useRewardedVideoAd();
 const { wxPay } = useWxPay();
@@ -15,18 +16,33 @@ const showRule = ref(false);
 
 const card = ref<number | undefined>(0);
 const cards = ref([] as number[]);
+const item = computed(() => {
+  if (card.value as number > 0) {
+    return user.items.value[card.value as number - 1];
+  }
+  return null;
+});
 const shuffleCards = () => {
-  if (cards.value.length === 0) {
-    config.getConfigInfo();
-    for (let i = 1; i <= config.data.value.cardCount; i++) {
+  if (user.items.value && cards.value.length === 0) {
+    for (let i = 1; i <= user.items.value.length; i++) {
       cards.value.push(i);
     }
     cards.value.sort(() => 0.5 - Math.random());
-    while (cards.value[config.data.value.cardCount - 1] === card.value) {
+    while (user.items.value.length > 1 &&
+    cards.value[user.items.value.length - 1] === card.value) {
       cards.value.sort(() => 0.5 - Math.random());
     }
   }
 }
+
+const reShuffleCards = () => {
+  cards.value = [];
+  shuffleCards();
+};
+
+watch(user.items, (n, o) => {
+  reShuffleCards();
+});
 
 onLoad(async () => {
   await setNBT("金杯之奕喝酒卡牌")
@@ -154,15 +170,6 @@ const onOpenCard = () => {
   }
 }
 
-const doPay = (vip: number) => {
-  wxPay(vip).then(async () => {
-    await modal('', '解锁成功');
-  }).catch(() => {
-    message('解锁失败', 4);
-  })
-  showPayDialog.value = false;
-}
-
 const showPayDialog = ref(false);
 const openPayDialog = () => {
   if (showPayDialog.value) return;
@@ -236,17 +243,17 @@ const openPayDialog = () => {
     </view>
   </view>
 
-  <OpenCard :open="open" :title="''" :content="''" :src="`${imgUri}/cards/default/${card}.png`" @close="open=false"/>
+  <OpenCard :open="open"
+            :defaulted="item?.defaulted"
+            :title="item?.defaulted? '' : item?.title"
+            :content="item?.defaulted? '' : item?.content"
+            :src="item?.defaulted? `${imgUri}${item?.src}` : '/static/card.png'"
+            @close="open=false"/>
 
-  <Popup position="center" v-model:show="showPayDialog" @clickMask="showPayDialog=false">
-    <view class="relative w-80vw flex flex-col items-center justify-center bg-white rd-10 gap-20 p-20">
-      <text class="font-bold" style="font-size: 36rpx">游戏需知</text>
-      <view class="break-all w-full" v-html="config.data.value.payText"></view>
-      <view class="h-65 w-250 mt-10 rd-40 text-white flex items-center justify-center"
-            style="background: #482380; font-size: 32rpx; letter-spacing: 3rpx;" @click="doPay(1)">立即解锁
-      </view>
-    </view>
-  </Popup>
+  <PayDialog :show="showPayDialog"
+             :html="config.data.value.payText"
+             :vip="1"
+             @close="showPayDialog=false"/>
 
   <QRCode :show="showQR"
           :src="banner.qr"

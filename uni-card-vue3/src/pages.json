@@ -8,6 +8,13 @@
       }
     },
     {
+      "name": "more",
+      "path": "pages/more/more",
+      "style": {
+        "navigationBarTitleText": "更多"
+      }
+    },
+    {
       "name": "profile",
       "path": "pages/profile/profile",
       "style": {
@@ -15,7 +22,20 @@
       }
     }
   ],
-  "subPackages": [],
+  "subPackages": [
+    {
+      "root": "pages/custom",
+      "pages": [
+        {
+          "name": "custom",
+          "path": "custom",
+          "style": {
+            "navigationBarTitleText": "自定义卡牌"
+          }
+        }
+      ]
+    }
+  ],
   "globalStyle": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "uni-app",
@@ -37,6 +57,12 @@
         "iconPath": "static/tabbar/tab_index.png",
         "selectedIconPath": "static/tabbar/tab_index_active.png",
         "text": "首页"
+      },
+      {
+        "pagePath": "pages/more/more",
+        "iconPath": "static/tabbar/tab_more.png",
+        "selectedIconPath": "static/tabbar/tab_more_active.png",
+        "text": "更多玩法"
       },
       {
         "pagePath": "pages/profile/profile",

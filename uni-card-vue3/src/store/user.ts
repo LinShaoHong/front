@@ -9,13 +9,21 @@ export default defineStore({
         openId: "",
         code: "",
         avatar: 1,
-        nickname: "微信用户-12345",
+        nickname: "",
         playCount: 0,
-        vip: 0
+        vip: 0,
+        defs: []
       }
     } as { data: User.UserInfo };
   },
-  getters: {},
+  getters: {
+    items: (state) => {
+      if (state.data.defs.length > 0) {
+        return state.data.defs[0]['items'].filter(v => v['enable']);
+      }
+      return [];
+    }
+  },
   actions: {
     getUserInfo() {
       const that = this;
@@ -39,6 +47,15 @@ export default defineStore({
             that.setUserInfo(data.value);
           }).catch(err => reject(err));
         }
+      });
+    },
+    getDefs() {
+      const that = this;
+      const userId = this.data['value'].id;
+      return new Promise((resolve, reject) => {
+        apiUser.getDefs(userId).then(data => {
+          that.data['value'].defs = data.value.defs;
+        }).catch(err => reject(err));
       });
     },
     setUserInfo(user: User.UserInfo) {

@@ -7,7 +7,9 @@ import { isMp } from "@/utils/platform";
 onLaunch(() => {
   const user = useStore('user');
   const config = useStore('config');
-  user.getUserInfo().catch(() => networkError());
+  user.getUserInfo().then(() => {
+    user.getDefs().catch(() => networkError());
+  }).catch(() => networkError());
   config.getConfigInfo().catch(() => networkError());
   if (isMp) {
     autoUpdate();

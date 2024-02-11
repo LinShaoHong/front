@@ -7,6 +7,7 @@ declare namespace User {
     nickname: string
     playCount: number
     vip: number
+    defs: object[]
   }
 }
 
