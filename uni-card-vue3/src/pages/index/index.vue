@@ -45,7 +45,7 @@ watch(user.items, (n, o) => {
 });
 
 onLoad(async () => {
-  await setNBT("金杯之奕喝酒卡牌")
+  await setNBT("云顶喝酒卡牌")
   await delay(500).then(() => {
     showRule.value = true;
   })
