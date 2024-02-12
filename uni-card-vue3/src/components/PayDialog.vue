@@ -7,7 +7,11 @@ const { wxPay } = useWxPay();
 const props = defineProps({
   show: Boolean,
   html: String,
-  vip: Number
+  vip: Number,
+  hasPay: {
+    type: Boolean,
+    default: true
+  }
 });
 
 const emits = defineEmits(['close']);
@@ -26,7 +30,7 @@ const doPay = () => {
     <view class="relative w-80vw flex flex-col items-center justify-center bg-white rd-10 gap-20 p-20">
       <text class="font-bold" style="font-size: 36rpx">游戏需知</text>
       <view class="break-all w-full" v-html="html"></view>
-      <view class="h-65 w-250 mt-10 rd-40 text-white flex items-center justify-center"
+      <view v-if="hasPay" class="h-65 w-250 mt-10 rd-40 text-white flex items-center justify-center"
             style="background: #482380; font-size: 32rpx; letter-spacing: 3rpx;" @click="doPay">立即解锁
       </view>
     </view>
