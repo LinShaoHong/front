@@ -29,6 +29,11 @@ const onEdit = () => {
     return message('内容不能超过50个字', 3);
   }
   if (curr.value == null) {
+    const len = user.data.value.defs[0]['items'].filter(v => !v['defaulted']).length;
+    console.log(len, 'len');
+    if (len >= 50) {
+      return message('最多添加50张', 3);
+    }
     loading.value = true;
     apiUser.addDef(user.data.value.id, title.value, content.value).then(() => {
       user.getDefs();
@@ -49,7 +54,9 @@ const onEnable = (item) => {
   apiUser.enableDef(user.data.value.id, item['id'], !item['enable'])
       .then(() => {
         user.getDefs();
-        message(item['enable'] ? '已停用' : '已启用', 1);
+        if (item['enable']) {
+          message('已停用', 3);
+        }
       }).catch(() => networkError());
 }
 
@@ -98,9 +105,8 @@ const onDelete = (item) => {
               <image class="h-full" src="/static/edit.png" mode="heightFix"/>
             </view>
 
-            <view class="h-35" @click="onEnable(item)">
-              <image class="h-full" :src="item.enable? '/static/enable.png':'/static/disable.png'" mode="heightFix"/>
-            </view>
+            <switch v-if="item.enable" checked color="#BB72EE" style="transform:scale(0.6);" @change="onEnable(item)"/>
+            <switch v-if="!item.enable" color="#BB72EE" style="transform:scale(0.6);" @change="onEnable(item)"/>
 
             <view v-if="!item.defaulted" class="h-40" @click="onDelete(item)">
               <image class="h-full" src="/static/delete.png" mode="heightFix"/>
@@ -114,12 +120,12 @@ const onDelete = (item) => {
 
     <Popup position="center" :show="showEdit" @clickMask="showEdit=false">
       <view class="relative w-80vw h-450 p-20 rd-30 flex flex-col items-center gap-20" style="background: white;">
-        <view class="w-full pl-10" style="font-size: 24rpx; color:#999;">请输入标题</view>
+        <view class="w-full pl-10" style="font-size: 24rpx; color:#999;">请输入标题（10字以内）</view>
         <view class="w-full pl-10" style="border-bottom: 1px solid rgb(235, 237, 240);">
           <input class="text-left" style="color: #907BE0; font-size: 30rpx;" v-model="title"/>
         </view>
 
-        <view class="w-full pl-10 mt-10" style="font-size: 24rpx; color:#999;">请输入内容</view>
+        <view class="w-full pl-10 mt-10" style="font-size: 24rpx; color:#999;">请输入内容（50字以内）</view>
         <view class="w-full pl-10" style="border-bottom: 1px solid rgb(235, 237, 240);">
           <textarea class="text-left h-150 w-70vw" style="color: #907BE0; font-size: 30rpx;" v-model="content"/>
         </view>
