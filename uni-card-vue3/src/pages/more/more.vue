@@ -2,6 +2,9 @@
 import { networkError } from "@/utils/request";
 import { forward } from "@/utils/router";
 import { setNBT } from "@/utils/unis";
+import { useShare } from "@/hooks/useShare";
+
+const { onShareAppMessage, onShareTimeline } = useShare();
 
 const user = useStore('user');
 const config = useStore('config');
@@ -47,7 +50,7 @@ const battlePayHtml = computed(() => {
       <text class="text-white mb-10" style="font-size: 26rpx;">可添加编辑卡牌，随心畅玩！</text>
     </view>
     <view class="battle_box mt-50 h-10vh w-70vw rd-100 flex flex-col items-center justify-center"
-          @click="showBattleDialog=true">
+          @click="forward('room')">
       <view class="w-full h-full flex items-center justify-center gap-10">
         <image src="/static/battle.png" class="h-5vh" mode="heightFix">+</image>
         <text class="text-white" style="font-size: 40rpx">云顶对弈</text>

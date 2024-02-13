@@ -3,6 +3,9 @@ import { isEmpty } from "@/utils/is";
 import { message, setNBT } from "@/utils/unis";
 import { networkError } from "@/utils/request";
 import { onLoad } from "@dcloudio/uni-app";
+import { useShare } from "@/hooks/useShare";
+
+const { onShareAppMessage, onShareTimeline } = useShare();
 
 const user = useStore('user')
 const config = useStore('config')

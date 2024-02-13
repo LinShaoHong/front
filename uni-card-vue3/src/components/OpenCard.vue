@@ -20,6 +20,10 @@ const props = defineProps({
   defaulted: {
     type: Boolean,
     default: true
+  },
+  height: {
+    type: String,
+    default: 'calc(90vh - 300rpx)'
   }
 });
 
@@ -45,7 +49,7 @@ defineEmits(['close']);
                  transition: '.3s linear',
                  'transform-style': 'preserve-3d',
                  'z-index': open? 101 : -1}">
-    <image class="card" :src="src" mode="heightFix"/>
+    <image class="card" :style="{height: height}" :src="src" mode="heightFix"/>
   </view>
 
   <view class="fixed w-100vw h-100vh top-0 flex flex-col items-center justify-center"
@@ -53,7 +57,7 @@ defineEmits(['close']);
                  transition: '.3s linear',
                  'transform-style': 'preserve-3d',
                  'z-index': open? 102 : -1}">
-    <view class="card w-full flex fle-col items-center justify-center z-200">
+    <view class="card w-full flex fle-col items-center justify-center z-200" :style="{height: height}">
       <view class="absolute w-full top-0" style="height: 65%;">
         <view v-if="!defaulted" class="absolute w-full flex items-center justify-center" style="top: 50%;">
           <text class="font-bold text-white" style="font-size: 34rpx;">{{ type }}</text>
@@ -85,7 +89,6 @@ defineEmits(['close']);
 .card {
   position: absolute;
   bottom: 300rpx;
-  height: calc(90vh - 300rpx);
   transform: rotateY(180deg);
   backface-visibility: hidden;
 }

@@ -4,6 +4,9 @@ import CustomCard from "@/components/CustomCard.vue";
 import { message, modal } from "@/utils/unis";
 import { networkError } from "@/utils/request";
 import { isEmpty } from "@/utils/is";
+import { useShare } from "@/hooks/useShare";
+
+const { onShareAppMessage, onShareTimeline } = useShare();
 
 const user = useStore('user');
 const config = useStore('config');

@@ -2,18 +2,14 @@
 import { delay } from '@/utils/calls'
 import { networkError } from "@/utils/request";
 import { useWxPay } from "@/hooks/useWxPay";
-import { useShare } from "@/hooks/useShare";
 import { message, setNBT } from "@/utils/unis";
 import PayDialog from "@/components/PayDialog.vue";
+import { forward } from "@/utils/router";
 
-const { onShareAppMessage, onShareTimeline } = useShare();
 const { wxPay } = useWxPay();
-
 const user = useStore('user');
 const config = useStore('config');
-
 const imgUri = inject('$imgUri');
-const showRule = ref(false);
 
 const card = ref<number | undefined>(0);
 const cards = ref([] as number[]);
@@ -46,11 +42,23 @@ watch(user.items, (n, o) => {
 });
 
 onLoad(async () => {
-  await setNBT("云顶喝酒卡牌")
-  await delay(500).then(() => {
-    showRule.value = true;
-  })
+  await setNBT("云顶对弈");
   shuffleCards();
+  // const d = wx.request({
+  //   url: 'http://localhost:9939/api/room?id=1',
+  //   enableChunked: true,
+  //   headers: {
+  //     'Transfer-Encoding': 'chunked'
+  //   },
+  //   responseType: 'text',
+  //   method: 'GET',
+  // });
+  //
+  // const l = data => {
+  //   const event = new TextDecoder().decode(data.data);
+  //   console.log(event.split("\n")[1].substring(6))
+  // };
+  // d.onChunkReceived(l);
 });
 
 watch(() => cards.value.length, (n, o) => {
@@ -58,14 +66,6 @@ watch(() => cards.value.length, (n, o) => {
     shuffleCards();
   }
 });
-
-const banner = ref({});
-const showQR = ref(false);
-const hasBanner = computed(() => config.data.value.banners.length > 0);
-const onBanner = (item) => {
-  banner.value = item;
-  showQR.value = true;
-};
 
 const backCardsCount = ref(5);
 const backCardStyle = computed(() => (index) => {
@@ -167,45 +167,42 @@ const openPayDialog = () => {
 <template>
   <image class="h-screen w-screen fixed" src="/static/back.png" mode="scaleToFill"></image>
 
-  <Popup position="center" :show="showRule">
-    <view class="pb-40">
-      <image class="max-w-screen h-75vh" src="/static/rule.png" mode="heightFix"></image>
-      <view class="flex items-center justify-center">
-        <image class="px-10 py-10 w-320 h-100"
-               src="/static/foot_bg.png"
-               mode="scaleToFill"
-               @click="showRule=false"></image>
-        <text class="color-white absolute font-bold" style="font-size: 30rpx;" @click="showRule=false">确定</text>
+  <view class="relative flex flex-col items-center justify-between h-100vh pt-20 pb-30">
+
+    <view class="relative w-full flex flex-col justify-center items-center pt-10 pb-10 gap-10" style="height: 30%;">
+
+      <view class="relative w-full" @click="forward('profile')" style="height: 20%;">
+        <view class="absolute left-20 top-0 flex justify-center items-center gap-10 h-full">
+          <image style="border-radius: 50%; height: 100%;" :src="`${imgUri}/avatar/${user.data.value.avatar}.png`"
+                 mode="heightFix"></image>
+          <text class="text-white" style="font-size: 28rpx;">{{ user.data.value.nickname }}</text>
+        </view>
+      </view>
+
+      <view class="min-w-40vw max-w-80vw rd-50 pt-10 flex items-center justify-between pl-20 pr-20"
+            style="height: 35%; background-color: #6D04B5; overflow: hidden">
+        <view style="max-width: calc(80vw - 200rpx); overflow: hidden" class="flex items-center">
+          <view v-for="i in 2" class="flex flex-col items-center justify-center" :key="i">
+            <image class="w-100" style="border-radius: 50%;"
+                   :src="`${imgUri}/avatar/${user.data.value.avatar}.png`"
+                   mode="widthFix"></image>
+          </view>
+        </view>
+        <view class="mr-20 ml-10" style="height: 80%; width: 1px; background-color: #42006E"></view>
+        <view class="text-white w-85 h-85 flex items-center justify-center"
+              style="border: 1px solid white; border-radius: 50%">
+          <image class="w-70" src="/static/add.png" mode="widthFix"></image>
+        </view>
+
+      </view>
+
+      <view class="flex flex-col items-center justify-center pt-30" style="height: 45%;">
+        <image style="border-radius: 50%; height: 100%;" :src="`${imgUri}/avatar/${user.data.value.avatar}.png`"
+               mode="heightFix"></image>
+        <text class="text-white" style="font-size: 24rpx;">{{ user.data.value.nickname }}</text>
       </view>
     </view>
-  </Popup>
-
-  <button class="fixed right-0 w-200 h-66 z-6"
-          :style="{top: hasBanner ? '240rpx' : '60rpx', background: 'transparent'}"
-          openType="contact">
-    <image class="w-full h-full absolute left-0" src="/static/mask_bg.png"></image>
-    <image class="w-76 h-66 absolute left-4" src="/static/message.png"></image>
-    <text class="color-white absolute left-80" style="font-size: 28rpx;">联系客服</text>
-  </button>
-
-  <view class="relative flex flex-col items-center h-100vh">
-    <view v-if="hasBanner"
-          class="w-full px-20 py-10" style="height: 20%">
-      <swiper :indicator-dots="false"
-              :autoplay="true"
-              :interval="3500"
-              :duration="150"
-              :circular="true"
-              indicator-color="rgba(255, 255, 255, 0.8)"
-              indicator-active-color="#fff">
-        <swiper-item v-for="(item, index) in config.data.value.banners" :key="index">
-          <image :src="item.src" class="h-220 w-full block border-rd-20" mode="scaleToFill"
-                 @click="onBanner(item)"></image>
-        </swiper-item>
-      </swiper>
-    </view>
-
-    <view class="absolute flex flex-col items-center bottom-50" style="height: 70%;">
+    <view class="relative flex flex-col items-center" style="height: 70%;">
       <image class="absolute top-0 bottom-80 h-60vh" mode="heightFix" style="height: 80%;"
              src="/static/p_bg.png"></image>
 
@@ -234,18 +231,13 @@ const openPayDialog = () => {
             :title="item?.defaulted? '' : item?.title"
             :content="item?.defaulted? '' : item?.content"
             :src="item?.defaulted? `${imgUri}${item?.src}` : '/static/card.png'"
+            :height="'calc(90vh - 400rpx)'"
             @close="open=false"/>
 
   <PayDialog :show="showPayDialog"
              :html="config.data.value.payText"
              :vip="1"
              @close="showPayDialog=false"/>
-
-  <QRCode :show="showQR"
-          :src="banner.qr"
-          :title="banner.title"
-          :label="banner.label"
-          @close="showQR=false"/>
 </template>
 
 <style scoped lang="scss">
