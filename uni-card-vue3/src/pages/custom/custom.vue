@@ -94,7 +94,7 @@ const onDelete = (item) => {
           <CustomCard v-if="!item.defaulted"
                       :width="'45vw'"
                       :height="'65vw'"
-                      :type="'金杯之奕'"
+                      :type="'云顶之奕'"
                       :title="item.title"
                       :content="item.content"/>
 
