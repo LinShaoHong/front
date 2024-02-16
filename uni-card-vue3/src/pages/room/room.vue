@@ -27,10 +27,9 @@ const showPlayers = ref(false);
 const choosePlayerId = ref('');
 const choosePlayerLoading = ref(false);
 const onShowPlayers = () => {
-  apiRoom.players(mainUser.value.id).then((data) => {
+  fetchPlayers().then(() => {
     showPlayers.value = true;
     choosePlayerId.value = player.value['userId'];
-    players.value = data.values;
   }).catch(() => networkError());
 };
 const onChoosePlayer = () => {
@@ -137,22 +136,24 @@ const handleCloseEvent = (event) => {
 };
 
 const handleAddEvent = (event) => {
-  if (!players.value.find(v => v.userId === event.userId)) {
-    if (mainUser.value.id === event.userId) {
-      players.value.unshift(event);
-    } else {
-      players.value.push(event);
-    }
-  }
+  fetchPlayers().catch(() => networkError());
 };
+
+const handleLeaveEvent = (event) => {
+  fetchPlayers().catch(() => networkError());
+};
+
+const fetchPlayers = () => {
+  return new Promise((resolve, reject) => {
+    apiRoom.players(mainUser.value.id).then((data) => {
+      players.value = data.values;
+    }).catch((err) => reject(err));
+  });
+}
 
 const handleNextEvent = (event) => {
   open.value = false;
   player.value = event;
-};
-
-const handleLeaveEvent = (event) => {
-  players.value = players.value.filter(v => v.userId !== event.userId);
 };
 
 const onContinue = () => {
