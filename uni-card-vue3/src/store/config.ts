@@ -5,11 +5,11 @@ export default defineStore({
   state: () => {
     return {
       data: {
-        avaCount: 10,
+        avaCount: 40,
         playLimit: 5,
         battleLimit: 3,
         canBattle: false,
-        price: "1.99",
+        price: "2.99",
         payText: "",
         shareTitle: "",
         logo: "",
