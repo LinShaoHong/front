@@ -59,8 +59,11 @@ onLoad(async (option) => {
           url: env.apiBaseUrl + '/room/sub?mainUserId=' + mainUser.value.id + '&userId=' + user.data.value.id,
           enableChunked: true,
           headers: {
-            'Transfer-Encoding': 'chunked'
+            "Content-Type": "application/json;charset=utf-8",
+            "Accept": 'text/event-stream',
+            "Transfer-Encoding": 'chunked',
           },
+          timeout: 50000,
           responseType: 'text',
           method: 'GET',
         });
@@ -222,10 +225,6 @@ const onShuffle = async () => {
 
 const shuffleAnimate = async () => {
   if (inShuffle.value) return;
-  if (open.value) {
-    await delay(100).then(() => open.value = false);
-    return;
-  }
   inShuffle.value = true;
   shuffleAudio.src = '/static/media/vod1.m4a';
   shuffleAudio.play();
