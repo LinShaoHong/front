@@ -96,13 +96,13 @@ const onBattle = () => {
       <view class="joined flex flex-wrap justify-between gap-10 pb-50">
         <view v-for="join in joined" :key="join.mainUserId"
               style="background-color: #4D0181"
-              class="w-330 h-100 rd-30 mt-10 p-10 flex justify-center items-center"
+              class="w-330 h-130 rd-30 mt-10 p-10 flex justify-center items-center"
               @click="forward('room', { mainUserId: join.mainUserId })">
-          <image class="h-80" style="border-radius: 50%" :src="`${imgUri}/avatar/${join.avatar}.png`"
+          <image class="h-100" style="border-radius: 50%" :src="`${imgUri}/avatar/${join.avatar}.png`"
                  mode="heightFix"></image>
-          <view class="relative w-230 h-100 ml-20 flex flex-col">
-            <text class="text-white absolute top-20" style="font-size: 26rpx;">{{ join.nickname }}</text>
-            <text class="text-white absolute bottom-10" style="font-size: 20rpx;">{{ join.time }}</text>
+          <view class="relative w-230 h-130 ml-20 flex flex-col">
+            <text class="text-white absolute top-30" style="font-size: 30rpx;">{{ join.nickname }}</text>
+            <text class="text-white absolute bottom-20" style="font-size: 24rpx;">{{ join.time }}</text>
           </view>
         </view>
       </view>

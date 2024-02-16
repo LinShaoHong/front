@@ -169,17 +169,17 @@ const onNext = () => {
 
 onShareAppMessage(() => {
   return {
-    title: config.data.value.shareTitle,
-    imageUrl: config.data.value.logo,
+    title: user.data.value.nickname + '邀请您一起云顶对弈！',
+    imageUrl: '',
     path: 'pages/more/more?mainUserId=' + mainUser.value.id
   };
 });
 
 onShareTimeline(() => {
   return {
-    title: config.data.value.shareTitle,
+    title: user.data.value.nickname + '邀请您一起云顶对弈！',
     query: 'mainUserId=' + mainUser.value.id,
-    imageUrl: config.data.value.logo,
+    imageUrl: ''
   }
 });
 
