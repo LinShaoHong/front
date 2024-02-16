@@ -150,7 +150,10 @@ const fetchPlayers = () => {
   return new Promise((resolve, reject) => {
     apiRoom.players(mainUser.value.id).then((data) => {
       players.value = data.values;
-      resolve(data.values);
+      apiRoom.player(mainUser.value.id).then((data) => {
+        player.value = data.value;
+        resolve(data.values);
+      }).catch((err) => reject(err));
     }).catch((err) => reject(err));
   });
 }
