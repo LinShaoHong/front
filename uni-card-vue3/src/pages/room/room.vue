@@ -99,7 +99,6 @@ const leave = () => {
 };
 
 const listen = (event) => {
-  console.log(event, 'event');
   const name = event.name;
   if (name === 'AddEvent') {
     handleAddEvent(event);

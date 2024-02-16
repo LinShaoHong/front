@@ -50,6 +50,16 @@ const battlePayHtml = computed(() => {
   }
 });
 
+const hasBattle = computed(() => {
+  return config.data.value.cardCount === 100 || user.data.value.code === 'wx_1001';
+});
+const onBattle = () => {
+  if (hasBattle.value) {
+    forward('room');
+  } else {
+    showBattleDialog.value = true;
+  }
+};
 </script>
 
 <template>
@@ -68,7 +78,7 @@ const battlePayHtml = computed(() => {
       <text class="text-white mb-10" style="font-size: 26rpx;">可添加编辑卡牌，随心畅玩！</text>
     </view>
     <view class="battle_box mt-50 h-10vh w-70vw rd-100 flex flex-col items-center justify-center"
-          @click="forward('room')">
+          @click="onBattle">
       <view class="w-full h-full flex items-center justify-center gap-10">
         <image src="/static/battle.png" class="h-5vh" mode="heightFix">+</image>
         <text class="text-white" style="font-size: 40rpx">云顶对弈</text>
@@ -76,7 +86,7 @@ const battlePayHtml = computed(() => {
       <text class="text-white mb-10" style="font-size: 26rpx;">可邀请他人同时在线对弈</text>
     </view>
   </view>
-  <view class="w-screen relative pt-50 pl-20 pr-20">
+  <view v-if="hasBattle" class="w-screen relative pt-50 pl-20 pr-20">
     <view class="flex gap-20 pb-10 pl-20 items-center">
       <view class="title_line w-5vw"></view>
       <text class="text-white" style="font-size: 32rpx">我参与过的</text>
