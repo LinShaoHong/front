@@ -406,7 +406,7 @@ const openPayDialog = () => {
       >
         {{ choosePlayerLoading ? '' : '确定' }}
       </button>
-      <scroll-view scroll-y class="avatar absolute top-150 w-600">
+      <scroll-view scroll-y class="avatar absolute top-150 w-700">
         <view class="flex flex-wrap gap-15 pb-50">
           <view v-for="player in players"
                 :class="['ava-item h-120 w-200',player.userId===choosePlayerId? 'active':'inactive']"
