@@ -14,12 +14,14 @@ const joined = ref([] as any[]);
 
 onLoad(async (option) => {
   await setNBT("云顶玩法");
-  if (option !== undefined) {
-    const mainUserId = option['mainUserId'];
-    if (mainUserId != undefined) {
-      forward('room', { mainUserId: mainUserId })
+  config.getConfigInfo().then(() => {
+    if (option !== undefined) {
+      const mainUserId = option['mainUserId'];
+      if (mainUserId != undefined) {
+        forward('room', { mainUserId: mainUserId })
+      }
     }
-  }
+  }).catch(() => networkError());
 });
 
 onShow(() => {
