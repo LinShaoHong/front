@@ -305,7 +305,7 @@ const onOpenCard = () => {
     config.getConfigInfo().then(() => {
       user.getUserInfo().then(() => {
         if (user.data.value.vip >= 1 ||
-            user.data.value.playCount < config.data.value.playLimit) {
+            user.data.value.playCount < config.data.value.battleLimit) {
           doOpen();
         } else {
           openPayDialog();

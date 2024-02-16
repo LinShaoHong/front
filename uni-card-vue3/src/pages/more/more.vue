@@ -51,7 +51,7 @@ const battlePayHtml = computed(() => {
 });
 
 const hasBattle = computed(() => {
-  return config.data.value.cardCount === 100 || user.data.value.code === 'wx_1001';
+  return config.data.value.canBattle || user.data.value.code === 'wx_1001';
 });
 const onBattle = () => {
   if (hasBattle.value) {

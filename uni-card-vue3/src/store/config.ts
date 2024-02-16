@@ -5,9 +5,10 @@ export default defineStore({
   state: () => {
     return {
       data: {
-        cardCount: 5,
         avaCount: 10,
         playLimit: 5,
+        battleLimit: 3,
+        canBattle: false,
         price: "1.99",
         payText: "",
         shareTitle: "",
