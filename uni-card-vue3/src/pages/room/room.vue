@@ -147,6 +147,7 @@ const fetchPlayers = () => {
   return new Promise((resolve, reject) => {
     apiRoom.players(mainUser.value.id).then((data) => {
       players.value = data.values;
+      resolve(data.values);
     }).catch((err) => reject(err));
   });
 }
