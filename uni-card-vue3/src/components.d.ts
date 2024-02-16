@@ -11,6 +11,7 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     CustomCard: typeof import('./components/CustomCard.vue')['default']
     OpenCard: typeof import('./components/OpenCard.vue')['default']
+    OpenRoomCard: typeof import('./components/OpenRoomCard.vue')['default']
     PayDialog: typeof import('./components/PayDialog.vue')['default']
     Popup: typeof import('./components/Popup.vue')['default']
     QRCode: typeof import('./components/QRCode.vue')['default']

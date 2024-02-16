@@ -21,12 +21,19 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
+  avatar: Number,
+  nickname: String,
+  showOp: {
+    type: Boolean,
+    default: false
+  },
   height: {
     type: String,
     default: 'calc(90vh - 300rpx)'
   }
 });
 
+const imgUri = inject('$imgUri');
 const contentStyle = computed(() => {
   if (props.content?.length > 50) {
     return null;
@@ -39,16 +46,21 @@ const contentStyle = computed(() => {
   }
 });
 
-defineEmits(['close']);
+defineEmits(['continue', 'next']);
 </script>
 <template>
   <view class="fixed w-100vw h-100vh top-0"
         :style="{'z-index': open? '100': '-1', transition: '.3s linear', background: 'rgba(0, 0, 0, 0.85)'}"></view>
+
   <view class="fixed w-100vw h-100vh top-0 flex items-center justify-center"
         :style="{transform: open? 'rotateY(180deg)' : '',
                  transition: '.3s linear',
                  'transform-style': 'preserve-3d',
                  'z-index': open? 101 : -1}">
+    <view class="player flex flex-col justify-center items-center">
+      <image style="border-radius: 50%;height: 120%;" :src="`${imgUri}/avatar/${avatar}.png`" mode="heightFix"></image>
+      <text class="text-white" style="font-size: 28rpx;">{{ nickname }}</text>
+    </view>
     <image class="card" :style="{height: height}" :src="src" mode="heightFix"/>
   </view>
 
@@ -72,14 +84,24 @@ defineEmits(['close']);
         </text>
       </view>
     </view>
-    <view class="absolute bottom-150 flex items-center justify-center"
+    <view v-if="showOp" class="absolute bottom-150 right-120 flex items-center justify-center"
           style="transform: rotateY(180deg); backface-visibility: hidden;"
-          @click="$emit('close')">
-      <image class="px-10 py-10 w-320 h-100"
+          @click="$emit('continue')">
+      <image class="px-10 py-10 w-220 h-100"
              src="/static/foot_bg.png"
              mode="scaleToFill"></image>
       <text class="color-white absolute font-bold" style="font-size: 30rpx;">
-        已完成游戏处罚
+        继续抽
+      </text>
+    </view>
+    <view v-if="showOp" class="absolute bottom-150 left-120 flex items-center justify-center"
+          style="transform: rotateY(180deg); backface-visibility: hidden;"
+          @click="$emit('next')">
+      <image class="px-10 py-10 w-220 h-100"
+             src="/static/foot_bg.png"
+             mode="scaleToFill"></image>
+      <text class="color-white absolute font-bold" style="font-size: 30rpx;">
+        下一个
       </text>
     </view>
   </view>
@@ -89,6 +111,14 @@ defineEmits(['close']);
 .card {
   position: absolute;
   bottom: 300rpx;
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+}
+
+.player {
+  height: 160rpx;
+  top:50rpx;
+  position: absolute;
   transform: rotateY(180deg);
   backface-visibility: hidden;
 }

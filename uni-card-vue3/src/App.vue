@@ -4,15 +4,15 @@ import { networkError } from "@/utils/request";
 import { autoUpdate } from "@/utils/unis";
 import { isMp } from "@/utils/platform";
 
-onLaunch(() => {
+onLaunch(async () => {
   const user = useStore('user');
   const config = useStore('config');
-  user.getUserInfo().then(() => {
-    user.getDefs().catch(() => networkError());
+  await user.getUserInfo().then(async () => {
+    await user.getDefs().catch(() => networkError());
   }).catch(() => networkError());
   config.getConfigInfo().catch(() => networkError());
   if (isMp) {
-    autoUpdate();
+    await autoUpdate();
   }
 });
 onShow(() => {
