@@ -14,22 +14,22 @@ const joined = ref([] as any[]);
 
 onLoad(async (option) => {
   await setNBT("云顶玩法");
-  config.getConfigInfo().then(() => {
-    if (option !== undefined) {
-      const mainUserId = option['mainUserId'];
-      if (mainUserId != undefined) {
-        forward('room', { mainUserId: mainUserId })
-      }
+  if (option !== undefined) {
+    const mainUserId = option['mainUserId'];
+    if (mainUserId != undefined) {
+      forward('room', { mainUserId: mainUserId })
     }
-  }).catch(() => networkError());
+  }
 });
 
 onShow(() => {
-  user.getUserInfo().then(() => {
-    apiRoom.joined(user.data.value.id).then((data) => {
-      joined.value = data.values;
+  config.getConfigInfo().then(() => {
+    user.getUserInfo().then(() => {
+      apiRoom.joined(user.data.value.id).then((data) => {
+        joined.value = data.values;
+      });
     });
-  });
+  }).catch(() => networkError());
 });
 
 const showDefDialog = ref(false);

@@ -1,9 +1,9 @@
 import http from '@/utils/request';
 
 const apiUser = {
-  login: (code: string) => http.get<any>('/account/wx/login', { code: code }),
+  login: (code: string, os: string) => http.get<any>('/account/wx/login', { code: code, os: os }),
 
-  getById: (id: string) => http.get<any>('/account/byId', { id: id }),
+  getById: (id: string, os: string) => http.get<any>('/account/byId', { id: id, os: os }),
 
   inc: (id: string) => http.get<any>('/account/inc', { id: id }),
 

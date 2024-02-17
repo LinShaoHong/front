@@ -33,7 +33,8 @@ export default defineStore({
           uni.login({
             success: function (res) {
               const code = res.code;
-              apiUser.login(code).then(data => {
+              const sys = uni.getSystemInfoSync();
+              apiUser.login(code, sys.platform).then(data => {
                 resolve(data.value);
                 that.setUserInfo(data.value);
               }).catch(err => {
@@ -42,7 +43,8 @@ export default defineStore({
             }
           })
         } else {
-          apiUser.getById(userId).then(data => {
+          const sys = uni.getSystemInfoSync();
+          apiUser.getById(userId, sys.platform).then(data => {
             resolve(data.value);
             that.setUserInfo(data.value);
           }).catch(err => reject(err));
