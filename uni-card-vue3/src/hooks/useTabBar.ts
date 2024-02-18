@@ -1,3 +1,5 @@
+import { isMp } from "@/utils/platform";
+
 /**
  * 分享
  */
@@ -36,7 +38,7 @@ export function useTabBar() {
     await uni.hideTabBar();
     const user = useStore('user');
     const sys = uni.getSystemInfoSync();
-    if (sys.platform === 'ios') {
+    if (sys.platform === 'ios' && isMp) {
       user.getUserInfo().then(() => {
         if (user.data.value.vip < 1) {
           tabBar.value.list.splice(1, 1);
