@@ -2,7 +2,7 @@
 import { delay } from '@/utils/calls'
 import { networkError } from "@/utils/request";
 import { useWxPay } from "@/hooks/useWxPay";
-import { message, setNBT } from "@/utils/unis";
+import { ios, message, setNBT } from "@/utils/unis";
 import PayDialog from "@/components/PayDialog.vue";
 import { forward } from "@/utils/router";
 import env from "@/config/env";
@@ -16,7 +16,7 @@ const config = useStore('config');
 const imgUri = inject('$imgUri');
 
 //-------------------- share -----------------------
-const { onShareAppMessage, onShareTimeline, sharePath, shareTitle, shareImageUrl } = useShare();
+const { onShareAppMessage, onShareTimeline, sharePath, shareTitle, shareImageUrl, shareMainUserId } = useShare();
 
 //---------------------------- sse --------------------
 let task = null;
@@ -47,12 +47,11 @@ const onChoosePlayer = () => {
 onLoad(async (option) => {
   await setNBT("云顶对弈");
 
-  shareImageUrl.value = '';
-  shareTitle.value = 'pages/more/more';
+  shareImageUrl.value = null;
+  sharePath.value = 'pages/more/more';
   shuffleCards();
 
   user.getUserInfo().then(() => {
-    shareTitle.value = user.data.value.nickname + '邀请您一起云顶对弈！';
     let mainUserId = user.data.value.id;
     if (option !== undefined) {
       mainUserId = option['mainUserId'];
@@ -64,6 +63,9 @@ onLoad(async (option) => {
     const sys = uni.getSystemInfoSync();
     apiUser.getById(mainUserId, sys.platform).then(data => {
       mainUser.value = data.value;
+      shareTitle.value = mainUser.value.nickname + '邀请您一起云顶对弈！';
+      shareMainUserId.value = mainUser.value.id;
+
       apiRoom.players(mainUser.value.id).then((data) => {
         players.value = data.values;
         task = wx.request({
@@ -307,13 +309,19 @@ const onOpenCard = () => {
             user.data.value.playCount < config.data.value.battleLimit) {
           doOpen();
         } else {
-          openPayDialog();
+          if (!ios()) {
+            // openPayDialog();
+            showIOSDialog.value = true;
+          } else {
+            showIOSDialog.value = true;
+          }
         }
       }).catch(() => networkError());
     }).catch(() => networkError())
   }
 }
 
+const showIOSDialog = ref(false);
 const showPayDialog = ref(false);
 const openPayDialog = () => {
   if (showPayDialog.value) return;
@@ -437,6 +445,8 @@ const openPayDialog = () => {
              :html="config.data.value.payText"
              :vip="1"
              @close="showPayDialog=false"/>
+
+  <IOSDialog :show="showIOSDialog" @close="showIOSDialog=false"/>
 </template>
 
 <style scoped lang="scss">

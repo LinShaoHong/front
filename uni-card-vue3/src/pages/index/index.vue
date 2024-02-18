@@ -3,12 +3,12 @@ import { delay } from '@/utils/calls'
 import { networkError } from "@/utils/request";
 import { useWxPay } from "@/hooks/useWxPay";
 import { useShare } from "@/hooks/useShare";
-import { message, setNBT } from "@/utils/unis";
+import { ios, message, setNBT } from "@/utils/unis";
 import PayDialog from "@/components/PayDialog.vue";
 import { useTabBar } from "@/hooks/useTabBar";
 
 const { tabBar } = useTabBar();
-const { onShareAppMessage, onShareTimeline } = useShare();
+const { onShareAppMessage, onShareTimeline, shareTitle, shareImageUrl } = useShare();
 const { wxPay } = useWxPay();
 
 const user = useStore('user');
@@ -48,6 +48,9 @@ watch(user.items, (n, o) => {
 });
 
 onLoad(async () => {
+  shareTitle.value = config.data.value.shareTitle;
+  shareImageUrl.value = config.data.value.logo;
+
   await uni.hideTabBar();
   await setNBT("云顶喝酒卡牌");
   await delay(500).then(() => {
@@ -152,13 +155,17 @@ const onOpenCard = () => {
             user.data.value.playCount < config.data.value.playLimit) {
           doOpen();
         } else {
-          openPayDialog();
+          if (!ios()) {
+            openPayDialog();
+          } else {
+            showIOSDialog.value = true;
+          }
         }
       }).catch(() => networkError());
     }).catch(() => networkError())
   }
 }
-
+const showIOSDialog = ref(false);
 const showPayDialog = ref(false);
 const openPayDialog = () => {
   if (showPayDialog.value) return;
@@ -210,7 +217,7 @@ const openPayDialog = () => {
     </view>
 
     <view class="absolute flex flex-col items-center bottom-150" style="height: 70%;">
-      <image class="absolute top-0 bottom-80 h-60vh" mode="heightFix" style="height: 80%;"
+      <image class="absolute top-0 bottom-80 h-50vh" mode="heightFix" style="height: 80%;"
              src="/static/p_bg.png"></image>
 
       <view class="absolute top--50 flex items-center justify-center">
@@ -244,6 +251,8 @@ const openPayDialog = () => {
              :html="config.data.value.payText"
              :vip="1"
              @close="showPayDialog=false"/>
+
+  <IOSDialog :show="showIOSDialog" @close="showIOSDialog=false"/>
 
   <QRCode :show="showQR"
           :src="banner.qr"

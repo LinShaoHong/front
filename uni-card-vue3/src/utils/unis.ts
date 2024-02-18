@@ -98,5 +98,5 @@ const downLoadAndUpdate = async (mgr) => {
 
 export const ios = () => {
   const sys = uni.getSystemInfoSync();
-  return sys.platform === 'ios';
+  return sys.platform === 'android';
 }

@@ -9,7 +9,7 @@ export function useShare() {
   const config = useStore('config');
 
   const shareTitle = ref(config.data.value.shareTitle);
-  const shareImageUrl = ref(config.data.value.logo);
+  const shareImageUrl = ref(config.data.value.logo as any);
   const shareUserId = ref('');
   const shareMainUserId = ref('');
   const sharePath = ref('pages/index/index');
@@ -32,6 +32,7 @@ export function useShare() {
 
   onShareAppMessage(async () => {
     await beforeShare();
+    console.log(_path.value);
     return {
       title: shareTitle.value,
       imageUrl: shareImageUrl.value,
@@ -49,6 +50,12 @@ export function useShare() {
 
   const beforeShare = async () => {
     await config.getConfigInfo().then(async () => {
+      if (shareTitle.value === '') {
+        shareTitle.value = config.data.value.shareTitle;
+      }
+      if (shareImageUrl.value === '') {
+        shareImageUrl.value = config.data.value.logo;
+      }
       if (ios()) {
         shareUserId.value = user.data.value.id;
       }
