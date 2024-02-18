@@ -25,11 +25,6 @@ export default defineStore({
     }
   },
   actions: {
-    getUserInfoFromShare(query: object) {
-      return new Promise((resolve, reject) => {
-
-      });
-    },
     getUserInfo(option?) {
       const that = this;
       const userId = this.data['value'].id;
