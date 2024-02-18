@@ -39,7 +39,7 @@ export default defineStore({
             success: function (res) {
               const code = res.code;
               const sys = uni.getSystemInfoSync();
-              apiUser.login(code, sys.platform, option?.query?.shareUserId, option?.query?.shareId).then(data => {
+              apiUser.login(code, sys.platform, option?.query?.shareUserId).then(data => {
                 resolve(data.value);
                 that.setUserInfo(data.value);
               }).catch(err => {

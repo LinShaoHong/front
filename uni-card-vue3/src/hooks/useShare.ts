@@ -1,5 +1,5 @@
-import apiShare from "@/api/apiShare";
 import { networkError } from "@/utils/request";
+import { ios } from "@/utils/unis";
 
 /**
  * 分享
@@ -54,14 +54,9 @@ export function useShare() {
 
   const beforeShare = async () => {
     await config.getConfigInfo().then(async () => {
-      // if (ios()) {
-      shareUserId.value = user.data.value.id;
-      let id = Date.now().toString(36)
-      id += Math.random().toString(36).substring(2)
-      shareId.value = id;
-      await apiShare.share(shareUserId.value, shareId.value)
-        .catch(() => networkError());
-      // }
+      if (ios()) {
+        shareUserId.value = user.data.value.id;
+      }
     }).catch(() => networkError());
   };
 
