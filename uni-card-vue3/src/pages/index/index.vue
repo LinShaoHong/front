@@ -5,7 +5,9 @@ import { useWxPay } from "@/hooks/useWxPay";
 import { useShare } from "@/hooks/useShare";
 import { message, setNBT } from "@/utils/unis";
 import PayDialog from "@/components/PayDialog.vue";
+import { tabBar } from "@/utils/tabs";
 
+const bars = reactive(tabBar());
 const { onShareAppMessage, onShareTimeline } = useShare();
 const { wxPay } = useWxPay();
 
@@ -46,7 +48,8 @@ watch(user.items, (n, o) => {
 });
 
 onLoad(async () => {
-  await setNBT("云顶喝酒卡牌")
+  await uni.hideTabBar();
+  await setNBT("云顶喝酒卡牌");
   await delay(500).then(() => {
     showRule.value = true;
   })
@@ -149,6 +152,7 @@ const onOpenCard = () => {
             user.data.value.playCount < config.data.value.playLimit) {
           doOpen();
         } else {
+          const sys = uni.getSystemInfoSync();
           openPayDialog();
         }
       }).catch(() => networkError());
@@ -205,7 +209,7 @@ const openPayDialog = () => {
       </swiper>
     </view>
 
-    <view class="absolute flex flex-col items-center bottom-50" style="height: 70%;">
+    <view class="absolute flex flex-col items-center bottom-150" style="height: 70%;">
       <image class="absolute top-0 bottom-80 h-60vh" mode="heightFix" style="height: 80%;"
              src="/static/p_bg.png"></image>
 
@@ -246,6 +250,8 @@ const openPayDialog = () => {
           :title="banner.title"
           :label="banner.label"
           @close="showQR=false"/>
+
+  <m-tabbar fixed fill current="0" :tabbar="bars"></m-tabbar>
 </template>
 
 <style scoped lang="scss">
