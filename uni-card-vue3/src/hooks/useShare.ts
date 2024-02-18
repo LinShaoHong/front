@@ -1,4 +1,5 @@
 import { networkError } from "@/utils/request";
+import { ios } from "@/utils/unis";
 
 /**
  * 分享
@@ -48,9 +49,9 @@ export function useShare() {
 
   const beforeShare = async () => {
     await config.getConfigInfo().then(async () => {
-      // if (ios()) {
-      shareUserId.value = user.data.value.id;
-      // }
+      if (ios()) {
+        shareUserId.value = user.data.value.id;
+      }
     }).catch(() => networkError());
   };
 
