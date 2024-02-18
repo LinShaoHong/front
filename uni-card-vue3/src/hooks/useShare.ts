@@ -1,5 +1,4 @@
 import { networkError } from "@/utils/request";
-import { ios } from "@/utils/unis";
 
 /**
  * 分享
@@ -11,20 +10,15 @@ export function useShare() {
   const shareTitle = ref(config.data.value.shareTitle);
   const shareImageUrl = ref(config.data.value.logo);
   const shareUserId = ref('');
-  const shareId = ref('');
   const shareMainUserId = ref('');
   const sharePath = ref('pages/index/index');
 
   const _path = computed(() => {
-    if (shareUserId.value != '' || shareId.value != '' || shareMainUserId.value != '') {
+    if (shareUserId.value != '' || shareMainUserId.value != '') {
       let s = sharePath.value as string;
-      if (shareUserId.value != '' && shareId.value != '') {
+      if (shareUserId.value != '') {
         let m = s.includes('?') ? '&' : '?';
         s += m + 'shareUserId=' + shareUserId.value;
-      }
-      if (shareId.value != '') {
-        let m = s.includes('?') ? '&' : '?';
-        s += m + 'shareId=' + shareId.value;
       }
       if (shareMainUserId.value != '') {
         let m = s.includes('?') ? '&' : '?';
@@ -54,9 +48,9 @@ export function useShare() {
 
   const beforeShare = async () => {
     await config.getConfigInfo().then(async () => {
-      if (ios()) {
-        shareUserId.value = user.data.value.id;
-      }
+      // if (ios()) {
+      shareUserId.value = user.data.value.id;
+      // }
     }).catch(() => networkError());
   };
 
@@ -84,7 +78,6 @@ export function useShare() {
     shareTitle,
     shareImageUrl,
     shareUserId,
-    shareId,
     shareMainUserId
   }
 }
