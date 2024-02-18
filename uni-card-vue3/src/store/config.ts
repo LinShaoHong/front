@@ -9,6 +9,7 @@ export default defineStore({
         playLimit: 5,
         battleLimit: 3,
         canBattle: false,
+        iosCanMore: false,
         price: "2.99",
         payText: "",
         shareTitle: "",

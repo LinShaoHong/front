@@ -17,6 +17,7 @@ declare namespace Config {
     playLimit: number
     battleLimit: number
     canBattle: boolean
+    iosCanMore: boolean
     price: string
     payText: string
     shareTitle: string

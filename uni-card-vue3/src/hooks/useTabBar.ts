@@ -37,13 +37,18 @@ export function useTabBar() {
   onLoad(async () => {
     await uni.hideTabBar();
     const user = useStore('user');
+    const config = useStore('config');
     const sys = uni.getSystemInfoSync();
     if (sys.platform === 'ios' && isMp) {
-      user.getUserInfo().then(() => {
-        if (user.data.value.vip < 1) {
-          tabBar.value.list.splice(1, 1);
+      config.getConfigInfo().then(() => {
+        if (!config.data.value.iosCanMore) {
+          user.getUserInfo().then(() => {
+            if (user.data.value.vip < 1) {
+              tabBar.value.list.splice(1, 1);
+            }
+          });
         }
-      });
+      })
     }
   });
 
