@@ -3,6 +3,7 @@ declare namespace User {
     id: string
     openId: string
     code: string
+    shareCode: string
     avatar: number
     nickname: string
     playCount: number

@@ -8,6 +8,7 @@ export default defineStore({
         id: "",
         openId: "",
         code: "",
+        shareCode: "",
         avatar: 1,
         nickname: "",
         playCount: 0,

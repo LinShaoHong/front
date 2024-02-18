@@ -97,6 +97,9 @@ const onUpdateAva = () => {
                   @click="() => {showNicDialog=true;nickChanged=false;}">
           {{ user.data.value.nickname }}
         </van-cell>
+        <van-cell v-if="user.data.value.shareCode" title="邀请人" center title-style="color: #907BE0">
+          {{ user.data.value.shareCode }}
+        </van-cell>
         <van-cell title="游戏规则" is-link center title-style="color: #907BE0" @click="showRule=true"/>
         <button class="p-0 text-left" open-type="share" style="background: transparent;">
           <van-cell title="推荐给朋友" is-link center title-style="color: #907BE0"/>
