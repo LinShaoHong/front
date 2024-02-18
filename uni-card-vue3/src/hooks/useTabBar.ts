@@ -1,4 +1,5 @@
 import { isMp } from "@/utils/platform";
+import { ios } from "@/utils/unis";
 
 /**
  * 分享
@@ -38,8 +39,7 @@ export function useTabBar() {
     await uni.hideTabBar();
     const user = useStore('user');
     const config = useStore('config');
-    const sys = uni.getSystemInfoSync();
-    if (sys.platform === 'ios' && isMp) {
+    if (ios() && isMp) {
       config.getConfigInfo().then(() => {
         if (!config.data.value.iosCanMore) {
           user.getUserInfo().then(() => {
