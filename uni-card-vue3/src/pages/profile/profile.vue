@@ -4,9 +4,9 @@ import { message, setNBT } from "@/utils/unis";
 import { networkError } from "@/utils/request";
 import { onLoad } from "@dcloudio/uni-app";
 import { useShare } from "@/hooks/useShare";
-import { tabBar } from "@/utils/tabs";
+import { useTabBar } from "@/hooks/useTabBar";
 
-const bars = reactive(tabBar());
+const { tabBar, tabLen } = useTabBar();
 const { onShareAppMessage, onShareTimeline } = useShare();
 
 const user = useStore('user')
@@ -15,7 +15,6 @@ const imgUri = inject('$imgUri');
 const showRule = ref(false);
 
 onLoad(async () => {
-  await uni.hideTabBar();
   await setNBT("用户中心");
 })
 
@@ -78,10 +77,6 @@ const onUpdateAva = () => {
         networkError();
       });
 }
-
-const tabs = computed(() => {
-  return tabBar();
-})
 </script>
 
 <template>
@@ -170,7 +165,9 @@ const tabs = computed(() => {
     </view>
   </Popup>
 
-  <m-tabbar fixed fill :current="bars.list.length - 1" :tabbar="bars"></m-tabbar>
+  <view class="fixed bottom-0">
+    <m-tabbar fixed fill :current="tabLen - 1" :tabbar="tabBar"></m-tabbar>
+  </view>
 </template>
 
 <style lang="scss" scoped>

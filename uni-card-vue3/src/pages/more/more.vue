@@ -4,9 +4,9 @@ import { forward } from "@/utils/router";
 import { setNBT } from "@/utils/unis";
 import { useShare } from "@/hooks/useShare";
 import apiRoom from "@/api/apiRoom";
-import { tabBar } from "@/utils/tabs";
+import { useTabBar } from "@/hooks/useTabBar";
 
-const bars = reactive(tabBar());
+const { tabBar } = useTabBar();
 const { onShareAppMessage, onShareTimeline } = useShare();
 
 const imgUri = inject('$imgUri');
@@ -15,7 +15,6 @@ const config = useStore('config');
 const joined = ref([] as any[]);
 
 onLoad(async (option) => {
-  await uni.hideTabBar();
   await setNBT("云顶玩法");
   if (option !== undefined) {
     const mainUserId = option['mainUserId'];
@@ -129,7 +128,9 @@ const tabs = computed(() => {
              :has-pay="user.data.value.vip < 1"
              @close="showBattleDialog=false"/>
 
-  <m-tabbar fixed fill current="1" :tabbar="bars"></m-tabbar>
+  <view class="fixed bottom-0">
+    <m-tabbar fixed fill current="1" :tabbar="tabBar"></m-tabbar>
+  </view>
 </template>
 
 <style scoped lang="scss">

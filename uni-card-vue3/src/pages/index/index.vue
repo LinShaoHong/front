@@ -5,9 +5,9 @@ import { useWxPay } from "@/hooks/useWxPay";
 import { useShare } from "@/hooks/useShare";
 import { message, setNBT } from "@/utils/unis";
 import PayDialog from "@/components/PayDialog.vue";
-import { tabBar } from "@/utils/tabs";
+import { useTabBar } from "@/hooks/useTabBar";
 
-const bars = reactive(tabBar());
+const { tabBar } = useTabBar();
 const { onShareAppMessage, onShareTimeline } = useShare();
 const { wxPay } = useWxPay();
 
@@ -251,7 +251,9 @@ const openPayDialog = () => {
           :label="banner.label"
           @close="showQR=false"/>
 
-  <m-tabbar fixed fill current="0" :tabbar="bars"></m-tabbar>
+  <view class="fixed bottom-0">
+    <m-tabbar fixed fill current="0" :tabbar="tabBar"></m-tabbar>
+  </view>
 </template>
 
 <style scoped lang="scss">

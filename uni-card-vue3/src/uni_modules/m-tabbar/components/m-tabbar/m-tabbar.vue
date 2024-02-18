@@ -395,9 +395,6 @@
 							url
 						})
 					} else {
-						if (openType !== 'navigate') {
-							this.currentIndex = index
-						}
 						switch (openType) {
 							case 'navigate':
 								uni.navigateTo({
