@@ -8,11 +8,15 @@ import { forward } from "@/utils/router";
 import env from "@/config/env";
 import apiUser from "@/api/apiUser";
 import apiRoom from "@/api/apiRoom";
+import { useShare } from "@/hooks/useShare";
 
 const { wxPay } = useWxPay();
 const user = useStore('user');
 const config = useStore('config');
 const imgUri = inject('$imgUri');
+
+//-------------------- share -----------------------
+const { onShareAppMessage, onShareTimeline, sharePath, shareTitle, shareImageUrl } = useShare();
 
 //---------------------------- sse --------------------
 let task = null;
@@ -42,8 +46,13 @@ const onChoosePlayer = () => {
 
 onLoad(async (option) => {
   await setNBT("云顶对弈");
+
+  shareImageUrl.value = '';
+  shareTitle.value = 'pages/more/more';
   shuffleCards();
+
   user.getUserInfo().then(() => {
+    shareTitle.value = user.data.value.nickname + '邀请您一起云顶对弈！';
     let mainUserId = user.data.value.id;
     if (option !== undefined) {
       mainUserId = option['mainUserId'];
@@ -51,7 +60,9 @@ onLoad(async (option) => {
         mainUserId = user.data.value.id;
       }
     }
-    apiUser.getById(mainUserId).then(data => {
+
+    const sys = uni.getSystemInfoSync();
+    apiUser.getById(mainUserId, sys.platform).then(data => {
       mainUser.value = data.value;
       apiRoom.players(mainUser.value.id).then((data) => {
         players.value = data.values;
@@ -174,22 +185,6 @@ const onNext = () => {
   apiRoom.next(mainUser.value.id, player.value['userId']).catch(() => networkError());
   open.value = false;
 };
-
-onShareAppMessage(() => {
-  return {
-    title: user.data.value.nickname + '邀请您一起云顶对弈！',
-    imageUrl: '',
-    path: 'pages/more/more?mainUserId=' + mainUser.value.id
-  };
-});
-
-onShareTimeline(() => {
-  return {
-    title: user.data.value.nickname + '邀请您一起云顶对弈！',
-    query: 'mainUserId=' + mainUser.value.id,
-    imageUrl: ''
-  }
-});
 
 //----------------------- shuffle ------------------------
 const backCardsCount = ref(5);

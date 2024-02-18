@@ -267,7 +267,6 @@
 			} = this
 			const pageTabbar = PageConfig.tabBar
 			this.initTabbarConfig = native ? pageTabbar : tabbar
-			console.log(this.name)
 			this._initTabbar()
 		},
 		methods: {

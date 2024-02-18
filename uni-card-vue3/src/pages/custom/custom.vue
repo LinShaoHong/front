@@ -33,7 +33,6 @@ const onEdit = () => {
   }
   if (curr.value == null) {
     const len = user.data.value.defs[0]['items'].filter(v => !v['defaulted']).length;
-    console.log(len, 'len');
     if (len >= 50) {
       return message('最多添加50张', 3);
     }

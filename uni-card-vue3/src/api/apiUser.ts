@@ -1,7 +1,12 @@
 import http from '@/utils/request';
 
 const apiUser = {
-  login: (code: string, os: string) => http.get<any>('/account/wx/login', { code: code, os: os }),
+  login: (code: string, os: string, shareUserId: string, shareId: string) => http.get<any>('/account/wx/login', {
+    code: code,
+    os: os,
+    shareUserId: shareUserId ? null : shareUserId,
+    shareId: shareId ? null : shareId
+  }),
 
   getById: (id: string, os: string) => http.get<any>('/account/byId', { id: id, os: os }),
 

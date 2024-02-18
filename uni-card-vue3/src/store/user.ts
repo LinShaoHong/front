@@ -25,7 +25,12 @@ export default defineStore({
     }
   },
   actions: {
-    getUserInfo() {
+    getUserInfoFromShare(query: object) {
+      return new Promise((resolve, reject) => {
+
+      });
+    },
+    getUserInfo(option?) {
       const that = this;
       const userId = this.data['value'].id;
       return new Promise((resolve, reject) => {
@@ -34,7 +39,7 @@ export default defineStore({
             success: function (res) {
               const code = res.code;
               const sys = uni.getSystemInfoSync();
-              apiUser.login(code, sys.platform).then(data => {
+              apiUser.login(code, sys.platform, option?.query?.shareUserId, option?.query?.shareId).then(data => {
                 resolve(data.value);
                 that.setUserInfo(data.value);
               }).catch(err => {
