@@ -312,7 +312,6 @@ const onOpenCard = () => {
             user.data.value.playCount < config.data.value.battleLimit) {
           doOpen();
         } else {
-          const sys = uni.getSystemInfoSync();
           openPayDialog();
         }
       }).catch(() => networkError());
@@ -323,8 +322,9 @@ const onOpenCard = () => {
 const showPayDialog = ref(false);
 const openPayDialog = () => {
   if (showPayDialog.value) return;
-  config.getConfigInfo();
-  showPayDialog.value = true;
+  config.getConfigInfo().then(() => {
+    showPayDialog.value = true;
+  }).catch(() => networkError());
 };
 </script>
 

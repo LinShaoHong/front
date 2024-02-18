@@ -38,7 +38,9 @@ const showDefDialog = ref(false);
 const onAddDefine = () => {
   user.getUserInfo().then(() => {
     if (user.data.value.vip < 1) {
-      showDefDialog.value = true;
+      config.getConfigInfo().then(() => {
+        showDefDialog.value = true;
+      }).catch(() => networkError());
     } else {
       forward('custom');
     }
