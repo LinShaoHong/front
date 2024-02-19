@@ -17,7 +17,6 @@ declare namespace Config {
     avaCount: number
     playLimit: number
     iosLimit: number
-    canBattle: boolean
     iosCanMore: boolean
     iosCanPay: boolean
     price: string

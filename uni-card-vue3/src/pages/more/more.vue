@@ -50,26 +50,6 @@ const hasDef = computed(() => {
   return !ios() || user.data.value.vip >= 1;
 
 });
-
-const showBattleDialog = ref(false);
-const battlePayHtml = computed(() => {
-  if (user.data.value.vip < 1) {
-    return "<div style='font-size:15px'>对弈功能紧急开发中，<span style='color:red;font-size:18px'>" + config.data.value.price + "</span>元立即解锁<span style='color:red;font-size:18px'>永久</span>使用，届时恢复原价12.99元，敬请期待！</div>";
-  } else {
-    return "紧急开发中，敬请期待...";
-  }
-});
-
-const hasBattle = computed(() => {
-  return config.data.value.canBattle || user.data.value.code === 'wx_1001';
-});
-const onBattle = () => {
-  if (hasBattle.value) {
-    forward('room');
-  } else {
-    showBattleDialog.value = true;
-  }
-};
 </script>
 
 <template>
@@ -90,7 +70,7 @@ const onBattle = () => {
     </view>
     <view class="battle_box h-10vh w-70vw rd-100 flex flex-col items-center justify-center"
           :style="{'margin-top': hasDef? '50rpx' : '10rpx'}"
-          @click="onBattle">
+          @click="forward('room')">
       <view class="w-full h-full flex items-center justify-center gap-10">
         <image src="/static/battle.png" class="h-5vh" mode="heightFix">+</image>
         <text class="text-white" style="font-size: 40rpx">云顶对弈</text>
@@ -98,7 +78,7 @@ const onBattle = () => {
       <text class="text-white mb-10" style="font-size: 26rpx;">可邀请他人同时在线对弈</text>
     </view>
   </view>
-  <view v-if="hasBattle" class="w-screen relative pt-50 pl-20 pr-20">
+  <view class="w-screen relative pt-50 pl-20 pr-20">
     <view class="flex gap-20 pb-10 pl-20 items-center">
       <view class="title_line w-5vw"></view>
       <text class="text-white" style="font-size: 32rpx">我参与过的</text>
