@@ -306,12 +306,12 @@ const onOpenCard = () => {
     config.getConfigInfo().then(() => {
       user.getUserInfo().then(() => {
         if (user.data.value.vip >= 1 ||
-            user.data.value.playCount < config.data.value.battleLimit) {
+            (!ios() && user.data.value.playCount < config.data.value.playLimit) ||
+            (ios() && user.data.value.playCount < config.data.value.iosLimit)) {
           doOpen();
         } else {
           if (!ios()) {
-            // openPayDialog();
-            showIOSDialog.value = true;
+            openPayDialog();
           } else {
             showIOSDialog.value = true;
           }

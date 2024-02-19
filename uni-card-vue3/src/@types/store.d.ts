@@ -16,9 +16,10 @@ declare namespace Config {
   interface ConfigInfo {
     avaCount: number
     playLimit: number
-    battleLimit: number
+    iosLimit: number
     canBattle: boolean
     iosCanMore: boolean
+    iosCanPay: boolean
     price: string
     payText: string
     shareTitle: string

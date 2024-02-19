@@ -7,9 +7,10 @@ export default defineStore({
       data: {
         avaCount: 40,
         playLimit: 5,
-        battleLimit: 3,
+        iosLimit: 5,
         canBattle: false,
         iosCanMore: false,
+        iosCanPay: false,
         price: "2.99",
         payText: "",
         shareTitle: "",

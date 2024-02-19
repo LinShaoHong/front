@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { networkError } from "@/utils/request";
 import { forward } from "@/utils/router";
-import { setNBT } from "@/utils/unis";
+import { ios, setNBT } from "@/utils/unis";
 import { useShare } from "@/hooks/useShare";
 import apiRoom from "@/api/apiRoom";
 import { useTabBar } from "@/hooks/useTabBar";
@@ -46,6 +46,10 @@ const onAddDefine = () => {
     }
   }).catch(() => networkError());
 };
+const hasDef = computed(() => {
+  return !ios() || user.data.value.vip >= 1;
+
+});
 
 const showBattleDialog = ref(false);
 const battlePayHtml = computed(() => {
@@ -66,10 +70,6 @@ const onBattle = () => {
     showBattleDialog.value = true;
   }
 };
-
-const tabs = computed(() => {
-  return tabBar();
-})
 </script>
 
 <template>
@@ -80,14 +80,16 @@ const tabs = computed(() => {
       <text class="text-white" style="font-size: 34rpx">海克斯卡牌</text>
       <view class="title_line w-20vw"></view>
     </view>
-    <view class="define_box mt-10 h-10vh w-70vw rd-100 flex flex-col items-center justify-center" @click="onAddDefine">
+    <view v-if="hasDef" class="define_box mt-10 h-10vh w-70vw rd-100 flex flex-col items-center justify-center"
+          @click="onAddDefine">
       <view class="w-full h-full flex items-center justify-center gap-10">
         <image src="/static/define_add.png" class="h-5vh" mode="heightFix">+</image>
         <text class="text-white" style="font-size: 40rpx">自定义</text>
       </view>
       <text class="text-white mb-10" style="font-size: 26rpx;">可添加编辑卡牌，随心畅玩！</text>
     </view>
-    <view class="battle_box mt-50 h-10vh w-70vw rd-100 flex flex-col items-center justify-center"
+    <view class="battle_box h-10vh w-70vw rd-100 flex flex-col items-center justify-center"
+          :style="{'margin-top': hasDef? '50rpx' : '10rpx'}"
           @click="onBattle">
       <view class="w-full h-full flex items-center justify-center gap-10">
         <image src="/static/battle.png" class="h-5vh" mode="heightFix">+</image>
