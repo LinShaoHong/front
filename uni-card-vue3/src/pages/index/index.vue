@@ -51,7 +51,6 @@ onLoad(async () => {
   shareTitle.value = config.data.value.shareTitle;
   shareImageUrl.value = config.data.value.logo;
 
-  await uni.hideTabBar();
   await setNBT("云顶喝酒卡牌");
   await delay(500).then(() => {
     showRule.value = true;
@@ -193,7 +192,7 @@ const openPayDialog = () => {
   </Popup>
 
   <button class="fixed right-0 w-200 h-66 z-6"
-          :style="{top: hasBanner ? '240rpx' : '60rpx', background: 'transparent'}"
+          :style="{top: hasBanner ? 'calc(20vh - 80rpx)' : 'calc(20vh - 80rpx)', background: 'transparent'}"
           openType="contact">
     <image class="w-full h-full absolute left-0" src="/static/mask_bg.png"></image>
     <image class="w-76 h-66 absolute left-4" src="/static/message.png"></image>
@@ -217,8 +216,8 @@ const openPayDialog = () => {
       </swiper>
     </view>
 
-    <view class="absolute flex flex-col items-center bottom-150" style="height: 70%;">
-      <image class="absolute top-0 bottom-80 h-50vh" mode="heightFix" style="height: 80%;"
+    <view class="absolute flex flex-col items-center bottom-50" style="height: 70%;">
+      <image class="absolute top-0 bottom-80 h-60vh" mode="heightFix" style="height: 80%;"
              src="/static/p_bg.png"></image>
 
       <view class="absolute top--50 flex items-center justify-center">
@@ -261,9 +260,9 @@ const openPayDialog = () => {
           :label="banner.label"
           @close="showQR=false"/>
 
-  <view class="fixed bottom-0">
-    <m-tabbar fixed fill current="0" :tabbar="tabBar"></m-tabbar>
-  </view>
+<!--  <view class="fixed bottom-0">-->
+<!--    <m-tabbar fixed fill current="0" :tabbar="tabBar"></m-tabbar>-->
+<!--  </view>-->
 </template>
 
 <style scoped lang="scss">

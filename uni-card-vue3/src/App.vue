@@ -5,7 +5,6 @@ import { autoUpdate } from "@/utils/unis";
 import { isMp } from "@/utils/platform";
 
 onLaunch(async (option) => {
-  await uni.hideTabBar();
   const user = useStore('user');
   const config = useStore('config');
   config.getConfigInfo().then(() => {

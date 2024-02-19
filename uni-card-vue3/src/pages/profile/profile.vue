@@ -196,9 +196,9 @@ onShow(() => {
     </view>
   </Popup>
 
-  <view class="fixed bottom-0">
-    <m-tabbar fixed fill :current="tabLen - 1" :tabbar="tabBar"></m-tabbar>
-  </view>
+<!--  <view class="fixed bottom-0">-->
+<!--    <m-tabbar fixed fill :current="tabLen - 1" :tabbar="tabBar"></m-tabbar>-->
+<!--  </view>-->
 </template>
 
 <style lang="scss" scoped>

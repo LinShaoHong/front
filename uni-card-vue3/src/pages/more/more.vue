@@ -106,9 +106,9 @@ const hasDef = computed(() => {
              :vip="1"
              @close="showDefDialog=false"/>
 
-  <view class="fixed bottom-0">
-    <m-tabbar fixed fill current="1" :tabbar="tabBar"></m-tabbar>
-  </view>
+<!--  <view class="fixed bottom-0">-->
+<!--    <m-tabbar fixed fill current="1" :tabbar="tabBar"></m-tabbar>-->
+<!--  </view>-->
 </template>
 
 <style scoped lang="scss">
