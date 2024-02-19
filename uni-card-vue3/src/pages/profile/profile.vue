@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { isEmpty } from "@/utils/is";
-import { message, setNBT } from "@/utils/unis";
+import { ios, message, setNBT } from "@/utils/unis";
 import { networkError } from "@/utils/request";
 import { onLoad } from "@dcloudio/uni-app";
 import { useShare } from "@/hooks/useShare";
@@ -82,9 +82,11 @@ const onUpdateAva = () => {
 const showInvited = ref(false);
 const invited = ref([] as any[]);
 onShow(() => {
-  apiUser.invited(user.data.value.code).then((data) => {
-    invited.value = data.values;
-  }).catch(() => networkError());
+  if (ios()) {
+    apiUser.invited(user.data.value.code).then((data) => {
+      invited.value = data.values;
+    }).catch(() => networkError());
+  }
 });
 </script>
 
