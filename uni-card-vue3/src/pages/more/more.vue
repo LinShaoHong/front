@@ -106,12 +106,6 @@ const hasDef = computed(() => {
              :vip="1"
              @close="showDefDialog=false"/>
 
-  <PayDialog :show="showBattleDialog"
-             :html="battlePayHtml"
-             :vip="1"
-             :has-pay="user.data.value.vip < 1"
-             @close="showBattleDialog=false"/>
-
   <view class="fixed bottom-0">
     <m-tabbar fixed fill current="1" :tabbar="tabBar"></m-tabbar>
   </view>
