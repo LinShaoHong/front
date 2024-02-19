@@ -9,6 +9,8 @@ const apiUser = {
 
   getById: (id: string, os: string) => http.get<any>('/account/byId', { id: id, os: os }),
 
+  invited: (code: string) => http.get<any>('/account/invited', { code: code }),
+
   inc: (id: string) => http.get<any>('/account/inc', { id: id }),
 
   vip: (id: string, prepayId: string, vip: number) => http.post<any>('/account/vip', {

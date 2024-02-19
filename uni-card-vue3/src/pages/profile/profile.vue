@@ -5,6 +5,7 @@ import { networkError } from "@/utils/request";
 import { onLoad } from "@dcloudio/uni-app";
 import { useShare } from "@/hooks/useShare";
 import { useTabBar } from "@/hooks/useTabBar";
+import apiUser from "@/api/apiUser";
 
 const { tabBar, tabLen } = useTabBar();
 const { onShareAppMessage, onShareTimeline } = useShare();
@@ -77,6 +78,14 @@ const onUpdateAva = () => {
         networkError();
       });
 }
+
+const showInvited = ref(false);
+const invited = ref([] as any[]);
+onShow(() => {
+  apiUser.invited(user.data.value.code).then((data) => {
+    invited.value = data.values;
+  }).catch(() => networkError());
+});
 </script>
 
 <template>
@@ -97,8 +106,8 @@ const onUpdateAva = () => {
                   @click="() => {showNicDialog=true;nickChanged=false;}">
           {{ user.data.value.nickname }}
         </van-cell>
-        <van-cell v-if="user.data.value.shareCode" title="邀请人" center title-style="color: #907BE0">
-          {{ user.data.value.shareCode }}
+        <van-cell v-if="invited.length > 0" title="我邀请的" is-link center title-style="color: #907BE0"
+                  @click="showInvited=true">
         </van-cell>
         <van-cell title="游戏规则" is-link center title-style="color: #907BE0" @click="showRule=true"/>
         <button class="p-0 text-left" open-type="share" style="background: transparent;">
@@ -165,6 +174,23 @@ const onUpdateAva = () => {
                @click="showRule=false"></image>
         <text class="color-white absolute font-bold" style="font-size: 30rpx;" @click="showRule=false">确定</text>
       </view>
+    </view>
+  </Popup>
+
+  <Popup :show="showInvited" position="bottom" @clickMask="showInvited=false">
+    <view v-if="showInvited" class="p-20 relative h-50vh flex items-center justify-center" style="background: white">
+      <view class="absolute top-20 w-full text-center" style="font-size: 34rpx; color: #907BE0">我邀请的</view>
+      <scroll-view scroll-y class="avatar absolute top-100 w-700">
+        <view class="flex flex-wrap gap-15 pb-50">
+          <view v-for="invite in invited" class="h-120 w-200 rd-30" style="border: 1rpx solid #c8c7cc;">
+            <view class="flex flex-col items-center justify-center h-full w-full pl-10 pr-10">
+              <image style="border-radius: 50%; height: 100rpx;" :src="`${imgUri}/avatar/${invite.avatar}.png`"
+                     mode="heightFix"></image>
+              <text style="font-size: 22rpx; color: #482380;">{{ invite.nickname }}</text>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
     </view>
   </Popup>
 
