@@ -67,3 +67,8 @@ scroll-view ::-webkit-scrollbar {
 	height:0;
 	color:transparent;
 }
+
+.content {
+	position: relative;
+	height: calc(100vh - var(--window-bottom));
+}

@@ -6,6 +6,7 @@ import { useShare } from "@/hooks/useShare";
 import { ios, message, setNBT } from "@/utils/unis";
 import PayDialog from "@/components/PayDialog.vue";
 import { useTabBar } from "@/hooks/useTabBar";
+import { isMp } from "@/utils/platform";
 
 const { tabBar } = useTabBar();
 const { onShareAppMessage, onShareTimeline, shareTitle, shareImageUrl } = useShare();
@@ -78,7 +79,8 @@ const backCardStyle = computed(() => (index) => {
     top: ((index - 1) * 18) + 'rpx',
     transform: 'scale(' + (0.9 + index * 0.03) + ')' + (open.value && index === backCardsCount.value ? 'rotateY(180deg)' : ''),
     'z-index': index + 10,
-    transition: 'transform .4s ease'
+    transition: 'transform .4s ease',
+    height: isMp ? '50vh' : 'calc(50vh - var(--window-bottom) + 25px)'
   }
 });
 
@@ -176,93 +178,91 @@ const openPayDialog = () => {
 </script>
 
 <template>
-  <image class="h-screen w-screen fixed" src="/static/back.png" mode="scaleToFill"></image>
+  <view class="content">
+    <image class="h-screen w-screen fixed" src="/static/back.png" mode="scaleToFill"></image>
 
-  <Popup position="center" :show="showRule">
-    <view class="pb-40">
-      <image class="max-w-screen h-75vh" src="/static/rule.png" mode="heightFix"></image>
-      <view class="flex items-center justify-center">
-        <image class="px-10 py-10 w-320 h-100"
-               src="/static/foot_bg.png"
-               mode="scaleToFill"
-               @click="showRule=false"></image>
-        <text class="color-white absolute font-bold" style="font-size: 30rpx;" @click="showRule=false">确定</text>
-      </view>
-    </view>
-  </Popup>
-
-  <button class="fixed right-0 w-200 h-66 z-6"
-          :style="{top: hasBanner ? 'calc(20vh - 80rpx)' : 'calc(20vh - 80rpx)', background: 'transparent'}"
-          openType="contact">
-    <image class="w-full h-full absolute left-0" src="/static/mask_bg.png"></image>
-    <image class="w-76 h-66 absolute left-4" src="/static/message.png"></image>
-    <text class="color-white absolute left-80" style="font-size: 28rpx;">联系客服</text>
-  </button>
-
-  <view class="relative flex flex-col items-center h-100vh">
-    <view v-if="hasBanner"
-          class="w-full px-20 py-10" style="height: 20%">
-      <swiper :indicator-dots="false"
-              :autoplay="true"
-              :interval="3500"
-              :duration="150"
-              :circular="true"
-              indicator-color="rgba(255, 255, 255, 0.8)"
-              indicator-active-color="#fff">
-        <swiper-item v-for="(item, index) in config.data.value.banners" :key="index">
-          <image :src="item.src" class="h-220 w-full block border-rd-20" mode="scaleToFill"
-                 @click="onBanner(item)"></image>
-        </swiper-item>
-      </swiper>
-    </view>
-
-    <view class="absolute flex flex-col items-center bottom-50" style="height: 70%;">
-      <image class="absolute top-0 bottom-80 h-60vh" mode="heightFix" style="height: 80%;"
-             src="/static/p_bg.png"></image>
-
-      <view class="absolute top--50 flex items-center justify-center">
-        <view v-for="index in backCardsCount"
-              :class="['absolute', shuffle && index===backCardsCount && 'swap']"
-              :key="'card-back-' + index"
-              :style="backCardStyle(index)"
-        >
-          <image src="/static/card-back.png"
-                 class="h-50vh"
-                 mode="heightFix"
-                 :style="{'backface-visibility': index === backCardsCount? 'hidden':''}"></image>
+    <Popup position="center" :show="showRule">
+      <view class="pb-40">
+        <image class="max-w-screen h-75vh" src="/static/rule.png" mode="heightFix"></image>
+        <view class="flex items-center justify-center">
+          <image class="px-10 py-10 w-320 h-100"
+                 src="/static/foot_bg.png"
+                 mode="scaleToFill"
+                 @click="showRule=false"></image>
+          <text class="color-white absolute font-bold" style="font-size: 30rpx;" @click="showRule=false">确定</text>
         </view>
       </view>
+    </Popup>
 
-      <view class="absolute bottom-30 flex items-center justify-center gap-50 z-10">
-        <image class="h-90" src="/static/xp.png" mode="heightFix" @click="onShuffle"></image>
-        <image class="h-90" src="/static/kp.png" mode="heightFix" @click="onOpenCard"></image>
+    <button class="fixed right-0 w-200 h-66 z-6"
+            :style="{top: hasBanner ? 'calc(20vh - 80rpx)' : 'calc(20vh - 80rpx)', background: 'transparent'}"
+            openType="contact">
+      <image class="w-full h-full absolute left-0" src="/static/mask_bg.png"></image>
+      <image class="w-76 h-66 absolute left-4" src="/static/message.png"></image>
+      <text class="color-white absolute left-80" style="font-size: 28rpx;">联系客服</text>
+    </button>
+
+    <view class="relative flex flex-col items-center h-full">
+      <view v-if="hasBanner"
+            class="w-full px-20 py-10" style="height: 20%">
+        <swiper :indicator-dots="false"
+                :autoplay="true"
+                :interval="3500"
+                :duration="150"
+                :circular="true"
+                indicator-color="rgba(255, 255, 255, 0.8)"
+                indicator-active-color="#fff">
+          <swiper-item v-for="(item, index) in config.data.value.banners" :key="index">
+            <image :src="item.src" class="h-220 w-full block border-rd-20" mode="scaleToFill"
+                   @click="onBanner(item)"></image>
+          </swiper-item>
+        </swiper>
+      </view>
+
+      <view class="absolute flex flex-col items-center bottom-50" style="height: 70%;">
+        <image class="absolute top-0 bottom-80 h-60vh" mode="heightFix" style="height: 80%;"
+               src="/static/p_bg.png"></image>
+
+        <view class="absolute top--50 flex items-center justify-center">
+          <view v-for="index in backCardsCount"
+                :class="['absolute', shuffle && index===backCardsCount && 'swap']"
+                :key="'card-back-' + index"
+                :style="backCardStyle(index)"
+          >
+            <image src="/static/card-back.png"
+                   class="h-full"
+                   mode="heightFix"
+                   :style="{'backface-visibility': index === backCardsCount? 'hidden':''}"></image>
+          </view>
+        </view>
+
+        <view class="absolute bottom-30 flex items-center justify-center gap-50 z-10">
+          <image class="h-90" src="/static/xp.png" mode="heightFix" @click="onShuffle"></image>
+          <image class="h-90" src="/static/kp.png" mode="heightFix" @click="onOpenCard"></image>
+        </view>
       </view>
     </view>
+
+    <OpenCard :open="open"
+              :defaulted="item?.defaulted"
+              :title="item?.defaulted? '' : item?.title"
+              :content="item?.defaulted? '' : item?.content"
+              :src="item?.defaulted? `${imgUri}${item?.src}` : '/static/card.png'"
+              @close="open=false"/>
+
+    <PayDialog :show="showPayDialog"
+               :html="config.data.value.payText"
+               :vip="1"
+               @close="showPayDialog=false"/>
+
+    <IOSDialog :show="showIOSDialog" @close="showIOSDialog=false"/>
+
+    <QRCode :show="showQR"
+            :src="banner.qr"
+            :title="banner.title"
+            :label="banner.label"
+            @close="showQR=false"/>
   </view>
-
-  <OpenCard :open="open"
-            :defaulted="item?.defaulted"
-            :title="item?.defaulted? '' : item?.title"
-            :content="item?.defaulted? '' : item?.content"
-            :src="item?.defaulted? `${imgUri}${item?.src}` : '/static/card.png'"
-            @close="open=false"/>
-
-  <PayDialog :show="showPayDialog"
-             :html="config.data.value.payText"
-             :vip="1"
-             @close="showPayDialog=false"/>
-
-  <IOSDialog :show="showIOSDialog" @close="showIOSDialog=false"/>
-
-  <QRCode :show="showQR"
-          :src="banner.qr"
-          :title="banner.title"
-          :label="banner.label"
-          @close="showQR=false"/>
-
-<!--  <view class="fixed bottom-0">-->
-<!--    <m-tabbar fixed fill current="0" :tabbar="tabBar"></m-tabbar>-->
-<!--  </view>-->
 </template>
 
 <style scoped lang="scss">

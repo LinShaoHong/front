@@ -1,4 +1,5 @@
 import apiUser from '@/api/apiUser';
+import { useLogin } from "@/hooks/useLogin";
 
 export default defineStore({
   id: 'user',
@@ -29,20 +30,13 @@ export default defineStore({
     getUserInfo(option?) {
       const that = this;
       const userId = this.data['value'].id;
+      const login = useLogin();
       return new Promise((resolve, reject) => {
         if (!userId) {
-          uni.login({
-            success: function (res) {
-              const code = res.code;
-              const sys = uni.getSystemInfoSync();
-              apiUser.login(code, sys.platform, option?.query?.shareUserId).then(data => {
-                resolve(data.value);
-                that.setUserInfo(data.value);
-              }).catch(err => {
-                reject(err);
-              });
-            }
-          })
+          login.login(option)?.then((data) => {
+            that.setUserInfo(data as User.UserInfo);
+            resolve(data);
+          }).catch(err => reject(err));
         } else {
           const sys = uni.getSystemInfoSync();
           apiUser.getById(userId, sys.platform).then(data => {
