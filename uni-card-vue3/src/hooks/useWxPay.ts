@@ -19,7 +19,7 @@ export function useWxPay() {
     } else {
       uni.hideLoading();
     }
-  })
+  });
 
   const pay = (vip: number) => {
     return new Promise((resolve, reject) => {
@@ -38,7 +38,7 @@ export function useWxPay() {
         reject(err);
       })
     });
-  }
+  };
 
   const wxPay = (timeStamp, nonceStr, pkg, paySign, signType) => {
     return new Promise((resolve, reject) => {
