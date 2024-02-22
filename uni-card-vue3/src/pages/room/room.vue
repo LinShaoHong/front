@@ -12,7 +12,7 @@ import { useShare } from "@/hooks/useShare";
 import { useSSE } from "@/hooks/useSSE";
 
 const { wxPay } = useWxPay();
-const { connect } = useSSE();
+const { connect: sseConnect, abort: sseAbort } = useSSE();
 const user = useStore('user');
 const config = useStore('config');
 const imgUri = inject('$imgUri');
@@ -68,7 +68,7 @@ onLoad(async (option) => {
       shareTitle.value = mainUser.value.nickname + '邀请您一起云顶对弈！';
       shareMainUserId.value = mainUser.value.id;
       const url = env.apiBaseUrl + '/room/sub?mainUserId=' + mainUser.value.id + '&userId=' + user.data.value.id;
-      await connect(url, listen);
+      await sseConnect(url, listen);
       apiRoom.player(mainUserId).then((data) => {
         player.value = data.value;
       }).catch(() => networkError());
@@ -82,13 +82,9 @@ onUnload(async () => {
 
 const leave = () => {
   apiRoom.leave(mainUser.value.id, user.data.value.id).then(() => {
-    if (task != null) {
-      task.abort();
-    }
+    sseAbort();
   }).catch(() => {
-    if (task != null) {
-      task.abort();
-    }
+    sseAbort();
   })
 };
 

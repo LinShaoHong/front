@@ -5,6 +5,8 @@ import { fetchEventSource } from "@microsoft/fetch-event-source";
  * SSE相关
  */
 export function useSSE() {
+  let task = null;
+
   const connect = async (url, listener: (event: any) => void) => {
     if (isMp) {
       mpConnect(url, listener);
@@ -13,9 +15,16 @@ export function useSSE() {
     }
   };
 
+  const abort = () => {
+    if (task != null) {
+      // @ts-ignore
+      task.abort();
+    }
+  }
+
   const mpConnect = (url, listener: (event: any) => void) => {
     // @ts-ignore
-    const task = wx.request({
+    task = wx.request({
       url: url,
       enableChunked: true,
       headers: {
@@ -34,6 +43,7 @@ export function useSSE() {
       listener(JSON.parse(e.substring(6)));
     };
     if (task != null) {
+      // @ts-ignore
       task.onChunkReceived(callback);
     }
   };
@@ -47,6 +57,7 @@ export function useSSE() {
   };
 
   return {
-    connect
+    connect,
+    abort
   }
 }
