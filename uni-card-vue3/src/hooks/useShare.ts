@@ -14,22 +14,6 @@ export function useShare() {
   const shareMainUserId = ref('');
   const sharePath = ref('pages/index/index');
 
-  const _path = computed(() => {
-    if (shareUserId.value != '' || shareMainUserId.value != '') {
-      let s = sharePath.value as string;
-      if (shareUserId.value != '') {
-        let m = s.includes('?') ? '&' : '?';
-        s += m + 'shareUserId=' + shareUserId.value;
-      }
-      if (shareMainUserId.value != '') {
-        let m = s.includes('?') ? '&' : '?';
-        s += m + 'mainUserId=' + shareMainUserId.value;
-      }
-      return s;
-    }
-    return sharePath.value;
-  });
-
   onShareAppMessage(async () => {
     await beforeShare();
     console.log(_path.value);
@@ -46,6 +30,22 @@ export function useShare() {
       imageUrl: shareImageUrl.value,
       query: '',
     }
+  });
+
+  const _path = computed(() => {
+    if (shareUserId.value != '' || shareMainUserId.value != '') {
+      let s = sharePath.value as string;
+      if (shareUserId.value != '') {
+        let m = s.includes('?') ? '&' : '?';
+        s += m + 'shareUserId=' + shareUserId.value;
+      }
+      if (shareMainUserId.value != '') {
+        let m = s.includes('?') ? '&' : '?';
+        s += m + 'mainUserId=' + shareMainUserId.value;
+      }
+      return s;
+    }
+    return sharePath.value;
   });
 
   const beforeShare = async () => {
