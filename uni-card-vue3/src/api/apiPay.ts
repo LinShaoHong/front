@@ -2,9 +2,10 @@ import http from '@/utils/request';
 import WxPayResp = Pay.WxPayResp;
 
 const apiPay = {
-  wxPay: (amount: string, userId: string) => http.post<WxPayResp>('/pay/wx', {
+  wxPay: (amount: string, userId: string, h5: boolean) => http.post<WxPayResp>('/pay/wx', {
     userId: userId,
-    amount: amount
+    amount: amount,
+    h5: h5
   })
 };
 

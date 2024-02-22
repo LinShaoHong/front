@@ -1,5 +1,6 @@
 import apiPay from "@/api/apiPay";
 import { message } from "@/utils/unis";
+import { isH5 } from "@/utils/platform";
 
 /**
  * 微信支付
@@ -23,7 +24,7 @@ export function useWxPay() {
 
   const pay = (vip: number) => {
     return new Promise((resolve, reject) => {
-      apiPay.wxPay(config.data.value.price, user.data.value.id)
+      apiPay.wxPay(config.data.value.price, user.data.value.id, isH5)
         .then((res) => {
           const v = res.value;
           wxPay(v.timeStamp, v.nonceStr, v.pkg, v.paySign, v.signType)
