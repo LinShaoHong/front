@@ -9,8 +9,10 @@ import env from "@/config/env";
 import apiUser from "@/api/apiUser";
 import apiRoom from "@/api/apiRoom";
 import { useShare } from "@/hooks/useShare";
+import { useSSE } from "@/hooks/useSSE";
 
 const { wxPay } = useWxPay();
+const { connect } = useSSE();
 const user = useStore('user');
 const config = useStore('config');
 const imgUri = inject('$imgUri');
@@ -61,37 +63,14 @@ onLoad(async (option) => {
     }
 
     const sys = uni.getSystemInfoSync();
-    apiUser.getById(mainUserId, sys.platform).then(data => {
+    apiUser.getById(mainUserId, sys.platform).then(async data => {
       mainUser.value = data.value;
       shareTitle.value = mainUser.value.nickname + '邀请您一起云顶对弈！';
       shareMainUserId.value = mainUser.value.id;
-
-      apiRoom.players(mainUser.value.id).then((data) => {
-        players.value = data.values;
-        task = wx.request({
-          url: env.apiBaseUrl + '/room/sub?mainUserId=' + mainUser.value.id + '&userId=' + user.data.value.id,
-          enableChunked: true,
-          headers: {
-            "Content-Type": "application/json;charset=utf-8",
-            "Accept": 'text/event-stream',
-            "Transfer-Encoding": 'chunked',
-          },
-          timeout: 50000,
-          responseType: 'text',
-          method: 'GET',
-        });
-        const callback = data => {
-          const event = decodeURIComponent(escape(String.fromCharCode(...new Uint8Array(data.data))));
-          const arr = event.split("\n")
-          const e = arr.length > 1 ? arr[1] : arr[0];
-          listen(JSON.parse(e.substring(6)));
-        };
-        if (task != null) {
-          task.onChunkReceived(callback);
-          apiRoom.player(mainUserId).then((data) => {
-            player.value = data.value;
-          }).catch(() => networkError());
-        }
+      const url = env.apiBaseUrl + '/room/sub?mainUserId=' + mainUser.value.id + '&userId=' + user.data.value.id;
+      await connect(url, listen);
+      apiRoom.player(mainUserId).then((data) => {
+        player.value = data.value;
       }).catch(() => networkError());
     }).catch(() => networkError());
   }).catch(() => networkError());

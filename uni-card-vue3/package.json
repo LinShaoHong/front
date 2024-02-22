@@ -58,6 +58,7 @@
     "@dcloudio/uni-mp-toutiao": "3.0.0-3070320230222002",
     "@dcloudio/uni-mp-weixin": "3.0.0-3070320230222002",
     "@dcloudio/uni-quickapp-webview": "3.0.0-3070320230222002",
+    "@microsoft/fetch-event-source": "^2.0.1",
     "pinia": "2.0.33",
     "pinia-auto-refs": "0.0.10",
     "pinia-plugin-persist-uni": "1.2.0",
