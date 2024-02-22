@@ -131,7 +131,7 @@ onShow(() => {
       <view class="w-full pl-10 mt-15" style="font-size: 24rpx; color:#999;">好名字可以让你的朋友更容易记住你。</view>
       <view class="w-full h-40vh"></view>
       <button
-          class="btn absolute top-10 right-10 w-100 h-55 flex items-center justify-center"
+          class="btn absolute top-10 right-10 w-120 h-55 flex items-center justify-center"
           :disabled="nicLoading || !nickChanged"
           :loading="nicLoading"
           @tap.stop="onUpdateNic"
@@ -146,7 +146,7 @@ onShow(() => {
     <view v-if="showAvaDialog" class="p-20 relative h-50vh flex items-center justify-center" style="background: white">
       <view class="absolute top-20 w-full text-center" style="font-size: 34rpx; color: #907BE0">更改头像</view>
       <button
-          class="btn absolute top-10 right-20 w-100 h-55 flex items-center justify-center"
+          class="btn absolute top-10 right-20 w-120 h-55 flex items-center justify-center"
           :disabled="avaLoading || !avaChanged"
           :loading="avaLoading"
           @tap.stop="onUpdateAva"
