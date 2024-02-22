@@ -10,6 +10,7 @@ declare namespace Http {
 
 declare namespace Pay {
   interface WxPayResp {
+    appId: string
     timeStamp: string
     nonceStr: string
     pkg: string

@@ -1,6 +1,6 @@
 import apiPay from "@/api/apiPay";
 import { message } from "@/utils/unis";
-import { isH5 } from "@/utils/platform";
+import { isH5, isMp } from "@/utils/platform";
 
 /**
  * 微信支付
@@ -27,7 +27,7 @@ export function useWxPay() {
       apiPay.wxPay(config.data.value.price, user.data.value.id, isH5)
         .then((res) => {
           const v = res.value;
-          wxPay(v.timeStamp, v.nonceStr, v.pkg, v.paySign, v.signType)
+          wxPay(v.appId, v.timeStamp, v.nonceStr, v.pkg, v.paySign, v.signType)
             .then(async () => {
               payLoading.value = true;
               user.vip(vip, v.pkg);
@@ -41,7 +41,15 @@ export function useWxPay() {
     });
   };
 
-  const wxPay = (timeStamp, nonceStr, pkg, paySign, signType) => {
+  const wxPay = (appId, timeStamp, nonceStr, pkg, paySign, signType) => {
+    if (isMp) {
+      return mpPay(appId, timeStamp, nonceStr, pkg, paySign, signType);
+    } else {
+      return h5Pay(appId, timeStamp, nonceStr, pkg, paySign, signType);
+    }
+  };
+
+  const mpPay = (appId, timeStamp, nonceStr, pkg, paySign, signType) => {
     return new Promise((resolve, reject) => {
       uni.requestPayment({
         provider: 'wxpay',
@@ -63,6 +71,25 @@ export function useWxPay() {
         },
       })
     })
+  };
+
+  const h5Pay = (appId, timeStamp, nonceStr, pkg, paySign, signType) => {
+    return new Promise((resolve, reject) => {
+      WeixinJSBridge.invoke("getBrandWCPayRequest", {
+        "appId": appId,
+        "timeStamp": timeStamp,
+        "nonceStr": nonceStr,
+        "package": pkg,
+        "signType": signType,
+        "paySign": paySign,
+      }, function (res) {
+        if (res.err_msg == "get_brand_wcpay_request:ok") {
+          resolve(res);
+        } else {
+          reject(res);
+        }
+      });
+    });
   };
 
   return {
