@@ -80,7 +80,7 @@ const backCardStyle = computed(() => (index) => {
     transform: 'scale(' + (0.9 + index * 0.03) + ')' + (open.value && index === backCardsCount.value ? 'rotateY(180deg)' : ''),
     'z-index': index + 10,
     transition: 'transform .4s ease',
-    height: isMp ? '50vh' : 'calc(50vh - var(--window-bottom) + 25px)'
+    height: '70%'
   }
 });
 
@@ -199,7 +199,7 @@ const openPayDialog = () => {
             openType="contact">
       <image class="w-full h-full absolute left-0" src="/static/mask_bg.png"></image>
       <image class="w-76 h-66 absolute left-4" src="/static/message.png"></image>
-      <text class="color-white absolute left-80" style="font-size: 28rpx;">联系客服</text>
+      <text class="h-full color-white absolute left-80 flex items-center justify-center" style="font-size: 28rpx;">联系客服</text>
     </button>
 
     <view class="relative flex flex-col items-center h-full">
@@ -219,11 +219,11 @@ const openPayDialog = () => {
         </swiper>
       </view>
 
-      <view class="absolute flex flex-col items-center bottom-50" style="height: 70%;">
-        <image class="absolute top-0 bottom-80 h-60vh" mode="heightFix" style="height: 80%;"
+      <view class="absolute flex flex-col items-center bottom-50 h-full" style="height: 70%;">
+        <image class="absolute top-0 bottom-80" mode="heightFix" style="height: 80%;"
                src="/static/p_bg.png"></image>
 
-        <view class="absolute top--50 flex items-center justify-center">
+        <view class="absolute h-full top--50 flex items-center justify-center">
           <view v-for="index in backCardsCount"
                 :class="['absolute', shuffle && index===backCardsCount && 'swap']"
                 :key="'card-back-' + index"

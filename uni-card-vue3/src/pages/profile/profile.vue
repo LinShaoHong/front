@@ -6,6 +6,7 @@ import { onLoad } from "@dcloudio/uni-app";
 import { useShare } from "@/hooks/useShare";
 import { useTabBar } from "@/hooks/useTabBar";
 import apiUser from "@/api/apiUser";
+import { isMp } from "@/utils/platform";
 
 const { tabBar, tabLen } = useTabBar();
 const { onShareAppMessage, onShareTimeline } = useShare();
@@ -112,7 +113,7 @@ onShow(() => {
                   @click="showInvited=true">
         </van-cell>
         <van-cell title="游戏规则" is-link center title-style="color: #907BE0" @click="showRule=true"/>
-        <button class="p-0 text-left" open-type="share" style="background: transparent;">
+        <button v-if="isMp" class="p-0 text-left" open-type="share" style="background: transparent;">
           <van-cell title="推荐给朋友" is-link center title-style="color: #907BE0"/>
         </button>
         <button class="p-0 text-left" open-type="contact" style="background: transparent;">
