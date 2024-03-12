@@ -6,7 +6,6 @@ import { useShare } from "@/hooks/useShare";
 import { ios, message, setNBT } from "@/utils/unis";
 import PayDialog from "@/components/PayDialog.vue";
 import { useTabBar } from "@/hooks/useTabBar";
-import { isMp } from "@/utils/platform";
 
 const { tabBar } = useTabBar();
 const { onShareAppMessage, onShareTimeline, shareTitle, shareImageUrl } = useShare();
@@ -157,7 +156,7 @@ const onOpenCard = () => {
             (ios() && user.data.value.playCount < config.data.value.iosLimit)) {
           doOpen();
         } else {
-          if (!ios()) {
+          if (!ios() || config.data.value.iosCanPay) {
             openPayDialog();
           } else {
             showIOSDialog.value = true;
@@ -199,7 +198,9 @@ const openPayDialog = () => {
             openType="contact">
       <image class="w-full h-full absolute left-0" src="/static/mask_bg.png"></image>
       <image class="w-76 h-66 absolute left-4" src="/static/message.png"></image>
-      <text class="h-full color-white absolute left-80 flex items-center justify-center" style="font-size: 28rpx;">联系客服</text>
+      <text class="h-full color-white absolute left-80 flex items-center justify-center" style="font-size: 28rpx;">
+        联系客服
+      </text>
     </button>
 
     <view class="relative flex flex-col items-center h-full">

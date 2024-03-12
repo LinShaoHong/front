@@ -285,7 +285,7 @@ const onOpenCard = () => {
             (ios() && user.data.value.playCount < config.data.value.iosLimit)) {
           doOpen();
         } else {
-          if (!ios()) {
+          if (!ios() || config.data.value.iosCanPay) {
             openPayDialog();
           } else {
             showIOSDialog.value = true;
