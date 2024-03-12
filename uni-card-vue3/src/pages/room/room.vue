@@ -12,7 +12,7 @@ import { useShare } from "@/hooks/useShare";
 import { useSSE } from "@/hooks/useSSE";
 
 const { wxPay } = useWxPay();
-const { connect: sseConnect, abort: sseAbort } = useSSE();
+const { sseConnect, sseAbort } = useSSE();
 const user = useStore('user');
 const config = useStore('config');
 const imgUri = inject('$imgUri');

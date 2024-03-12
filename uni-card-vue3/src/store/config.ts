@@ -8,7 +8,6 @@ export default defineStore({
         avaCount: 40,
         playLimit: 5,
         iosLimit: 5,
-        iosCanMore: false,
         iosCanPay: false,
         price: "2.99",
         payText: "",

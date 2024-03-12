@@ -37,7 +37,7 @@ export function useSSE() {
       method: 'GET',
     });
     const callback = data => {
-      const ev = decodeURIComponent(escape(String.fromCharCode(...new Uint8Array(data.data))));
+      const ev = decodeURIComponent(String.fromCharCode(...new Uint8Array(data.data)));
       const arr = ev.split("\n")
       const e = arr.length > 1 ? arr[1] : arr[0];
       listener(JSON.parse(e.substring(6)));
@@ -57,7 +57,7 @@ export function useSSE() {
   };
 
   return {
-    connect,
-    abort
+    sseConnect: connect,
+    sseAbort: abort
   }
 }
