@@ -47,7 +47,7 @@ const onAddDefine = () => {
   }).catch(() => networkError());
 };
 const hasDef = computed(() => {
-  return !ios() || user.data.value.vip >= 1;
+  return !ios() || config.data.value.iosCanPay || user.data.value.vip >= 1;
 
 });
 </script>
