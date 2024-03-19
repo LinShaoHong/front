@@ -77,7 +77,7 @@
         "pagePath": "pages/more/more",
         "iconPath": "static/tabbar/tab_more.png",
         "selectedIconPath": "static/tabbar/tab_more_active.png",
-        "text": "云顶玩法"
+        "text": "云顶"
       },
       {
         "pagePath": "pages/profile/profile",

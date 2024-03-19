@@ -180,7 +180,7 @@ const openPayDialog = () => {
   <view class="content">
     <image class="h-screen w-screen fixed" src="/static/back.png" mode="scaleToFill"></image>
 
-    <Popup position="center" :show="showRule">
+    <Popup v-if="config.data.value.game" position="center" :show="showRule">
       <view class="pb-40">
         <image class="max-w-screen h-75vh" src="/static/rule.png" mode="heightFix"></image>
         <view class="flex items-center justify-center">
@@ -237,7 +237,7 @@ const openPayDialog = () => {
           </view>
         </view>
 
-        <view class="absolute bottom-30 flex items-center justify-center gap-50 z-10">
+        <view v-if="config.data.value.game" class="absolute bottom-30 flex items-center justify-center gap-50 z-10">
           <image class="h-90" src="/static/xp.png" mode="heightFix" @click="onShuffle"></image>
           <image class="h-90" src="/static/kp.png" mode="heightFix" @click="onOpenCard"></image>
         </view>

@@ -54,7 +54,7 @@ const hasDef = computed(() => {
 
 <template>
   <image class="h-screen w-screen fixed" src="/static/back.png" mode="scaleToFill"></image>
-  <view class="w-screen relative pt-50 pl-20 pr-20 flex flex-col items-center">
+  <view v-if="config.data.value.game" class="w-screen relative pt-50 pl-20 pr-20 flex flex-col items-center">
     <view class="flex gap-20 p-b-30 items-center">
       <view class="title_line w-20vw"></view>
       <text class="text-white" style="font-size: 34rpx">海克斯卡牌</text>
@@ -78,7 +78,7 @@ const hasDef = computed(() => {
       <text class="text-white mb-10" style="font-size: 26rpx;">可邀请他人同时在线对弈</text>
     </view>
   </view>
-  <view class="w-screen relative pt-50 pl-20 pr-20">
+  <view v-if="config.data.value.game" class="w-screen relative pt-50 pl-20 pr-20">
     <view class="flex gap-20 pb-10 pl-20 items-center">
       <view class="title_line w-5vw"></view>
       <text class="text-white" style="font-size: 32rpx">我参与过的</text>

@@ -102,7 +102,7 @@ onShow(() => {
                    mode="aspectFill"></image>
           </slot>
         </van-cell>
-        <van-cell title="玩家号" center title-style="color: #907BE0">
+        <van-cell v-if="config.data.value.game" title="玩家号" center title-style="color: #907BE0">
           {{ user.data.value.code }}
         </van-cell>
         <van-cell title="昵称" is-link center title-style="color: #907BE0"
@@ -112,7 +112,7 @@ onShow(() => {
         <van-cell v-if="invited.length > 0" title="我邀请的" is-link center title-style="color: #907BE0"
                   @click="showInvited=true">
         </van-cell>
-        <van-cell title="游戏规则" is-link center title-style="color: #907BE0" @click="showRule=true"/>
+        <van-cell v-if="config.data.value.game" title="游戏规则" is-link center title-style="color: #907BE0" @click="showRule=true"/>
         <button v-if="isMp" class="p-0 text-left" open-type="share" style="background: transparent;">
           <van-cell title="推荐给朋友" is-link center title-style="color: #907BE0"/>
         </button>
