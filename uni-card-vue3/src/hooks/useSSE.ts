@@ -1,5 +1,6 @@
 import { isMp } from "@/utils/platform";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
+import TextDecoder from 'miniprogram-text-decoder';
 
 /**
  * SSE相关
