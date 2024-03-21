@@ -107,6 +107,7 @@ app.*.map.json
 **/windows/
 
 pubspec.lock
+.metadata
 
 .hbuilderx
 .eslintrc-auto-import.json
