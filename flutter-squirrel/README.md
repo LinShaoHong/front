@@ -1,4 +1,4 @@
-# flutter_squirrel
+# flutter-squirrel
 
 A new Flutter project.
 
