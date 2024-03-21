@@ -106,5 +106,7 @@ app.*.map.json
 **/macos/
 **/windows/
 
+pubspec.lock
+
 .hbuilderx
 .eslintrc-auto-import.json
