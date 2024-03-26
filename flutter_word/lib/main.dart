@@ -1,5 +1,3 @@
-import 'package:word/timer/view/timer_page.dart';
-
 import '/common/libs.dart';
 
 void main() async {
@@ -7,24 +5,33 @@ void main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   GoRouter.optionURLReflectsImperativeAPIs = true;
   AppInjection.registerSingletons();
-  runApp(const App());
+  runApp(App());
   await appManager.bootstrap();
   FlutterNativeSplash.remove();
 }
 
-class App extends StatelessWidget {
-  const App({super.key});
+class App extends StatelessWidget with GetItMixin {
+  App({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Flutter Timer",
+    final locale = watchX((SettingManager s) => s.currentLocale);
+    return MaterialApp.router(
+      routeInformationProvider: appRouter.routeInformationProvider,
+      routeInformationParser: appRouter.routeInformationParser,
+      locale: locale == null ? null : Locale(locale),
+      debugShowCheckedModeBanner: false,
+      routerDelegate: appRouter.routerDelegate,
       theme: ThemeData(
-        colorScheme: const ColorScheme.light(
-          primary: Color.fromRGBO(72, 74, 126, 1),
-        ),
-      ),
-      home: const TimerPage(),
+          fontFamily: $styles.text.body.fontFamily, useMaterial3: true),
+      color: $styles.colors.black,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: AppLocalizations.supportedLocales,
     );
   }
 }

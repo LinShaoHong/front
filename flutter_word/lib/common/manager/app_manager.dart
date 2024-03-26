@@ -53,5 +53,6 @@ class AppManager {
       await FlutterDisplayMode.setHighRefreshRate();
     }
     isBootstrapComplete = true;
+    appRouter.go(AppRouter.word);
   }
 }
