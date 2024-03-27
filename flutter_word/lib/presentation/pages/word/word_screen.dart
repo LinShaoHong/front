@@ -1,4 +1,4 @@
-import '../../../timer/view/timer_page.dart';
+import '../../bloc/timer/timer_page.dart';
 import '/common/libs.dart';
 
 class WordScreen extends StatelessWidget {

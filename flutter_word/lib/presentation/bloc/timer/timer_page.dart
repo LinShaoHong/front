@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:word/common/injection.dart';
+import 'package:word/presentation/bloc/timer/timer_state.dart';
 import 'package:word/presentation/components/bottom_bar.dart';
-import 'package:word/timer/bloc/timer_bloc.dart';
+import 'package:word/presentation/bloc/timer/timer_bloc.dart';
 
-import '../../ticker.dart';
-import '../bloc/timer_event.dart';
-import '../bloc/timer_state.dart';
+import 'ticker.dart';
+import 'timer_event.dart';
 
 class TimerPage extends StatelessWidget {
   const TimerPage({super.key});

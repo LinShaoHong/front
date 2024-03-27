@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:word/ticker.dart';
-import 'package:word/timer/bloc/timer_event.dart';
-import 'package:word/timer/bloc/timer_state.dart';
+import 'package:word/presentation/bloc/timer/timer_state.dart';
+import 'package:word/presentation/bloc/timer/ticker.dart';
+import 'package:word/presentation/bloc/timer/timer_event.dart';
 
 class TimerBloc extends Bloc<TimerEvent, TimerState> {
   final Ticker _ticker;
