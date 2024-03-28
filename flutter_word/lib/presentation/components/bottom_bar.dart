@@ -22,6 +22,7 @@ class BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final double paddingBottom = MediaQuery.of(context).padding.bottom;
     return Container(
       alignment: Alignment.bottomCenter,
       child: Column(
@@ -33,7 +34,7 @@ class BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
               child: buildTabs(),
             ),
           ),
-          SizedBox(height: MediaQuery.of(context).padding.bottom)
+          SizedBox(height: paddingBottom)
         ],
       ),
     );
@@ -155,9 +156,10 @@ class _TabModel {
 }
 
 class WithBottomBar extends StatefulWidget {
+  final bool has;
   final Widget child;
 
-  const WithBottomBar({super.key, required this.child});
+  const WithBottomBar({super.key, required this.child, this.has = true});
 
   @override
   WithBottomBarState createState() => WithBottomBarState();
@@ -166,6 +168,8 @@ class WithBottomBar extends StatefulWidget {
 class WithBottomBarState extends State<WithBottomBar> {
   @override
   Widget build(BuildContext context) {
+    final double paddingTop = MediaQuery.of(context).padding.top;
+    final double paddingBottom = MediaQuery.of(context).padding.bottom;
     return Scaffold(
       body: Stack(
         children: [
@@ -175,19 +179,21 @@ class WithBottomBarState extends State<WithBottomBar> {
                   child: SizedBox(
                 width: double.infinity,
                 child: Material(
-                    elevation: 4,
+                    elevation: 6,
                     shadowColor: Colors.transparent,
                     type: MaterialType.canvas,
                     surfaceTintColor: Theme.of(context).primaryColor),
               )),
-              const BottomBar(),
+              widget.has ? const BottomBar() : const SizedBox(),
             ],
           ),
-          Padding(
-            padding: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top, bottom: 62),
-            child: widget.child,
-          )
+          Column(
+            children: [
+              SizedBox(height: paddingTop),
+              widget.child,
+              SizedBox(height: widget.has ? paddingBottom + 62 : paddingBottom),
+            ],
+          ),
         ],
       ),
     );

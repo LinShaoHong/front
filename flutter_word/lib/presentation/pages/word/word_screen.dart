@@ -6,6 +6,7 @@ class WordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const WithBottomBar(
+       has:false,
         child: Card(
       elevation: 6,
       child: Text(
