@@ -20,6 +20,7 @@ export 'package:flutter_displaymode/flutter_displaymode.dart';
 export 'package:flutter_native_splash/flutter_native_splash.dart';
 export 'package:flutter_localizations/flutter_localizations.dart';
 export 'package:internet_connection_checker/internet_connection_checker.dart';
+export 'package:responsive_framework/responsive_framework.dart';
 
 //----------------- app ------------------
 export 'package:word/main.dart';
@@ -37,4 +38,5 @@ export 'package:word/common/mixins//save_load_mixin.dart';
 export 'package:flutter_gen/gen_l10n/app_localizations.dart';
 export 'package:word/presentation/components/app_scaffold.dart';
 export 'package:word/presentation/components/page_not_found.dart';
+export 'package:word/presentation/components/bottom_bar.dart';
 export 'package:word/presentation/pages/word/word_screen.dart';

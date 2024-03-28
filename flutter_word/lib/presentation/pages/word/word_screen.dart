@@ -6,6 +6,14 @@ class WordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const TimerPage();
+    return const Scaffold(
+      body: Stack(
+        children: [
+          Column(
+            children: [Expanded(child: SizedBox()), BottomBar()],
+          )
+        ],
+      ),
+    );
   }
 }

@@ -1,3 +1,5 @@
+import 'package:word/common/injection.dart';
+
 import '/common/libs.dart';
 
 class BottomBar extends StatefulWidget {
@@ -23,8 +25,18 @@ class BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: $styles.colors.white,
       alignment: Alignment.bottomCenter,
+      decoration: const BoxDecoration(
+        color: Color(0xFFECF0F3),
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xFFFFFFFF),
+            blurRadius: 10,
+            offset: Offset(-6, -6), // changes position of shadow
+          ),
+        ],
+      ),
       child: Column(
         children: [
           SizedBox(
