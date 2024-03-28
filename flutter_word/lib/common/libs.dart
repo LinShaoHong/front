@@ -59,8 +59,12 @@ export 'package:word/utility/color_utils.dart';
 //------------------ l10n --------------
 export 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-//------------------ presentation --------------
+//------------------ components --------------
 export 'package:word/presentation/components/app_scaffold.dart';
 export 'package:word/presentation/components/page_not_found.dart';
 export 'package:word/presentation/components/bottom_bar.dart';
+
+//------------------ bloc --------------
+
+//------------------ pages --------------
 export 'package:word/presentation/pages/word/word_screen.dart';
