@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:word/common/injection.dart';
+import 'package:word/presentation/bloc/timer/timer_bloc.dart';
 import 'package:word/presentation/bloc/timer/timer_state.dart';
 import 'package:word/presentation/components/bottom_bar.dart';
-import 'package:word/presentation/bloc/timer/timer_bloc.dart';
 
 import 'ticker.dart';
 import 'timer_event.dart';
@@ -26,7 +25,7 @@ class TimerView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: $styles.colors.offWhite,
+      color: Theme.of(context).primaryColor,
       child: const Scaffold(
         body: Stack(
           children: [

@@ -42,6 +42,16 @@ class AppManager {
   }
 
   Future<void> bootstrap() async {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+      statusBarBrightness:
+          !kIsWeb && Platforms.isAndroid ? Brightness.dark : Brightness.light,
+      systemNavigationBarColor: Colors.white,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarIconBrightness: Brightness.dark,
+    ));
+
     if (Platforms.isDesktop) {
       await DesktopWindow.setMinWindowSize($styles.sizes.minAppSize);
     }
@@ -53,6 +63,11 @@ class AppManager {
       await FlutterDisplayMode.setHighRefreshRate();
     }
     isBootstrapComplete = true;
-    appRouter.go(AppRouter.word);
+    bool showIntro = settingManager.hasCompletedOnboarding.value == false;
+    if (showIntro) {
+      appRouter.go(AppRouter.intro);
+    } else {
+      appRouter.go(initialDeeplink ?? AppRouter.word);
+    }
   }
 }

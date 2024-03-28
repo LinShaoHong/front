@@ -4,6 +4,7 @@ import '/common/libs.dart';
 
 class AppRouter {
   static String splash = '/';
+  static String intro = '/intro';
   static String word = '/word';
 }
 
@@ -17,8 +18,8 @@ final appRouter = GoRouter(
             return AppScaffold(child: navigator);
           },
           routes: [
-            AppRoute(AppRouter.splash,
-                (_) => Container(color: $styles.colors.greyStrong)),
+            AppRoute(AppRouter.splash, (_) => Container(color: Colors.grey)),
+            AppRoute(AppRouter.intro, (_) => const WordScreen()),
             AppRoute(AppRouter.word, (_) => const WordScreen()),
           ])
     ]);

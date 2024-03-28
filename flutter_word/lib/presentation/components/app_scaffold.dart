@@ -19,14 +19,11 @@ class AppScaffold extends StatelessWidget {
     _styles = AppStyles(screenSize: context.sizePx);
     return KeyedSubtree(
       key: ValueKey($styles.scale),
-      child: Theme(
-        data: $styles.colors.toThemeData(),
-        child: DefaultTextStyle(
-          style: $styles.text.body,
-          child: ScrollConfiguration(
-            behavior: _AppScrollBehavior(),
-            child: child,
-          ),
+      child: DefaultTextStyle(
+        style: $styles.text.body,
+        child: ScrollConfiguration(
+          behavior: _AppScrollBehavior(),
+          child: child,
         ),
       ),
     );

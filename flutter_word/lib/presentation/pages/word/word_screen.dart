@@ -1,4 +1,3 @@
-import '../../bloc/timer/timer_page.dart';
 import '/common/libs.dart';
 
 class WordScreen extends StatelessWidget {
@@ -6,14 +5,13 @@ class WordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Stack(
-        children: [
-          Column(
-            children: [Expanded(child: SizedBox()), BottomBar()],
-          )
-        ],
+    return const WithBottomBar(
+        child: Card(
+      elevation: 6,
+      child: Text(
+        'aaaaa',
+        style: TextStyle(fontSize: 14),
       ),
-    );
+    ));
   }
 }

@@ -1,5 +1,3 @@
-import 'package:word/common/injection.dart';
-
 import '/common/libs.dart';
 
 class BottomBar extends StatefulWidget {
@@ -26,17 +24,6 @@ class BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.bottomCenter,
-      decoration: const BoxDecoration(
-        color: Color(0xFFECF0F3),
-        borderRadius: BorderRadius.all(Radius.circular(15)),
-        boxShadow: [
-          BoxShadow(
-            color: Color(0xFFFFFFFF),
-            blurRadius: 10,
-            offset: Offset(-6, -6), // changes position of shadow
-          ),
-        ],
-      ),
       child: Column(
         children: [
           SizedBox(
@@ -165,4 +152,44 @@ class _TabModel {
       animationController: null,
     ),
   ];
+}
+
+class WithBottomBar extends StatefulWidget {
+  final Widget child;
+
+  const WithBottomBar({super.key, required this.child});
+
+  @override
+  WithBottomBarState createState() => WithBottomBarState();
+}
+
+class WithBottomBarState extends State<WithBottomBar> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              Expanded(
+                  child: SizedBox(
+                width: double.infinity,
+                child: Material(
+                    elevation: 4,
+                    shadowColor: Colors.transparent,
+                    type: MaterialType.canvas,
+                    surfaceTintColor: Theme.of(context).primaryColor),
+              )),
+              const BottomBar(),
+            ],
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+                top: MediaQuery.of(context).padding.top, bottom: 62),
+            child: widget.child,
+          )
+        ],
+      ),
+    );
+  }
 }

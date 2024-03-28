@@ -20,14 +20,13 @@ class AppStyles {
   }
 
   late final double scale;
-  final _Times times = _Times();
-  final _Sizes sizes = _Sizes();
-  late final _Text text = _Text(scale);
-  final AppColors colors = AppColors();
+  final Times times = Times();
+  final Sizes sizes = Sizes();
+  late final TextV text = TextV(scale);
 }
 
 @immutable
-class _Times {
+class Times {
   final Duration fast = const Duration(milliseconds: 300);
   final Duration med = const Duration(milliseconds: 600);
   final Duration slow = const Duration(milliseconds: 900);
@@ -35,10 +34,10 @@ class _Times {
 }
 
 @immutable
-class _Text {
+class TextV {
   final double _scale;
 
-  _Text(this._scale);
+  TextV(this._scale);
 
   final Map<String, TextStyle> _contentFonts = {
     'en': const TextStyle(fontFamily: 'Raleway', fontFeatures: [
@@ -81,7 +80,7 @@ class _Text {
 }
 
 @immutable
-class _Sizes {
+class Sizes {
   double get maxContentWidth1 => 800;
 
   double get maxContentWidth2 => 600;
