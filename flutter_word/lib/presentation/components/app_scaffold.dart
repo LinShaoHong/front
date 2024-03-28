@@ -24,7 +24,7 @@ class AppScaffold extends StatelessWidget {
         child: DefaultTextStyle(
           style: $styles.text.body,
           child: ScrollConfiguration(
-            behavior: AppScrollBehavior(),
+            behavior: _AppScrollBehavior(),
             child: child,
           ),
         ),
@@ -33,7 +33,7 @@ class AppScaffold extends StatelessWidget {
   }
 }
 
-class AppScrollBehavior extends ScrollBehavior {
+class _AppScrollBehavior extends ScrollBehavior {
   @override
   Set<PointerDeviceKind> get dragDevices {
     final devices = Set<PointerDeviceKind>.from(super.dragDevices);
