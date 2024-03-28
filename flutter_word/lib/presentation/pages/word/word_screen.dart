@@ -5,14 +5,21 @@ class WordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const WithBottomBar(
-       has:false,
-        child: Card(
-      elevation: 6,
-      child: Text(
-        'aaaaa',
-        style: TextStyle(fontSize: 14),
-      ),
-    ));
+    return WithBottomBar(
+      has: false,
+      child: Center(
+          child: InkWell(
+        onTap: () {
+          themeHolder.update(LimeAppTheme());
+        },
+        child: const Card(
+          elevation: 6,
+          child: Text(
+            'aaaaa',
+            style: TextStyle(fontSize: 14),
+          ),
+        ),
+      )),
+    );
   }
 }

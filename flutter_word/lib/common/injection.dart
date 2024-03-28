@@ -17,6 +17,8 @@ class AppInjection {
   }
 }
 
+ThemeHolder get themeHolder => GetIt.I.get<ThemeHolder>();
+
 AppManager get appManager => GetIt.I.get<AppManager>();
 
 LocaleManager get localeManager => GetIt.I.get<LocaleManager>();
