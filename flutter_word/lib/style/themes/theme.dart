@@ -4,8 +4,15 @@ abstract class AppTheme {
   ThemeData light();
 
   ThemeData dark();
+}
 
-  static AppTheme create() {
-    return LimeAppTheme();
+class ThemeHolder {
+  final AppTheme defaultTheme = GreenAppTheme();
+
+  late final ValueNotifier<AppTheme> theme =
+      ValueNotifier<AppTheme>(defaultTheme);
+
+  void update(AppTheme value) {
+    theme.value = value;
   }
 }
