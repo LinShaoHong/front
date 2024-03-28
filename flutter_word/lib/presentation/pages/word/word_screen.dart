@@ -6,7 +6,6 @@ class WordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WithBottomBar(
-      has: false,
       child: Center(
           child: InkWell(
         onTap: () {

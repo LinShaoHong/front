@@ -156,10 +156,10 @@ class _TabModel {
 }
 
 class WithBottomBar extends StatefulWidget {
-  final bool has;
+  final bool hidden;
   final Widget child;
 
-  const WithBottomBar({super.key, required this.child, this.has = true});
+  const WithBottomBar({super.key, required this.child, this.hidden = false});
 
   @override
   WithBottomBarState createState() => WithBottomBarState();
@@ -184,14 +184,15 @@ class WithBottomBarState extends State<WithBottomBar> {
                     type: MaterialType.canvas,
                     surfaceTintColor: Theme.of(context).primaryColor),
               )),
-              widget.has ? const BottomBar() : const SizedBox(),
+              widget.hidden ? const SizedBox() : const BottomBar(),
             ],
           ),
           Column(
             children: [
               SizedBox(height: paddingTop),
               widget.child,
-              SizedBox(height: widget.has ? paddingBottom + 62 : paddingBottom),
+              SizedBox(
+                  height: widget.hidden ? paddingBottom : paddingBottom + 62),
             ],
           ),
         ],
