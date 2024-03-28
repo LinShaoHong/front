@@ -22,7 +22,7 @@ class BottomBarState extends State<BottomBar> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final double paddingBottom = MediaQuery.of(context).padding.bottom;
+    final double paddingBottom = context.mq.padding.bottom;
     return Container(
       alignment: Alignment.bottomCenter,
       child: Column(
@@ -168,8 +168,8 @@ class WithBottomBar extends StatefulWidget {
 class WithBottomBarState extends State<WithBottomBar> {
   @override
   Widget build(BuildContext context) {
-    final double paddingTop = MediaQuery.of(context).padding.top;
-    final double paddingBottom = MediaQuery.of(context).padding.bottom;
+    final double paddingTop = context.mq.padding.top;
+    final double paddingBottom = context.mq.padding.bottom;
     return Scaffold(
       body: Stack(
         children: [

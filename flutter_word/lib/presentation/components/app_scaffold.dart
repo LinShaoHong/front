@@ -13,8 +13,7 @@ class AppScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mq = MediaQuery.of(context);
-    appManager.handleSizeChanged(mq.size);
+    appManager.handleSizeChanged(context.mq.size);
     Animate.defaultDuration = styles.times.fast;
     _styles = AppStyles(screenSize: context.sizePx);
     return KeyedSubtree(
