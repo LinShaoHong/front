@@ -6,7 +6,7 @@ abstract class AppTheme {
   ThemeData dark();
 
   static AppTheme create() {
-    return GreenAppTheme();
+    return MaterialAppTheme();
   }
 }
 
