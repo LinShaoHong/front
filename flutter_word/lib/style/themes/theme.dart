@@ -1,3 +1,5 @@
+import 'package:word/style/themes/theme_money.dart';
+
 import '/common/libs.dart';
 
 abstract class AppTheme {
@@ -6,7 +8,7 @@ abstract class AppTheme {
   ThemeData dark();
 
   static AppTheme create() {
-    return MaterialAppTheme();
+    return GreenAppTheme();
   }
 }
 
