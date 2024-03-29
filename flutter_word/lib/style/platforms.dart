@@ -35,3 +35,23 @@ class Platforms {
 
   static Future<bool> get isDisconnected async => (await isConnected) == false;
 }
+
+extension PlatformContext on BuildContext {
+  bool get isDesktop => Platforms.isDesktop;
+
+  bool get isMobile => Platforms.isMobile;
+
+  double get pixelRatio => Platforms.pixelRatio;
+
+  bool get isWindows => Platforms.isWindows;
+
+  bool get isLinux => Platforms.isLinux;
+
+  bool get isMacOS => Platforms.isMacOS;
+
+  bool get isIOS => Platforms.isIOS;
+
+  Future<bool> get isConnected => Platforms.isConnected;
+
+  Future<bool> get isDisconnected => Platforms.isDisconnected;
+}
