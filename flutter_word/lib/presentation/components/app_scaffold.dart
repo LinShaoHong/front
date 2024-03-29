@@ -27,38 +27,50 @@ class AppScaffoldState extends State<AppScaffold> {
       key: ValueKey($styles.scale),
       child: ScrollConfiguration(
         behavior: _AppScrollBehavior(),
-        child: _buildScaffold(),
+        child: _buildScaffold(light: context.lightTheme),
       ),
     );
   }
 
-  Scaffold _buildScaffold({bool hasBar = true}) {
+  Scaffold _buildScaffold({bool light = true, bool hasBar = true}) {
     if (hasBar) {
       List<_NavigationBarItem> items = _buildNavigationBarItems();
       return Scaffold(
         body: SafeArea(
           child: widget.child,
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          currentIndex: navigationIndex,
-          selectedFontSize: 12,
-          unselectedFontSize: 10,
-          selectedLabelStyle: const TextStyle(
-            fontWeight: FontWeight.w600,
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+              // borderRadius: BorderRadius.all(Radius.circular(10)),
+              boxShadow: [
+                BoxShadow(
+                  color:
+                      light ? const Color(0xFFE4EAF3) : const Color(0xFF6B6C6F),
+                  blurRadius: 6,
+                  offset: const Offset(-1, -1),
+                )
+              ]),
+          child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            currentIndex: navigationIndex,
+            selectedFontSize: 12,
+            unselectedFontSize: 10,
+            selectedLabelStyle: const TextStyle(
+              fontWeight: FontWeight.w600,
+            ),
+            unselectedLabelStyle: const TextStyle(
+              fontWeight: FontWeight.w600,
+            ),
+            onTap: (int index) {
+              setState(() {
+                if (navigationIndex != index) {
+                  navigationIndex = index;
+                  appRouter.go(items[index].router);
+                }
+              });
+            },
+            items: items,
           ),
-          unselectedLabelStyle: const TextStyle(
-            fontWeight: FontWeight.w600,
-          ),
-          onTap: (int index) {
-            setState(() {
-              if (navigationIndex != index) {
-                navigationIndex = index;
-                appRouter.go(items[index].router);
-              }
-            });
-          },
-          items: items,
         ),
       );
     } else {

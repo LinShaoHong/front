@@ -1,5 +1,3 @@
-import 'package:word/style/themes/theme_money.dart';
-
 import '/common/libs.dart';
 
 abstract class AppTheme {
@@ -21,4 +19,14 @@ class ThemeHolder {
   // void update(AppTheme value) {
   //   theme.value = value;
   // }
+}
+
+extension ThemedContext on BuildContext {
+  ThemeData get theme => Theme.of(this);
+
+  ColorScheme get colorSchema => Theme.of(this).colorScheme;
+
+  bool get lightTheme => Theme.of(this).brightness == Brightness.light;
+
+  bool get darkTheme => Theme.of(this).brightness == Brightness.dark;
 }
