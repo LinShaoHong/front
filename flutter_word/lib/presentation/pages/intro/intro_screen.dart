@@ -1,13 +1,13 @@
 import '/common/libs.dart';
 
-class WordScreen extends StatelessWidget {
-  const WordScreen({super.key});
+class IntroScreen extends StatelessWidget {
+  const IntroScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: List.generate(20, (index) {
-        return const Text('aaa');
+        return const Text('bbb');
       }),
     );
   }

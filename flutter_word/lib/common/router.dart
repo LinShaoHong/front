@@ -19,7 +19,7 @@ final appRouter = GoRouter(
           },
           routes: [
             AppRoute(AppRouter.splash, (_) => Container(color: Colors.grey)),
-            AppRoute(AppRouter.intro, (_) => const WordScreen()),
+            AppRoute(AppRouter.intro, (_) => const IntroScreen()),
             AppRoute(AppRouter.word, (_) => const WordScreen()),
           ])
     ]);

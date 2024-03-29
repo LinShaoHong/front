@@ -17,6 +17,7 @@ class App extends StatelessWidget with GetItMixin {
   Widget build(BuildContext context) {
     // final theme = watchX((ThemeHolder s) => s.theme);
     final theme = AppTheme.create();
+    const themeMode = ThemeMode.light;
     final locale = watchX((SettingManager s) => s.currentLocale);
     return MaterialApp.router(
       routeInformationProvider: appRouter.routeInformationProvider,
@@ -26,6 +27,7 @@ class App extends StatelessWidget with GetItMixin {
       routerDelegate: appRouter.routerDelegate,
       theme: theme.light(),
       darkTheme: theme.dark(),
+      themeMode: themeMode,
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

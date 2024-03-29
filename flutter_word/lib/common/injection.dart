@@ -27,4 +27,4 @@ SettingManager get settingManager => GetIt.I.get<SettingManager>();
 
 AppLocalizations get $strings => localeManager.strings;
 
-AppStyles get $styles => AppScaffold.styles;
+AppStyles get $styles => AppScaffoldState.styles;

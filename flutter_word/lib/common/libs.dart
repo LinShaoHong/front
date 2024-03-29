@@ -62,9 +62,9 @@ export 'package:flutter_gen/gen_l10n/app_localizations.dart';
 //------------------ components --------------
 export 'package:word/presentation/components/app_scaffold.dart';
 export 'package:word/presentation/components/page_not_found.dart';
-export 'package:word/presentation/components/bottom_bar.dart';
 
 //------------------ bloc --------------
 
 //------------------ pages --------------
 export 'package:word/presentation/pages/word/word_screen.dart';
+export 'package:word/presentation/pages/intro/intro_screen.dart';
