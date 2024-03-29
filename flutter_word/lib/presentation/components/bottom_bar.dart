@@ -175,15 +175,9 @@ class WithBottomBarState extends State<WithBottomBar> {
         children: [
           Column(
             children: [
-              Expanded(
-                  child: SizedBox(
-                width: double.infinity,
-                child: Material(
-                    elevation: 6,
-                    shadowColor: Colors.transparent,
-                    type: MaterialType.canvas,
-                    surfaceTintColor: Theme.of(context).primaryColor),
-              )),
+              const Expanded(
+                child: SizedBox(),
+              ),
               widget.hidden ? const SizedBox() : const BottomBar(),
             ],
           ),
@@ -194,6 +188,20 @@ class WithBottomBarState extends State<WithBottomBar> {
               SizedBox(
                   height: widget.hidden ? paddingBottom : paddingBottom + 62),
             ],
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 0,
+        onTap: (int index) {},
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.password),
+            label: '词典',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: '我的',
           ),
         ],
       ),

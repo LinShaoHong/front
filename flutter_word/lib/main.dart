@@ -15,7 +15,8 @@ class App extends StatelessWidget with GetItMixin {
 
   @override
   Widget build(BuildContext context) {
-    final theme = watchX((ThemeHolder s) => s.theme);
+    // final theme = watchX((ThemeHolder s) => s.theme);
+    final theme = AppTheme.create();
     final locale = watchX((SettingManager s) => s.currentLocale);
     return MaterialApp.router(
       routeInformationProvider: appRouter.routeInformationProvider,

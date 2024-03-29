@@ -6,10 +6,11 @@ class WordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WithBottomBar(
+      hidden: true,
       child: Center(
           child: InkWell(
         onTap: () {
-          themeHolder.update(LimeAppTheme());
+          // themeHolder.update(LimeAppTheme());
         },
         child: const Card(
           elevation: 6,
