@@ -34,6 +34,10 @@ dependencies:
   responsive_framework: ^1.4.0
   extra_alignments: ^1.0.0+1
   animations: ^2.0.11
+  flutter_hooks: ^0.20.5
+  dynamic_color: ^1.7.0
+  material_color_utilities: ^0.8.0
+  gap: ^3.0.1
 
 dev_dependencies:
   flutter_test:
@@ -46,6 +50,7 @@ flutter:
 
   assets:
     - assets/tabs/
+    - assets/settings/
   fonts:
     - family: WorkSans
       fonts:

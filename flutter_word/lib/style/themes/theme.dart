@@ -11,14 +11,19 @@ abstract class AppTheme {
 }
 
 class ThemeHolder {
-  // final AppTheme defaultTheme = MaterialAppTheme();
-  //
-  // late final ValueNotifier<AppTheme> theme =
-  //     ValueNotifier<AppTheme>(defaultTheme);
-  //
-  // void update(AppTheme value) {
-  //   theme.value = value;
-  // }
+  late final ValueNotifier<ThemeMode> themeMode =
+      ValueNotifier<ThemeMode>(ThemeMode.light);
+
+
+
+// final AppTheme defaultTheme = MaterialAppTheme();
+//
+// late final ValueNotifier<AppTheme> theme =
+//     ValueNotifier<AppTheme>(defaultTheme);
+//
+// void update(AppTheme value) {
+//   theme.value = value;
+// }
 }
 
 extension ThemedContext on BuildContext {

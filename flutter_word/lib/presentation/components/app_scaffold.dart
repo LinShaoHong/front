@@ -26,51 +26,32 @@ class AppScaffoldState extends State<AppScaffold> {
     return KeyedSubtree(
       key: ValueKey($styles.scale),
       child: ScrollConfiguration(
-        behavior: _AppScrollBehavior(),
-        child: _buildScaffold(light: context.lightTheme),
-      ),
+          behavior: _AppScrollBehavior(),
+          child: _buildScaffold(
+            light: context.lightTheme,
+            context: context,
+          )),
     );
   }
 
-  Scaffold _buildScaffold({bool light = true, bool hasBar = true}) {
+  Scaffold _buildScaffold(
+      {bool light = true, required BuildContext context, bool hasBar = true}) {
+    final arr = _buildNavigationDestinations();
     if (hasBar) {
-      List<_NavigationBarItem> items = _buildNavigationBarItems();
       return Scaffold(
         body: SafeArea(
           child: widget.child,
         ),
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-              // borderRadius: BorderRadius.all(Radius.circular(10)),
-              boxShadow: [
-                BoxShadow(
-                  color:
-                      light ? const Color(0xFFE4EAF3) : const Color(0xFF6B6C6F),
-                  blurRadius: 6,
-                  offset: const Offset(-1, -1),
-                )
-              ]),
-          child: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            currentIndex: navigationIndex,
-            selectedFontSize: 12,
-            unselectedFontSize: 10,
-            selectedLabelStyle: const TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
-            unselectedLabelStyle: const TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
-            onTap: (int index) {
-              setState(() {
-                if (navigationIndex != index) {
-                  navigationIndex = index;
-                  appRouter.go(items[index].router);
-                }
-              });
-            },
-            items: items,
-          ),
+        bottomNavigationBar: NavigationBar(
+          // backgroundColor: Color(
+          //     CorePalette.of(const Color(0xffE8E971).value).neutral.get(96)),
+          onDestinationSelected: (index) {
+            navigationIndex = index;
+            setState(() {});
+            appRouter.go(arr[index].router);
+          },
+          selectedIndex: navigationIndex,
+          destinations: arr,
         ),
       );
     } else {
@@ -82,42 +63,50 @@ class AppScaffoldState extends State<AppScaffold> {
     }
   }
 
-  List<_NavigationBarItem> _buildNavigationBarItems() {
-    return <_NavigationBarItem>[
-      _NavigationBarItem(
+  List<_NavigationDestination> _buildNavigationDestinations() {
+    return <_NavigationDestination>[
+      _NavigationDestination(
         router: AppRouter.word,
-        icon: const Icon(Icons.home),
+        icon: const Icon(Icons.home_outlined),
+        selectedIcon: const Icon(Icons.home),
         label: '单词',
       ),
-      _NavigationBarItem(
+      _NavigationDestination(
         router: AppRouter.intro,
-        icon: const Icon(Icons.book),
+        icon: const Icon(Icons.book_online),
+        selectedIcon: const Icon(Icons.book),
         label: '阅读',
       ),
-      _NavigationBarItem(
+      _NavigationDestination(
         router: AppRouter.word,
-        icon: const Icon(Icons.search),
+        icon: const Icon(Icons.search_outlined),
+        selectedIcon: const Icon(Icons.search),
         label: '词典',
       ),
-      _NavigationBarItem(
+      _NavigationDestination(
         router: AppRouter.intro,
-        icon: const Icon(Icons.bar_chart),
+        icon: const Icon(Icons.bar_chart_outlined),
+        selectedIcon: const Icon(Icons.bar_chart),
         label: '工具',
       ),
-      _NavigationBarItem(
+      _NavigationDestination(
         router: AppRouter.word,
-        icon: const Icon(Icons.settings),
+        icon: const Icon(Icons.settings_outlined),
+        selectedIcon: const Icon(Icons.settings),
         label: '我的',
       ),
     ];
   }
 }
 
-class _NavigationBarItem extends BottomNavigationBarItem {
+class _NavigationDestination extends NavigationDestination {
   String router;
 
-  _NavigationBarItem(
-      {required this.router, required Icon super.icon, super.label});
+  _NavigationDestination(
+      {required this.router,
+      required Icon super.selectedIcon,
+      required Icon super.icon,
+      required super.label});
 }
 
 class _AppScrollBehavior extends ScrollBehavior {

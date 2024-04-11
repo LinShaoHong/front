@@ -4,6 +4,7 @@ library;
 export 'dart:math';
 export 'dart:async';
 export 'dart:convert';
+export 'package:gap/gap.dart';
 export 'package:bloc/bloc.dart';
 export 'package:get_it/get_it.dart';
 export 'package:flutter/services.dart';
