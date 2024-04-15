@@ -196,31 +196,21 @@ class _WordScreenState extends State<WordScreen> with TickerProviderStateMixin {
                     width: context.mq.size.width * 0.45,
                     height: 200,
                     child: Card.outlined(
+                      elevation: 3,
+                      shadowColor: Colors.transparent,
                       clipBehavior: Clip.antiAliasWithSaveLayer,
-                      child: Stack(
+                      child: Column(
                         children: [
-                          Positioned.fill(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: context
-                                    .theme.colorScheme.secondaryContainer,
-                              ),
+                          ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(10),
+                              bottomRight: Radius.circular(10),
                             ),
-                          ),
-                          Column(
-                            children: [
-                              ClipRRect(
-                                borderRadius: const BorderRadius.only(
-                                  bottomLeft: Radius.circular(10),
-                                  bottomRight: Radius.circular(10),
-                                ),
-                                child: Image.asset(
-                                  'assets/settings/card_top.jpg',
-                                  fit: BoxFit.cover,
-                                  height: 120,
-                                ),
-                              ),
-                            ],
+                            child: Image.asset(
+                              'assets/settings/card_top.jpg',
+                              fit: BoxFit.cover,
+                              height: 120,
+                            ),
                           ),
                         ],
                       ),
