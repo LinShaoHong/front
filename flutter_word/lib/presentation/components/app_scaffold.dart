@@ -26,16 +26,20 @@ class AppScaffoldState extends State<AppScaffold> {
     return KeyedSubtree(
       key: ValueKey($styles.scale),
       child: ScrollConfiguration(
-          behavior: _AppScrollBehavior(),
-          child: _buildScaffold(
-            light: context.lightTheme,
-            context: context,
-          )),
+        behavior: _AppScrollBehavior(),
+        child: _buildScaffold(
+          light: context.lightTheme,
+          context: context,
+        ),
+      ),
     );
   }
 
-  Scaffold _buildScaffold(
-      {bool light = true, required BuildContext context, bool hasBar = true}) {
+  Scaffold _buildScaffold({
+    bool light = true,
+    required BuildContext context,
+    bool hasBar = true,
+  }) {
     final arr = _buildNavigationDestinations();
     if (hasBar) {
       return Scaffold(
@@ -100,11 +104,12 @@ class AppScaffoldState extends State<AppScaffold> {
 class _NavigationDestination extends NavigationDestination {
   final String router;
 
-  const _NavigationDestination(
-      {required this.router,
-      required Icon super.selectedIcon,
-      required Icon super.icon,
-      required super.label});
+  const _NavigationDestination({
+    required this.router,
+    required Icon super.selectedIcon,
+    required Icon super.icon,
+    required super.label,
+  });
 }
 
 class _AppScrollBehavior extends ScrollBehavior {
@@ -122,7 +127,10 @@ class _AppScrollBehavior extends ScrollBehavior {
 
   @override
   Widget buildScrollbar(
-      BuildContext context, Widget child, ScrollableDetails details) {
+    BuildContext context,
+    Widget child,
+    ScrollableDetails details,
+  ) {
     if (Platforms.isMobile) return child;
     return RawScrollbar(
       controller: details.controller,
