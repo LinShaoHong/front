@@ -38,6 +38,8 @@ dependencies:
   dynamic_color: ^1.7.0
   material_color_utilities: ^0.8.0
   gap: ^3.0.1
+  material_symbols_icons: ^4.2719.3
+  animated_text_kit: ^4.2.2
 
 dev_dependencies:
   flutter_test:

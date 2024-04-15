@@ -16,6 +16,7 @@ export 'package:get_it_mixin/get_it_mixin.dart';
 export 'package:sized_context/sized_context.dart';
 export 'package:desktop_window/desktop_window.dart';
 export 'package:flutter_animate/flutter_animate.dart';
+export 'package:animated_text_kit/animated_text_kit.dart';
 export 'package:shared_preferences/shared_preferences.dart';
 export 'package:flutter_displaymode/flutter_displaymode.dart';
 export 'package:flutter_native_splash/flutter_native_splash.dart';

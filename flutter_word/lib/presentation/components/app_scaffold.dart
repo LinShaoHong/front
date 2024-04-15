@@ -43,8 +43,6 @@ class AppScaffoldState extends State<AppScaffold> {
           child: widget.child,
         ),
         bottomNavigationBar: NavigationBar(
-          // backgroundColor: Color(
-          //     CorePalette.of(const Color(0xffE8E971).value).neutral.get(96)),
           onDestinationSelected: (index) {
             navigationIndex = index;
             setState(() {});
@@ -100,9 +98,9 @@ class AppScaffoldState extends State<AppScaffold> {
 }
 
 class _NavigationDestination extends NavigationDestination {
-  String router;
+  final String router;
 
-  _NavigationDestination(
+  const _NavigationDestination(
       {required this.router,
       required Icon super.selectedIcon,
       required Icon super.icon,

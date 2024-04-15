@@ -134,7 +134,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     ColorScheme.fromImageProvider(
             provider: const NetworkImage(
-                'https://flutter.github.io/assets-for-api-docs/assets/material/content_based_color_scheme_1.png'))
+                'https://t7.baidu.com/it/u=692854287,1143290959&fm=193&f=GIF'))
         .then((value) {
       s = value;
       setState(() {});
@@ -146,14 +146,14 @@ class _AppState extends State<App> {
       debugShowCheckedModeBanner: false,
       routerDelegate: appRouter.routerDelegate,
       theme: ThemeData(
-        colorSchemeSeed: s.primary,
+        // colorSchemeSeed: s.primary,
         // colorSchemeSeed: const Color(0xffE8E971),
-        // colorSchemeSeed: const Color(0xff5F9906),
+        colorSchemeSeed: const Color(0xff5F9906),
       ),
       darkTheme: ThemeData(
-        colorSchemeSeed: s.primary,
+        // colorSchemeSeed: s.primary,
         // colorSchemeSeed: const Color(0xffE8E971),
-        // colorSchemeSeed: const Color(0xff5F9906),
+        colorSchemeSeed: const Color(0xff5F9906),
         brightness: Brightness.dark,
       ),
       themeMode: themeHolder.themeMode.value,
