@@ -211,8 +211,8 @@ class _WordScreenState extends State<WordScreen> with TickerProviderStateMixin {
                             children: [
                               ClipRRect(
                                 borderRadius: const BorderRadius.only(
-                                  bottomLeft: Radius.circular(15),
-                                  bottomRight: Radius.circular(15),
+                                  bottomLeft: Radius.circular(10),
+                                  bottomRight: Radius.circular(10),
                                 ),
                                 child: Image.asset(
                                   'assets/settings/card_top.jpg',
