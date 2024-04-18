@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import '/common/libs.dart';
 
 class AppScaffold extends StatefulWidget {
@@ -12,7 +11,7 @@ class AppScaffold extends StatefulWidget {
 }
 
 class AppScaffoldState extends State<AppScaffold> {
-  int navigationIndex = 0;
+  static ValueNotifier<int> navigationIndex = ValueNotifier(0);
 
   static AppStyles _styles = AppStyles();
 
@@ -44,16 +43,21 @@ class AppScaffoldState extends State<AppScaffold> {
     if (hasBar) {
       return Scaffold(
         body: SafeArea(
+          top: false,
           child: widget.child,
         ),
-        bottomNavigationBar: NavigationBar(
-          onDestinationSelected: (index) {
-            navigationIndex = index;
-            setState(() {});
-            appRouter.go(arr[index].router);
+        bottomNavigationBar: ValueListenableBuilder<int>(
+          valueListenable: navigationIndex,
+          builder: (BuildContext context, int value, Widget? child) {
+            return NavigationBar(
+              onDestinationSelected: (index) {
+                navigationIndex.value = index;
+                appRouter.go(arr[index].router);
+              },
+              selectedIndex: navigationIndex.value,
+              destinations: arr,
+            );
           },
-          selectedIndex: navigationIndex,
-          destinations: arr,
         ),
       );
     } else {
@@ -80,7 +84,7 @@ class AppScaffoldState extends State<AppScaffold> {
         label: '阅读',
       ),
       _NavigationDestination(
-        router: AppRouter.word,
+        router: AppRouter.dict,
         icon: const Icon(Icons.search_outlined),
         selectedIcon: const Icon(Icons.search),
         label: '词典',

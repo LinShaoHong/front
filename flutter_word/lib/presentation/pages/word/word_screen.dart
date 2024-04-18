@@ -1,6 +1,6 @@
-import 'package:material_symbols_icons/symbols.dart';
-
+import 'dart:ui';
 import '/common/libs.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 class WordScreen extends StatefulWidget {
   const WordScreen({super.key});
@@ -14,7 +14,10 @@ class _WordScreenState extends State<WordScreen> with TickerProviderStateMixin {
   int _tabIndex = 0;
   late TabController _tabController;
   late AnimationController _progressController;
+  late AnimationController _gradientController;
   String selectedPage = '';
+  late AnimationController _moveController;
+  final ValueNotifier<List<_MoveModel>> _moveWidgets = ValueNotifier([]);
 
   @override
   void initState() {
@@ -22,6 +25,15 @@ class _WordScreenState extends State<WordScreen> with TickerProviderStateMixin {
     _progressController =
         AnimationController(duration: const Duration(seconds: 10), vsync: this);
     _progressController.repeat(reverse: true);
+
+    _gradientController =
+        AnimationController(duration: const Duration(seconds: 2), vsync: this);
+    _gradientController.repeat(reverse: true);
+
+    _moveController =
+        AnimationController(duration: const Duration(seconds: 2), vsync: this);
+    _moveController.repeat(reverse: true);
+
     super.initState();
   }
 
@@ -29,6 +41,11 @@ class _WordScreenState extends State<WordScreen> with TickerProviderStateMixin {
   void dispose() {
     _tabController.dispose();
     _progressController.dispose();
+    _gradientController.dispose();
+    _moveController.dispose();
+    for (_MoveModel c in _moveWidgets.value) {
+      c.controller.dispose();
+    }
     super.dispose();
   }
 
@@ -37,516 +54,553 @@ class _WordScreenState extends State<WordScreen> with TickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Word'),
-        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 0,
       ),
       drawer: Drawer(
-        shape: const RoundedRectangleBorder(),
-        backgroundColor: context.theme.colorScheme.surface,
-        surfaceTintColor: context.theme.colorScheme.surfaceTint,
         elevation: 3,
+        shape: const RoundedRectangleBorder(),
         width: context.mq.size.width * 0.8,
         child: ListView(
           padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(),
-              child: Text(
-                'Drawer Header',
-                style: TextStyle(
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.message),
-              title: const Text('Messages'),
-              onTap: () {
-                setState(() {
-                  selectedPage = 'Messages';
-                });
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.account_circle),
-              title: const Text('Profile'),
-              onTap: () {
-                setState(() {
-                  selectedPage = 'Profile';
-                });
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Settings'),
-              onTap: () {
-                setState(() {
-                  selectedPage = 'Settings';
-                });
-              },
-            ),
-          ],
+          children: _buildDrawer(),
         ),
       ),
       body: Center(
         child: SingleChildScrollView(
-          child: Column(
+          child: SeparatedColumn(
+            separatorBuilder: () {
+              return const Gap(20);
+            },
             children: [
-              ...List.generate(1, (index) {
-                return SizedBox(
-                  width: 220,
-                  height: 250,
-                  child: Card(
-                    child: Center(
-                      child: Text(
-                        'word',
-                        style: TextStyle(
-                          fontSize: 16,
-                          height: 1,
-                          fontWeight: FontWeight.bold,
-                          background: Paint()
-                            ..style = PaintingStyle.fill
-                            ..strokeWidth = .1
-                            ..color = Colors.orange,
-                        ),
-                      ),
-                    ),
-                  ),
-                )
-                    .animate()
-                    .scale(
-                        duration: const Duration(milliseconds: 600),
-                        begin: const Offset(.88, .88),
-                        end: const Offset(1, 1),
-                        curve:
-                            const Interval(0, 0.5, curve: Curves.fastOutSlowIn))
-                    .fade(
-                        duration: const Duration(milliseconds: 600),
-                        curve:
-                            const Interval(0, 1, curve: Curves.fastOutSlowIn))
-                    .move(
-                      duration: const Duration(milliseconds: 600),
-                      begin: const Offset(0, 30),
-                      end: const Offset(0, 0),
-                      curve:
-                          const Interval(0, 0.5, curve: Curves.fastOutSlowIn),
-                    );
-              }),
-              const Gap(20),
-              ..._buildText(),
-              const Gap(20),
-              const Text('Single choice'),
+              ..._buildCards(context),
+              ..._buildText(context),
+              _buildMove(context),
+              ..._buildGradient(context),
+              _buildTestValueNotifier(context),
               const SingleChoice(),
-              const Gap(20),
-              const Text('Multiple choice'),
               const MultipleChoice(),
-              const Gap(20),
-              const Text('Mode choice'),
               const LightDarkChoice(),
-              const Gap(20),
-              Theme(
-                data: context.theme.copyWith(
-                  listTileTheme: const ListTileThemeData(
-                    iconColor: Colors.grey,
-                  ),
-                ),
-                child: SizedBox(
-                  width: context.mq.size.width * 0.95,
-                  child: Card.outlined(
-                    child: ListView.separated(
-                        shrinkWrap: true,
-                        itemCount: 3,
-                        separatorBuilder: (_, index) {
-                          return LayoutBuilder(builder: (_, c) {
-                            return Divider(
-                              indent: c.maxWidth * .05,
-                              endIndent: c.maxWidth * .05,
-                              height: 1,
-                              thickness: 0.2,
-                            );
-                          });
-                        },
-                        itemBuilder: (_, index) {
-                          return ListTile(
-                            onTap: () {
-                              appRouter.go(AppRouter.intro);
-                            },
-                            title: const Text('Lins'),
-                            leading: const SizedBox(
-                              width: 25,
-                              child: CircleAvatar(
-                                backgroundColor: Colors.green,
-                              ),
-                            ),
-                            trailing: const Icon(
-                              Symbols.arrow_forward_ios,
-                              size: 15,
-                              weight: 600,
-                            ),
-                          );
-                        }),
-                  ),
-                ),
-              ),
-              const Gap(20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Spacer(),
-                  SizedBox(
-                    width: context.mq.size.width * 0.45,
-                    height: 200,
-                    child: Card.outlined(
-                      elevation: 3,
-                      shadowColor: Colors.transparent,
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      child: Column(
-                        children: [
-                          ClipRRect(
-                            borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(10),
-                              bottomRight: Radius.circular(10),
-                            ),
-                            child: Image.asset(
-                              'assets/settings/card_top.jpg',
-                              fit: BoxFit.cover,
-                              height: 120,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const Spacer(),
-                  SizedBox(
-                    width: context.mq.size.width * 0.45,
-                    height: 200,
-                    child: const Card.outlined(),
-                  ),
-                  const Spacer(),
-                ],
-              ),
-              const Gap(20),
-              FloatingActionButton.large(
-                onPressed: () {
-                  showModalBottomSheet<void>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return SizedBox(
-                        height: 200,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              const Text('Modal BottomSheet1'),
-                              const SizedBox(height: 10),
-                              const Divider(
-                                indent: 10,
-                                endIndent: 10,
-                              ),
-                              const SizedBox(height: 10),
-                              ElevatedButton(
-                                child: const Text('Close BottomSheet'),
-                                onPressed: () => Navigator.pop(context),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
-                tooltip: 'Large',
-                child: const Icon(Icons.add),
-              ),
-              const Gap(20),
-              FilterChip(
-                onSelected: (_) {
-                  showDialog<void>(
-                    context: context,
-                    barrierDismissible: false, // user must tap button!
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('AlertDialog Title'),
-                        content: const SingleChildScrollView(
-                          child: ListBody(
-                            children: <Widget>[
-                              Text('This is a demo alert dialog.'),
-                              Text(
-                                  'Would you like to approve of this message?'),
-                            ],
-                          ),
-                        ),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text('Approve'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                label: const Text('Aaron Burr'),
-              ),
-              FilterChip(
-                onSelected: (_) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text('i am a snack bar...'),
-                    duration: Duration(seconds: 1),
-                  ));
-                },
-                label: const Text('Snack Burr'),
-              ),
-              const Gap(20),
-              SearchAnchor(
-                  builder: (BuildContext context, SearchController controller) {
-                return SearchBar(
-                  controller: controller,
-                  padding: const MaterialStatePropertyAll<EdgeInsets>(
-                      EdgeInsets.symmetric(horizontal: 16.0)),
-                  onTap: () {
-                    controller.openView();
-                  },
-                  onChanged: (_) {
-                    controller.openView();
-                  },
-                  leading: const Icon(Icons.search),
-                  trailing: <Widget>[
-                    Tooltip(
-                      message: 'Change brightness mode',
-                      child: IconButton(
-                        isSelected: false,
-                        onPressed: () {},
-                        icon: const Icon(Icons.wb_sunny_outlined),
-                        selectedIcon: const Icon(Icons.brightness_2_outlined),
-                      ),
-                    ),
-                  ],
-                );
-              }, suggestionsBuilder:
-                      (BuildContext context, SearchController controller) {
-                return List<ListTile>.generate(5, (int index) {
-                  final String item = 'item $index';
-                  return ListTile(
-                    title: Text(item),
-                    onTap: () {
-                      controller.closeView(item);
-                    },
-                  );
-                });
-              }),
-              const Gap(20),
-              Slider(
-                value: _currentSliderValue,
-                max: 100,
-                divisions: 5,
-                label: _currentSliderValue.round().toString(),
-                onChanged: (double value) {
-                  _currentSliderValue = value;
-                  setState(() {});
-                },
-              ),
-              const Gap(20),
-              SizedBox(
-                height: 55,
-                child: TabBar(
-                  isScrollable: true,
-                  controller: _tabController,
-                  onTap: (index) {
-                    _tabIndex = index;
-                    setState(() {});
-                  },
-                  tabs: [
-                    Tab(
-                      icon: Icon(
-                        Icons.directions_car,
-                        color: _tabIndex == 0
-                            ? context.theme.colorScheme.primary
-                            : Colors.grey,
-                      ),
-                      iconMargin: const EdgeInsets.only(bottom: 0),
-                      text: 'car',
-                    ),
-                    Tab(
-                      icon: Icon(
-                        Icons.directions_transit,
-                        color: _tabIndex == 1
-                            ? context.theme.colorScheme.primary
-                            : Colors.grey,
-                      ),
-                      iconMargin: const EdgeInsets.only(bottom: 0),
-                      text: 'transit',
-                    ),
-                    Tab(
-                      icon: Icon(
-                        Icons.directions_bike,
-                        color: _tabIndex == 2
-                            ? context.theme.colorScheme.primary
-                            : Colors.grey,
-                      ),
-                      iconMargin: const EdgeInsets.only(bottom: 0),
-                      text: 'bike',
-                    ),
-                    Tab(
-                      icon: Icon(
-                        Icons.directions_car,
-                        color: _tabIndex == 3
-                            ? context.theme.colorScheme.primary
-                            : Colors.grey,
-                      ),
-                      iconMargin: const EdgeInsets.only(bottom: 0),
-                      text: 'car',
-                    ),
-                    Tab(
-                      icon: Icon(
-                        Icons.directions_transit,
-                        color: _tabIndex == 4
-                            ? context.theme.colorScheme.primary
-                            : Colors.grey,
-                      ),
-                      iconMargin: const EdgeInsets.only(bottom: 0),
-                      text: 'transit',
-                    ),
-                    Tab(
-                      icon: Icon(
-                        Icons.directions_bike,
-                        color: _tabIndex == 5
-                            ? context.theme.colorScheme.primary
-                            : Colors.grey,
-                      ),
-                      iconMargin: const EdgeInsets.only(bottom: 0),
-                      text: 'bike',
-                    ),
-                    Tab(
-                      icon: Icon(
-                        Icons.directions_car,
-                        color: _tabIndex == 6
-                            ? context.theme.colorScheme.primary
-                            : Colors.grey,
-                      ),
-                      iconMargin: const EdgeInsets.only(bottom: 0),
-                      text: 'car',
-                    ),
-                    Tab(
-                      icon: Icon(
-                        Icons.directions_transit,
-                        color: _tabIndex == 7
-                            ? context.theme.colorScheme.primary
-                            : Colors.grey,
-                      ),
-                      iconMargin: const EdgeInsets.only(bottom: 0),
-                      text: 'transit',
-                    ),
-                    Tab(
-                      icon: Icon(
-                        Icons.directions_bike,
-                        color: _tabIndex == 8
-                            ? context.theme.colorScheme.primary
-                            : Colors.grey,
-                      ),
-                      iconMargin: const EdgeInsets.only(bottom: 0),
-                      text: 'bike',
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 100,
-                child: TabBarView(
-                  controller: _tabController,
-                  children: const [
-                    Card(
-                      margin: EdgeInsets.all(10),
-                      child: Icon(
-                        Icons.directions_car,
-                      ),
-                    ),
-                    Card(
-                      margin: EdgeInsets.all(10),
-                      child: Icon(
-                        Icons.directions_transit,
-                      ),
-                    ),
-                    Card(
-                      margin: EdgeInsets.all(10),
-                      child: Icon(
-                        Icons.directions_bike,
-                      ),
-                    ),
-                    Card(
-                      margin: EdgeInsets.all(10),
-                      child: Icon(
-                        Icons.directions_car,
-                      ),
-                    ),
-                    Card(
-                      margin: EdgeInsets.all(10),
-                      child: Icon(
-                        Icons.directions_transit,
-                      ),
-                    ),
-                    Card(
-                      margin: EdgeInsets.all(10),
-                      child: Icon(
-                        Icons.directions_bike,
-                      ),
-                    ),
-                    Card(
-                      margin: EdgeInsets.all(10),
-                      child: Icon(
-                        Icons.directions_car,
-                      ),
-                    ),
-                    Card(
-                      margin: EdgeInsets.all(10),
-                      child: Icon(
-                        Icons.directions_transit,
-                      ),
-                    ),
-                    Card(
-                      margin: EdgeInsets.all(10),
-                      child: Icon(
-                        Icons.directions_bike,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Gap(20),
-              AnimatedBuilder(
-                animation: _progressController,
-                builder: (_, w) {
-                  return RefreshProgressIndicator(
-                    value: _progressController.value,
-                  );
-                },
-              ),
-              const Gap(20),
-              AnimatedBuilder(
-                animation: _progressController,
-                builder: (_, w) {
-                  return CircularProgressIndicator(
-                    value: _progressController.value,
-                  );
-                },
-              ),
-              const Gap(20),
-              AnimatedBuilder(
-                animation: _progressController,
-                builder: (_, w) {
-                  return LinearProgressIndicator(
-                    value: _progressController.value,
-                  );
-                },
-              ),
+              _buildSetting(context),
+              _buildFloatingBar(context),
+              ..._buildChips(context),
+              _buildSearch(),
+              _buildSlider(),
+              ..._buildTabBar(),
+              ..._buildProgressIndicator(),
             ],
           ),
         ),
       ),
     );
+  }
+
+  List<Widget> _buildDrawer() {
+    return [
+      const DrawerHeader(
+        decoration: BoxDecoration(),
+        child: Text(
+          'Drawer Header',
+          style: TextStyle(
+            fontSize: 24,
+          ),
+        ),
+      ),
+      ListTile(
+        leading: const Icon(Icons.message),
+        title: const Text('Messages'),
+        onTap: () {
+          setState(() {
+            selectedPage = 'Messages';
+          });
+        },
+      ),
+      ListTile(
+        leading: const Icon(Icons.account_circle),
+        title: const Text('Profile'),
+        onTap: () {
+          setState(() {
+            selectedPage = 'Profile';
+          });
+        },
+      ),
+      ListTile(
+        leading: const Icon(Icons.settings),
+        title: const Text('Settings'),
+        onTap: () {
+          setState(() {
+            selectedPage = 'Settings';
+          });
+        },
+      ),
+    ];
+  }
+
+  Widget _buildMove(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        FloatingActionButton.small(
+          onPressed: () {
+            final controller = AnimationController(
+              duration: const Duration(seconds: 2),
+              vsync: this,
+            );
+            _moveWidgets.value.removeWhere((element) {
+              if (element.controller.isCompleted) {
+                element.controller.dispose();
+                return true;
+              }
+              return false;
+            });
+            int len = _moveWidgets.value.length;
+            _moveWidgets.value.add(
+              _MoveModel(
+                controller: controller,
+                content: len,
+              ),
+            );
+            _moveWidgets.value = List.from(_moveWidgets.value);
+            controller.forward();
+          },
+          child: const Icon(Icons.arrow_circle_right_outlined),
+        ),
+        const Gap(10),
+        Container(
+          width: 200,
+          height: 50,
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(
+            color: context.colorSchema.primary,
+          ),
+          child: ValueListenableBuilder<List<_MoveModel>>(
+            valueListenable: _moveWidgets,
+            builder:
+                (BuildContext context, List<_MoveModel> value, Widget? child) {
+              return RepaintBoundary(
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    ..._moveWidgets.value.map((e) {
+                      Animation<Offset> offsetAnimation = Tween(
+                        begin: const Offset(-2.5, 0),
+                        end: const Offset(2.5, 0),
+                      ).animate(e.controller);
+                      return SlideTransition(
+                        position: offsetAnimation,
+                        child: Container(
+                          width: 50,
+                          height: 20,
+                          color: context.colorSchema.onPrimary,
+                          child: Text(
+                            '${e.content}',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  List<Widget> _buildGradient(BuildContext context) {
+    Animation<Alignment> topSeq = TweenSequence<Alignment>(
+      [
+        TweenSequenceItem(
+          tween: Tween<Alignment>(
+            begin: Alignment.topLeft,
+            end: Alignment.topRight,
+          ),
+          weight: 1,
+        ),
+        TweenSequenceItem(
+          tween: Tween<Alignment>(
+            begin: Alignment.topRight,
+            end: Alignment.bottomRight,
+          ),
+          weight: 1,
+        ),
+        TweenSequenceItem(
+          tween: Tween<Alignment>(
+            begin: Alignment.bottomRight,
+            end: Alignment.bottomLeft,
+          ),
+          weight: 1,
+        ),
+        TweenSequenceItem(
+          tween: Tween<Alignment>(
+            begin: Alignment.bottomLeft,
+            end: Alignment.topLeft,
+          ),
+          weight: 1,
+        ),
+      ],
+    ).animate(_gradientController);
+
+    Animation<Alignment> btSeq = TweenSequence<Alignment>(
+      [
+        TweenSequenceItem(
+          tween: Tween<Alignment>(
+            begin: Alignment.bottomRight,
+            end: Alignment.bottomLeft,
+          ),
+          weight: 1,
+        ),
+        TweenSequenceItem(
+          tween: Tween<Alignment>(
+            begin: Alignment.bottomLeft,
+            end: Alignment.topLeft,
+          ),
+          weight: 1,
+        ),
+        TweenSequenceItem(
+          tween: Tween<Alignment>(
+            begin: Alignment.topLeft,
+            end: Alignment.topRight,
+          ),
+          weight: 1,
+        ),
+        TweenSequenceItem(
+          tween: Tween<Alignment>(
+            begin: Alignment.topRight,
+            end: Alignment.bottomRight,
+          ),
+          weight: 1,
+        ),
+      ],
+    ).animate(_gradientController);
+
+    return [
+      RepaintBoundary(
+        child: AnimatedBuilder(
+          animation: _gradientController,
+          builder: (_, c) {
+            return Container(
+              width: 280,
+              height: 70,
+              decoration: BoxDecoration(
+                border: _GradientBoxBorder(
+                  gradient: LinearGradient(
+                    transform: _LinearGradientTransform(
+                      _gradientController.value,
+                      70 * 70 / 280,
+                    ),
+                    stops: const [0.0, 0.3, 0.6, 0.8, 1.0],
+                    colors: [
+                      context.colorSchema.secondaryContainer,
+                      context.colorSchema.tertiaryContainer,
+                      context.colorSchema.primary,
+                      context.colorSchema.tertiaryContainer,
+                      context.colorSchema.secondaryContainer,
+                    ],
+                    begin: topSeq.value,
+                    end: btSeq.value,
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+      RepaintBoundary(
+        child: AnimatedBuilder(
+          animation: _gradientController,
+          builder: (_, c) {
+            return Transform.scale(
+              alignment: Alignment.centerLeft,
+              scaleX: _gradientController.value,
+              child: Container(
+                width: 300,
+                height: 10,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    // stops: const [0.0, 0.3, 0.6, 0.8, 1.0],
+                    // transform: _LinearGradientTransform(
+                    //   _gradientController.value,
+                    //   100 * 100 / 300,
+                    // ),
+                    // tileMode: TileMode.repeated,
+                    // begin: topSeq.value,
+                    // end: btSeq.value,
+                    stops: const [0.0, 0.5, 1.0],
+                    colors: [
+                      context.colorSchema.surface,
+                      context.colorSchema.secondaryContainer,
+                      context.colorSchema.primary,
+                      // context.colorSchema.secondaryContainer,
+                      // context.colorSchema.surface,
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+      RepaintBoundary(
+        child: AnimatedBuilder(
+          animation: _gradientController,
+          builder: (BuildContext context, Widget? child) {
+            return Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100),
+                gradient: RadialGradient(
+                  radius: _gradientController.value,
+                  stops: const [0.0, 0.3, 1.0],
+                  colors: [
+                    context.colorSchema.surface,
+                    context.colorSchema.secondaryContainer,
+                    context.colorSchema.primary,
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+      RepaintBoundary(
+        child: AnimatedBuilder(
+          animation: _gradientController,
+          builder: (BuildContext context, Widget? child) {
+            return Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100),
+                gradient: SweepGradient(
+                  startAngle: _gradientController.value,
+                  stops: const [0.0, 0.4, 1.0],
+                  colors: [
+                    context.colorSchema.surface,
+                    context.colorSchema.secondaryContainer,
+                    context.colorSchema.primary,
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    ];
+  }
+
+  Widget _buildSlider() {
+    return Slider(
+      value: _currentSliderValue,
+      max: 100,
+      divisions: 5,
+      label: _currentSliderValue.round().toString(),
+      onChanged: (double value) {
+        _currentSliderValue = value;
+        setState(() {});
+      },
+    );
+  }
+
+  List<Widget> _buildTabBar() {
+    return [
+      SizedBox(
+        height: 55,
+        child: TabBar(
+          isScrollable: true,
+          controller: _tabController,
+          onTap: (index) {
+            _tabIndex = index;
+            setState(() {});
+          },
+          tabs: [
+            Tab(
+              icon: Icon(
+                Icons.directions_car,
+                color: _tabIndex == 0
+                    ? context.theme.colorScheme.primary
+                    : Colors.grey,
+              ),
+              iconMargin: const EdgeInsets.only(bottom: 0),
+              text: 'car',
+            ),
+            Tab(
+              icon: Icon(
+                Icons.directions_transit,
+                color: _tabIndex == 1
+                    ? context.theme.colorScheme.primary
+                    : Colors.grey,
+              ),
+              iconMargin: const EdgeInsets.only(bottom: 0),
+              text: 'transit',
+            ),
+            Tab(
+              icon: Icon(
+                Icons.directions_bike,
+                color: _tabIndex == 2
+                    ? context.theme.colorScheme.primary
+                    : Colors.grey,
+              ),
+              iconMargin: const EdgeInsets.only(bottom: 0),
+              text: 'bike',
+            ),
+            Tab(
+              icon: Icon(
+                Icons.directions_car,
+                color: _tabIndex == 3
+                    ? context.theme.colorScheme.primary
+                    : Colors.grey,
+              ),
+              iconMargin: const EdgeInsets.only(bottom: 0),
+              text: 'car',
+            ),
+            Tab(
+              icon: Icon(
+                Icons.directions_transit,
+                color: _tabIndex == 4
+                    ? context.theme.colorScheme.primary
+                    : Colors.grey,
+              ),
+              iconMargin: const EdgeInsets.only(bottom: 0),
+              text: 'transit',
+            ),
+            Tab(
+              icon: Icon(
+                Icons.directions_bike,
+                color: _tabIndex == 5
+                    ? context.theme.colorScheme.primary
+                    : Colors.grey,
+              ),
+              iconMargin: const EdgeInsets.only(bottom: 0),
+              text: 'bike',
+            ),
+            Tab(
+              icon: Icon(
+                Icons.directions_car,
+                color: _tabIndex == 6
+                    ? context.theme.colorScheme.primary
+                    : Colors.grey,
+              ),
+              iconMargin: const EdgeInsets.only(bottom: 0),
+              text: 'car',
+            ),
+            Tab(
+              icon: Icon(
+                Icons.directions_transit,
+                color: _tabIndex == 7
+                    ? context.theme.colorScheme.primary
+                    : Colors.grey,
+              ),
+              iconMargin: const EdgeInsets.only(bottom: 0),
+              text: 'transit',
+            ),
+            Tab(
+              icon: Icon(
+                Icons.directions_bike,
+                color: _tabIndex == 8
+                    ? context.theme.colorScheme.primary
+                    : Colors.grey,
+              ),
+              iconMargin: const EdgeInsets.only(bottom: 0),
+              text: 'bike',
+            ),
+          ],
+        ),
+      ),
+      SizedBox(
+        height: 100,
+        child: TabBarView(
+          controller: _tabController,
+          children: const [
+            Card(
+              margin: EdgeInsets.all(10),
+              child: Icon(
+                Icons.directions_car,
+              ),
+            ),
+            Card(
+              margin: EdgeInsets.all(10),
+              child: Icon(
+                Icons.directions_transit,
+              ),
+            ),
+            Card(
+              margin: EdgeInsets.all(10),
+              child: Icon(
+                Icons.directions_bike,
+              ),
+            ),
+            Card(
+              margin: EdgeInsets.all(10),
+              child: Icon(
+                Icons.directions_car,
+              ),
+            ),
+            Card(
+              margin: EdgeInsets.all(10),
+              child: Icon(
+                Icons.directions_transit,
+              ),
+            ),
+            Card(
+              margin: EdgeInsets.all(10),
+              child: Icon(
+                Icons.directions_bike,
+              ),
+            ),
+            Card(
+              margin: EdgeInsets.all(10),
+              child: Icon(
+                Icons.directions_car,
+              ),
+            ),
+            Card(
+              margin: EdgeInsets.all(10),
+              child: Icon(
+                Icons.directions_transit,
+              ),
+            ),
+            Card(
+              margin: EdgeInsets.all(10),
+              child: Icon(
+                Icons.directions_bike,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ];
+  }
+
+  List<Widget> _buildProgressIndicator() {
+    return [
+      AnimatedBuilder(
+        animation: _progressController,
+        builder: (_, w) {
+          return RefreshProgressIndicator(
+            value: _progressController.value,
+          );
+        },
+      ),
+      AnimatedBuilder(
+        animation: _progressController,
+        builder: (_, w) {
+          return CircularProgressIndicator(
+            value: _progressController.value,
+          );
+        },
+      ),
+      AnimatedBuilder(
+        animation: _progressController,
+        builder: (_, w) {
+          return LinearProgressIndicator(
+            value: _progressController.value,
+          );
+        },
+      ),
+    ];
   }
 }
 
@@ -592,63 +646,65 @@ class _LightDarkChoiceState extends State<LightDarkChoice> {
                 ],
               ),
               const Gap(10),
-              LayoutBuilder(builder: (_, c) {
-                return SegmentedButton(
-                  style: ButtonStyle(
-                    visualDensity: const VisualDensity(vertical: -4),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                      ),
-                    ),
-                  ),
-                  // showSelectedIcon: false,
-                  segments: <ButtonSegment<ThemeMode>>[
-                    ButtonSegment(
-                      value: ThemeMode.light,
-                      label: Text(
-                        '浅色',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: mode == ThemeMode.light
-                              ? FontWeight.bold
-                              : FontWeight.normal,
+              LayoutBuilder(
+                builder: (_, c) {
+                  return SegmentedButton(
+                    style: ButtonStyle(
+                      visualDensity: const VisualDensity(vertical: -4),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
                         ),
                       ),
                     ),
-                    ButtonSegment(
-                      value: ThemeMode.dark,
-                      label: Text(
-                        '深色',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: mode == ThemeMode.dark
-                              ? FontWeight.bold
-                              : FontWeight.normal,
+                    // showSelectedIcon: false,
+                    segments: <ButtonSegment<ThemeMode>>[
+                      ButtonSegment(
+                        value: ThemeMode.light,
+                        label: Text(
+                          '浅色',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: mode == ThemeMode.light
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
                         ),
                       ),
-                    ),
-                    ButtonSegment(
-                      value: ThemeMode.system,
-                      label: Text(
-                        '自动',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: mode == ThemeMode.system
-                              ? FontWeight.bold
-                              : FontWeight.normal,
+                      ButtonSegment(
+                        value: ThemeMode.dark,
+                        label: Text(
+                          '深色',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: mode == ThemeMode.dark
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                  selected: <ThemeMode>{mode},
-                  onSelectionChanged: (Set<ThemeMode> set) {
-                    mode = set.first;
-                    themeHolder.themeMode.value = mode;
-                    setState(() {});
-                  },
-                );
-              }),
+                      ButtonSegment(
+                        value: ThemeMode.system,
+                        label: Text(
+                          '自动',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: mode == ThemeMode.system
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                    ],
+                    selected: <ThemeMode>{mode},
+                    onSelectionChanged: (Set<ThemeMode> set) {
+                      mode = set.first;
+                      themeHolder.themeMode.value = mode;
+                      setState(() {});
+                    },
+                  );
+                },
+              ),
             ],
           ),
         ),
@@ -672,21 +728,25 @@ class _SingleChoiceState extends State<SingleChoice> {
     return SegmentedButton<Calendar>(
       segments: const <ButtonSegment<Calendar>>[
         ButtonSegment<Calendar>(
-            value: Calendar.day,
-            label: Text('Day'),
-            icon: Icon(Icons.calendar_view_day)),
+          value: Calendar.day,
+          label: Text('Day'),
+          icon: Icon(Icons.calendar_view_day),
+        ),
         ButtonSegment<Calendar>(
-            value: Calendar.week,
-            label: Text('Week'),
-            icon: Icon(Icons.calendar_view_week)),
+          value: Calendar.week,
+          label: Text('Week'),
+          icon: Icon(Icons.calendar_view_week),
+        ),
         ButtonSegment<Calendar>(
-            value: Calendar.month,
-            label: Text('Month'),
-            icon: Icon(Icons.calendar_view_month)),
+          value: Calendar.month,
+          label: Text('Month'),
+          icon: Icon(Icons.calendar_view_month),
+        ),
         ButtonSegment<Calendar>(
-            value: Calendar.year,
-            label: Text('Year'),
-            icon: Icon(Icons.calendar_today)),
+          value: Calendar.year,
+          label: Text('Year'),
+          icon: Icon(Icons.calendar_today),
+        ),
       ],
       selected: <Calendar>{calendarView},
       onSelectionChanged: (Set<Calendar> newSelection) {
@@ -737,7 +797,194 @@ class _MultipleChoiceState extends State<MultipleChoice> {
   }
 }
 
-List<Widget> _buildText() {
+Widget _buildSetting(BuildContext context) {
+  return Theme(
+    data: context.theme.copyWith(
+      listTileTheme: const ListTileThemeData(
+        iconColor: Colors.grey,
+      ),
+    ),
+    child: SizedBox(
+      width: context.mq.size.width * 0.95,
+      child: Card.outlined(
+        child: SeparatedColumn(
+          separatorBuilder: () {
+            return LayoutBuilder(
+              builder: (_, c) {
+                return Divider(
+                  indent: c.maxWidth * .05,
+                  endIndent: c.maxWidth * .05,
+                  height: 1,
+                  thickness: 0.2,
+                );
+              },
+            );
+          },
+          children: [
+            ...List.generate(3, (index) {
+              return ListTile(
+                onTap: () {
+                  appRouter.go(AppRouter.intro);
+                  AppScaffoldState.navigationIndex.value = 1;
+                },
+                title: const Text('Lins'),
+                leading: const SizedBox(
+                  width: 25,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.green,
+                  ),
+                ),
+                trailing: const Icon(
+                  Symbols.arrow_forward_ios,
+                  size: 15,
+                  weight: 600,
+                ),
+              );
+            }),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+List<Widget> _buildCards(BuildContext context) {
+  final picCard = Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      const Spacer(),
+      SizedBox(
+        width: context.mq.size.width * 0.45,
+        height: 200,
+        child: Card.outlined(
+          elevation: 3,
+          shadowColor: Colors.transparent,
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          child: Column(
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(12),
+                  bottomRight: Radius.circular(12),
+                ),
+                child: Image.asset(
+                  'assets/settings/card_top.jpg',
+                  fit: BoxFit.cover,
+                  height: 120,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      const Spacer(),
+      Stack(
+        children: <Widget>[
+          SizedBox(
+            width: context.mq.size.width * 0.45,
+            height: 200,
+            child: const Card(),
+          ),
+          ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: 5.0,
+                sigmaY: 5.0,
+              ),
+              child: Container(
+                width: context.mq.size.width * 0.45,
+                height: 200,
+                color: Colors.transparent,
+              ),
+            ),
+          ),
+        ],
+      ),
+      const Spacer(),
+    ],
+  );
+
+  List<Widget> cards = List.generate(1, (index) {
+    return SizedBox(
+      width: 220,
+      height: 250,
+      child: Card(
+        child: Center(
+          child: Text(
+            'word',
+            style: TextStyle(
+              fontSize: 16,
+              height: 1,
+              fontWeight: FontWeight.bold,
+              background: Paint()
+                ..style = PaintingStyle.fill
+                ..strokeWidth = .1
+                ..color = Colors.orange,
+            ),
+          ),
+        ),
+      ),
+    )
+        .animate()
+        .scale(
+          duration: const Duration(milliseconds: 600),
+          begin: const Offset(.88, .88),
+          end: const Offset(1, 1),
+          curve: const Interval(0, 0.5, curve: Curves.fastOutSlowIn),
+        )
+        .fade(
+          duration: const Duration(milliseconds: 600),
+          curve: const Interval(0, 1, curve: Curves.fastOutSlowIn),
+        )
+        .move(
+          duration: const Duration(milliseconds: 600),
+          begin: const Offset(0, 30),
+          end: const Offset(0, 0),
+          curve: const Interval(0, 0.5, curve: Curves.fastOutSlowIn),
+        );
+  });
+
+  cards.add(picCard);
+  return cards;
+}
+
+Widget _buildFloatingBar(BuildContext context) {
+  return FloatingActionButton.large(
+    onPressed: () {
+      showModalBottomSheet<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return SizedBox(
+            height: 200,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const Text('Modal BottomSheet1'),
+                  const SizedBox(height: 10),
+                  const Divider(
+                    indent: 10,
+                    endIndent: 10,
+                  ),
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    child: const Text('Close BottomSheet'),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    },
+    tooltip: 'Large',
+    child: const Icon(Icons.add),
+  );
+}
+
+List<Widget> _buildText(BuildContext context) {
   return [
     Text.rich(
       TextSpan(
@@ -783,7 +1030,6 @@ List<Widget> _buildText() {
         ],
       ),
     ),
-    const Gap(20),
     AnimatedTextKit(
       animatedTexts: [
         TyperAnimatedText(
@@ -800,21 +1046,20 @@ List<Widget> _buildText() {
       displayFullTextOnTap: true,
       stopPauseOnTap: true,
     ),
-    const Gap(20),
-    AnimatedTextKit(
-      animatedTexts: [
-        FadeAnimatedText(
-          'Product Name',
-          textStyle: const TextStyle(
-            fontSize: 30.0,
-            fontWeight: FontWeight.bold,
-          ),
-          duration: const Duration(milliseconds: 500),
-        ),
-      ],
-      totalRepeatCount: 4,
-      pause: const Duration(milliseconds: 500),
-    ),
+    // AnimatedTextKit(
+    //   animatedTexts: [
+    //     FadeAnimatedText(
+    //       'Product Name',
+    //       textStyle: const TextStyle(
+    //         fontSize: 30.0,
+    //         fontWeight: FontWeight.bold,
+    //       ),
+    //       duration: const Duration(milliseconds: 500),
+    //     ),
+    //   ],
+    //   totalRepeatCount: 4,
+    //   pause: const Duration(milliseconds: 500),
+    // ),
     AnimatedTextKit(
       animatedTexts: [
         TypewriterAnimatedText(
@@ -831,5 +1076,425 @@ List<Widget> _buildText() {
       displayFullTextOnTap: true,
       stopPauseOnTap: true,
     ),
+    Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: context.colorSchema.outlineVariant),
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+      ),
+      width: 80,
+      height: 20,
+      child: _MarqueeWidget(
+        axis: Axis.vertical,
+        itemCount: 10,
+        itemBuilder: (_, index) {
+          return Text(
+            index.toString(),
+            textAlign: TextAlign.center,
+          );
+        },
+      ),
+    ),
+    Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        TextButton(
+          onPressed: () {
+            if (_NotifierTestState.value.value == 1) {
+              _NotifierTestState.value.value = 0;
+            } else {
+              _NotifierTestState.value.value = 1;
+            }
+          },
+          child: const Text(
+            'Change',
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
+        ),
+        const Gap(5),
+        const _NotifierTest(),
+      ],
+    ),
   ];
+}
+
+class _NotifierTest extends StatefulWidget {
+  const _NotifierTest();
+
+  @override
+  State<_NotifierTest> createState() => _NotifierTestState();
+}
+
+class _NotifierTestState extends State<_NotifierTest> {
+  static ValueNotifier<int> value = ValueNotifier(0);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ValueListenableBuilder<int>(
+        valueListenable: value,
+        builder: (BuildContext context, int value, Widget? child) {
+          return Text(
+            value.toString(),
+            style: const TextStyle(
+              fontSize: 16,
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _MarqueeWidget extends StatefulWidget {
+  const _MarqueeWidget({
+    required this.itemCount,
+    required this.itemBuilder,
+    this.loopDuration = const Duration(seconds: 1),
+    this.axis = Axis.horizontal,
+  });
+
+  final int itemCount;
+  final Duration loopDuration;
+  final Axis axis;
+  final IndexedWidgetBuilder itemBuilder;
+
+  @override
+  State<StatefulWidget> createState() => _MarqueeWidgetState();
+}
+
+class _MarqueeWidgetState extends State<_MarqueeWidget> {
+  late PageController _controller;
+  late Timer _timer;
+
+  @override
+  void initState() {
+    _controller = PageController();
+    _timer = Timer.periodic(widget.loopDuration, (timer) {
+      if (_controller.page != null) {
+        if (_controller.page!.round() >= widget.itemCount) {
+          _controller.jumpToPage(0);
+        }
+        _controller.nextPage(
+          duration: const Duration(seconds: 1),
+          curve: Curves.linear,
+        );
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PageView.builder(
+      controller: _controller,
+      scrollDirection: widget.axis,
+      itemCount: widget.itemCount + 1,
+      itemBuilder: (_, index) {
+        final page = index % widget.itemCount;
+        return widget.itemBuilder(context, page);
+      },
+    );
+  }
+}
+
+class _LinearGradientTransform extends GradientTransform {
+  final double value;
+  final double offset;
+
+  const _LinearGradientTransform(this.value, this.offset);
+
+  @override
+  Matrix4? transform(Rect bounds, {TextDirection? textDirection}) {
+    final dist = value * (bounds.width + offset);
+    return Matrix4.identity()..translate(-dist);
+  }
+}
+
+class _GradientBoxBorder extends BoxBorder {
+  final double width;
+  final Gradient gradient;
+
+  const _GradientBoxBorder({required this.gradient, this.width = 1.0});
+
+  @override
+  BorderSide get bottom => BorderSide.none;
+
+  @override
+  EdgeInsetsGeometry get dimensions => EdgeInsets.all(width);
+
+  @override
+  bool get isUniform => true;
+
+  @override
+  ShapeBorder scale(double t) {
+    return this;
+  }
+
+  @override
+  BorderSide get top => BorderSide.none;
+
+  @override
+  void paint(
+    Canvas canvas,
+    Rect rect, {
+    TextDirection? textDirection,
+    BoxShape shape = BoxShape.rectangle,
+    BorderRadius? borderRadius,
+  }) {
+    switch (shape) {
+      case BoxShape.circle:
+        assert(
+          borderRadius == null,
+          'A borderRadius can only be given for rectangular boxes.',
+        );
+        _paintCircle(canvas, rect);
+        break;
+      case BoxShape.rectangle:
+        if (borderRadius != null) {
+          _paintRRect(canvas, rect, borderRadius);
+          return;
+        }
+        _paintRect(canvas, rect);
+        break;
+    }
+  }
+
+  void _paintRect(Canvas canvas, Rect rect) {
+    canvas.drawRect(rect.deflate(width / 2), _getPaint(rect));
+  }
+
+  void _paintRRect(Canvas canvas, Rect rect, BorderRadius borderRadius) {
+    final rrect = borderRadius.toRRect(rect).deflate(width / 2);
+    canvas.drawRRect(rrect, _getPaint(rect));
+  }
+
+  void _paintCircle(Canvas canvas, Rect rect) {
+    final paint = _getPaint(rect);
+    final radius = (rect.shortestSide - width) / 2.0;
+    canvas.drawCircle(rect.center, radius, paint);
+  }
+
+  Paint _getPaint(Rect rect) {
+    return Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = width
+      ..shader = gradient.createShader(rect);
+  }
+}
+
+List<Widget> _buildChips(BuildContext context) {
+  return [
+    FilterChip(
+      onSelected: (_) {
+        showDialog<void>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('AlertDialog Title'),
+              content: const SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text('This is a demo alert dialog.'),
+                    Text('Would you like to approve of this message?'),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Approve'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+      label: const Text('Aaron Burr'),
+    ),
+    FilterChip(
+      onSelected: (_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('i am a snack bar...'),
+            duration: Duration(seconds: 1),
+          ),
+        );
+      },
+      label: const Text('Snack Burr'),
+    ),
+  ];
+}
+
+Widget _buildSearch() {
+  return SearchAnchor(
+    builder: (BuildContext context, SearchController controller) {
+      return SearchBar(
+        controller: controller,
+        padding: const MaterialStatePropertyAll<EdgeInsets>(
+          EdgeInsets.symmetric(horizontal: 16.0),
+        ),
+        onTap: () {
+          controller.openView();
+        },
+        onChanged: (_) {
+          controller.openView();
+        },
+        leading: const Icon(Icons.search),
+        trailing: <Widget>[
+          Tooltip(
+            message: 'Change brightness mode',
+            child: IconButton(
+              isSelected: false,
+              onPressed: () {},
+              icon: const Icon(Icons.wb_sunny_outlined),
+              selectedIcon: const Icon(Icons.brightness_2_outlined),
+            ),
+          ),
+        ],
+      );
+    },
+    suggestionsBuilder: (BuildContext context, SearchController controller) {
+      return List<ListTile>.generate(5, (int index) {
+        final String item = 'item $index';
+        return ListTile(
+          title: Text(item),
+          onTap: () {
+            controller.closeView(item);
+          },
+        );
+      });
+    },
+  );
+}
+
+Widget _buildTestValueNotifier(context) {
+  return _TestVNWidget();
+}
+
+class _TestVNModel {
+  late int number = 0;
+  late List<String> text = [];
+}
+
+class _TestVNSingle extends ValueNotifier<_TestVNModel> {
+  _TestVNSingle._newInstance() : super(_TestVNModel());
+
+  static final _TestVNSingle instance = _TestVNSingle._newInstance();
+
+  void add({required String s}) {
+    value.text.add(s);
+    value.number = value.text.length;
+    notifyListeners();
+  }
+
+  void remove({required String s}) {
+    value.text.remove(s);
+    value.number = value.text.length;
+    notifyListeners();
+  }
+
+  void clear() {
+    value.number = 0;
+    value.text.clear();
+    notifyListeners();
+  }
+}
+
+class _TestVNWidget extends StatelessWidget {
+  final _TestVNSingle instance = _TestVNSingle.instance;
+  final ValueNotifier<_TestVNModel> model = ValueNotifier(_TestVNModel());
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ValueListenableBuilder(
+          valueListenable: instance,
+          builder: (BuildContext context, _TestVNModel value, Widget? child) {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FloatingActionButton.small(
+                  onPressed: () {
+                    instance.add(
+                      s: instance.value.text.length.toString(),
+                    );
+                  },
+                  child: const Icon(Icons.add),
+                ),
+                const Gap(10),
+                FloatingActionButton.small(
+                  onPressed: () {
+                    instance.remove(
+                      s: (instance.value.text.length - 1).toString(),
+                    );
+                  },
+                  child: const Icon(Icons.remove),
+                ),
+                const Gap(10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ...List.generate(
+                      instance.value.text.length,
+                      (index) {
+                        return Text(instance.value.text[index].toString());
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            FloatingActionButton.small(
+              onPressed: () {
+                model.value = _TestVNModel()..number = model.value.number + 1;
+              },
+              child: const Text(
+                'Change',
+                style: TextStyle(fontSize: 8),
+              ),
+            ),
+            const Gap(10),
+            ValueListenableBuilder(
+              valueListenable: model,
+              builder:
+                  (BuildContext context, _TestVNModel value, Widget? child) {
+                return Text(
+                  "${value.number}",
+                  style: const TextStyle(fontSize: 16),
+                );
+              },
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _MoveModel {
+  final AnimationController controller;
+  final int content;
+
+  _MoveModel({
+    required this.controller,
+    required this.content,
+  });
 }

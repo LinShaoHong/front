@@ -6,23 +6,27 @@ class AppRouter {
   static String splash = '/';
   static String intro = '/intro';
   static String word = '/word';
+  static String dict = '/dict';
 }
 
 final appRouter = GoRouter(
-    redirect: _handleRedirect,
-    errorPageBuilder: (context, state) =>
-        MaterialPage(child: PageNotFound(url: state.uri.toString())),
-    routes: [
-      ShellRoute(
-          builder: (context, state, navigator) {
-            return AppScaffold(child: navigator);
-          },
-          routes: [
-            AppRoute(AppRouter.splash, (_) => Container(color: Colors.grey)),
-            AppRoute(AppRouter.intro, (_) => const IntroScreen()),
-            AppRoute(AppRouter.word, (_) => const WordScreen()),
-          ])
-    ]);
+  redirect: _handleRedirect,
+  errorPageBuilder: (context, state) =>
+      MaterialPage(child: PageNotFound(url: state.uri.toString())),
+  routes: [
+    ShellRoute(
+      builder: (context, state, navigator) {
+        return AppScaffold(child: navigator);
+      },
+      routes: [
+        AppRoute(AppRouter.splash, (_) => Container(color: Colors.grey)),
+        AppRoute(AppRouter.intro, (_) => const IntroScreen()),
+        AppRoute(AppRouter.word, (_) => const WordScreen()),
+        AppRoute(AppRouter.dict, (_) => DictScreen()),
+      ],
+    ),
+  ],
+);
 
 String? get initialDeeplink => _initialDeeplink;
 String? _initialDeeplink;
@@ -43,9 +47,12 @@ String? _handleRedirect(BuildContext context, GoRouterState state) {
 }
 
 class AppRoute extends GoRoute {
-  AppRoute(String path, Widget Function(GoRouterState s) builder,
-      {List<GoRoute> routes = const [], this.useFade = false})
-      : super(
+  AppRoute(
+    String path,
+    Widget Function(GoRouterState s) builder, {
+    List<GoRoute> routes = const [],
+    this.useFade = false,
+  }) : super(
           path: path,
           routes: routes,
           pageBuilder: (context, state) {

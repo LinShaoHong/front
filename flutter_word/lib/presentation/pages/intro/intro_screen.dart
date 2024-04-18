@@ -32,11 +32,11 @@ class IntroScreen extends StatelessWidget {
                       duration: const Duration(milliseconds: 600),
                       curve: const Interval(0, 1, curve: Curves.fastOutSlowIn))
                   .move(
-                      duration: const Duration(milliseconds: 600),
-                      begin: const Offset(0, 30),
-                      end: const Offset(0, 0),
-                      curve:
-                          const Interval(0, 0.5, curve: Curves.fastOutSlowIn));
+                    duration: const Duration(milliseconds: 600),
+                    begin: const Offset(0, 30),
+                    end: const Offset(0, 0),
+                    curve: const Interval(0, 0.5, curve: Curves.fastOutSlowIn),
+                  );
             }),
           ),
         ),

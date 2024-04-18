@@ -39,6 +39,7 @@ dependencies:
   gap: ^3.0.1
   material_symbols_icons: ^4.2719.3
   animated_text_kit: ^4.2.2
+  flextras: ^1.0.0
 
 dev_dependencies:
   flutter_test:

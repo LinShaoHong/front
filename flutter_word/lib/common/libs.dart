@@ -9,6 +9,7 @@ export 'package:bloc/bloc.dart';
 export 'package:get_it/get_it.dart';
 export 'package:flutter/services.dart';
 export 'package:flutter/material.dart';
+export 'package:flextras/flextras.dart';
 export 'package:flutter/foundation.dart';
 export 'package:go_router/go_router.dart';
 export 'package:intl/intl_standalone.dart';
@@ -70,3 +71,4 @@ export 'package:word/presentation/components/page_not_found.dart';
 //------------------ pages --------------
 export 'package:word/presentation/pages/word/word_screen.dart';
 export 'package:word/presentation/pages/intro/intro_screen.dart';
+export 'package:word/presentation/pages/dict/dict_screen.dart';
