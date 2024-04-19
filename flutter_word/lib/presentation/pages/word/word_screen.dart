@@ -15,9 +15,19 @@ class _WordScreenState extends State<WordScreen> with TickerProviderStateMixin {
   late TabController _tabController;
   late AnimationController _progressController;
   late AnimationController _gradientController;
+
   String selectedPage = '';
+
   late AnimationController _moveController;
+  late Animation<Offset> _moveButtonAnimation;
+  late Animation<Offset> _moveRectAnimation;
+  late final List<int> _moveQueue = [];
+  late Timer _moveTimer;
   final ValueNotifier<List<_MoveModel>> _moveWidgets = ValueNotifier([]);
+
+  late MenuController _menuController;
+  late AnimationController _textController;
+  late GlobalKey _textKey = GlobalKey();
 
   @override
   void initState() {
@@ -32,8 +42,53 @@ class _WordScreenState extends State<WordScreen> with TickerProviderStateMixin {
 
     _moveController =
         AnimationController(duration: const Duration(seconds: 2), vsync: this);
-    _moveController.repeat(reverse: true);
+    _moveController.forward();
 
+    CurvedAnimation curve = CurvedAnimation(
+      parent: _moveController,
+      curve: Curves.bounceOut,
+    );
+    _moveButtonAnimation = Tween(
+      begin: const Offset(-1.5, 0),
+      end: const Offset(0, 0),
+    ).animate(curve);
+
+    _moveRectAnimation = Tween(
+      begin: const Offset(2, 0),
+      end: const Offset(0, 0),
+    ).animate(curve);
+
+    _moveTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
+      if (_moveQueue.isNotEmpty) {
+        final controller = AnimationController(
+          duration: const Duration(seconds: 2),
+          vsync: this,
+        );
+        _moveWidgets.value.removeWhere((element) {
+          if (element.controller.isCompleted) {
+            element.controller.dispose();
+            return true;
+          }
+          return false;
+        });
+        int len = _moveWidgets.value.length;
+        _moveWidgets.value.add(
+          _MoveModel(
+            controller: controller,
+            content: len,
+          ),
+        );
+        _moveWidgets.value = List.from(_moveWidgets.value);
+        controller.forward();
+        _moveQueue.removeAt(0);
+      }
+    });
+
+    _menuController = MenuController();
+    _textController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
     super.initState();
   }
 
@@ -43,6 +98,8 @@ class _WordScreenState extends State<WordScreen> with TickerProviderStateMixin {
     _progressController.dispose();
     _gradientController.dispose();
     _moveController.dispose();
+    _moveTimer.cancel();
+    _textController.dispose();
     for (_MoveModel c in _moveWidgets.value) {
       c.controller.dispose();
     }
@@ -136,75 +193,73 @@ class _WordScreenState extends State<WordScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildMove(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        FloatingActionButton.small(
-          onPressed: () {
-            final controller = AnimationController(
-              duration: const Duration(seconds: 2),
-              vsync: this,
-            );
-            _moveWidgets.value.removeWhere((element) {
-              if (element.controller.isCompleted) {
-                element.controller.dispose();
-                return true;
-              }
-              return false;
-            });
-            int len = _moveWidgets.value.length;
-            _moveWidgets.value.add(
-              _MoveModel(
-                controller: controller,
-                content: len,
-              ),
-            );
-            _moveWidgets.value = List.from(_moveWidgets.value);
-            controller.forward();
-          },
-          child: const Icon(Icons.arrow_circle_right_outlined),
-        ),
-        const Gap(10),
-        Container(
-          width: 200,
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return Container(
+          width: constraints.maxWidth,
           height: 50,
-          clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(
-            color: context.colorSchema.primary,
+          decoration: const BoxDecoration(
+            color: Colors.transparent,
           ),
-          child: ValueListenableBuilder<List<_MoveModel>>(
-            valueListenable: _moveWidgets,
-            builder:
-                (BuildContext context, List<_MoveModel> value, Widget? child) {
-              return RepaintBoundary(
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    ..._moveWidgets.value.map((e) {
-                      Animation<Offset> offsetAnimation = Tween(
-                        begin: const Offset(-2.5, 0),
-                        end: const Offset(2.5, 0),
-                      ).animate(e.controller);
-                      return SlideTransition(
-                        position: offsetAnimation,
-                        child: Container(
-                          width: 50,
-                          height: 20,
-                          color: context.colorSchema.onPrimary,
-                          child: Text(
-                            '${e.content}',
-                            textAlign: TextAlign.center,
-                          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SlideTransition(
+                position: _moveButtonAnimation,
+                child: FloatingActionButton.small(
+                  onPressed: () {
+                    _moveQueue.add(0);
+                  },
+                  child: const Icon(Icons.arrow_circle_right_outlined),
+                ),
+              ),
+              const Gap(10),
+              SlideTransition(
+                position: _moveRectAnimation,
+                child: Container(
+                  width: 200,
+                  height: 50,
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                    color: context.colorSchema.primary,
+                  ),
+                  child: ValueListenableBuilder<List<_MoveModel>>(
+                    valueListenable: _moveWidgets,
+                    builder: (BuildContext context, List<_MoveModel> value,
+                        Widget? child) {
+                      return RepaintBoundary(
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            ..._moveWidgets.value.map((e) {
+                              Animation<Offset> offsetAnimation = Tween(
+                                begin: const Offset(-2.5, 0),
+                                end: const Offset(2.5, 0),
+                              ).animate(e.controller);
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: Container(
+                                  width: 50,
+                                  height: 20,
+                                  color: context.colorSchema.onPrimary,
+                                  child: Text(
+                                    '${e.content}',
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              );
+                            }),
+                          ],
                         ),
                       );
-                    }),
-                  ],
+                    },
+                  ),
                 ),
-              );
-            },
+              ),
+            ],
           ),
-        ),
-      ],
+        );
+      },
     );
   }
 
@@ -602,6 +657,202 @@ class _WordScreenState extends State<WordScreen> with TickerProviderStateMixin {
       ),
     ];
   }
+
+  List<Widget> _buildText(BuildContext context) {
+    TextPainter tp = TextPainter(
+      text: const TextSpan(
+        text: "Hello",
+        style: TextStyle(
+          height: 1,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+    tp.layout();
+    double maxWidth = context.mq.size.width;
+    double maxHeight = context.mq.size.height;
+    return [
+      Text.rich(
+        TextSpan(
+          children: [
+            WidgetSpan(
+              child: Container(
+                margin: const EdgeInsets.only(left: 4, right: 4),
+                child: MenuAnchor(
+                  controller: _menuController,
+                  style: MenuStyle(
+                    padding: MaterialStateProperty.all(EdgeInsets.zero),
+                    backgroundColor:
+                        MaterialStateProperty.all(Colors.transparent),
+                    shadowColor: MaterialStateProperty.all(Colors.transparent),
+                    surfaceTintColor:
+                        MaterialStateProperty.all(Colors.transparent),
+                  ),
+                  menuChildren: [
+                    RepaintBoundary(
+                      child: Container(
+                        width: maxWidth * 0.5,
+                        height: maxHeight * 0.3,
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(5)),
+                          border: Border.all(
+                            color: context.colorSchema.outlineVariant,
+                          ),
+                          color: context.colorSchema.secondaryContainer,
+                        ),
+                      ).animate().scale(
+                            duration: const Duration(milliseconds: 200),
+                            begin: const Offset(0, 0),
+                            end: const Offset(1, 1),
+                            alignment: Alignment.center,
+                          ),
+                    ),
+                  ],
+                  builder: (
+                    BuildContext context,
+                    MenuController controller,
+                    Widget? child,
+                  ) {
+                    return GestureDetector(
+                      onTapDown: (details) async {
+                        if (controller.isOpen) {
+                          controller.close();
+                        } else {
+                          controller.open(position: const Offset(0, 20));
+                        }
+                      },
+                      child: Stack(
+                        key: _textKey,
+                        children: [
+                          Positioned(
+                            bottom: 2,
+                            child: Container(
+                              width: tp.width,
+                              height: tp.height / 3,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.orange,
+                                    context.colorSchema.surface,
+                                  ],
+                                  begin: Alignment.bottomCenter,
+                                  end: Alignment.topCenter,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const Text(
+                            'Hello',
+                            style: TextStyle(
+                              height: 1,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            const TextSpan(
+              text: 'world',
+            ),
+          ],
+        ),
+      ),
+      AnimatedTextKit(
+        animatedTexts: [
+          TyperAnimatedText(
+            'Flutter is Awesome',
+            textStyle: const TextStyle(
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
+            ),
+            speed: const Duration(milliseconds: 200),
+          ),
+        ],
+        totalRepeatCount: 4,
+        pause: const Duration(milliseconds: 1000),
+        displayFullTextOnTap: true,
+        stopPauseOnTap: true,
+      ),
+      // AnimatedTextKit(
+      //   animatedTexts: [
+      //     FadeAnimatedText(
+      //       'Product Name',
+      //       textStyle: const TextStyle(
+      //         fontSize: 30.0,
+      //         fontWeight: FontWeight.bold,
+      //       ),
+      //       duration: const Duration(milliseconds: 500),
+      //     ),
+      //   ],
+      //   totalRepeatCount: 4,
+      //   pause: const Duration(milliseconds: 500),
+      // ),
+      AnimatedTextKit(
+        animatedTexts: [
+          TypewriterAnimatedText(
+            'User Name',
+            textStyle: const TextStyle(
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
+            ),
+            speed: const Duration(milliseconds: 200),
+          ),
+        ],
+        totalRepeatCount: 4,
+        pause: const Duration(milliseconds: 1000),
+        displayFullTextOnTap: true,
+        stopPauseOnTap: true,
+      ),
+      Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: context.colorSchema.outlineVariant),
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+        ),
+        width: 80,
+        height: 20,
+        child: _MarqueeWidget(
+          axis: Axis.vertical,
+          itemCount: 10,
+          itemBuilder: (_, index) {
+            return Text(
+              index.toString(),
+              textAlign: TextAlign.center,
+            );
+          },
+        ),
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TextButton(
+            onPressed: () {
+              if (_NotifierTestState.value.value == 1) {
+                _NotifierTestState.value.value = 0;
+              } else {
+                _NotifierTestState.value.value = 1;
+              }
+            },
+            child: const Text(
+              'Change',
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ),
+          const Gap(5),
+          const _NotifierTest(),
+        ],
+      ),
+    ];
+  }
 }
 
 enum Calendar { day, week, month, year }
@@ -982,141 +1233,6 @@ Widget _buildFloatingBar(BuildContext context) {
     tooltip: 'Large',
     child: const Icon(Icons.add),
   );
-}
-
-List<Widget> _buildText(BuildContext context) {
-  return [
-    Text.rich(
-      TextSpan(
-        children: [
-          const TextSpan(
-            text: 'multiple ',
-          ),
-          const TextSpan(
-            text: 'styles',
-          ),
-          WidgetSpan(
-            child: Container(
-              margin: const EdgeInsets.only(left: 4, right: 4),
-              child: const Stack(
-                children: [
-                  Text(
-                    'Hello',
-                    style: TextStyle(
-                      fontSize: 18,
-                      height: .5,
-                      color: Colors.transparent,
-                      decoration: TextDecoration.underline,
-                      decorationStyle: TextDecorationStyle.solid,
-                      decorationColor: Colors.orange,
-                      decorationThickness: 8,
-                    ),
-                  ),
-                  Text(
-                    'Hello',
-                    style: TextStyle(
-                      height: 1,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const TextSpan(
-            text: 'world',
-          ),
-        ],
-      ),
-    ),
-    AnimatedTextKit(
-      animatedTexts: [
-        TyperAnimatedText(
-          'Flutter is Awesome',
-          textStyle: const TextStyle(
-            fontSize: 20.0,
-            fontWeight: FontWeight.bold,
-          ),
-          speed: const Duration(milliseconds: 200),
-        ),
-      ],
-      totalRepeatCount: 4,
-      pause: const Duration(milliseconds: 1000),
-      displayFullTextOnTap: true,
-      stopPauseOnTap: true,
-    ),
-    // AnimatedTextKit(
-    //   animatedTexts: [
-    //     FadeAnimatedText(
-    //       'Product Name',
-    //       textStyle: const TextStyle(
-    //         fontSize: 30.0,
-    //         fontWeight: FontWeight.bold,
-    //       ),
-    //       duration: const Duration(milliseconds: 500),
-    //     ),
-    //   ],
-    //   totalRepeatCount: 4,
-    //   pause: const Duration(milliseconds: 500),
-    // ),
-    AnimatedTextKit(
-      animatedTexts: [
-        TypewriterAnimatedText(
-          'User Name',
-          textStyle: const TextStyle(
-            fontSize: 20.0,
-            fontWeight: FontWeight.bold,
-          ),
-          speed: const Duration(milliseconds: 200),
-        ),
-      ],
-      totalRepeatCount: 4,
-      pause: const Duration(milliseconds: 1000),
-      displayFullTextOnTap: true,
-      stopPauseOnTap: true,
-    ),
-    Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: context.colorSchema.outlineVariant),
-        borderRadius: const BorderRadius.all(Radius.circular(10)),
-      ),
-      width: 80,
-      height: 20,
-      child: _MarqueeWidget(
-        axis: Axis.vertical,
-        itemCount: 10,
-        itemBuilder: (_, index) {
-          return Text(
-            index.toString(),
-            textAlign: TextAlign.center,
-          );
-        },
-      ),
-    ),
-    Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        TextButton(
-          onPressed: () {
-            if (_NotifierTestState.value.value == 1) {
-              _NotifierTestState.value.value = 0;
-            } else {
-              _NotifierTestState.value.value = 1;
-            }
-          },
-          child: const Text(
-            'Change',
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-        ),
-        const Gap(5),
-        const _NotifierTest(),
-      ],
-    ),
-  ];
 }
 
 class _NotifierTest extends StatefulWidget {

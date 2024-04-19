@@ -15,31 +15,36 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routeInformationProvider: appRouter.routeInformationProvider,
-      routeInformationParser: appRouter.routeInformationParser,
-      // locale: locale == null ? null : Locale(locale),
-      // debugShowCheckedModeBanner: false,
-      routerDelegate: appRouter.routerDelegate,
-      theme: ThemeData(
-        // colorSchemeSeed: s.primary,
-        // colorSchemeSeed: const Color(0xffE8E971),
-        colorSchemeSeed: const Color(0xff5F9906),
-      ),
-      darkTheme: ThemeData(
-        // colorSchemeSeed: s.primary,
-        // colorSchemeSeed: const Color(0xffE8E971),
-        colorSchemeSeed: const Color(0xff5F9906),
-        brightness: Brightness.dark,
-      ),
-      themeMode: themeHolder.themeMode.value,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: AppLocalizations.supportedLocales,
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: themeHolder.themeMode,
+      builder: (BuildContext context, ThemeMode value, Widget? child) {
+        return MaterialApp.router(
+          routeInformationProvider: appRouter.routeInformationProvider,
+          routeInformationParser: appRouter.routeInformationParser,
+          // locale: locale == null ? null : Locale(locale),
+          debugShowCheckedModeBanner: false,
+          routerDelegate: appRouter.routerDelegate,
+          theme: ThemeData(
+            // colorSchemeSeed: s.primary,
+            // colorSchemeSeed: const Color(0xffE8E971),
+            colorSchemeSeed: const Color(0xff5F9906),
+          ),
+          darkTheme: ThemeData(
+            // colorSchemeSeed: s.primary,
+            // colorSchemeSeed: const Color(0xffE8E971),
+            colorSchemeSeed: const Color(0xff5F9906),
+            brightness: Brightness.dark,
+          ),
+          themeMode: value,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+        );
+      },
     );
   }
 }

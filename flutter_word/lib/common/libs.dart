@@ -10,6 +10,7 @@ export 'package:get_it/get_it.dart';
 export 'package:flutter/services.dart';
 export 'package:flutter/material.dart';
 export 'package:flextras/flextras.dart';
+export 'package:flutter/rendering.dart';
 export 'package:flutter/foundation.dart';
 export 'package:go_router/go_router.dart';
 export 'package:intl/intl_standalone.dart';

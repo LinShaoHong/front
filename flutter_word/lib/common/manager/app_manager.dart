@@ -5,6 +5,7 @@ import '/common/libs.dart';
 class AppManager {
   Size _size = Size.zero;
   bool isBootstrapComplete = false;
+  double safeAreaPaddingTop = 0.0;
 
   List<Axis> supportedOrientations = [Axis.vertical, Axis.horizontal];
 

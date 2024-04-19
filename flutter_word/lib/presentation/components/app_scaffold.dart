@@ -39,11 +39,11 @@ class AppScaffoldState extends State<AppScaffold> {
     required BuildContext context,
     bool hasBar = true,
   }) {
+    appManager.safeAreaPaddingTop = context.mq.padding.top;
     final arr = _buildNavigationDestinations();
     if (hasBar) {
       return Scaffold(
         body: SafeArea(
-          top: false,
           child: widget.child,
         ),
         bottomNavigationBar: ValueListenableBuilder<int>(
