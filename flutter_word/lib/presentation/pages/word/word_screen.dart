@@ -1,6 +1,8 @@
 import 'dart:ui';
-import '/common/libs.dart';
+
 import 'package:material_symbols_icons/symbols.dart';
+
+import '/common/libs.dart';
 
 class WordScreen extends StatefulWidget {
   const WordScreen({super.key});
@@ -17,6 +19,8 @@ class _WordScreenState extends State<WordScreen> with TickerProviderStateMixin {
   late AnimationController _gradientController;
 
   String selectedPage = '';
+  static final ValueNotifier<bool> cardSwitch = ValueNotifier(false);
+  static final ValueNotifier<bool> cardFade = ValueNotifier(false);
 
   late AnimationController _moveController;
   late Animation<Offset> _moveButtonAnimation;
@@ -27,7 +31,7 @@ class _WordScreenState extends State<WordScreen> with TickerProviderStateMixin {
 
   late MenuController _menuController;
   late AnimationController _textController;
-  late GlobalKey _textKey = GlobalKey();
+  late final GlobalKey _textKey = GlobalKey();
 
   @override
   void initState() {
@@ -207,6 +211,7 @@ class _WordScreenState extends State<WordScreen> with TickerProviderStateMixin {
               SlideTransition(
                 position: _moveButtonAnimation,
                 child: FloatingActionButton.small(
+                  heroTag: 'a',
                   onPressed: () {
                     _moveQueue.add(0);
                   },
@@ -225,8 +230,11 @@ class _WordScreenState extends State<WordScreen> with TickerProviderStateMixin {
                   ),
                   child: ValueListenableBuilder<List<_MoveModel>>(
                     valueListenable: _moveWidgets,
-                    builder: (BuildContext context, List<_MoveModel> value,
-                        Widget? child) {
+                    builder: (
+                      BuildContext context,
+                      List<_MoveModel> value,
+                      Widget? child,
+                    ) {
                       return RepaintBoundary(
                         child: Stack(
                           alignment: Alignment.center,
@@ -1113,16 +1121,98 @@ List<Widget> _buildCards(BuildContext context) {
           clipBehavior: Clip.antiAliasWithSaveLayer,
           child: Column(
             children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(12),
-                  bottomRight: Radius.circular(12),
+              GestureDetector(
+                child: Hero(
+                  tag: 'card_top_hero',
+                  flightShuttleBuilder: (
+                    BuildContext flightContext,
+                    Animation<double> animation,
+                    HeroFlightDirection flightDirection,
+                    BuildContext fromHeroContext,
+                    BuildContext toHeroContext,
+                  ) {
+                    final Hero toHero = toHeroContext.widget as Hero;
+                    //--------------rotate------------
+                    return RotationTransition(
+                      turns: animation,
+                      child: toHero.child,
+                    );
+                    //-----------fade---------------
+                    // return FadeTransition(
+                    //   opacity: animation.drive(
+                    //     Tween<double>(begin: 0.0, end: 1.0).chain(
+                    //       CurveTween(
+                    //         curve: Interval(
+                    //           0.0,
+                    //           1.0,
+                    //           curve: _ValleyQuadraticCurve(),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    //   child: toHero.child,
+                    // );
+                    //------------scale--------------
+                    // return ScaleTransition(
+                    //   scale: animation.drive(
+                    //     Tween<double>(begin: 0.0, end: 1.0).chain(
+                    //       CurveTween(
+                    //         curve: Interval(0.0, 1.0,
+                    //             curve: _PeakQuadraticCurve()),
+                    //       ),
+                    //     ),
+                    //   ),
+                    //   child: toHero.child,
+                    // );
+                    //-------------migrate--------------
+                    // return ScaleTransition(
+                    //   scale: animation.drive(
+                    //     Tween<double>(begin: 0.0, end: 1.0).chain(
+                    //       CurveTween(
+                    //         curve: Interval(
+                    //           0.0,
+                    //           1.0,
+                    //           curve: _PeakQuadraticCurve(),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    //   child: flightDirection == HeroFlightDirection.push
+                    //       ? RotationTransition(
+                    //           turns: animation,
+                    //           child: toHero.child,
+                    //         )
+                    //       : FadeTransition(
+                    //           opacity: animation.drive(
+                    //             Tween<double>(begin: 0.0, end: 1.0).chain(
+                    //               CurveTween(
+                    //                 curve: Interval(
+                    //                   0.0,
+                    //                   1.0,
+                    //                   curve: _ValleyQuadraticCurve(),
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           ),
+                    //           child: toHero.child,
+                    //         ),
+                    // );
+                  },
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(12),
+                      bottomRight: Radius.circular(12),
+                    ),
+                    child: Image.asset(
+                      'assets/settings/card_top.jpg',
+                      fit: BoxFit.cover,
+                      height: 120,
+                    ),
+                  ),
                 ),
-                child: Image.asset(
-                  'assets/settings/card_top.jpg',
-                  fit: BoxFit.cover,
-                  height: 120,
-                ),
+                onTap: () {
+                  appRouter.go('/word/hero');
+                },
               ),
             ],
           ),
@@ -1155,45 +1245,117 @@ List<Widget> _buildCards(BuildContext context) {
     ],
   );
 
-  List<Widget> cards = List.generate(1, (index) {
+  Widget build(value) {
     return SizedBox(
-      width: 220,
-      height: 250,
-      child: Card(
-        child: Center(
-          child: Text(
-            'word',
-            style: TextStyle(
-              fontSize: 16,
-              height: 1,
-              fontWeight: FontWeight.bold,
-              background: Paint()
-                ..style = PaintingStyle.fill
-                ..strokeWidth = .1
-                ..color = Colors.orange,
+      key: ValueKey<String>(
+        _WordScreenState.cardFade.value ? 'fd1' : 'fd2',
+      ),
+      width: value ? 220 : 110,
+      height: value ? 250 : 125,
+      child: GestureDetector(
+        onTap: () {
+          _WordScreenState.cardFade.value = !_WordScreenState.cardFade.value;
+        },
+        child: Card(
+          child: Center(
+            child: Text(
+              'CrossFade',
+              style: TextStyle(
+                fontSize: value ? 16 : 12,
+                height: 1,
+                fontWeight: FontWeight.bold,
+                background: Paint()
+                  ..style = PaintingStyle.fill
+                  ..strokeWidth = .1
+                  ..color = Colors.orange,
+              ),
             ),
           ),
         ),
       ),
-    )
-        .animate()
-        .scale(
-          duration: const Duration(milliseconds: 600),
-          begin: const Offset(.88, .88),
-          end: const Offset(1, 1),
-          curve: const Interval(0, 0.5, curve: Curves.fastOutSlowIn),
-        )
-        .fade(
-          duration: const Duration(milliseconds: 600),
-          curve: const Interval(0, 1, curve: Curves.fastOutSlowIn),
-        )
-        .move(
-          duration: const Duration(milliseconds: 600),
-          begin: const Offset(0, 30),
-          end: const Offset(0, 0),
-          curve: const Interval(0, 0.5, curve: Curves.fastOutSlowIn),
+    );
+  }
+
+  List<Widget> cards = [
+    const Gap(20),
+    ValueListenableBuilder(
+      valueListenable: _WordScreenState.cardFade,
+      builder: (BuildContext context, bool value, Widget? child) {
+        return AnimatedCrossFade(
+          duration: const Duration(milliseconds: 500),
+          firstChild: build(true),
+          secondChild: GestureDetector(
+            onTap: () {
+              _WordScreenState.cardFade.value =
+                  !_WordScreenState.cardFade.value;
+            },
+            child: const SizedBox(
+              width: 110,
+              height: 125,
+              child: CircleAvatar(
+                backgroundImage: AssetImage(
+                  'assets/settings/card_top.jpg',
+                ),
+              ),
+            ),
+          ),
+          crossFadeState:
+              value ? CrossFadeState.showFirst : CrossFadeState.showSecond,
         );
-  });
+      },
+    ),
+    ValueListenableBuilder(
+      valueListenable: _WordScreenState.cardSwitch,
+      builder: (BuildContext context, bool value, Widget? child) {
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          transitionBuilder: (child, animation) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(-0.33, -0.55),
+                end: const Offset(0, 0),
+              ).animate(
+                animation,
+              ),
+              child: FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+            );
+          },
+          child: SizedBox(
+            key: ValueKey<String>(
+              _WordScreenState.cardSwitch.value ? 'sw1' : 'sw2',
+            ),
+            width: value ? 220 : 110,
+            height: value ? 250 : 125,
+            child: GestureDetector(
+              onTap: () {
+                _WordScreenState.cardSwitch.value =
+                    !_WordScreenState.cardSwitch.value;
+              },
+              child: Card(
+                child: Center(
+                  child: Text(
+                    'Switcher',
+                    style: TextStyle(
+                      fontSize: value ? 16 : 12,
+                      height: 1,
+                      fontWeight: FontWeight.bold,
+                      background: Paint()
+                        ..style = PaintingStyle.fill
+                        ..strokeWidth = .1
+                        ..color = Colors.orange,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    ),
+  ];
 
   cards.add(picCard);
   return cards;
@@ -1201,6 +1363,7 @@ List<Widget> _buildCards(BuildContext context) {
 
 Widget _buildFloatingBar(BuildContext context) {
   return FloatingActionButton.large(
+    heroTag: 'b',
     onPressed: () {
       showModalBottomSheet<void>(
         context: context,
@@ -1543,6 +1706,7 @@ class _TestVNWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FloatingActionButton.small(
+                  heroTag: 'c',
                   onPressed: () {
                     instance.add(
                       s: instance.value.text.length.toString(),
@@ -1552,6 +1716,7 @@ class _TestVNWidget extends StatelessWidget {
                 ),
                 const Gap(10),
                 FloatingActionButton.small(
+                  heroTag: 'd',
                   onPressed: () {
                     instance.remove(
                       s: (instance.value.text.length - 1).toString(),
@@ -1579,6 +1744,7 @@ class _TestVNWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FloatingActionButton.small(
+              heroTag: 'e',
               onPressed: () {
                 model.value = _TestVNModel()..number = model.value.number + 1;
               },
@@ -1613,4 +1779,49 @@ class _MoveModel {
     required this.controller,
     required this.content,
   });
+}
+
+class WordHeroPage extends StatelessWidget {
+  const WordHeroPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Hero(
+        tag: 'card_top_hero',
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            children: [
+              Image.asset(
+                // width: constraints.biggest.width,
+                'assets/settings/card_top.jpg',
+                fit: BoxFit.fitWidth,
+              ),
+              const Gap(20),
+              const Expanded(
+                child: Text('Hello World'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ValleyQuadraticCurve extends Curve {
+  @override
+  double transform(double t) {
+    assert(t >= 0.0 && t <= 1.0);
+    return 4 * pow(t - 0.5, 2) as double;
+  }
+}
+
+class _PeakQuadraticCurve extends Curve {
+  @override
+  double transform(double t) {
+    assert(t >= 0.0 && t <= 1.0);
+    return -15 * pow(t, 2) + 15 * t + 1;
+  }
 }

@@ -26,6 +26,7 @@ export 'package:flutter_localizations/flutter_localizations.dart';
 export 'package:internet_connection_checker/internet_connection_checker.dart';
 export 'package:responsive_framework/responsive_framework.dart';
 export 'package:flex_color_scheme/flex_color_scheme.dart';
+export 'package:just_audio/just_audio.dart';
 
 //----------------- main ------------------
 export 'package:word/main.dart';

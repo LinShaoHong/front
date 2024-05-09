@@ -8,6 +8,14 @@ declare namespace Http {
   }>
 }
 
+declare namespace User {
+  interface LoginReq {
+    code: string,
+    os: string,
+    shareUserId: string
+  }
+}
+
 declare namespace Pay {
   interface WxPayResp {
     appId: string

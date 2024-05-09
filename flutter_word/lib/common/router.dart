@@ -6,6 +6,7 @@ class AppRouter {
   static String splash = '/';
   static String intro = '/intro';
   static String word = '/word';
+  static String wordHero = 'hero';
   static String dict = '/dict';
 }
 
@@ -21,7 +22,13 @@ final appRouter = GoRouter(
       routes: [
         AppRoute(AppRouter.splash, (_) => Container(color: Colors.grey)),
         AppRoute(AppRouter.intro, (_) => const IntroScreen()),
-        AppRoute(AppRouter.word, (_) => const WordScreen()),
+        AppRoute(
+          AppRouter.word,
+          (_) => const WordScreen(),
+          routes: [
+            AppRoute(AppRouter.wordHero, (_) => const WordHeroPage()),
+          ],
+        ),
         AppRoute(AppRouter.dict, (_) => DictScreen()),
       ],
     ),
