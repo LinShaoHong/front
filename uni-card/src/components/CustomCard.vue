@@ -12,6 +12,10 @@ const props = defineProps({
     type: String,
     default: ''
   },
+  src: {
+    type: String,
+    default: '/static/card.png'
+  },
   title: {
     type: String,
     default: ''
@@ -38,7 +42,7 @@ defineEmits(['close']);
 </script>
 <template>
   <view class="relative" :style="{width: width, height: height}">
-    <image class="w-full h-full absolute top-0" src="/static/card.png"></image>
+    <image class="w-full h-full absolute top-0" :src="src"></image>
     <view class="w-full h-full flex fle-col items-center justify-center z-200">
       <view class="absolute w-full top-0" style="height: 65%;">
         <view class="absolute w-full flex items-center justify-center" style="top: 50%;">

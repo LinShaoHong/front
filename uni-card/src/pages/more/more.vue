@@ -35,20 +35,8 @@ onShow(() => {
 });
 
 const showDefDialog = ref(false);
-const onAddDefine = () => {
-  user.getUserInfo().then(() => {
-    if (user.data.value.vip < 1) {
-      config.getConfigInfo().then(() => {
-        showDefDialog.value = true;
-      }).catch(() => networkError());
-    } else {
-      forward('custom');
-    }
-  }).catch(() => networkError());
-};
 const hasDef = computed(() => {
   return !ios() || config.data.value.iosCanPay || user.data.value.vip >= 1;
-
 });
 </script>
 
@@ -61,7 +49,7 @@ const hasDef = computed(() => {
       <view class="title_line w-20vw"></view>
     </view>
     <view v-if="hasDef" class="define_box mt-10 h-10vh w-70vw rd-100 flex flex-col items-center justify-center"
-          @click="onAddDefine">
+          @click="forward('custom')">
       <view class="w-full h-full flex items-center justify-center gap-10">
         <image src="/static/define_add.png" class="h-5vh" mode="heightFix">+</image>
         <text class="text-white" style="font-size: 40rpx">自定义</text>
@@ -100,12 +88,6 @@ const hasDef = computed(() => {
       </view>
     </scroll-view>
   </view>
-
-  <PayDialog :show="showDefDialog"
-             :html="config.data.value.payText"
-             :vip="1"
-             @close="showDefDialog=false"/>
-
 <!--  <view class="fixed bottom-0">-->
 <!--    <m-tabbar fixed fill current="1" :tabbar="tabBar"></m-tabbar>-->
 <!--  </view>-->
