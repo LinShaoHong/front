@@ -61,7 +61,11 @@ defineEmits(['continue', 'next']);
       <image style="border-radius: 50%;height: 120%;" :src="`${imgUri}/avatar/${avatar}.png`" mode="heightFix"></image>
       <text class="text-white" style="font-size: 28rpx;">{{ nickname }}</text>
     </view>
-    <image class="card" :style="{height: height, 'max-width': '86vw'}" :src="src" mode="heightFix"/>
+    <image class="card"
+           :src="src"
+           :style="{height: height, 'width': (defaulted || type)? '' : '86vw'}"
+           :mode="(defaulted || type)? 'heightFix' : 'scaleToFill'"/>
+    />
   </view>
 
   <view class="fixed w-100vw h-100vh top-0 flex flex-col items-center justify-center"

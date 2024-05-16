@@ -49,7 +49,10 @@ defineEmits(['close']);
                  transition: '.3s linear',
                  'transform-style': 'preserve-3d',
                  'z-index': open? 101 : -1}">
-    <image class="card" :style="{height: height, 'max-width': '86vw'}" :src="src" mode="heightFix"/>
+    <image class="card"
+           :src="src"
+           :style="{height: height, 'width': (defaulted || type)? '' : '86vw'}"
+           :mode="(defaulted || type)? 'heightFix' : 'scaleToFill'"/>
   </view>
 
   <view class="fixed w-100vw h-100vh top-0 flex flex-col items-center justify-center"
