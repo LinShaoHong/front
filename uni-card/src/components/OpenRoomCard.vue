@@ -63,7 +63,7 @@ defineEmits(['continue', 'next']);
     </view>
     <image class="card"
            :src="src"
-           :style="{height: height, 'width': (defaulted || type)? '' : '86vw'}"
+           :style="{height: height, 'width': (defaulted || type)? '' : '86vw', 'border-radius': (defaulted || type)? '' : '30rpx'}"
            :mode="(defaulted || type)? 'heightFix' : 'scaleToFill'"/>
     />
   </view>
