@@ -144,9 +144,9 @@ const onDelete = (item) => {
           <image v-if="item.defaulted" class="w-45vw h-65vw" :src="`${imgUri}${item.src}`" mode="scaleToFill"></image>
 
           <CustomCard v-if="!item.defaulted"
-                      :width="'40vw'"
-                      :height="'60vw'"
-                      :type="isEmpty(item.src) ? '云顶之奕' : ''"
+                      :width="'45vw'"
+                      :height="'65vw'"
+                      :type="isEmpty(item.src)"
                       :title="item.title"
                       :content="item.content"
                       :src="isEmpty(item.src) ? '/static/card.png' : imgUri + item.src"

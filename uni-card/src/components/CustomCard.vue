@@ -9,8 +9,8 @@ const props = defineProps({
     default: ''
   },
   type: {
-    type: String,
-    default: ''
+    type: Boolean,
+    default: false
   },
   src: {
     type: String,
@@ -42,11 +42,14 @@ defineEmits(['close']);
 </script>
 <template>
   <view class="relative" :style="{width: width, height: height}">
-    <image class="w-full h-full absolute top-0" :src="src"></image>
+    <view class="w-full h-full flex justify-center">
+      <image class="absolute top-0 rd-20" :src="src"
+             :style="{width: type ? '100%' : '94%', height: '100%'}"></image>
+    </view>
     <view class="w-full h-full flex fle-col items-center justify-center z-200">
       <view class="absolute w-full top-0" style="height: 65%;">
         <view class="absolute w-full flex items-center justify-center" style="top: 50%;">
-          <text class="font-bold text-white" style="font-size: 24rpx;">{{ type }}</text>
+          <text class="font-bold text-white" style="font-size: 24rpx;">{{ type ? '云顶之弈' : '' }}</text>
         </view>
         <view class="absolute bottom-25 w-full flex items-center justify-center">
           <text class="font-bold text-white" style="font-size: 26rpx;">{{ title }}</text>
