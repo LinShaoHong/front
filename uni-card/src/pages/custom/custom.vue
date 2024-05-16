@@ -144,9 +144,9 @@ const onDelete = (item) => {
           <image v-if="item.defaulted" class="w-45vw h-65vw" :src="`${imgUri}${item.src}`" mode="scaleToFill"></image>
 
           <CustomCard v-if="!item.defaulted"
-                      :width="'45vw'"
+                      :width="isEmpty(item.src) ? '45vw' : 45 * 0.96 + 'vw'"
                       :height="'65vw'"
-                      :type="isEmpty(item.src)"
+                      :custom="isEmpty(item.src)"
                       :title="item.title"
                       :content="item.content"
                       :src="isEmpty(item.src) ? '/static/card.png' : imgUri + item.src"
@@ -172,7 +172,7 @@ const onDelete = (item) => {
       </view>
     </scroll-view>
 
-    <Popup position="center" :show="showEdit" @clickMask="showEdit=false">
+    <Popup position="center" :show="showEdit" @clickMask="() => {showEdit=false; editContent=true;}">
       <view class="relative w-80vw h-70vh p-20 rd-30 flex flex-col justify-between gap-20" style="background: white;">
         <view class="flex h-48 gap-30 pl-10">
           <view
