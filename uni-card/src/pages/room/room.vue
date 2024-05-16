@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { delay } from '@/utils/calls'
 import { networkError } from "@/utils/request";
-import { useWxPay } from "@/hooks/useWxPay";
 import { ios, message, setNBT } from "@/utils/unis";
 import PayDialog from "@/components/PayDialog.vue";
 import { forward } from "@/utils/router";
@@ -10,8 +9,8 @@ import apiUser from "@/api/apiUser";
 import apiRoom from "@/api/apiRoom";
 import { useShare } from "@/hooks/useShare";
 import { useSSE } from "@/hooks/useSSE";
+import { isEmpty } from "@/utils/is";
 
-const { wxPay } = useWxPay();
 const { sseConnect, sseAbort } = useSSE();
 const user = useStore('user');
 const config = useStore('config');
@@ -71,6 +70,10 @@ onLoad(async (option) => {
       await sseConnect(url, listen);
       apiRoom.player(mainUserId).then((data) => {
         player.value = data.value;
+      }).then(() => {
+        apiRoom.total(mainUserId)
+            .then(r => total.value = r.value)
+            .catch(() => networkError());
       }).catch(() => networkError());
     }).catch(() => networkError());
   }).catch(() => networkError());
@@ -176,7 +179,6 @@ const backCardStyle = computed(() => (index) => {
 
 const shuffle = ref(false);
 const inShuffle = ref(false);
-const hasShuffled = ref(false);
 const shuffleAudio = uni.createInnerAudioContext();
 shuffleAudio.obeyMuteSwitch = false;
 
@@ -194,8 +196,7 @@ const onShuffle = async () => {
       .then(() => {
         shuffleCards();
         shuffleAnimate();
-      })
-      .catch(() => networkError());
+      }).catch(() => networkError());
 };
 
 const shuffleAnimate = async () => {
@@ -212,7 +213,6 @@ const shuffleAnimate = async () => {
         await delay(20).then(async () => {
           await doShuffle();
           inShuffle.value = false;
-          hasShuffled.value = true;
           shuffleAudio.stop();
         })
       })
@@ -227,6 +227,9 @@ const cards = ref([] as number[]);
 const item = ref({});
 
 const shuffleCards = () => {
+  if (cards.value.length !== 0) {
+    return;
+  }
   for (let i = 1; i <= total.value; i++) {
     cards.value.push(i);
   }
@@ -241,32 +244,23 @@ const openAudio = uni.createInnerAudioContext();
 openAudio.obeyMuteSwitch = false;
 
 const doOpen = () => {
-  if (hasShuffled.value) {
-    card.value = cards.value.pop();
-    apiRoom.open(mainUser.value.id, player.value['userId'], card.value as number, true)
-        .then(() => {
-          open.value = true;
-          hasShuffled.value = false;
-          if (!openAudio.src) {
-            openAudio.src = '/static/media/vod2.m4a';
-          }
-          openAudio.play();
-          if (user.data.value.vip < 1) {
-            user.inc().catch(() => {
-            });
-          }
-        })
-        .catch(() => networkError());
-  } else {
-    if (!card.value || card.value < 1) {
-      message('先洗牌', 3);
-    } else {
-      apiRoom.open(mainUser.value.id, player.value['userId'], card.value as number, false)
-          .then(() => {
-            open.value = true;
-          }).catch(() => networkError());
-    }
+  if (cards.value.length === 0) {
+    shuffleCards();
   }
+  card.value = cards.value.pop();
+  apiRoom.open(mainUser.value.id, player.value['userId'], card.value as number, true)
+      .then(() => {
+        open.value = true;
+        if (!openAudio.src) {
+          openAudio.src = '/static/media/vod2.m4a';
+        }
+        openAudio.play();
+        if (user.data.value.vip < 1) {
+          user.inc().catch(() => {
+          });
+        }
+      })
+      .catch(() => networkError());
 }
 
 const onOpenCard = () => {
@@ -408,7 +402,8 @@ const openPayDialog = () => {
                 :defaulted="item?.defaulted"
                 :title="item?.defaulted? '' : item?.title"
                 :content="item?.defaulted? '' : item?.content"
-                :src="item?.defaulted? `${imgUri}${item?.src}` : '/static/card.png'"
+                :src="isEmpty(item?.src) ? '/static/card.png' : imgUri + item.src"
+                :type="isEmpty(item?.src)"
                 :avatar="player.avatar"
                 :nickname="player.nickname"
                 :height="'calc(90vh - 400rpx)'"

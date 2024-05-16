@@ -40,6 +40,10 @@ const apiRoom = {
     mainUserId: mainUserId
   }),
 
+  total: (mainUserId: string) => http.get<any>('/room/total', {
+    mainUserId: mainUserId
+  }),
+
   joined: (userId: string) => http.get<any>('/room/joined', {
     userId: userId
   })

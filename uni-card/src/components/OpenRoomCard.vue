@@ -6,8 +6,8 @@ const props = defineProps({
     default: false
   },
   type: {
-    type: String,
-    default: '云顶之弈'
+    type: Boolean,
+    default: false
   },
   title: {
     type: String,
@@ -61,7 +61,7 @@ defineEmits(['continue', 'next']);
       <image style="border-radius: 50%;height: 120%;" :src="`${imgUri}/avatar/${avatar}.png`" mode="heightFix"></image>
       <text class="text-white" style="font-size: 28rpx;">{{ nickname }}</text>
     </view>
-    <image class="card" :style="{height: height}" :src="src" mode="heightFix"/>
+    <image class="card" :style="{height: height, 'max-width': '86vw'}" :src="src" mode="heightFix"/>
   </view>
 
   <view class="fixed w-100vw h-100vh top-0 flex flex-col items-center justify-center"
@@ -72,7 +72,7 @@ defineEmits(['continue', 'next']);
     <view class="card w-full flex fle-col items-center justify-center z-200" :style="{height: height}">
       <view class="absolute w-full top-0" style="height: 65%;">
         <view v-if="!defaulted" class="absolute w-full flex items-center justify-center" style="top: 50%;">
-          <text class="font-bold text-white" style="font-size: 34rpx;">{{ type }}</text>
+          <text class="font-bold text-white" style="font-size: 34rpx;">{{ type ? '云顶之弈' : '' }}</text>
         </view>
         <view class="absolute bottom-25 w-full flex items-center justify-center">
           <text class="font-bold text-white" style="font-size: 36rpx;">{{ title }}</text>

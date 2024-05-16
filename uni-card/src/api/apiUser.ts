@@ -28,19 +28,19 @@ const apiUser = {
 
   getDefs: (id: string) => http.get<any>('/def/byUserId', { userId: id }),
 
-  addDef: (id: string, title: string, content: string, picPath: string) => http.post<any>('/def/add', {
+  addDef: (id: string, title: string, content: string, src: string) => http.post<any>('/def/add', {
     userId: id,
     title: title,
     content: content,
-    picPath: picPath
+    src: src
   }),
 
-  editDef: (id: string, itemId: string, title: string, content: string, picPath: string) => http.post<any>('/def/edit', {
+  editDef: (id: string, itemId: string, title: string, content: string, src: string) => http.post<any>('/def/edit', {
     userId: id,
     itemId: itemId,
     title: title,
     content: content,
-    picPath: picPath
+    src: src
   }),
 
   deleteDef: (id: string, itemId: string) => http.post<any>('/def/delete', { userId: id, itemId: itemId }),

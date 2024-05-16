@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { delay } from '@/utils/calls'
 import { networkError } from "@/utils/request";
-import { useWxPay } from "@/hooks/useWxPay";
 import { useShare } from "@/hooks/useShare";
 import { ios, message, setNBT } from "@/utils/unis";
 import PayDialog from "@/components/PayDialog.vue";
 import { useTabBar } from "@/hooks/useTabBar";
+import { isEmpty } from "@/utils/is";
 
 const { tabBar } = useTabBar();
 const { onShareAppMessage, onShareTimeline, shareTitle, shareImageUrl } = useShare();
-const { wxPay } = useWxPay();
 
 const user = useStore('user');
 const config = useStore('config');
@@ -85,7 +84,6 @@ const backCardStyle = computed(() => (index) => {
 
 const shuffle = ref(false);
 const inShuffle = ref(false);
-const hasShuffled = ref(false);
 const shuffleAudio = uni.createInnerAudioContext();
 shuffleAudio.obeyMuteSwitch = false;
 
@@ -112,7 +110,6 @@ const onShuffle = async () => {
         await delay(20).then(async () => {
           await doShuffle();
           inShuffle.value = false;
-          hasShuffled.value = true;
           shuffleAudio.stop();
         })
       })
@@ -125,22 +122,13 @@ const openAudio = uni.createInnerAudioContext();
 openAudio.obeyMuteSwitch = false;
 
 const doOpen = () => {
-  if (hasShuffled.value) {
-    open.value = true;
-    card.value = cards.value.pop();
-    hasShuffled.value = false;
-    openAudio.src = '/static/media/vod2.m4a';
-    openAudio.play();
-    if (user.data.value.vip < 1) {
-      user.inc().catch(() => {
-      });
-    }
-  } else {
-    if (!card.value || card.value < 1) {
-      message('先洗牌', 3);
-    } else {
-      open.value = true;
-    }
+  open.value = true;
+  card.value = cards.value.pop();
+  openAudio.src = '/static/media/vod2.m4a';
+  openAudio.play();
+  if (user.data.value.vip < 1) {
+    user.inc().catch(() => {
+    });
   }
 }
 
@@ -248,7 +236,8 @@ const openPayDialog = () => {
               :defaulted="item?.defaulted"
               :title="item?.defaulted? '' : item?.title"
               :content="item?.defaulted? '' : item?.content"
-              :src="item?.defaulted? `${imgUri}${item?.src}` : '/static/card.png'"
+              :src="isEmpty(item?.src) ? '/static/card.png' : imgUri + item.src"
+              :type="isEmpty(item?.src)"
               @close="open=false"/>
 
     <PayDialog :show="showPayDialog"

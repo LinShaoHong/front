@@ -44,7 +44,6 @@ const uploadPic = () => {
       uni.chooseImage({
         success: (chooseImageRes) => {
           const tempFilePaths = chooseImageRes.tempFilePaths;
-          console.log(`${ env.apiBaseUrl }/store/put`);
           uni.uploadFile({
             url: `${ env.apiBaseUrl }/store/put`,
             filePath: tempFilePaths[0],
@@ -147,16 +146,16 @@ const onDelete = (item) => {
           <CustomCard v-if="!item.defaulted"
                       :width="'40vw'"
                       :height="'60vw'"
-                      :type="isEmpty(item.picPath) ? '云顶之奕' : ''"
+                      :type="isEmpty(item.src) ? '云顶之奕' : ''"
                       :title="item.title"
                       :content="item.content"
-                      :src="isEmpty(item.picPath) ? '/static/card.png' : imgUri + item.picPath"
+                      :src="isEmpty(item.src) ? '/static/card.png' : imgUri + item.src"
           />
 
           <view class="w-45vw h-8vw flex justify-around items-center p-10">
 
             <view v-if="!item.defaulted" class="h-40"
-                  @click="() => {showEdit=true; title=item.title; content=item.content; picPath=item.picPath; curr=item;}">
+                  @click="() => {showEdit=true; title=item.title; content=item.content; picPath=item.src; curr=item;}">
               <image class="h-full" src="/static/edit.png" mode="heightFix"/>
             </view>
 
