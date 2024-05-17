@@ -400,8 +400,8 @@ const openPayDialog = () => {
 
   <OpenRoomCard :open="open"
                 :defaulted="item?.defaulted"
-                :title="item?.defaulted? '' : item?.title"
-                :content="item?.defaulted? '' : item?.content"
+                :title="item?.title"
+                :content="item?.content"
                 :src="isEmpty(item?.src) ? '/static/card.png' : imgUri + item.src"
                 :type="isEmpty(item?.src)"
                 :avatar="player.avatar"

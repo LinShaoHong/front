@@ -141,10 +141,7 @@ const onDelete = (item) => {
         <view v-for="item in user.data.value.defs[0].items"
               class="card_box w-45vw flex flex-col justify-center items-center mt-30 p-t-6" :key="item.id">
 
-          <image v-if="item.defaulted" class="w-45vw h-65vw" :src="`${imgUri}${item.src}`" mode="scaleToFill"></image>
-
-          <CustomCard v-if="!item.defaulted"
-                      :width="isEmpty(item.src) ? '45vw' : 45 * 0.96 + 'vw'"
+          <CustomCard :width="isEmpty(item.src) ? '45vw' : 45 * 0.96 + 'vw'"
                       :height="'65vw'"
                       :custom="isEmpty(item.src)"
                       :title="item.title"
@@ -154,7 +151,7 @@ const onDelete = (item) => {
 
           <view class="w-45vw h-8vw flex justify-around items-center p-10">
 
-            <view v-if="!item.defaulted" class="h-40"
+            <view class="h-40"
                   @click="() => {showEdit=true; title=item.title; content=item.content; picPath=item.src; curr=item;}">
               <image class="h-full" src="/static/edit.png" mode="heightFix"/>
             </view>
@@ -162,7 +159,7 @@ const onDelete = (item) => {
             <switch v-if="item.enable" checked color="#BB72EE" style="transform:scale(0.6);" @change="onEnable(item)"/>
             <switch v-if="!item.enable" color="#BB72EE" style="transform:scale(0.6);" @change="onEnable(item)"/>
 
-            <view v-if="!item.defaulted" class="h-40" @click="onDelete(item)">
+            <view class="h-40" @click="onDelete(item)">
               <image class="h-full" src="/static/delete.png" mode="heightFix"/>
             </view>
 
@@ -206,7 +203,7 @@ const onDelete = (item) => {
         </view>
 
         <view v-if="!editContent" class="w-full flex justify-center items-center" style="height: calc(65vh - 128rpx)">
-          <image class="absolute h-80 w-80" src="/static/upload.png" @click="uploadPic"></image>
+          <image v-if="curr === null || !curr.defaulted" class="absolute h-80 w-80" src="/static/upload.png" @click="uploadPic"></image>
           <image style="height: calc((65vh - 128rpx) * 0.9); width: calc((65vh - 128rpx) * 0.9 * 45 / 65);"
                  :src="isEmpty(picPath) ? '/static/card.png' : imgUri + picPath"></image>
         </view>
