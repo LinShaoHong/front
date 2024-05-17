@@ -60,29 +60,37 @@ const uploadPic = () => {
 
 const onEdit = () => {
   const len = user.data.value.defs[0]['items'].filter(v => !v['defaulted']).length;
-  if (isEmpty(picPath.value) && isEmpty(title.value)) {
-    return message('请输入标题', 3);
-  }
-  if (title.value.length > 10) {
-    return message('标题不能超过10个字', 3);
-  }
-  if (isEmpty(picPath.value) && isEmpty(content.value)) {
-    return message('请输入内容', 3);
-  }
-  if (content.value.length > 50) {
-    return message('内容不能超过50个字', 3);
-  }
-  if (curr.value == null) {
-    if (len >= 50) {
-      return message('最多添加50张', 3);
-    }
-  }
   user.getUserInfo().then(() => {
-    if ((curr.value == null && len >= 1) && user.data.value.vip < 1) {
+    let can = true;
+    if (user.data.value.vip < 1) {
+      if (curr.value == null) {
+        can = len < 1;
+      } else {
+        can = !curr.value['defaulted'];
+      }
+    }
+    if (!can) {
       config.getConfigInfo().then(() => {
         showPay.value = true;
       }).catch(() => networkError());
     } else {
+      if (isEmpty(picPath.value) && isEmpty(title.value)) {
+        return message('请输入标题', 3);
+      }
+      if (title.value.length > 10) {
+        return message('标题不能超过10个字', 3);
+      }
+      if (isEmpty(picPath.value) && isEmpty(content.value)) {
+        return message('请输入内容', 3);
+      }
+      if (content.value.length > 50) {
+        return message('内容不能超过50个字', 3);
+      }
+      if (curr.value == null) {
+        if (len >= 50) {
+          return message('最多添加50张', 3);
+        }
+      }
       if (curr.value == null) {
         loading.value = true;
         apiUser.addDef(user.data.value.id, title.value, content.value, picPath.value).then(() => {
@@ -182,20 +190,20 @@ const onDelete = (item) => {
               :style="{'border-bottom': editContent? '0' : '1px solid', 'font-size': '28rpx', 'border-color': '#482380'}"
               @click="editContent=false"
           >
-            背景图
+            图片
           </view>
         </view>
 
         <view v-if="editContent" class="w-full" style="height: calc(65vh - 128rpx)">
           <view class="w-full" style="height: 10%">
-            <view class="w-full pl-10" style="font-size: 24rpx; color:#999;">请输入标题（10字以内）</view>
+            <view class="w-full pl-10" style="font-size: 24rpx; color:#999;">请输入卡牌标题（10字以内）</view>
             <view class="w-full pl-10" style="border-bottom: 1px solid rgb(235, 237, 240);">
               <input class="text-left" style="color: #907BE0; font-size: 30rpx;" v-model="title"/>
             </view>
           </view>
 
           <view class="w-full mt-20" style="height: 90%">
-            <view class="w-full pl-10 mt-10" style="font-size: 24rpx; color:#999;">请输入内容（50字以内）</view>
+            <view class="w-full pl-10 mt-10" style="font-size: 24rpx; color:#999;">请输入惩罚内容（50字以内）</view>
             <view class="w-full pl-10" style="border-bottom: 1px solid rgb(235, 237, 240);  height: 90%;">
               <textarea class="text-left w-70vw" style="color: #907BE0; font-size: 30rpx;" v-model="content"/>
             </view>
@@ -203,7 +211,8 @@ const onDelete = (item) => {
         </view>
 
         <view v-if="!editContent" class="w-full flex justify-center items-center" style="height: calc(65vh - 128rpx)">
-          <image v-if="curr === null || !curr.defaulted" class="absolute h-80 w-80" src="/static/upload.png" @click="uploadPic"></image>
+          <image v-if="curr === null || !curr.defaulted" class="absolute h-80 w-80" src="/static/upload.png"
+                 @click="uploadPic"></image>
           <image style="height: calc((65vh - 128rpx) * 0.9); width: calc((65vh - 128rpx) * 0.9 * 45 / 65);"
                  :src="isEmpty(picPath) ? '/static/card.png' : imgUri + picPath"></image>
         </view>
