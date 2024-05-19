@@ -30,9 +30,17 @@ const onAdd = () => {
   content.value = '';
   picPath.value = '';
   editContent.value = true;
+  picLoading.value = false;
   curr.value = null;
 };
 
+const picLoading = ref(false);
+const picError = () => {
+  picLoading.value = false;
+};
+const picLoaded = () => {
+  picLoading.value = false;
+};
 const uploadPic = () => {
   user.getUserInfo().then(() => {
     const len = user.data.value.defs[0]['items'].filter(v => !v['defaulted']).length;
@@ -44,6 +52,8 @@ const uploadPic = () => {
       uni.chooseImage({
         success: (chooseImageRes) => {
           const tempFilePaths = chooseImageRes.tempFilePaths;
+          picPath.value = 'NONE';
+          picLoading.value = true;
           uni.uploadFile({
             url: `${ env.apiBaseUrl }/store/put`,
             filePath: tempFilePaths[0],
@@ -97,6 +107,7 @@ const onEdit = () => {
           user.getDefs();
           loading.value = false;
           showEdit.value = false;
+          picLoading.value = false;
         });
       } else {
         loading.value = true;
@@ -104,6 +115,7 @@ const onEdit = () => {
           user.getDefs();
           loading.value = false;
           showEdit.value = false;
+          picLoading.value = false;
         });
       }
     }
@@ -177,33 +189,33 @@ const onDelete = (item) => {
       </view>
     </scroll-view>
 
-    <Popup position="center" :show="showEdit" @clickMask="() => {showEdit=false; editContent=true;}">
-      <view class="relative w-80vw h-70vh p-20 rd-30 flex flex-col justify-between gap-20" style="background: white;">
-        <view class="flex h-48 gap-30 pl-10">
+    <Popup position="center" :show="showEdit" @clickMask="() => {showEdit=false; editContent=true; picLoading=false;}">
+      <view class="relative w-80vw h-65vh p-20 rd-30 flex flex-col justify-between gap-20" style="background: white;">
+        <view class="flex justify-center h-48 gap-25 pl-10">
           <view
-              :style="{'border-bottom': editContent? '1px solid':'0', 'font-size': '28rpx', 'border-color': '#482380'}"
+              :style="{'font-weight': 'bold', 'border-bottom': editContent? '2px solid':'0', 'font-size': '28rpx', 'border-color': '#482380'}"
               @click="editContent=true"
           >
             内容
           </view>
           <view
-              :style="{'border-bottom': editContent? '0' : '1px solid', 'font-size': '28rpx', 'border-color': '#482380'}"
+              :style="{'font-weight': 'bold', 'border-bottom': editContent? '0' : '2px solid', 'font-size': '28rpx', 'border-color': '#482380'}"
               @click="editContent=false"
           >
             图片
           </view>
         </view>
 
-        <view v-if="editContent" class="w-full" style="height: calc(65vh - 128rpx)">
+        <view v-if="editContent" class="w-full" style="height: calc(61vh - 128rpx)">
           <view class="w-full" style="height: 10%">
-            <view class="w-full pl-10" style="font-size: 24rpx; color:#999;">请输入卡牌标题（10字以内）</view>
+            <view class="w-full pl-10" style="font-size: 24rpx; color:#999;">卡牌标题（10字以内）</view>
             <view class="w-full pl-10" style="border-bottom: 1px solid rgb(235, 237, 240);">
               <input class="text-left" style="color: #907BE0; font-size: 30rpx;" v-model="title"/>
             </view>
           </view>
 
           <view class="w-full mt-20" style="height: 90%">
-            <view class="w-full pl-10 mt-10" style="font-size: 24rpx; color:#999;">请输入惩罚内容（50字以内）</view>
+            <view class="w-full pl-10 mt-10" style="font-size: 24rpx; color:#999;">惩罚内容（50字以内）</view>
             <view class="w-full pl-10" style="border-bottom: 1px solid rgb(235, 237, 240);  height: 90%;">
               <textarea class="text-left w-70vw" style="color: #907BE0; font-size: 30rpx;" v-model="content"/>
             </view>
@@ -211,14 +223,21 @@ const onDelete = (item) => {
         </view>
 
         <view v-if="!editContent" class="w-full flex justify-center items-center" style="height: calc(65vh - 128rpx)">
-          <image v-if="curr === null || !curr.defaulted" class="absolute h-80 w-80" src="/static/upload.png"
+          <image v-if="(curr === null || !curr.defaulted) && !picLoading" class="absolute h-80 w-80"
+                 src="/static/upload.png"
                  @click="uploadPic"></image>
-          <image style="height: calc((65vh - 128rpx) * 0.9); width: calc((65vh - 128rpx) * 0.9 * 45 / 65);"
-                 :src="isEmpty(picPath) ? '/static/card.png' : imgUri + picPath"></image>
+          <image class="rd-20"
+                 style="height: calc((61vh - 128rpx) * 0.98); width: calc((61vh - 128rpx) * 0.98 * 45 / 65);"
+                 :src="isEmpty(picPath) ? '/static/card.png' : imgUri + picPath"
+                 @error="picError"
+                 @load="picLoaded"
+          >
+          </image>
+          <image v-if="picLoading" class="absolute w-60 h-60" src="/static/loading.gif"></image>
         </view>
 
         <button
-            class="btn w-200 h-5vh flex items-center justify-center"
+            class="btn w-200 h-4vh flex items-center justify-center"
             :disabled="loading"
             :loading="loading"
             @tap.stop="onEdit"
