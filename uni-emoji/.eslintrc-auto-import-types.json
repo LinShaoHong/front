@@ -1,0 +1,9 @@
+{
+  "globals": {
+    "Http": true,
+    "User": true,
+    "Pay": true,
+    "Types": true,
+    "Config": true
+  }
+}
