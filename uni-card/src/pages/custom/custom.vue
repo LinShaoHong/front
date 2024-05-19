@@ -192,17 +192,23 @@ const onDelete = (item) => {
     <Popup position="center" :show="showEdit" @clickMask="() => {showEdit=false; editContent=true; picLoading=false;}">
       <view class="relative w-80vw h-65vh p-20 rd-30 flex flex-col justify-between gap-20" style="background: white;">
         <view class="flex justify-center h-48 gap-25 pl-10">
-          <view
-              :style="{'font-weight': 'bold', 'border-bottom': editContent? '2px solid':'0', 'font-size': '28rpx', 'border-color': '#482380'}"
-              @click="editContent=true"
-          >
-            内容
+          <view class="flex justify-end"
+                style="width: 50%;"
+                @click="editContent=true">
+            <view
+                :style="{'display': 'inline-block', 'font-weight': 'bold', 'border-bottom': editContent? '2px solid':'0', 'font-size': '30rpx', 'border-color': '#482380'}"
+            >
+              内容
+            </view>
           </view>
-          <view
-              :style="{'font-weight': 'bold', 'border-bottom': editContent? '0' : '2px solid', 'font-size': '28rpx', 'border-color': '#482380'}"
-              @click="editContent=false"
-          >
-            图片
+          <view class="w-180 flex"
+                style="width: 50%;"
+                @click="editContent=false">
+            <view
+                :style="{'display': 'inline-block', 'font-weight': 'bold', 'border-bottom': editContent? '0' : '2px solid', 'font-size': '30rpx', 'border-color': '#482380'}"
+            >
+              图片
+            </view>
           </view>
         </view>
 
