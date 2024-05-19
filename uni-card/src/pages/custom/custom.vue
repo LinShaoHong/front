@@ -171,15 +171,18 @@ const onDelete = (item) => {
 
           <view class="w-45vw h-8vw flex justify-around items-center p-10">
 
-            <view class="h-40"
+            <view class="h-40 flex justify-center"
+                   style="width: 33%"
                   @click="() => {showEdit=true; title=item.title; content=item.content; picPath=item.src; curr=item;}">
               <image class="h-full" src="/static/edit.png" mode="heightFix"/>
             </view>
 
-            <switch v-if="item.enable" checked color="#BB72EE" style="transform:scale(0.6);" @change="onEnable(item)"/>
-            <switch v-if="!item.enable" color="#BB72EE" style="transform:scale(0.6);" @change="onEnable(item)"/>
+            <view class="flex justify-center" style="width: 34%">
+              <switch v-if="item.enable" checked color="#BB72EE" style="transform:scale(0.6);" @change="onEnable(item)"/>
+              <switch v-if="!item.enable" color="#BB72EE" style="transform:scale(0.6);" @change="onEnable(item)"/>
+            </view>
 
-            <view class="h-40" @click="onDelete(item)">
+            <view class="h-40 flex justify-center" style="width: 33%" @click="onDelete(item)">
               <image class="h-full" src="/static/delete.png" mode="heightFix"/>
             </view>
 
