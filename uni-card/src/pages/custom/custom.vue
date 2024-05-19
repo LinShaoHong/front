@@ -193,29 +193,29 @@ const onDelete = (item) => {
     </scroll-view>
 
     <Popup position="center" :show="showEdit" @clickMask="() => {showEdit=false; editContent=true; picLoading=false;}">
-      <view class="relative w-80vw h-65vh p-20 rd-30 flex flex-col justify-between gap-20" style="background: white;">
-        <view class="flex justify-center h-48 gap-25 pl-10">
-          <view class="flex justify-end"
-                style="width: 50%;"
+      <view class="relative w-80vw h-65vh pb-20 rd-30 flex flex-col justify-between gap-20" style="background: white;">
+        <view class="flex h-62">
+          <view class="flex justify-center items-center"
+                :style="{width: '50%', 'background-color': editContent? '#482380' : '', 'border-radius': '30rpx 0 5rpx 0'}"
                 @click="editContent=true">
             <view
-                :style="{'display': 'inline-block', 'font-weight': 'bold', 'border-bottom': editContent? '2px solid':'0', 'font-size': '30rpx', 'border-color': '#482380'}"
+                :style="{'display': 'inline-block', 'font-weight': 'bold', 'font-size': '30rpx', color: editContent? 'white' : 'black'}"
             >
               内容
             </view>
           </view>
-          <view class="w-180 flex"
-                style="width: 50%;"
+          <view class="w-180 flex justify-center items-center"
+                :style="{width: '50%', 'background-color': !editContent? '#482380' : '', 'border-radius': '0 30rpx 0 5rpx'}"
                 @click="editContent=false">
             <view
-                :style="{'display': 'inline-block', 'font-weight': 'bold', 'border-bottom': editContent? '0' : '2px solid', 'font-size': '30rpx', 'border-color': '#482380'}"
+                :style="{'display': 'inline-block', 'font-weight': 'bold', 'font-size': '30rpx', color: !editContent? 'white' : 'black'}"
             >
               图片
             </view>
           </view>
         </view>
 
-        <view v-if="editContent" class="w-full" style="height: calc(61vh - 128rpx)">
+        <view v-if="editContent" class="w-full" style="height: calc(61vh - 122rpx);">
           <view class="w-full" style="height: 10%">
             <view class="w-full pl-10" style="font-size: 24rpx; color:#999;">卡牌标题（10字以内）</view>
             <view class="w-full pl-10" style="border-bottom: 1px solid rgb(235, 237, 240);">
@@ -231,12 +231,12 @@ const onDelete = (item) => {
           </view>
         </view>
 
-        <view v-if="!editContent" class="w-full flex justify-center items-center" style="height: calc(65vh - 128rpx)">
+        <view v-if="!editContent" class="w-full flex justify-center items-center" style="height: calc(61vh - 122rpx)">
           <image v-if="(curr === null || !curr.defaulted) && !picLoading" class="absolute h-80 w-80"
                  src="/static/upload.png"
                  @click="uploadPic"></image>
           <image class="rd-20"
-                 style="height: calc((61vh - 128rpx) * 0.98); width: calc((61vh - 128rpx) * 0.98 * 45 / 65);"
+                 style="height: calc((61vh - 122rpx) * 0.98); width: calc((61vh - 122rpx) * 0.98 * 45 / 65);"
                  :src="isEmpty(picPath) ? '/static/card.png' : imgUri + picPath"
                  @error="picError"
                  @load="picLoaded"
