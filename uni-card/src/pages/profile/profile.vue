@@ -83,11 +83,11 @@ const onUpdateAva = () => {
 const showInvited = ref(false);
 const invited = ref([] as any[]);
 onShow(() => {
-  if (ios()) {
-    apiUser.invited(user.data.value.code).then((data) => {
-      invited.value = data.values;
-    }).catch(() => networkError());
-  }
+  // if (ios()) {
+  apiUser.invited(user.data.value.code).then((data) => {
+    invited.value = data.values;
+  }).catch(() => networkError());
+  // }
 });
 </script>
 
@@ -112,7 +112,8 @@ onShow(() => {
         <van-cell v-if="invited.length > 0" title="我邀请的" is-link center title-style="color: #907BE0"
                   @click="showInvited=true">
         </van-cell>
-        <van-cell v-if="config.data.value.game" title="游戏规则" is-link center title-style="color: #907BE0" @click="showRule=true"/>
+        <van-cell v-if="config.data.value.game" title="游戏规则" is-link center title-style="color: #907BE0"
+                  @click="showRule=true"/>
         <button v-if="isMp" class="p-0 text-left" open-type="share" style="background: transparent;">
           <van-cell title="推荐给朋友" is-link center title-style="color: #907BE0"/>
         </button>
@@ -197,9 +198,9 @@ onShow(() => {
     </view>
   </Popup>
 
-<!--  <view class="fixed bottom-0">-->
-<!--    <m-tabbar fixed fill :current="tabLen - 1" :tabbar="tabBar"></m-tabbar>-->
-<!--  </view>-->
+  <!--  <view class="fixed bottom-0">-->
+  <!--    <m-tabbar fixed fill :current="tabLen - 1" :tabbar="tabBar"></m-tabbar>-->
+  <!--  </view>-->
 </template>
 
 <style lang="scss" scoped>
