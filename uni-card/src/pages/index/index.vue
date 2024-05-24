@@ -2,7 +2,7 @@
 import { delay } from '@/utils/calls'
 import { networkError } from "@/utils/request";
 import { useShare } from "@/hooks/useShare";
-import { ios, message, setNBT } from "@/utils/unis";
+import { ios, setNBT } from "@/utils/unis";
 import PayDialog from "@/components/PayDialog.vue";
 import { useTabBar } from "@/hooks/useTabBar";
 import { isEmpty } from "@/utils/is";
@@ -14,10 +14,6 @@ const user = useStore('user');
 const config = useStore('config');
 const imgUri = inject('$imgUri');
 const showRule = ref(false);
-const partnerLogo = computed(() => {
-  console.log(config.partnerLogo.value, 'aaaaaaaaaaaaa');
-  return config.partnerLogo.value;
-});
 
 const card = ref<number | undefined>(0);
 const cards = ref([] as number[]);
