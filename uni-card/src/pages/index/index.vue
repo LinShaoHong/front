@@ -12,9 +12,12 @@ const { onShareAppMessage, onShareTimeline, shareTitle, shareImageUrl } = useSha
 
 const user = useStore('user');
 const config = useStore('config');
-
 const imgUri = inject('$imgUri');
 const showRule = ref(false);
+const partnerLogo = computed(() => {
+  console.log(config.partnerLogo.value, 'aaaaaaaaaaaaa');
+  return config.partnerLogo.value;
+});
 
 const card = ref<number | undefined>(0);
 const cards = ref([] as number[]);
@@ -166,6 +169,7 @@ const openPayDialog = () => {
 
 <template>
   <view class="content">
+    <Logo/>
     <image class="h-screen w-screen fixed" src="/static/back.png" mode="scaleToFill"></image>
 
     <Popup v-if="config.data.value.game" position="center" :show="showRule">

@@ -23,6 +23,11 @@ declare namespace Config {
     payText: string
     shareTitle: string
     logo: string
+    partner: string
+    partners:[{
+      name: string,
+      logo: string
+    }],
     banners: [{
       src: string
       qr: string

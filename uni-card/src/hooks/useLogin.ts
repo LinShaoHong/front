@@ -14,12 +14,18 @@ export function useLogin() {
   };
 
   const mpLogin = (option?) => {
+    const config = useStore('config');
     return new Promise((resolve, reject) => {
       uni.login({
         success: function (res) {
           const code = res.code;
           const sys = uni.getSystemInfoSync();
-          apiUser.login({ code: code, os: sys.platform, shareUserId: option?.query?.shareUserId }).then(data => {
+          apiUser.login({
+            code: code,
+            os: sys.platform,
+            shareUserId: option?.query?.shareUserId,
+            partner: config.data.value.partner
+          }).then(data => {
             resolve(data.value);
           }).catch(err => {
             reject(err);

@@ -1,4 +1,5 @@
 import apiConfig from '@/api/apiConfig';
+import { isEmpty } from "@/utils/is";
 
 export default defineStore({
   id: 'config',
@@ -14,9 +15,23 @@ export default defineStore({
         payText: "",
         shareTitle: "",
         logo: "",
+        partner: "",
+        partners: [{}],
         banners: [{}]
       }
     } as { data: Config.ConfigInfo };
+  },
+  getters: {
+    partnerLogo: (state) => {
+      if (!isEmpty(state.data.partner)) {
+        for (const partner of state.data.partners) {
+          if (partner.name === state.data.partner) {
+            return partner.logo;
+          }
+        }
+      }
+      return null;
+    }
   },
   actions: {
     getConfigInfo() {
@@ -33,6 +48,10 @@ export default defineStore({
 
     setConfigInfo(config: Config.ConfigInfo) {
       Object.assign(this.data['value'], config)
+    },
+
+    setPartner(partner: string) {
+      this.data['value']['partner'] = partner;
     }
   }
 });

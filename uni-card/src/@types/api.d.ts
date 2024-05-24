@@ -12,6 +12,7 @@ declare namespace User {
   interface LoginReq {
     code: string,
     os: string,
+    partner: string,
     shareUserId: string
   }
 }

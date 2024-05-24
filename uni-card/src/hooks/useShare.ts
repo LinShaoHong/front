@@ -1,5 +1,6 @@
 import { networkError } from "@/utils/request";
 import { ios } from "@/utils/unis";
+import { isEmpty } from "@/utils/is";
 
 /**
  * 分享
@@ -16,7 +17,6 @@ export function useShare() {
 
   onShareAppMessage(async () => {
     await beforeShare();
-    console.log(_path.value);
     return {
       title: shareTitle.value,
       imageUrl: shareImageUrl.value,
@@ -35,13 +35,17 @@ export function useShare() {
   const _path = computed(() => {
     if (shareUserId.value != '' || shareMainUserId.value != '') {
       let s = sharePath.value as string;
-      if (shareUserId.value != '') {
+      if (!isEmpty(shareUserId.value)) {
         let m = s.includes('?') ? '&' : '?';
         s += m + 'shareUserId=' + shareUserId.value;
       }
-      if (shareMainUserId.value != '') {
+      if (!isEmpty(shareMainUserId.value)) {
         let m = s.includes('?') ? '&' : '?';
         s += m + 'mainUserId=' + shareMainUserId.value;
+      }
+      if (!isEmpty(config.data.value.partner)) {
+        let m = s.includes('?') ? '&' : '?';
+        s += m + 'partner=' + config.data.value.partner;
       }
       return s;
     }
@@ -56,9 +60,9 @@ export function useShare() {
       if (shareImageUrl.value === '') {
         shareImageUrl.value = config.data.value.logo;
       }
-      if (ios()) {
+      // if (ios()) {
         shareUserId.value = user.data.value.id;
-      }
+      // }
     }).catch(() => networkError());
   };
 
