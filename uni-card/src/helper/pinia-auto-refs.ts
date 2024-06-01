@@ -1,7 +1,3 @@
-// "https://github.com/Allen-1998/pinia-auto-refs"
-/* eslint-disable */
-/* prettier-ignore */
-// @ts-nocheck
 import type { AutoToRefs, ToRef } from 'vue'
 
 import configStore from '@/store/config'

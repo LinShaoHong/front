@@ -182,12 +182,22 @@ const openPayDialog = () => {
     </Popup>
 
     <button class="fixed right-0 w-200 h-66 z-6"
-            :style="{top: hasBanner ? 'calc(20vh - 80rpx)' : 'calc(20vh - 80rpx)', background: 'transparent'}"
+            :style="{top: hasBanner ? 'calc(20vh - 120rpx)' : 'calc(20vh - 120rpx)', background: 'transparent'}"
             openType="contact">
       <image class="w-full h-full absolute left-0" src="/static/mask_bg.png"></image>
       <image class="w-76 h-66 absolute left-4" src="/static/message.png"></image>
       <text class="h-full color-white absolute left-80 flex items-center justify-center" style="font-size: 28rpx;">
         联系客服
+      </text>
+    </button>
+
+    <button v-if="config.data.value.game && config.data.value.prompt" class="fixed right-0 w-200 h-66 z-6"
+            :style="{top: hasBanner ? 'calc(30vh - 136rpx)' : 'calc(30vh - 136rpx)', background: 'transparent'}"
+            openType="contact">
+      <image class="w-full h-full absolute left-0" src="/static/mask_bg.png"></image>
+      <image class="h-60 absolute left-10" src="/static/prompt.png" mode="heightFix"></image>
+      <text class="h-full color-white absolute left-80 flex items-center justify-center" style="font-size: 28rpx;">
+        推广计划
       </text>
     </button>
 
