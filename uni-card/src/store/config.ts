@@ -9,7 +9,7 @@ export default defineStore({
         avaCount: 40,
         playLimit: 5,
         game: false,
-        prompt: true,
+        prompt: false,
         promptText: "",
         iosLimit: 5,
         iosCanPay: false,
