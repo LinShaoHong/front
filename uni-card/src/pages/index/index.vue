@@ -14,6 +14,7 @@ const user = useStore('user');
 const config = useStore('config');
 const imgUri = inject('$imgUri');
 const showRule = ref(false);
+const showPrompt = ref(false);
 
 const card = ref<number | undefined>(0);
 const cards = ref([] as number[]);
@@ -193,7 +194,8 @@ const openPayDialog = () => {
 
     <button v-if="config.data.value.game && config.data.value.prompt" class="fixed right-0 w-200 h-66 z-6"
             :style="{top: hasBanner ? 'calc(30vh - 136rpx)' : 'calc(30vh - 136rpx)', background: 'transparent'}"
-            openType="contact">
+            @click="showPrompt=true"
+    >
       <image class="w-full h-full absolute left-0" src="/static/mask_bg.png"></image>
       <image class="h-60 absolute left-10" src="/static/prompt.png" mode="heightFix"></image>
       <text class="h-full color-white absolute left-80 flex items-center justify-center" style="font-size: 28rpx;">
@@ -256,6 +258,8 @@ const openPayDialog = () => {
                @close="showPayDialog=false"/>
 
     <IOSDialog :show="showIOSDialog" @close="showIOSDialog=false"/>
+
+    <Prompt :show="showPrompt" @close="showPrompt=false"/>
 
     <QRCode :show="showQR"
             :src="banner.qr"

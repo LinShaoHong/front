@@ -18,6 +18,7 @@ declare namespace Config {
     playLimit: number
     game: boolean
     prompt: boolean
+    promptText: string
     iosLimit: number
     iosCanPay: boolean
     price: string

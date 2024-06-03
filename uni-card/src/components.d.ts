@@ -16,6 +16,7 @@ declare module '@vue/runtime-core' {
     OpenRoomCard: typeof import('./components/OpenRoomCard.vue')['default']
     PayDialog: typeof import('./components/PayDialog.vue')['default']
     Popup: typeof import('./components/Popup.vue')['default']
+    Prompt: typeof import('./components/Prompt.vue')['default']
     QRCode: typeof import('./components/QRCode.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
