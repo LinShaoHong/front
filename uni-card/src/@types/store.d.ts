@@ -38,3 +38,9 @@ declare namespace Config {
     }]
   }
 }
+
+declare namespace App {
+  interface AppInfo {
+    cardType: string
+  }
+}
