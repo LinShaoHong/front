@@ -12,7 +12,7 @@ defineEmits(['onHks']);
 </script>
 
 <template>
-  <view v-if="config.data.value.game" class="fixed w-screen h-68 flex z-100">
+  <view v-if="config.data.value.game" class="fixed w-screen h-68 flex z-10">
     <view class="h-full tab_box"
           :style="{'background-color': hks? 'white':'transparent', 'border-radius': '0 0 10rpx 0', border: hks? '1px solid #300450':''}"
           @click="$emit('onHks', true)">

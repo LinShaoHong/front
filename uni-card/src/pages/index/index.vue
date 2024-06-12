@@ -255,6 +255,8 @@ const openPayDialog = () => {
     </view>
 
     <OpenCard :open="open"
+              :hks="hks"
+              :count="card"
               :defaulted="item?.defaulted"
               :title="item?.title"
               :content="item?.content"

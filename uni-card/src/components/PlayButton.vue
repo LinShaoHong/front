@@ -32,7 +32,7 @@ defineEmits(['shuffle', 'open']);
   justify-content: center;
   align-items: center;
   background-color: #F17104;
-  border-radius: 30rpx;
+  border-radius: 90rpx;
   box-shadow: inset #9F2F03 0 0 60rpx -12px;
 
   text {
