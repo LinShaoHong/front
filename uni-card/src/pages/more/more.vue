@@ -44,11 +44,6 @@ const hasDef = computed(() => {
   <TopTabBar :hks="hks" @on-hks="(t) => hks=t"/>
 
   <view v-if="config.data.value.game" class="w-screen relative pt-120 pl-20 pr-20 flex flex-col items-center">
-<!--    <view class="flex gap-20 p-b-30 items-center">-->
-<!--      <view class="title_line w-20vw"></view>-->
-<!--      <text class="text-white" style="font-size: 34rpx">海克斯卡牌</text>-->
-<!--      <view class="title_line w-20vw"></view>-->
-<!--    </view>-->
     <view v-if="hasDef" class="define_box mt-10 h-10vh w-70vw rd-100 flex flex-col items-center justify-center"
           @click="forward('custom')">
       <view class="w-full h-full flex items-center justify-center gap-10">

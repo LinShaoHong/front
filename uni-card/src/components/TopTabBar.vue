@@ -14,12 +14,12 @@ defineEmits(['onHks']);
 <template>
   <view v-if="config.data.value.game" class="fixed w-screen h-68 flex z-100">
     <view class="h-full tab_box"
-          :style="{'background-color': hks? 'white':'transparent', 'border-radius': '0 0 10rpx 0'}"
+          :style="{'background-color': hks? 'white':'transparent', 'border-radius': '0 0 10rpx 0', border: hks? '1px solid #300450':''}"
           @click="$emit('onHks', true)">
       <text :style="{color: hks? '#300450':'white'}">海克斯喝酒</text>
     </view>
     <view class="h-full tab_box"
-          :style="{'background-color': !hks? 'white':'transparent', 'border-radius': '0 0 0 10rpx'}"
+          :style="{'background-color': !hks? 'white':'transparent', 'border-radius': '0 0 0 10rpx', border: !hks? '1px solid #7B2605':''}"
           @click="$emit('onHks', false)">
       <text :style="{color: !hks? '#F17104':'white'}">情侣升温</text>
     </view>
