@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { networkError } from "@/utils/request";
 import { forward } from "@/utils/router";
-import { ios, setNBT } from "@/utils/unis";
+import { ios } from "@/utils/unis";
 import { useShare } from "@/hooks/useShare";
 import apiRoom from "@/api/apiRoom";
 import { useTabBar } from "@/hooks/useTabBar";
@@ -9,13 +9,13 @@ import { useTabBar } from "@/hooks/useTabBar";
 const { tabBar } = useTabBar();
 const { onShareAppMessage, onShareTimeline } = useShare();
 
+const hks = ref(true);
 const imgUri = inject('$imgUri');
 const user = useStore('user');
 const config = useStore('config');
 const joined = ref([] as any[]);
 
 onLoad(async (option) => {
-  await setNBT("云顶玩法");
   if (option !== undefined) {
     const mainUserId = option['mainUserId'];
     if (mainUserId != undefined) {
@@ -34,20 +34,21 @@ onShow(() => {
   }).catch(() => networkError());
 });
 
-const showDefDialog = ref(false);
 const hasDef = computed(() => {
   return !ios() || config.data.value.iosCanPay || user.data.value.vip >= 1;
 });
 </script>
 
 <template>
-  <image class="h-screen w-screen fixed" src="/static/back.png" mode="scaleToFill"></image>
-  <view v-if="config.data.value.game" class="w-screen relative pt-50 pl-20 pr-20 flex flex-col items-center">
-    <view class="flex gap-20 p-b-30 items-center">
-      <view class="title_line w-20vw"></view>
-      <text class="text-white" style="font-size: 34rpx">海克斯卡牌</text>
-      <view class="title_line w-20vw"></view>
-    </view>
+  <Background :hks="hks"/>
+  <TopTabBar :hks="hks" @on-hks="(t) => hks=t"/>
+
+  <view v-if="config.data.value.game" class="w-screen relative pt-120 pl-20 pr-20 flex flex-col items-center">
+<!--    <view class="flex gap-20 p-b-30 items-center">-->
+<!--      <view class="title_line w-20vw"></view>-->
+<!--      <text class="text-white" style="font-size: 34rpx">海克斯卡牌</text>-->
+<!--      <view class="title_line w-20vw"></view>-->
+<!--    </view>-->
     <view v-if="hasDef" class="define_box mt-10 h-10vh w-70vw rd-100 flex flex-col items-center justify-center"
           @click="forward('custom')">
       <view class="w-full h-full flex items-center justify-center gap-10">

@@ -6,6 +6,8 @@ import { ios, setNBT } from "@/utils/unis";
 import PayDialog from "@/components/PayDialog.vue";
 import { useTabBar } from "@/hooks/useTabBar";
 import { isEmpty } from "@/utils/is";
+import Background from "@/components/Background.vue";
+import TopTabBar from "@/components/TopTabBar.vue";
 
 const { tabBar } = useTabBar();
 const { onShareAppMessage, onShareTimeline, shareTitle, shareImageUrl } = useShare();
@@ -13,6 +15,7 @@ const { onShareAppMessage, onShareTimeline, shareTitle, shareImageUrl } = useSha
 const user = useStore('user');
 const config = useStore('config');
 const imgUri = inject('$imgUri');
+const hks = ref(true);
 const showRule = ref(false);
 const showPrompt = ref(false);
 
@@ -50,9 +53,10 @@ onLoad(async () => {
   shareTitle.value = config.data.value.shareTitle;
   shareImageUrl.value = config.data.value.logo;
 
-  await setNBT("云顶喝酒卡牌");
   await delay(500).then(() => {
-    showRule.value = true;
+    if (hks.value) {
+      showRule.value = true;
+    }
   })
   shuffleCards();
 });
@@ -167,7 +171,8 @@ const openPayDialog = () => {
 <template>
   <view class="content">
     <Logo/>
-    <image class="h-screen w-screen fixed" src="/static/back.png" mode="scaleToFill"></image>
+    <Background :hks="hks"/>
+    <TopTabBar :hks="hks" @on-hks="(t) => hks = t"/>
 
     <Popup v-if="config.data.value.game" position="center" :show="showRule">
       <view class="pb-40">
@@ -183,9 +188,13 @@ const openPayDialog = () => {
     </Popup>
 
     <button class="fixed right-0 w-200 h-66 z-6"
-            :style="{top: hasBanner ? 'calc(20vh - 120rpx)' : 'calc(20vh - 120rpx)', background: 'transparent'}"
+            :style="{top: hasBanner ? 'calc(20vh - 60rpx)' : 'calc(20vh - 60rpx)', background: 'transparent'}"
             openType="contact">
-      <image class="w-full h-full absolute left-0" src="/static/mask_bg.png"></image>
+      <image v-if="hks" class="w-full h-full absolute left-0" src="/static/mask_bg.png"></image>
+      <view v-if="!hks"
+            class="w-full h-full absolute left-0"
+            style="background-image: linear-gradient(to right, #F17104, transparent); border-radius: 66rpx 0 0 66rpx;"
+      />
       <image class="w-76 h-66 absolute left-4" src="/static/message.png"></image>
       <text class="h-full color-white absolute left-80 flex items-center justify-center" style="font-size: 28rpx;">
         联系客服
@@ -221,25 +230,26 @@ const openPayDialog = () => {
       </view>
 
       <view class="absolute flex flex-col items-center bottom-50 h-full" style="height: 70%;">
-        <image class="absolute top-0 bottom-80" mode="heightFix" style="height: 80%;"
+        <image v-if="hks" class="absolute top-0 bottom-80" mode="heightFix" style="height: 80%;"
                src="/static/p_bg.png"></image>
+        <image v-if="!hks" class="absolute top-0 bottom-80" mode="heightFix" style="height: 80%;"
+               src="/static/p_bg_lover.png"></image>
 
-        <view class="absolute h-full top--50 flex items-center justify-center">
+        <view :class="['absolute h-full flex items-center justify-center', hks? 'top--50':'top--20']">
           <view v-for="index in backCardsCount"
                 :class="['absolute', shuffle && index===backCardsCount && 'swap']"
                 :key="'card-back-' + index"
                 :style="backCardStyle(index)"
           >
-            <image src="/static/card-back.png"
-                   class="h-full"
+            <image :src="hks? '/static/card-back.png':'/static/lover-card-back.jpg'"
+                   class="h-full rd-30"
                    mode="heightFix"
-                   :style="{'backface-visibility': index === backCardsCount? 'hidden':''}"></image>
+                   :style="{'backface-visibility': index === backCardsCount? 'hidden':'', height: hks? '':'88%'}"></image>
           </view>
         </view>
 
-        <view v-if="config.data.value.game" class="absolute bottom-30 flex items-center justify-center gap-50 z-10">
-          <image class="h-90" src="/static/xp.png" mode="heightFix" @click="onShuffle"></image>
-          <image class="h-90" src="/static/kp.png" mode="heightFix" @click="onOpenCard"></image>
+        <view v-if="config.data.value.game" class="absolute bottom-30 z-10">
+          <PlayButton :hks="hks" @shuffle="onShuffle" @open="onOpenCard"></PlayButton>
         </view>
       </view>
     </view>

@@ -11,6 +11,7 @@ import { useShare } from "@/hooks/useShare";
 import { useSSE } from "@/hooks/useSSE";
 import { isEmpty } from "@/utils/is";
 
+const hks = ref(true);
 const { sseConnect, sseAbort } = useSSE();
 const user = useStore('user');
 const config = useStore('config');
@@ -301,7 +302,7 @@ const openPayDialog = () => {
 </script>
 
 <template>
-  <image class="h-screen w-screen fixed" src="/static/back.png" mode="scaleToFill"></image>
+  <Background :hks="hks"/>
 
   <view class="relative flex flex-col items-center justify-between h-100vh pt-20 pb-30">
 
@@ -344,25 +345,26 @@ const openPayDialog = () => {
       </view>
     </view>
     <view class="relative flex flex-col items-center" style="height: 70%;">
-      <image class="absolute top-0 bottom-80 h-60vh" mode="heightFix" style="height: 80%;"
+      <image v-if="hks" class="absolute top-0 bottom-80" mode="heightFix" style="height: 80%;"
              src="/static/p_bg.png"></image>
+      <image v-if="!hks" class="absolute top-0 bottom-80" mode="heightFix" style="height: 80%;"
+             src="/static/p_bg_lover.png"></image>
 
-      <view class="absolute top--50 flex items-center justify-center">
+      <view :class="['absolute flex items-center justify-center', hks? 'top--50':'top--20']">
         <view v-for="index in backCardsCount"
               :class="['absolute', shuffle && index===backCardsCount && 'swap']"
               :key="'card-back-' + index"
               :style="backCardStyle(index)"
         >
-          <image src="/static/card-back.png"
-                 class="h-50vh"
+          <image :src="hks? '/static/card-back.png':'/static/lover-card-back.jpg'"
+                 class="rd-30"
                  mode="heightFix"
-                 :style="{'backface-visibility': index === backCardsCount? 'hidden':''}"></image>
+                 :style="{'backface-visibility': index === backCardsCount? 'hidden':'', height: hks? '50vh':'42vh'}"></image>
         </view>
       </view>
 
-      <view class="absolute bottom-30 flex items-center justify-center gap-50 z-10">
-        <image class="h-90" src="/static/xp.png" mode="heightFix" @click="onShuffle"></image>
-        <image class="h-90" src="/static/kp.png" mode="heightFix" @click="onOpenCard"></image>
+      <view class="absolute bottom-30 z-10">
+        <PlayButton :hks="hks" @shuffle="onShuffle" @open="onOpenCard"></PlayButton>
       </view>
     </view>
   </view>

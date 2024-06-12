@@ -9,16 +9,19 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    Background: typeof import('./components/Background.vue')['default']
     CustomCard: typeof import('./components/CustomCard.vue')['default']
     IOSDialog: typeof import('./components/IOSDialog.vue')['default']
     Logo: typeof import('./components/Logo.vue')['default']
     OpenCard: typeof import('./components/OpenCard.vue')['default']
     OpenRoomCard: typeof import('./components/OpenRoomCard.vue')['default']
     PayDialog: typeof import('./components/PayDialog.vue')['default']
+    PlayButton: typeof import('./components/PlayButton.vue')['default']
     Popup: typeof import('./components/Popup.vue')['default']
     Prompt: typeof import('./components/Prompt.vue')['default']
     QRCode: typeof import('./components/QRCode.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TopTabBar: typeof import('./components/TopTabBar.vue')['default']
   }
 }
