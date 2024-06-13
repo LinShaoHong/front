@@ -12,16 +12,16 @@ defineEmits(['onHks']);
 </script>
 
 <template>
-  <view v-if="config.data.value.game" class="fixed w-screen h-68 flex z-10">
+  <view v-if="config.data.value.game" class="fixed w-screen h-100 flex z-10">
     <view class="h-full tab_box"
-          :style="{'background-color': hks? 'white':'transparent', 'border-radius': '0 0 10rpx 0', border: hks? '1px solid #300450':''}"
+          :style="{'background': hks? 'linear-gradient(to top, transparent, white)':'transparent', 'border-radius': '0 0 10rpx 0'}"
           @click="$emit('onHks', true)">
-      <text :style="{color: hks? '#300450':'white'}">海克斯喝酒</text>
+      <text :style="{color: hks? '#300450':'white'}">{{ config.data.value.topTab.hks }}</text>
     </view>
     <view class="h-full tab_box"
-          :style="{'background-color': !hks? 'white':'transparent', 'border-radius': '0 0 0 10rpx', border: !hks? '1px solid #7B2605':''}"
+          :style="{'background': !hks? 'linear-gradient(to top, transparent, white)':'transparent', 'border-radius': '0 0 0 10rpx'}"
           @click="$emit('onHks', false)">
-      <text :style="{color: !hks? '#F17104':'white'}">情侣升温</text>
+      <text :style="{color: !hks? '#A83000':'white'}">{{ config.data.value.topTab.lover }}</text>
     </view>
   </view>
 </template>

@@ -43,35 +43,36 @@ const hasDef = computed(() => {
   <Background :hks="hks"/>
   <TopTabBar :hks="hks" @on-hks="(t) => hks=t"/>
 
-  <view v-if="config.data.value.game" class="w-screen relative pt-120 pl-20 pr-20 flex flex-col items-center">
-    <view v-if="hasDef" class="define_box mt-10 h-10vh w-70vw rd-100 flex flex-col items-center justify-center"
+  <view v-if="config.data.value.game" class="w-screen relative pt-150 pl-20 pr-20 flex flex-col items-center">
+    <view v-if="hasDef"
+          :class="['mt-10 h-10vh w-70vw rd-100 flex flex-col items-center justify-center',hks? 'define_box':'lover_define_box']"
           @click="forward('custom')">
       <view class="w-full h-full flex items-center justify-center gap-10">
         <image src="/static/define_add.png" class="h-5vh" mode="heightFix">+</image>
-        <text class="text-white" style="font-size: 40rpx">自定义</text>
+        <text class="text-white" style="font-size: 40rpx">{{ hks? config.data.value.more.hks.defTitle:config.data.value.more.lover.defTitle }}</text>
       </view>
-      <text class="text-white mb-10" style="font-size: 26rpx;">可添加编辑卡牌，随心畅玩！</text>
+      <text class="text-white mb-10" style="font-size: 26rpx;">{{ hks? config.data.value.more.hks.defContent:config.data.value.more.lover.defContent }}</text>
     </view>
-    <view class="battle_box h-10vh w-70vw rd-100 flex flex-col items-center justify-center"
+    <view :class="['h-10vh w-70vw rd-100 flex flex-col items-center justify-center',hks?'battle_box':'lover_battle_box']"
           :style="{'margin-top': hasDef? '50rpx' : '10rpx'}"
           @click="forward('room')">
       <view class="w-full h-full flex items-center justify-center gap-10">
-        <image src="/static/battle.png" class="h-5vh" mode="heightFix">+</image>
-        <text class="text-white" style="font-size: 40rpx">云顶对弈</text>
+        <image :src="hks? '/static/battle.png':'/static/lover_battle.png'" class="h-5vh" mode="heightFix">+</image>
+        <text class="text-white" style="font-size: 40rpx">{{ hks? config.data.value.more.hks.battleTitle:config.data.value.more.lover.battleTitle }}</text>
       </view>
-      <text class="text-white mb-10" style="font-size: 26rpx;">可邀请他人同时在线对弈</text>
+      <text class="text-white mb-10" style="font-size: 26rpx;">{{ hks? config.data.value.more.hks.battleContent:config.data.value.more.lover.battleContent }}</text>
     </view>
   </view>
   <view v-if="config.data.value.game" class="w-screen relative pt-50 pl-20 pr-20">
     <view class="flex gap-20 pb-10 pl-20 items-center">
-      <view class="title_line w-5vw"></view>
+      <view :class="['w-5vw', hks? 'title_line':'lover_title_line']"></view>
       <text class="text-white" style="font-size: 32rpx">我参与过的</text>
-      <view class="title_line w-10vw"></view>
+      <view :class="['w-10vw', hks? 'title_line':'lover_title_line']"></view>
     </view>
     <scroll-view scroll-y class="absolute w-700 h-500 pl-10">
       <view class="joined flex flex-wrap justify-between gap-10 pb-50">
         <view v-for="join in joined" :key="join.mainUserId"
-              style="background-color: #4D0181"
+              :style="{'background-color': hks? '#4D0181':'#982F06'}"
               class="w-330 h-130 rd-30 mt-10 p-10 flex justify-center items-center"
               @click="forward('room', { mainUserId: join.mainUserId })">
           <image class="h-100" style="border-radius: 50%" :src="`${imgUri}/avatar/${join.avatar}.png`"
@@ -84,9 +85,9 @@ const hasDef = computed(() => {
       </view>
     </scroll-view>
   </view>
-<!--  <view class="fixed bottom-0">-->
-<!--    <m-tabbar fixed fill current="1" :tabbar="tabBar"></m-tabbar>-->
-<!--  </view>-->
+  <!--  <view class="fixed bottom-0">-->
+  <!--    <m-tabbar fixed fill current="1" :tabbar="tabBar"></m-tabbar>-->
+  <!--  </view>-->
 </template>
 
 <style scoped lang="scss">
@@ -96,15 +97,32 @@ const hasDef = computed(() => {
   box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
 
+.lover_define_box {
+  box-sizing: border-box;
+  background-image: linear-gradient(to right, #D4145A, #FBB03B);
+  box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
 .battle_box {
   box-sizing: border-box;
   background-image: linear-gradient(to right, #FD6C35, #3BA5F9);
   box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
 
+.lover_battle_box {
+  box-sizing: border-box;
+  background-image: linear-gradient(to right, #662D8C, #ED1E79);
+  box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
 .title_line {
   height: 1px;
   background: linear-gradient(to right, red, #eee, #5D0C95);
+}
+
+.lover_title_line {
+  height: 1px;
+  background: linear-gradient(to right, red, #eee, #571B03);
 }
 
 .joined:after {

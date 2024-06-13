@@ -19,6 +19,24 @@ export default defineStore({
         logo: "",
         partner: "",
         partners: [{}],
+        topTab: {
+          hks: '海克斯喝酒',
+          lover: '情侣升温',
+        },
+        more: {
+          hks: {
+            defTitle: '自定义',
+            defContent: '可添加编辑卡牌，随心畅玩！',
+            battleTitle: '云顶对弈',
+            battleContent: '可邀请他人同时在线对弈'
+          },
+          lover: {
+            defTitle: '自定义',
+            defContent: '可添加编辑卡牌，随心畅玩！',
+            battleTitle: '情侣格斗',
+            battleContent: '可邀请他人同时在线对弈'
+          }
+        },
         banners: [{}]
       }
     } as { data: Config.ConfigInfo };

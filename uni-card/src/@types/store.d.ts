@@ -26,10 +26,28 @@ declare namespace Config {
     shareTitle: string
     logo: string
     partner: string
-    partners:[{
+    partners: [{
       name: string,
       logo: string
     }],
+    topTab: {
+      hks: string
+      lover: string
+    },
+    more: {
+      hks: {
+        defTitle: string
+        defContent: string
+        battleTitle: string
+        battleContent: string
+      },
+      lover: {
+        defTitle: string
+        defContent: string
+        battleTitle: string
+        battleContent: string
+      }
+    },
     banners: [{
       src: string
       qr: string

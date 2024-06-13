@@ -67,7 +67,7 @@ defineEmits(['close']);
           class="card"
           :style="{height: height, width : '86vw', 'border-radius': '30rpx', 'background-color':'white'}">
       <view class="w-full flex items-center justify-between pl-30"
-            style="height: 12%; background-color: #F17104; border-radius: 30rpx 30rpx 0 0">
+            style="height: 12%; background-color: #FF6110; border-radius: 30rpx 30rpx 0 0">
         <view class="flex gap-10">
           <image src="/static/dot.png" class="w-20 h-20"></image>
           <image src="/static/dot.png" class="w-20 h-20"></image>
@@ -174,7 +174,7 @@ defineEmits(['close']);
 .lover_divider {
   position: absolute;
   height: 6rpx;
-  background-color: #F17104;
+  background-color: #FF6110;
   width: 30%;
 }
 
@@ -184,7 +184,7 @@ defineEmits(['close']);
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #F17104;
+  background-color: #FF6110;
   border-radius: 80rpx;
   box-shadow: inset #9F2F03 0 0 60rpx -12px;
 

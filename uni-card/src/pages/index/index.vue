@@ -193,7 +193,7 @@ const openPayDialog = () => {
       <image v-if="hks" class="w-full h-full absolute left-0" src="/static/mask_bg.png"></image>
       <view v-if="!hks"
             class="w-full h-full absolute left-0"
-            style="background-image: linear-gradient(to right, #F17104, transparent); border-radius: 66rpx 0 0 66rpx;"
+            style="background-image: linear-gradient(to right, #FF6110, transparent); border-radius: 66rpx 0 0 66rpx;"
       />
       <image class="w-76 h-66 absolute left-4" src="/static/message.png"></image>
       <text class="h-full color-white absolute left-80 flex items-center justify-center" style="font-size: 28rpx;">
