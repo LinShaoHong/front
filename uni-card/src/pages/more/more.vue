@@ -44,7 +44,7 @@ const hasDef = computed(() => {
   <Background :hks="hks"/>
   <TopTabBar :hks="hks" @on-hks="(t) => hks=t"/>
 
-  <view v-if="config.data.value.game" class="w-screen relative pt-150 pl-20 pr-20 flex flex-col items-center">
+  <view v-if="config.data.value.game" :class="['w-screen relative pl-20 pr-20 flex flex-col items-center',config.data.value.noLover? 'pt-50':'pt-150']">
     <view v-if="hasDef"
           :class="['mt-10 h-10vh w-70vw rd-100 flex flex-col items-center justify-center',hks? 'define_box':'lover_define_box']"
           @click="forward('custom', { hks:hks })">
