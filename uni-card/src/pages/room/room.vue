@@ -47,8 +47,6 @@ const onChoosePlayer = () => {
 };
 
 onLoad(async (option) => {
-  await setNBT("云顶对弈");
-
   shareImageUrl.value = null;
   sharePath.value = 'pages/more/more';
   shuffleCards();
@@ -60,6 +58,7 @@ onLoad(async (option) => {
       if (mainUserId === undefined) {
         mainUserId = user.data.value.id;
       }
+      hks.value = option['hks'] === 'true';
     }
 
     const sys = uni.getSystemInfoSync();
@@ -317,7 +316,7 @@ const openPayDialog = () => {
       </view>
 
       <view class="max-w-80vw rd-50 pt-10 flex items-center justify-around pl-20 pr-20"
-            style="height: 35%; background-color: #6D04B5; overflow: hidden">
+            :style="{height: '35%', 'background-color': hks?'#6D04B5':'#982F06', overflow: 'hidden'}">
         <scroll-view scroll-x @click="onShowPlayers">
           <view style="max-width: calc(80vw - 200rpx);" class="flex items-center">
             <view v-for="player in players" class="flex items-center justify-center" :key="player.userId">
@@ -401,6 +400,8 @@ const openPayDialog = () => {
   </Popup>
 
   <OpenRoomCard :open="open"
+                :hks="hks"
+                :count="card"
                 :defaulted="item?.defaulted"
                 :title="item?.title"
                 :content="item?.content"
@@ -414,6 +415,7 @@ const openPayDialog = () => {
                 @next="onNext"/>
 
   <PayDialog :show="showPayDialog"
+             :hks="hks"
              :html="config.data.value.payText"
              :vip="1"
              @close="showPayDialog=false"/>

@@ -11,7 +11,7 @@ const props = defineProps({
   },
   type: {
     type: Boolean,
-    default: false,
+    default: false
   },
   title: {
     type: String,
@@ -23,7 +23,7 @@ const props = defineProps({
   },
   count: {
     type: Number,
-    default: 1,
+    default: 1
   },
   defaulted: {
     type: Boolean,

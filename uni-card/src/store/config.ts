@@ -17,6 +17,7 @@ export default defineStore({
         payText: "",
         shareTitle: "",
         logo: "",
+        noLover: false,
         partner: "",
         partners: [{}],
         topTab: {
@@ -72,6 +73,10 @@ export default defineStore({
 
     setPartner(partner: string) {
       this.data['value']['partner'] = partner;
+    },
+
+    setNoLover(noLover: string) {
+      this.data['value']['noLover'] = noLover === 'true';
     }
   }
 });

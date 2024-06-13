@@ -265,6 +265,7 @@ const openPayDialog = () => {
               @close="open=false"/>
 
     <PayDialog :show="showPayDialog"
+               :hks="hks"
                :html="config.data.value.payText"
                :vip="1"
                @close="showPayDialog=false"/>

@@ -25,6 +25,7 @@ declare namespace Config {
     payText: string
     shareTitle: string
     logo: string
+    noLover: boolean
     partner: string
     partners: [{
       name: string,

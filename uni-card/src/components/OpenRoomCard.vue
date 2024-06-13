@@ -5,6 +5,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  hks: {
+    type: Boolean,
+    default: true
+  },
   type: {
     type: Boolean,
     default: false
@@ -16,6 +20,10 @@ const props = defineProps({
   content: {
     type: String,
     default: ''
+  },
+  count: {
+    type: Number,
+    default: 1,
   },
   defaulted: {
     type: Boolean,
@@ -61,14 +69,27 @@ defineEmits(['continue', 'next']);
       <image style="border-radius: 50%;height: 120%;" :src="`${imgUri}/avatar/${avatar}.png`" mode="heightFix"></image>
       <text class="text-white" style="font-size: 28rpx;">{{ nickname }}</text>
     </view>
-    <image class="card"
+    <image v-if="hks"
+           class="card"
            :src="src"
            :style="{height: height, 'width': (defaulted || type)? '' : '86vw', 'border-radius': (defaulted || type)? '' : '30rpx'}"
            :mode="(defaulted || type)? 'heightFix' : 'scaleToFill'"/>
-    />
+    <view v-if="!hks"
+          class="card"
+          :style="{height: height, width : '86vw', 'border-radius': '30rpx', 'background-color':'white'}">
+      <view class="w-full flex items-center justify-between pl-30"
+            style="height: 12%; background-color: #FF6110; border-radius: 30rpx 30rpx 0 0">
+        <view class="flex gap-10">
+          <image src="/static/dot.png" class="w-20 h-20"></image>
+          <image src="/static/dot.png" class="w-20 h-20"></image>
+          <image src="/static/dot.png" class="w-20 h-20"></image>
+        </view>
+        <text style="color: white; font-size: 36rpx; font-weight: bold; margin-right: 30rpx;">{{ '# ' + count }}</text>
+      </view>
+    </view>
   </view>
 
-  <view class="fixed w-100vw h-100vh top-0 flex flex-col items-center justify-center"
+  <view v-if="hks" class="fixed w-100vw h-100vh top-0 flex flex-col items-center justify-center"
         :style="{transform: open? 'rotateY(180deg)' : '',
                  transition: '.3s linear',
                  'transform-style': 'preserve-3d',
@@ -109,6 +130,44 @@ defineEmits(['continue', 'next']);
       </text>
     </view>
   </view>
+
+  <view v-if="!hks" class="fixed w-100vw h-100vh top-0 flex flex-col items-center justify-center"
+        :style="{transform: open? 'rotateY(180deg)' : '',
+                 transition: '.3s linear',
+                 'transform-style': 'preserve-3d',
+                 'z-index': open? 102 : -1}">
+    <view class="card w-full flex flex-col items-center justify-center z-200" :style="{height: height}">
+      <view class="absolute w-full" style="height: 20%; top: 12%">
+        <view class="absolute bottom-25 w-full flex items-center justify-center">
+          <text class="font-bold text-black" style="font-size: 36rpx;">{{ title }}</text>
+        </view>
+      </view>
+      <view class="lover_content" :style="contentStyle">
+        <text class="text-black align-center">
+          {{ content }}
+        </text>
+      </view>
+      <view class="absolute w-full flex items-center justify-center" style="height: 45%; top:55%;">
+        <view class="lover_divider" style="left: 7vw"></view>
+        <image :src="src" style="width: calc(40% - 14vw);" mode="widthFix"></image>
+        <view class="lover_divider" style="right: 7vw"></view>
+      </view>
+    </view>
+    <view v-if="showOp" class="absolute bottom-150 right-120 flex items-center justify-center"
+          style="transform: rotateY(180deg); backface-visibility: hidden;"
+          @click="$emit('continue')">
+      <view class="flex gap-10 lover_btn">
+        <text>继续抽</text>
+      </view>
+    </view>
+    <view v-if="showOp" class="absolute bottom-150 left-120 flex items-center justify-center"
+          style="transform: rotateY(180deg); backface-visibility: hidden;"
+          @click="$emit('next')">
+      <view class="flex gap-10 lover_btn">
+        <text>下一个</text>
+      </view>
+    </view>
+  </view>
 </template>
 
 <style scoped lang="scss">
@@ -121,7 +180,7 @@ defineEmits(['continue', 'next']);
 
 .player {
   height: 160rpx;
-  top:50rpx;
+  top: 50rpx;
   position: absolute;
   transform: rotateY(180deg);
   backface-visibility: hidden;
@@ -135,5 +194,39 @@ defineEmits(['continue', 'next']);
   position: absolute;
   word-break: break-all;
   overflow: scroll;
+}
+
+.lover_content {
+  width: 80%;
+  height: 33%;
+  top: 32%;
+  font-size: 32rpx;
+  position: absolute;
+  word-break: break-all;
+  overflow: scroll;
+}
+
+.lover_divider {
+  position: absolute;
+  height: 6rpx;
+  background-color: #FF6110;
+  width: 30%;
+}
+
+.lover_btn {
+  width: 28vw;
+  height: 80rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #FF6110;
+  border-radius: 80rpx;
+  box-shadow: inset #9F2F03 0 0 60rpx -12px;
+
+  text {
+    color: white;
+    font-weight: bold;
+    font-size: 32rpx;
+  }
 }
 </style>

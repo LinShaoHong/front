@@ -18,8 +18,9 @@ const joined = ref([] as any[]);
 onLoad(async (option) => {
   if (option !== undefined) {
     const mainUserId = option['mainUserId'];
-    if (mainUserId != undefined) {
-      forward('room', { mainUserId: mainUserId })
+    const _hks = option['hks'];
+    if (mainUserId != undefined && hks != undefined) {
+      forward('room', { mainUserId: mainUserId, hks: _hks })
     }
   }
 });
@@ -46,21 +47,30 @@ const hasDef = computed(() => {
   <view v-if="config.data.value.game" class="w-screen relative pt-150 pl-20 pr-20 flex flex-col items-center">
     <view v-if="hasDef"
           :class="['mt-10 h-10vh w-70vw rd-100 flex flex-col items-center justify-center',hks? 'define_box':'lover_define_box']"
-          @click="forward('custom')">
+          @click="forward('custom', { hks:hks })">
       <view class="w-full h-full flex items-center justify-center gap-10">
         <image src="/static/define_add.png" class="h-5vh" mode="heightFix">+</image>
-        <text class="text-white" style="font-size: 40rpx">{{ hks? config.data.value.more.hks.defTitle:config.data.value.more.lover.defTitle }}</text>
+        <text class="text-white" style="font-size: 40rpx">
+          {{ hks ? config.data.value.more.hks.defTitle : config.data.value.more.lover.defTitle }}
+        </text>
       </view>
-      <text class="text-white mb-10" style="font-size: 26rpx;">{{ hks? config.data.value.more.hks.defContent:config.data.value.more.lover.defContent }}</text>
+      <text class="text-white mb-10" style="font-size: 26rpx;">
+        {{ hks ? config.data.value.more.hks.defContent : config.data.value.more.lover.defContent }}
+      </text>
     </view>
-    <view :class="['h-10vh w-70vw rd-100 flex flex-col items-center justify-center',hks?'battle_box':'lover_battle_box']"
-          :style="{'margin-top': hasDef? '50rpx' : '10rpx'}"
-          @click="forward('room')">
+    <view
+        :class="['h-10vh w-70vw rd-100 flex flex-col items-center justify-center',hks?'battle_box':'lover_battle_box']"
+        :style="{'margin-top': hasDef? '50rpx' : '10rpx'}"
+        @click="forward('room', { hks:hks })">
       <view class="w-full h-full flex items-center justify-center gap-10">
         <image :src="hks? '/static/battle.png':'/static/lover_battle.png'" class="h-5vh" mode="heightFix">+</image>
-        <text class="text-white" style="font-size: 40rpx">{{ hks? config.data.value.more.hks.battleTitle:config.data.value.more.lover.battleTitle }}</text>
+        <text class="text-white" style="font-size: 40rpx">
+          {{ hks ? config.data.value.more.hks.battleTitle : config.data.value.more.lover.battleTitle }}
+        </text>
       </view>
-      <text class="text-white mb-10" style="font-size: 26rpx;">{{ hks? config.data.value.more.hks.battleContent:config.data.value.more.lover.battleContent }}</text>
+      <text class="text-white mb-10" style="font-size: 26rpx;">
+        {{ hks ? config.data.value.more.hks.battleContent : config.data.value.more.lover.battleContent }}
+      </text>
     </view>
   </view>
   <view v-if="config.data.value.game" class="w-screen relative pt-50 pl-20 pr-20">
@@ -74,7 +84,7 @@ const hasDef = computed(() => {
         <view v-for="join in joined" :key="join.mainUserId"
               :style="{'background-color': hks? '#4D0181':'#982F06'}"
               class="w-330 h-130 rd-30 mt-10 p-10 flex justify-center items-center"
-              @click="forward('room', { mainUserId: join.mainUserId })">
+              @click="forward('room', { mainUserId: join.mainUserId, hks:hks })">
           <image class="h-100" style="border-radius: 50%" :src="`${imgUri}/avatar/${join.avatar}.png`"
                  mode="heightFix"></image>
           <view class="relative w-230 h-130 ml-20 flex flex-col">

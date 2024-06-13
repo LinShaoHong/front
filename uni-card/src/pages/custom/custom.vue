@@ -6,6 +6,7 @@ import { networkError } from "@/utils/request";
 import { isEmpty } from "@/utils/is";
 import { useShare } from "@/hooks/useShare";
 import env from '@/config/env'
+import { forward } from "@/utils/router";
 
 const { onShareAppMessage, onShareTimeline } = useShare();
 
@@ -13,6 +14,13 @@ const user = useStore('user');
 const config = useStore('config');
 const imgUri = inject('$imgUri');
 const showEdit = ref(false);
+
+const hks = ref(true);
+onLoad(async (option) => {
+  if (option !== undefined) {
+    hks.value = option['hks'] === 'true';
+  }
+});
 
 const curr = ref(null);
 const title = ref('');
@@ -143,23 +151,22 @@ const onDelete = (item) => {
 </script>
 
 <template>
-  <image class="h-screen w-screen fixed" src="/static/back.png" mode="scaleToFill"></image>
+  <Background :hks="hks"/>
   <view class="h-screen w-screen relative pt-50 pl-20 pr-20 flex flex-col items-center">
-    <view class="flex gap-20 p-b-30 items-center">
-      <view class="title_line w-20vw"></view>
-      <text class="text-white" style="font-size: 34rpx">海克斯卡牌</text>
-      <view class="title_line w-20vw"></view>
-    </view>
-
+    <!--    <view class="flex gap-20 p-b-30 items-center">-->
+    <!--      <view class="title_line w-20vw"></view>-->
+    <!--      <text class="text-white" style="font-size: 34rpx">海克斯卡牌</text>-->
+    <!--      <view class="title_line w-20vw"></view>-->
+    <!--    </view>-->
     <scroll-view scroll-y>
       <view class="flex flex-wrap justify-between items-center pb-50 p-l-10 p-r-10">
-        <view class="card_box w-45vw h-73vw flex flex-col justify-center items-center mt-30 p-t-6"
+        <view :class="['w-45vw h-73vw flex flex-col justify-center items-center mt-30 p-t-6', hks? 'card_box':'lover_card_box']"
               @click="onAdd">
           <text class="text-white" style="font-size: 160rpx;">+</text>
         </view>
 
         <view v-for="item in user.data.value.defs[0].items"
-              class="card_box w-45vw flex flex-col justify-center items-center mt-30 p-t-6" :key="item.id">
+              :class="['w-45vw flex flex-col justify-center items-center mt-30 p-t-6', hks? 'card_box':'lover_card_box']" :key="item.id">
 
           <CustomCard :width="isEmpty(item.src) ? '45vw' : 45 * 0.96 + 'vw'"
                       :height="'65vw'"
@@ -172,14 +179,15 @@ const onDelete = (item) => {
           <view class="w-45vw h-8vw flex justify-around items-center p-10">
 
             <view class="h-40 flex justify-center"
-                   style="width: 33%"
+                  style="width: 33%"
                   @click="() => {showEdit=true; title=item.title; content=item.content; picPath=item.src; curr=item;}">
               <image class="h-full" src="/static/edit.png" mode="heightFix"/>
             </view>
 
             <view class="flex justify-center" style="width: 34%">
-              <switch v-if="item.enable" checked color="#BB72EE" style="transform:scale(0.6);" @change="onEnable(item)"/>
-              <switch v-if="!item.enable" color="#BB72EE" style="transform:scale(0.6);" @change="onEnable(item)"/>
+              <switch v-if="item.enable" checked :color="hks? '#BB72EE':'#FCAD06'" style="transform:scale(0.6);"
+                      @change="onEnable(item)"/>
+              <switch v-if="!item.enable" :color="hks? '#BB72EE':'#FCAD06'" style="transform:scale(0.6);" @change="onEnable(item)"/>
             </view>
 
             <view class="h-40 flex justify-center" style="width: 33%" @click="onDelete(item)">
@@ -196,7 +204,7 @@ const onDelete = (item) => {
       <view class="relative w-80vw h-65vh pb-20 rd-30 flex flex-col justify-between gap-20" style="background: white;">
         <view class="flex h-62">
           <view class="flex justify-center items-center"
-                :style="{width: '50%', 'background-color': editContent? '#482380' : '', 'border-radius': '30rpx 0 5rpx 0'}"
+                :style="{width: '50%', 'background-color': editContent? (hks? '#482380':'#FF6110') : '', 'border-radius': '30rpx 0 5rpx 0'}"
                 @click="editContent=true">
             <view
                 :style="{'display': 'inline-block', 'font-weight': 'bold', 'font-size': '30rpx', color: editContent? 'white' : 'black'}"
@@ -205,7 +213,7 @@ const onDelete = (item) => {
             </view>
           </view>
           <view class="w-180 flex justify-center items-center"
-                :style="{width: '50%', 'background-color': !editContent? '#482380' : '', 'border-radius': '0 30rpx 0 5rpx'}"
+                :style="{width: '50%', 'background-color': !editContent? (hks? '#482380':'#FF6110') : '', 'border-radius': '0 30rpx 0 5rpx'}"
                 @click="editContent=false">
             <view
                 :style="{'display': 'inline-block', 'font-weight': 'bold', 'font-size': '30rpx', color: !editContent? 'white' : 'black'}"
@@ -219,14 +227,14 @@ const onDelete = (item) => {
           <view class="w-full" style="height: 10%">
             <view class="w-full pl-10" style="font-size: 24rpx; color:#999;">卡牌标题（10字以内）</view>
             <view class="w-full pl-10" style="border-bottom: 1px solid rgb(235, 237, 240);">
-              <input class="text-left" style="color: #907BE0; font-size: 30rpx;" v-model="title"/>
+              <input class="text-left" style="font-size: 30rpx;" v-model="title"/>
             </view>
           </view>
 
           <view class="w-full mt-20" style="height: 90%">
             <view class="w-full pl-10 mt-10" style="font-size: 24rpx; color:#999;">惩罚内容（50字以内）</view>
             <view class="w-full pl-10" style="border-bottom: 1px solid rgb(235, 237, 240);  height: 90%;">
-              <textarea class="text-left w-70vw" style="color: #907BE0; font-size: 30rpx;" v-model="content"/>
+              <textarea class="text-left w-70vw" style="font-size: 30rpx;" v-model="content"/>
             </view>
           </view>
         </view>
@@ -246,17 +254,18 @@ const onDelete = (item) => {
         </view>
 
         <button
-            class="btn w-200 h-4vh flex items-center justify-center"
+            :class="['w-200 h-4vh flex items-center justify-center', hks? 'btn':'lover_btn']"
             :disabled="loading"
             :loading="loading"
             @tap.stop="onEdit"
-            style="background-color: #482380; color: white; font-size: 26rpx;">
+            :style="{'background-color': hks? '#482380':'#FF6110', color: 'white', 'font-size': '26rpx'}">
           {{ loading ? '' : '保存' }}
         </button>
       </view>
     </Popup>
 
     <PayDialog :show="showPay"
+               :hks="hks"
                :html="config.data.value.payText"
                :vip="1"
                @close="showPay=false"/>
@@ -275,9 +284,20 @@ const onDelete = (item) => {
   border-radius: 30rpx;
 }
 
+.lover_card_box {
+  border: 1px solid #9C3006;
+  border-radius: 30rpx;
+}
+
 .btn[disabled] {
   color: #ffffff;
   background-color: #482380;
+  overflow: scroll;
+}
+
+.lover_btn[disabled] {
+  color: #ffffff;
+  background-color: #FF6110;
   overflow: scroll;
 }
 </style>
