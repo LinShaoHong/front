@@ -94,13 +94,13 @@ const onEdit = () => {
         showPay.value = true;
       }).catch(() => networkError());
     } else {
-      if (isEmpty(picPath.value) && isEmpty(title.value)) {
+      if ((!hks.value || isEmpty(picPath.value)) && isEmpty(title.value)) {
         return message('请输入标题', 3);
       }
       if (title.value.length > 10) {
         return message('标题不能超过10个字', 3);
       }
-      if (isEmpty(picPath.value) && isEmpty(content.value)) {
+      if ((!hks.value || isEmpty(picPath.value)) && isEmpty(content.value)) {
         return message('请输入内容', 3);
       }
       if (content.value.length > 50) {
@@ -249,18 +249,23 @@ const onDelete = (item) => {
         <view v-if="!editContent"
               class="w-full flex justify-center items-center"
               style="height: calc(61vh - 122rpx)" @click="uploadPic">
+
           <image v-if="(curr === null || !curr.defaulted) && !picLoading"
-                 class="absolute h-80 w-80"
-                 src="/static/upload.png"/>
+                 class="absolute h-80 w-80 z-10"
+                 :src="hks? '/static/upload.png':'/static/lover_upload.png'"/>
+
           <image v-if="hks && isEmpty(picPath)"
                  class="absolute h-80 w-80"
                  style="top: 25%; height: 25%"
                  mode="heightFix"
                  src="/static/ct.png"/>
+
           <image v-if="hks" class="rd-20"
                  :src="isEmpty(picPath) ? '/static/card.png' : imgUri + picPath"
+                 style="height: calc((61vh - 122rpx) * 0.98); width: calc((61vh - 122rpx) * 0.98 * 45 / 65);"
                  @error="picError"
                  @load="picLoaded"/>
+
           <view v-if="!hks"
                 class="relative rd-20"
                 style="height: calc((61vh - 122rpx) * 0.98); width: calc((61vh - 122rpx) * 0.98 * 45 / 65); background-color: white; box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;">
@@ -275,7 +280,10 @@ const onDelete = (item) => {
             </view>
             <view class="absolute w-full flex items-center justify-center" style="height: 30%; top:70%;">
               <view class="lover_divider" style="left: 0"></view>
-              <image src="/static/lover_ct.png" style="width: 40%" mode="widthFix"></image>
+              <image :src="isEmpty(picPath)? '/static/lover_ct.png':imgUri + picPath"
+                     style="width: 40%" mode="widthFix"
+                     @error="picError"
+                     @load="picLoaded"/>
               <view class="lover_divider" style="right: 0"></view>
             </view>
           </view>

@@ -118,8 +118,8 @@ defineEmits(['close']);
                  'transform-style': 'preserve-3d',
                  'z-index': open? 102 : -1}">
     <view class="card w-full flex flex-col items-center justify-center z-200" :style="{height: height}">
-      <view class="absolute w-full" style="height: 20%; top: 12%">
-        <view class="absolute bottom-25 w-full flex items-center justify-center">
+      <view class="absolute w-full" style="height: 10%; top: 12%">
+        <view class="absolute w-full h-full flex items-center justify-center">
           <text class="font-bold text-black" style="font-size: 36rpx;">{{ title }}</text>
         </view>
       </view>
@@ -128,9 +128,9 @@ defineEmits(['close']);
           {{ content }}
         </text>
       </view>
-      <view class="absolute w-full flex items-center justify-center" style="height: 30%; top:70%;">
+      <view class="absolute w-full flex items-center justify-center" style="height: 45%; top:55%;">
         <view class="lover_divider" style="left: 7vw"></view>
-        <image :src="!defaulted && type? '/static/lover_ct.png':src" style="width: calc(40% - 14vw);" mode="widthFix"></image>
+        <image :src="!defaulted && type? '/static/lover_ct.png':src" style="width: calc(54% - 14vw);" mode="widthFix"></image>
         <view class="lover_divider" style="right: 7vw"></view>
       </view>
     </view>
@@ -164,8 +164,8 @@ defineEmits(['close']);
 
 .lover_content {
   width: 80%;
-  height: 38%;
-  top: 32%;
+  height: 33%;
+  top: 22%;
   font-size: 32rpx;
   position: absolute;
   word-break: break-all;
@@ -176,7 +176,7 @@ defineEmits(['close']);
   position: absolute;
   height: 8rpx;
   background-color: #FF6110;
-  width: 30%;
+  width: 23%;
 }
 
 .lover_btn {

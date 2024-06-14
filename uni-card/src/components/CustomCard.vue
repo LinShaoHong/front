@@ -80,8 +80,8 @@ defineEmits(['close']);
       </view>
       <text style="color: white; font-size: 32rpx; font-weight: bold; margin-right: 20rpx;">{{ '# ' + count }}</text>
     </view>
-    <view class="absolute w-full" style="height: 20%; top: 12%">
-      <view class="absolute bottom-25 w-full flex items-center justify-center">
+    <view class="absolute w-full" style="height: 10%; top: 12%;">
+      <view class="absolute w-full h-full flex items-center justify-center">
         <text class="font-bold text-black" style="font-size: 26rpx;">{{ title }}</text>
       </view>
     </view>
@@ -90,9 +90,9 @@ defineEmits(['close']);
         {{ content }}
       </text>
     </view>
-    <view class="absolute w-full flex items-center justify-center" style="height: 30%; top:70%;">
+    <view class="absolute w-full flex items-center justify-center" style="height: 45%; top:55%;">
       <view class="lover_divider" style="left: 0"></view>
-      <image :src="custom? '/static/lover_ct.png':src" style="width: 40%" mode="widthFix"></image>
+      <image :src="custom? '/static/lover_ct.png':src" style="width: 54%" mode="widthFix"></image>
       <view class="lover_divider" style="right: 0"></view>
     </view>
   </view>
@@ -111,8 +111,8 @@ defineEmits(['close']);
 
 .lover_content {
   width: 80%;
-  height: 38%;
-  top: 32%;
+  height: 33%;
+  top: 22%;
   font-size: 24rpx;
   position: absolute;
   word-break: break-all;
@@ -123,6 +123,6 @@ defineEmits(['close']);
   position: absolute;
   height: 6rpx;
   background-color: #FF6110;
-  width: 30%;
+  width: 23%;
 }
 </style>
