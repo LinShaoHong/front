@@ -16,7 +16,7 @@ const imgUri = inject('$imgUri');
 const showEdit = ref(false);
 
 const hks = ref(true);
-onLoad(async (option) => {
+onLoad((option) => {
   if (option !== undefined) {
     hks.value = option['hks'] === 'true';
   }
@@ -50,30 +50,32 @@ const picLoaded = () => {
   picLoading.value = false;
 };
 const uploadPic = () => {
-  user.getUserInfo().then(() => {
-    const len = user.data.value.defs[0]['items'].filter(v => !v['defaulted']).length;
-    if ((curr.value == null && len >= 1) && user.data.value.vip < 1) {
-      config.getConfigInfo().then(() => {
-        showPay.value = true;
-      }).catch(() => networkError());
-    } else {
-      uni.chooseImage({
-        success: (chooseImageRes) => {
-          const tempFilePaths = chooseImageRes.tempFilePaths;
-          picPath.value = 'NONE';
-          picLoading.value = true;
-          uni.uploadFile({
-            url: `${ env.apiBaseUrl }/store/put`,
-            filePath: tempFilePaths[0],
-            name: 'file',
-            success: (uploadFileRes) => {
-              picPath.value = JSON.parse(uploadFileRes.data)['value'];
-            }
-          });
-        }
-      });
-    }
-  }).catch(() => networkError());
+  if ((curr.value === null || !curr.value['defaulted']) && !picLoading.value) {
+    user.getUserInfo().then(() => {
+      const len = user.data.value.defs[0]['items'].filter(v => !v['defaulted']).length;
+      if ((curr.value == null && len >= 1) && user.data.value.vip < 1) {
+        config.getConfigInfo().then(() => {
+          showPay.value = true;
+        }).catch(() => networkError());
+      } else {
+        uni.chooseImage({
+          success: (chooseImageRes) => {
+            const tempFilePaths = chooseImageRes.tempFilePaths;
+            picPath.value = 'NONE';
+            picLoading.value = true;
+            uni.uploadFile({
+              url: `${ env.apiBaseUrl }/store/put`,
+              filePath: tempFilePaths[0],
+              name: 'file',
+              success: (uploadFileRes) => {
+                picPath.value = JSON.parse(uploadFileRes.data)['value'];
+              }
+            });
+          }
+        });
+      }
+    }).catch(() => networkError());
+  }
 };
 
 const onEdit = () => {
@@ -160,15 +162,19 @@ const onDelete = (item) => {
     <!--    </view>-->
     <scroll-view scroll-y>
       <view class="flex flex-wrap justify-between items-center pb-50 p-l-10 p-r-10">
-        <view :class="['w-45vw h-73vw flex flex-col justify-center items-center mt-30 p-t-6', hks? 'card_box':'lover_card_box']"
-              @click="onAdd">
+        <view
+            :class="['w-45vw h-73vw flex flex-col justify-center items-center mt-30 p-t-6', hks? 'card_box':'lover_card_box']"
+            @click="onAdd">
           <text class="text-white" style="font-size: 160rpx;">+</text>
         </view>
 
-        <view v-for="item in user.data.value.defs[0].items"
-              :class="['w-45vw flex flex-col justify-center items-center mt-30 p-t-6', hks? 'card_box':'lover_card_box']" :key="item.id">
+        <view v-for="(item,index) in user.data.value.defs[0].items"
+              :class="['w-45vw flex flex-col justify-center items-center mt-30', hks? 'card_box p-t-6':'lover_card_box']"
+              :key="item.id">
 
-          <CustomCard :width="isEmpty(item.src) ? '45vw' : 45 * 0.96 + 'vw'"
+          <CustomCard :hks="hks"
+                      :count="index+1"
+                      :width="hks? (isEmpty(item.src) ? '45vw' : 45 * 0.96 + 'vw'):'45vw'"
                       :height="'65vw'"
                       :custom="isEmpty(item.src)"
                       :title="item.title"
@@ -187,7 +193,8 @@ const onDelete = (item) => {
             <view class="flex justify-center" style="width: 34%">
               <switch v-if="item.enable" checked :color="hks? '#BB72EE':'#FCAD06'" style="transform:scale(0.6);"
                       @change="onEnable(item)"/>
-              <switch v-if="!item.enable" :color="hks? '#BB72EE':'#FCAD06'" style="transform:scale(0.6);" @change="onEnable(item)"/>
+              <switch v-if="!item.enable" :color="hks? '#BB72EE':'#FCAD06'" style="transform:scale(0.6);"
+                      @change="onEnable(item)"/>
             </view>
 
             <view class="h-40 flex justify-center" style="width: 33%" @click="onDelete(item)">
@@ -239,18 +246,40 @@ const onDelete = (item) => {
           </view>
         </view>
 
-        <view v-if="!editContent" class="w-full flex justify-center items-center" style="height: calc(61vh - 122rpx)">
-          <image v-if="(curr === null || !curr.defaulted) && !picLoading" class="absolute h-80 w-80"
-                 src="/static/upload.png"
-                 @click="uploadPic"></image>
-          <image class="rd-20"
-                 style="height: calc((61vh - 122rpx) * 0.98); width: calc((61vh - 122rpx) * 0.98 * 45 / 65);"
+        <view v-if="!editContent"
+              class="w-full flex justify-center items-center"
+              style="height: calc(61vh - 122rpx)" @click="uploadPic">
+          <image v-if="(curr === null || !curr.defaulted) && !picLoading"
+                 class="absolute h-80 w-80"
+                 src="/static/upload.png"/>
+          <image v-if="hks && isEmpty(picPath)"
+                 class="absolute h-80 w-80"
+                 style="top: 25%; height: 25%"
+                 mode="heightFix"
+                 src="/static/ct.png"/>
+          <image v-if="hks" class="rd-20"
                  :src="isEmpty(picPath) ? '/static/card.png' : imgUri + picPath"
                  @error="picError"
-                 @load="picLoaded"
-          >
-          </image>
-          <image v-if="picLoading" class="absolute w-60 h-60" src="/static/loading.gif"></image>
+                 @load="picLoaded"/>
+          <view v-if="!hks"
+                class="relative rd-20"
+                style="height: calc((61vh - 122rpx) * 0.98); width: calc((61vh - 122rpx) * 0.98 * 45 / 65); background-color: white; box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;">
+            <view class="absolute w-full flex items-center justify-between pl-30"
+                  style="height: 12%; background-color: #FF6110; border-radius: 20rpx 20rpx 0 0">
+              <view class="flex gap-10">
+                <image src="/static/dot.png" class="w-20 h-20"></image>
+                <image src="/static/dot.png" class="w-20 h-20"></image>
+                <image src="/static/dot.png" class="w-20 h-20"></image>
+              </view>
+              <text style="color: white; font-size: 36rpx; font-weight: bold; margin-right: 30rpx;">{{ '# 1' }}</text>
+            </view>
+            <view class="absolute w-full flex items-center justify-center" style="height: 30%; top:70%;">
+              <view class="lover_divider" style="left: 0"></view>
+              <image src="/static/lover_ct.png" style="width: 40%" mode="widthFix"></image>
+              <view class="lover_divider" style="right: 0"></view>
+            </view>
+          </view>
+          <image v-if="picLoading" class="absolute w-60 h-60" src="/static/loading.gif"/>
         </view>
 
         <button
@@ -287,6 +316,13 @@ const onDelete = (item) => {
 .lover_card_box {
   border: 1px solid #9C3006;
   border-radius: 30rpx;
+}
+
+.lover_divider {
+  position: absolute;
+  height: 6rpx;
+  background-color: #FF6110;
+  width: 30%;
 }
 
 .btn[disabled] {

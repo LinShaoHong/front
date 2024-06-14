@@ -96,9 +96,10 @@ defineEmits(['continue', 'next']);
                  'z-index': open? 102 : -1}">
     <view class="card w-full flex fle-col items-center justify-center z-200" :style="{height: height}">
       <view class="absolute w-full top-0" style="height: 65%;">
-        <view v-if="!defaulted" class="absolute w-full flex items-center justify-center" style="top: 50%;">
-          <text class="font-bold text-white" style="font-size: 34rpx;">{{ type ? '云顶之弈' : '' }}</text>
-        </view>
+        <image v-if="!defaulted && type"
+               src="/static/ct.png"
+               mode="heightFix"
+               class="absolute left-0 right-0" style="top: 35%; height: 50%; margin: auto"/>
         <view class="absolute bottom-25 w-full flex items-center justify-center">
           <text class="font-bold text-white" style="font-size: 36rpx;">{{ title }}</text>
         </view>
@@ -147,9 +148,9 @@ defineEmits(['continue', 'next']);
           {{ content }}
         </text>
       </view>
-      <view class="absolute w-full flex items-center justify-center" style="height: 45%; top:55%;">
+      <view class="absolute w-full flex items-center justify-center" style="height: 30%; top:70%;">
         <view class="lover_divider" style="left: 7vw"></view>
-        <image :src="src" style="width: calc(40% - 14vw);" mode="widthFix"></image>
+        <image :src="!defaulted && type? '/static/lover_ct.png':src" style="width: calc(40% - 14vw);" mode="widthFix"></image>
         <view class="lover_divider" style="right: 7vw"></view>
       </view>
     </view>
@@ -198,7 +199,7 @@ defineEmits(['continue', 'next']);
 
 .lover_content {
   width: 80%;
-  height: 33%;
+  height: 38%;
   top: 32%;
   font-size: 32rpx;
   position: absolute;
@@ -208,7 +209,7 @@ defineEmits(['continue', 'next']);
 
 .lover_divider {
   position: absolute;
-  height: 6rpx;
+  height: 8rpx;
   background-color: #FF6110;
   width: 30%;
 }
