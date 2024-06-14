@@ -174,6 +174,7 @@ const onDelete = (item) => {
 
           <CustomCard :hks="hks"
                       :count="index+1"
+                      :defaulted="item?.defaulted"
                       :width="hks? (isEmpty(item.src) ? '45vw' : 45 * 0.96 + 'vw'):'45vw'"
                       :height="'65vw'"
                       :custom="isEmpty(item.src)"
@@ -268,7 +269,7 @@ const onDelete = (item) => {
 
           <view v-if="!hks"
                 class="relative rd-20"
-                style="height: calc((61vh - 122rpx) * 0.98); width: calc((61vh - 122rpx) * 0.98 * 45 / 65); background-color: white; box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;">
+                style="height: calc((61vh - 122rpx) * 0.98); width: calc((61vh - 122rpx) * 0.98 * 45 / 65); background-color: white; box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;">
             <view class="absolute w-full flex items-center justify-between pl-30"
                   style="height: 12%; background-color: #FF6110; border-radius: 20rpx 20rpx 0 0">
               <view class="flex gap-10">
@@ -278,10 +279,12 @@ const onDelete = (item) => {
               </view>
               <text style="color: white; font-size: 36rpx; font-weight: bold; margin-right: 30rpx;">{{ '# 1' }}</text>
             </view>
-            <view class="absolute w-full flex items-center justify-center" style="height: 30%; top:70%;">
+            <view class="absolute w-full flex items-center justify-center" style="height: 45%; top:55%;">
               <view class="lover_divider" style="left: 0"></view>
               <image :src="isEmpty(picPath)? '/static/lover_ct.png':imgUri + picPath"
-                     style="width: 40%" mode="widthFix"
+                     :class="isEmpty(picPath) || (curr != null && curr.defaulted)? '':'rd-20'"
+                     style="width: 54%; max-height: 94%"
+                     mode="widthFix"
                      @error="picError"
                      @load="picLoaded"/>
               <view class="lover_divider" style="right: 0"></view>
@@ -330,7 +333,7 @@ const onDelete = (item) => {
   position: absolute;
   height: 6rpx;
   background-color: #FF6110;
-  width: 30%;
+  width: 23%;
 }
 
 .btn[disabled] {

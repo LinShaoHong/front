@@ -4,6 +4,10 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
+  defaulted: {
+    type: Boolean,
+    default: true
+  },
   count: {
     type: Number,
     default: 1
@@ -92,7 +96,9 @@ defineEmits(['close']);
     </view>
     <view class="absolute w-full flex items-center justify-center" style="height: 45%; top:55%;">
       <view class="lover_divider" style="left: 0"></view>
-      <image :src="custom? '/static/lover_ct.png':src" style="width: 54%" mode="widthFix"></image>
+      <image :src="custom? '/static/lover_ct.png':src"
+             :class="!defaulted && !custom? 'rd-20':''"
+             style="width: 54%; max-height: 94%" mode="widthFix"/>
       <view class="lover_divider" style="right: 0"></view>
     </view>
   </view>

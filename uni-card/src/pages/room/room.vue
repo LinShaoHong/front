@@ -141,8 +141,8 @@ const fetchPlayers = () => {
   return new Promise((resolve, reject) => {
     apiRoom.players(mainUser.value.id).then((data) => {
       players.value = data.values;
-      apiRoom.player(mainUser.value.id).then((data) => {
-        player.value = data.value;
+      apiRoom.player(mainUser.value.id).then((data2) => {
+        player.value = data2.value;
         resolve(data.values);
       }).catch((err) => reject(err));
     }).catch((err) => reject(err));
@@ -279,11 +279,17 @@ const onOpenCard = () => {
             (ios() && user.data.value.playCount < config.data.value.iosLimit)) {
           doOpen();
         } else {
-          if (!ios() || config.data.value.iosCanPay) {
-            openPayDialog();
-          } else {
-            showIOSDialog.value = true;
-          }
+          fetchPlayers().then(() => {
+            if (players.value.some(p => p.vip >= 1)) {
+              doOpen();
+            } else {
+              if (!ios() || config.data.value.iosCanPay) {
+                openPayDialog();
+              } else {
+                showIOSDialog.value = true;
+              }
+            }
+          }).catch(() => networkError());
         }
       }).catch(() => networkError());
     }).catch(() => networkError())

@@ -130,7 +130,9 @@ defineEmits(['close']);
       </view>
       <view class="absolute w-full flex items-center justify-center" style="height: 45%; top:55%;">
         <view class="lover_divider" style="left: 7vw"></view>
-        <image :src="!defaulted && type? '/static/lover_ct.png':src" style="width: calc(54% - 14vw);" mode="widthFix"></image>
+        <image :src="!defaulted && type? '/static/lover_ct.png':src"
+               :class="!defaulted && !type? 'rd-20':''"
+               style="width: calc(54% - 14vw); max-height: 94%" mode="widthFix"/>
         <view class="lover_divider" style="right: 7vw"></view>
       </view>
     </view>
