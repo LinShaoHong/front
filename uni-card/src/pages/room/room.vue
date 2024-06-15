@@ -18,9 +18,10 @@ const config = useStore('config');
 const imgUri = inject('$imgUri');
 
 //-------------------- share -----------------------
-const { onShareAppMessage, onShareTimeline, sharePath, shareTitle, shareMainUserId, shareFunc } = useShare();
+const { onShareAppMessage, onShareTimeline, sharePath, shareTitle, shareMainUserId, shareHks, shareFunc } = useShare();
 shareFunc.value = () => {
   sharePath.value = 'pages/more/more';
+  shareHks.value = hks.value;
   shareTitle.value = hks.value ? config.data.value.shareTitle : config.data.value.loverShareTitle;
   shareMainUserId.value = mainUser.value.id;
 };
@@ -45,7 +46,7 @@ const onShowPlayers = () => {
 };
 const onChoosePlayer = () => {
   if (player.value['userId'] !== choosePlayerId) {
-    apiRoom.assign(mainUser.value.id, choosePlayerId.value)
+    apiRoom.assign(mainUser.value.id, choosePlayerId.value, hks.value)
         .catch(() => showPlayers.value = false);
   }
   showPlayers.value = false;
@@ -67,12 +68,12 @@ onLoad(async (option) => {
     const sys = uni.getSystemInfoSync();
     apiUser.getById(mainUserId, sys.platform).then(async data => {
       mainUser.value = data.value;
-      const url = env.apiBaseUrl + '/room/sub?mainUserId=' + mainUser.value.id + '&userId=' + user.data.value.id;
+      const url = env.apiBaseUrl + '/room/sub?mainUserId=' + mainUser.value.id + '&userId=' + user.data.value.id + '&hks=' + hks.value;
       await sseConnect(url, listen);
-      apiRoom.player(mainUserId).then((data) => {
+      apiRoom.player(mainUserId, hks.value).then((data) => {
         player.value = data.value;
       }).then(() => {
-        apiRoom.total(mainUserId)
+        apiRoom.total(mainUserId, cardType.value)
             .then(r => total.value = r.value)
             .catch(() => networkError());
       }).catch(() => networkError());
@@ -85,7 +86,7 @@ onUnload(async () => {
 });
 
 const leave = () => {
-  apiRoom.leave(mainUser.value.id, user.data.value.id).then(() => {
+  apiRoom.leave(mainUser.value.id, user.data.value.id, hks.value).then(() => {
     sseAbort();
   }).catch(() => {
     sseAbort();
@@ -106,6 +107,8 @@ const listen = (event) => {
     handleShuffleEvent(event);
   } else if (name === 'NextEvent') {
     handleNextEvent(event);
+  } else if (name === 'ChangeCardTypeEvent') {
+    handleChangeCardTypeEvent(event);
   }
 }
 
@@ -140,9 +143,9 @@ const handleLeaveEvent = (event) => {
 
 const fetchPlayers = () => {
   return new Promise((resolve, reject) => {
-    apiRoom.players(mainUser.value.id).then((data) => {
+    apiRoom.players(mainUser.value.id, hks.value).then((data) => {
       players.value = data.values;
-      apiRoom.player(mainUser.value.id).then((data2) => {
+      apiRoom.player(mainUser.value.id, hks.value).then((data2) => {
         player.value = data2.value;
         resolve(data.values);
       }).catch((err) => reject(err));
@@ -155,15 +158,21 @@ const handleNextEvent = (event) => {
   player.value = event;
 };
 
+const handleChangeCardTypeEvent = (event) => {
+  if(!isMain.value) {
+    loverCardType.value = event.cardType;
+  }
+};
+
 const onContinue = () => {
-  apiRoom.close(mainUser.value.id)
+  apiRoom.close(mainUser.value.id, hks.value)
       .then(() => {
         open.value = false;
       }).catch(() => networkError());
 };
 
 const onNext = () => {
-  apiRoom.next(mainUser.value.id, player.value['userId']).catch(() => networkError());
+  apiRoom.next(mainUser.value.id, hks.value, player.value['userId']).catch(() => networkError());
   open.value = false;
 };
 
@@ -193,7 +202,7 @@ const onShuffle = async () => {
     await message('还没轮到你哦', 3);
     return;
   }
-  apiRoom.shuffle(mainUser.value.id, player.value['userId'])
+  apiRoom.shuffle(mainUser.value.id, player.value['userId'], hks.value)
       .then(() => {
         shuffleCards();
         shuffleAnimate();
@@ -226,6 +235,18 @@ const total = ref(1);
 const card = ref<number | undefined>(0);
 const cards = ref([] as number[]);
 const item = ref({});
+const loverCardType = ref(config.data.value.more.lover.cards.filter(s => s.open)[0].type);
+const cardType = computed(() => {
+  return hks.value ? 'hks' : loverCardType.value;
+});
+watch(loverCardType, (n, o) => {
+  apiRoom.changeCardType(mainUser.value.id, n)
+      .catch(() => networkError());
+});
+watch(cardType, () => {
+  cards.value = [];
+  shuffleCards();
+});
 
 const shuffleCards = () => {
   if (cards.value.length !== 0) {
@@ -249,7 +270,7 @@ const doOpen = () => {
     shuffleCards();
   }
   card.value = cards.value.pop();
-  apiRoom.open(mainUser.value.id, player.value['userId'], card.value as number, true)
+  apiRoom.open(mainUser.value.id, player.value['userId'], hks.value, card.value as number, true)
       .then(() => {
         open.value = true;
         if (!openAudio.src) {
@@ -309,10 +330,23 @@ const openPayDialog = () => {
 
 <template>
   <Background :hks="hks"/>
+
   <view class="fixed right-0 top-0 flex justify-center items-center pl-10 pr-10 pt-5 pb-5 top-5"
         :style="{'background-image': 'linear-gradient(to right, '+(hks? '#6D04B5':'#FF6110')+', transparent)', 'border-radius': '30rpx 0 0 30rpx'}">
     <text class="text-white">{{ config.data.value.roomTitle }}</text>
   </view>
+
+  <view v-if="!hks" class="fixed left-30 top-150 flex flex-col gap-20 z-11">
+    <view
+        class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
+        v-for="_cardType in config.data.value.more.lover.cards.filter(s => s.open && (isMain || loverCardType===s.type))"
+        :style="{'border-radius': '20rpx', 'background-color': loverCardType===_cardType.type? '#FF6110':'#982F06'}"
+        @click="loverCardType=_cardType.type"
+        :key="_cardType.name">
+      <text class="text-white">{{ _cardType.name }}</text>
+    </view>
+  </view>
+
   <view class="relative flex flex-col items-center justify-between h-100vh pt-20 pb-30">
 
     <view class="relative w-full flex flex-col justify-center items-center pt-10 pb-10 gap-10" style="height: 30%;">

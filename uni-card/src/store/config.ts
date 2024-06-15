@@ -16,9 +16,9 @@ export default defineStore({
         price: '2.99',
         payText: '',
         shareTitle: '',
-        loverShareTitle:'aaaaaaaaaaaa',
+        loverShareTitle: 'aaaaaaaaaaaa',
         logo: '',
-        roomTitle:'房间内有一人解锁即可畅玩',
+        roomTitle: '房间内有一人解锁即可畅玩',
         noLover: false,
         partner: "",
         partners: [{}],
@@ -37,7 +37,24 @@ export default defineStore({
             defTitle: '自定义',
             defContent: '可添加编辑卡牌，随心畅玩！',
             battleTitle: '情侣格斗',
-            battleContent: '可邀请他人同时在线对弈'
+            battleContent: '可邀请他人同时在线对弈',
+            cards: [
+              {
+                name: '谈爱99',
+                type: 'hks',
+                open: true
+              },
+              {
+                name: '谈家99',
+                type: 'hks2',
+                open: true
+              },
+              {
+                name: '谈性99',
+                type: 'hks3',
+                open: false
+              }
+            ]
           }
         },
         banners: [{}]

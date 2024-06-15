@@ -2,7 +2,7 @@
 import { delay } from '@/utils/calls'
 import { networkError } from "@/utils/request";
 import { useShare } from "@/hooks/useShare";
-import { ios, setNBT } from "@/utils/unis";
+import { ios } from "@/utils/unis";
 import PayDialog from "@/components/PayDialog.vue";
 import { useTabBar } from "@/hooks/useTabBar";
 import { isEmpty } from "@/utils/is";
@@ -10,34 +10,49 @@ import Background from "@/components/Background.vue";
 import TopTabBar from "@/components/TopTabBar.vue";
 
 const { tabBar } = useTabBar();
-const { onShareAppMessage, onShareTimeline, shareTitle, shareFunc } = useShare();
+const { onShareAppMessage, onShareTimeline, shareFunc, shareHks, shareTitle } = useShare();
+shareFunc.value = () => {
+  shareHks.value = hks.value;
+  shareTitle.value = hks.value ? config.data.value.shareTitle : config.data.value.loverShareTitle;
+};
 
 const user = useStore('user');
 const config = useStore('config');
 const imgUri = inject('$imgUri');
 const hks = ref(true);
+const loverCardType = ref(config.data.value.more.lover.cards.filter(s => s.open)[0].type);
 const showRule = ref(false);
 const showPrompt = ref(false);
-shareFunc.value = () => {
-  shareTitle.value = hks.value ? config.data.value.shareTitle : config.data.value.loverShareTitle;
-};
+
+// -------------- card -----------------
+const cardType = computed(() => {
+  return hks.value ? 'hks' : loverCardType.value;
+});
+const cardItems = computed(() => {
+  const arr = user.data.value.defs.filter(s => s['name'] === cardType.value);
+  if (arr.length > 0) {
+    return arr[0]['items'];
+  } else {
+    return [];
+  }
+});
 
 const card = ref<number | undefined>(0);
 const cards = ref([] as number[]);
 const item = computed(() => {
   if (card.value as number > 0) {
-    return user.items.value[card.value as number - 1];
+    return cardItems.value[card.value as number - 1];
   }
   return null;
 });
 const shuffleCards = () => {
-  if (user.items.value && cards.value.length === 0) {
-    for (let i = 1; i <= user.items.value.length; i++) {
+  if (cardItems.value.length > 0 && cards.value.length === 0) {
+    for (let i = 1; i <= cardItems.value.length; i++) {
       cards.value.push(i);
     }
     cards.value.sort(() => 0.5 - Math.random());
-    while (user.items.value.length > 1 &&
-    cards.value[user.items.value.length - 1] === card.value) {
+    while (cardItems.value.length > 1 &&
+    cards.value[cardItems.value.length - 1] === card.value) {
       cards.value.sort(() => 0.5 - Math.random());
     }
   }
@@ -48,23 +63,31 @@ const reShuffleCards = () => {
   shuffleCards();
 };
 
-watch(user.items, (n, o) => {
+// -------------- watch -----------------
+watch(cardItems, (n, o) => {
   reShuffleCards();
 });
+watch(() => cards.value.length, (n, o) => {
+  if (n === 0) {
+    shuffleCards();
+  }
+});
 
-onLoad(async () => {
+// -------------- ui -----------------
+onLoad(async (option) => {
+  if (option !== undefined) {
+    const _hks = option['hks'];
+    console.log(_hks,'_hks');
+    if (_hks != undefined) {
+      hks.value = _hks === 'true';
+    }
+  }
   await delay(500).then(() => {
     if (hks.value) {
       showRule.value = true;
     }
   })
   shuffleCards();
-});
-
-watch(() => cards.value.length, (n, o) => {
-  if (n === 0) {
-    shuffleCards();
-  }
 });
 
 const banner = ref({});
@@ -86,6 +109,8 @@ const backCardStyle = computed(() => (index) => {
   }
 });
 
+
+// -------------- shuffle -----------------
 const shuffle = ref(false);
 const inShuffle = ref(false);
 const shuffleAudio = uni.createInnerAudioContext();
@@ -121,6 +146,7 @@ const onShuffle = async () => {
   })
 };
 
+// -------------- open -----------------
 const open = ref(false);
 const openAudio = uni.createInnerAudioContext();
 openAudio.obeyMuteSwitch = false;
@@ -173,6 +199,16 @@ const openPayDialog = () => {
     <Logo/>
     <Background :hks="hks"/>
     <TopTabBar :hks="hks" @on-hks="(t) => hks = t"/>
+    <view v-if="!hks" class="fixed left-30 w-screen top-150 flex w-full gap-20 z-11">
+      <view
+          class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
+          v-for="_cardType in config.data.value.more.lover.cards.filter(s => s.open)"
+          :style="{'border-radius': '20rpx', 'background-color': loverCardType===_cardType.type? '#FF6110':'#982F06'}"
+          @click="loverCardType=_cardType.type"
+          :key="_cardType.name">
+        <text class="text-white">{{ _cardType.name }}</text>
+      </view>
+    </view>
 
     <Popup v-if="config.data.value.game" position="center" :show="showRule">
       <view class="pb-40">

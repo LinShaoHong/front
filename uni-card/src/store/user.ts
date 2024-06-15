@@ -18,14 +18,6 @@ export default defineStore({
       }
     } as { data: User.UserInfo };
   },
-  getters: {
-    items: (state) => {
-      if (state.data.defs.length > 0) {
-        return state.data.defs[0]['items'].filter(v => v['enable']);
-      }
-      return [];
-    }
-  },
   actions: {
     getUserInfo(option?) {
       const that = this;

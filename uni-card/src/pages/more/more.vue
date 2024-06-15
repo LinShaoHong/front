@@ -7,7 +7,7 @@ import apiRoom from "@/api/apiRoom";
 import { useTabBar } from "@/hooks/useTabBar";
 
 const { tabBar } = useTabBar();
-const { onShareAppMessage, onShareTimeline, shareFunc, shareTitle } = useShare();
+const { onShareAppMessage, onShareTimeline, shareFunc, shareHks, sharePath, shareTitle } = useShare();
 
 const hks = ref(true);
 const imgUri = inject('$imgUri');
@@ -15,6 +15,8 @@ const user = useStore('user');
 const config = useStore('config');
 const joined = ref([] as any[]);
 shareFunc.value = () => {
+  sharePath.value = 'pages/more/more';
+  shareHks.value = hks.value;
   shareTitle.value = hks.value ? config.data.value.shareTitle : config.data.value.loverShareTitle;
 };
 
@@ -22,7 +24,10 @@ onLoad(async (option) => {
   if (option !== undefined) {
     const mainUserId = option['mainUserId'];
     const _hks = option['hks'];
-    if (mainUserId != undefined && hks != undefined) {
+    if (_hks != undefined) {
+      hks.value = _hks === 'true';
+    }
+    if (mainUserId != undefined && _hks != undefined) {
       forward('room', { mainUserId: mainUserId, hks: _hks })
     }
   }
@@ -31,11 +36,17 @@ onLoad(async (option) => {
 onShow(() => {
   config.getConfigInfo().then(() => {
     user.getUserInfo().then(() => {
-      apiRoom.joined(user.data.value.id).then((data) => {
+      apiRoom.joined(user.data.value.id, hks.value).then((data) => {
         joined.value = data.values;
       });
     });
   }).catch(() => networkError());
+});
+
+watch(hks, () => {
+  apiRoom.joined(user.data.value.id, hks.value).then((data) => {
+    joined.value = data.values;
+  });
 });
 
 const hasDef = computed(() => {

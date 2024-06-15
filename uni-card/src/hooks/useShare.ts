@@ -11,6 +11,7 @@ export function useShare() {
 
   const shareFunc = ref(() => {
   });
+  const shareHks = ref(true);
   const shareTitle = ref('');
   const shareUserId = ref('');
   const shareMainUserId = ref('');
@@ -50,6 +51,8 @@ export function useShare() {
         let m = s.includes('?') ? '&' : '?';
         s += m + 'partner=' + config.data.value.partner;
       }
+      let m = s.includes('?') ? '&' : '?';
+      s += m + 'hks=' + shareHks.value;
       return s;
     }
     return sharePath.value;
@@ -85,6 +88,7 @@ export function useShare() {
     onShareTimeline,
     parseShare,
     shareFunc,
+    shareHks,
     sharePath,
     shareTitle,
     shareUserId,

@@ -49,6 +49,11 @@ declare namespace Config {
         defContent: string
         battleTitle: string
         battleContent: string
+        cards: [{
+          name: string
+          type: string
+          open: boolean
+        }]
       }
     },
     banners: [{
