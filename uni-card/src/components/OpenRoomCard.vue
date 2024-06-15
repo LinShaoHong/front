@@ -30,6 +30,7 @@ const props = defineProps({
     default: true
   },
   avatar: Number,
+  vip: Number,
   nickname: String,
   showOp: {
     type: Boolean,
@@ -66,7 +67,11 @@ defineEmits(['continue', 'next']);
                  'transform-style': 'preserve-3d',
                  'z-index': open? 101 : -1}">
     <view class="player flex flex-col justify-center items-center">
-      <image style="border-radius: 50%;height: 120%;" :src="`${imgUri}/avatar/${avatar}.png`" mode="heightFix"></image>
+      <Avatar style="height: 120%"
+              height-fix
+              :src="`${imgUri}/avatar/${avatar}.png`"
+              :vip="vip"
+      />
       <text class="text-white" style="font-size: 28rpx;">{{ nickname }}</text>
     </view>
     <image v-if="hks"

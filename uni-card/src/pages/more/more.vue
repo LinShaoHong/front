@@ -7,13 +7,16 @@ import apiRoom from "@/api/apiRoom";
 import { useTabBar } from "@/hooks/useTabBar";
 
 const { tabBar } = useTabBar();
-const { onShareAppMessage, onShareTimeline } = useShare();
+const { onShareAppMessage, onShareTimeline, shareFunc, shareTitle } = useShare();
 
 const hks = ref(true);
 const imgUri = inject('$imgUri');
 const user = useStore('user');
 const config = useStore('config');
 const joined = ref([] as any[]);
+shareFunc.value = () => {
+  shareTitle.value = hks.value ? config.data.value.shareTitle : config.data.value.loverShareTitle;
+};
 
 onLoad(async (option) => {
   if (option !== undefined) {
@@ -44,7 +47,8 @@ const hasDef = computed(() => {
   <Background :hks="hks"/>
   <TopTabBar :hks="hks" @on-hks="(t) => hks=t"/>
 
-  <view v-if="config.data.value.game" :class="['w-screen relative pl-20 pr-20 flex flex-col items-center',config.data.value.noLover? 'pt-50':'pt-150']">
+  <view v-if="config.data.value.game"
+        :class="['w-screen relative pl-20 pr-20 flex flex-col items-center',config.data.value.noLover? 'pt-50':'pt-150']">
     <view v-if="hasDef"
           :class="['mt-10 h-10vh w-70vw rd-100 flex flex-col items-center justify-center',hks? 'define_box':'lover_define_box']"
           @click="forward('custom', { hks:hks })">
@@ -85,8 +89,11 @@ const hasDef = computed(() => {
               :style="{'background-color': hks? '#4D0181':'#982F06'}"
               class="w-330 h-130 rd-30 mt-10 p-10 flex justify-center items-center"
               @click="forward('room', { mainUserId: join.mainUserId, hks:hks })">
-          <image class="h-100" style="border-radius: 50%" :src="`${imgUri}/avatar/${join.avatar}.png`"
-                 mode="heightFix"></image>
+          <Avatar class="h-100"
+                  height-fix
+                  :src="`${imgUri}/avatar/${join.avatar}.png`"
+                  :vip="join.vip"
+          />
           <view class="relative w-230 h-130 ml-20 flex flex-col">
             <text class="text-white absolute top-30" style="font-size: 30rpx;">{{ join.nickname }}</text>
             <text class="text-white absolute bottom-20" style="font-size: 24rpx;">{{ join.time }}</text>

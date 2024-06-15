@@ -8,7 +8,7 @@ import { useShare } from "@/hooks/useShare";
 import env from '@/config/env'
 import { forward } from "@/utils/router";
 
-const { onShareAppMessage, onShareTimeline } = useShare();
+const { onShareAppMessage, onShareTimeline, shareTitle, shareFunc } = useShare();
 
 const user = useStore('user');
 const config = useStore('config');
@@ -21,6 +21,9 @@ onLoad((option) => {
     hks.value = option['hks'] === 'true';
   }
 });
+shareFunc.value = () => {
+  shareTitle.value = hks.value ? config.data.value.shareTitle : config.data.value.loverShareTitle;
+};
 
 const curr = ref(null);
 const title = ref('');

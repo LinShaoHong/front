@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { delay } from '@/utils/calls'
 import { networkError } from "@/utils/request";
-import { ios, message, setNBT } from "@/utils/unis";
+import { ios, message } from "@/utils/unis";
 import PayDialog from "@/components/PayDialog.vue";
 import { forward } from "@/utils/router";
 import env from "@/config/env";
@@ -18,7 +18,12 @@ const config = useStore('config');
 const imgUri = inject('$imgUri');
 
 //-------------------- share -----------------------
-const { onShareAppMessage, onShareTimeline, sharePath, shareTitle, shareImageUrl, shareMainUserId } = useShare();
+const { onShareAppMessage, onShareTimeline, sharePath, shareTitle, shareMainUserId, shareFunc } = useShare();
+shareFunc.value = () => {
+  sharePath.value = 'pages/more/more';
+  shareTitle.value = hks.value ? config.data.value.shareTitle : config.data.value.loverShareTitle;
+  shareMainUserId.value = mainUser.value.id;
+};
 
 //---------------------------- sse --------------------
 let task = null;
@@ -47,8 +52,6 @@ const onChoosePlayer = () => {
 };
 
 onLoad(async (option) => {
-  shareImageUrl.value = null;
-  sharePath.value = 'pages/more/more';
   shuffleCards();
 
   user.getUserInfo().then(() => {
@@ -64,8 +67,6 @@ onLoad(async (option) => {
     const sys = uni.getSystemInfoSync();
     apiUser.getById(mainUserId, sys.platform).then(async data => {
       mainUser.value = data.value;
-      shareTitle.value = mainUser.value.nickname + '邀请您一起云顶对弈！';
-      shareMainUserId.value = mainUser.value.id;
       const url = env.apiBaseUrl + '/room/sub?mainUserId=' + mainUser.value.id + '&userId=' + user.data.value.id;
       await sseConnect(url, listen);
       apiRoom.player(mainUserId).then((data) => {
@@ -308,15 +309,21 @@ const openPayDialog = () => {
 
 <template>
   <Background :hks="hks"/>
-
+  <view class="fixed right-0 top-0 flex justify-center items-center pl-10 pr-10 pt-5 pb-5 top-5"
+        :style="{'background-image': 'linear-gradient(to right, '+(hks? '#6D04B5':'#FF6110')+', transparent)', 'border-radius': '30rpx 0 0 30rpx'}">
+    <text class="text-white">{{ config.data.value.roomTitle }}</text>
+  </view>
   <view class="relative flex flex-col items-center justify-between h-100vh pt-20 pb-30">
 
     <view class="relative w-full flex flex-col justify-center items-center pt-10 pb-10 gap-10" style="height: 30%;">
 
       <view class="relative w-full" @click="forward('profile')" style="height: 20%;">
         <view class="absolute left-20 top-0 flex justify-center items-center gap-10 h-full">
-          <image style="border-radius: 50%; height: 100%;" :src="`${imgUri}/avatar/${user.data.value.avatar}.png`"
-                 mode="heightFix"></image>
+          <Avatar class="h-full"
+                  height-fix
+                  :src="`${imgUri}/avatar/${user.data.value.avatar}.png`"
+                  :vip="user.data.value.vip"
+          />
           <text class="text-white" style="font-size: 28rpx;">{{ user.data.value.nickname }}</text>
         </view>
       </view>
@@ -325,10 +332,12 @@ const openPayDialog = () => {
             :style="{height: '35%', 'background-color': hks?'#6D04B5':'#982F06', overflow: 'hidden'}">
         <scroll-view scroll-x @click="onShowPlayers">
           <view style="max-width: calc(80vw - 200rpx);" class="flex items-center">
-            <view v-for="player in players" class="flex items-center justify-center" :key="player.userId">
-              <image class="w-100" style="border-radius: 50%;"
-                     :src="`${imgUri}/avatar/${player.avatar}.png`"
-                     mode="widthFix"></image>
+            <view v-for="_player in players" class="flex items-center justify-center" :key="_player.userId">
+              <Avatar class="w-100"
+                      width-fix
+                      :src="`${imgUri}/avatar/${_player.avatar}.png`"
+                      :vip="_player.vip"
+              />
             </view>
           </view>
         </scroll-view>
@@ -344,8 +353,11 @@ const openPayDialog = () => {
       </view>
 
       <view class="flex flex-col items-center justify-center pt-30" style="height: 45%;">
-        <image style="border-radius: 50%; height: 100%;" :src="`${imgUri}/avatar/${player.avatar}.png`"
-               mode="heightFix"></image>
+        <Avatar class="h-full"
+                height-fix
+                :src="`${imgUri}/avatar/${player.avatar}.png`"
+                :vip="player.vip"
+        />
         <text class="text-white" style="font-size: 24rpx;">{{ player.nickname }}</text>
       </view>
     </view>
@@ -390,14 +402,17 @@ const openPayDialog = () => {
       </button>
       <scroll-view scroll-y class="avatar absolute top-150 w-700">
         <view class="flex flex-wrap gap-15 pb-50">
-          <view v-for="player in players"
-                :class="['ava-item h-120 w-200',player.userId===choosePlayerId? 'active':'inactive']"
-                @click="choosePlayerId=player.userId" :key="player.userId">
+          <view v-for="_player in players"
+                :class="['ava-item h-120 w-200',_player.userId===choosePlayerId? 'active':'inactive']"
+                @click="choosePlayerId=_player.userId" :key="_player.userId">
             <view class="flex flex-col items-center justify-center h-full w-full pl-10 pr-10">
-              <image style="border-radius: 50%; height: 100rpx;" :src="`${imgUri}/avatar/${player.avatar}.png`"
-                     mode="heightFix"></image>
-              <text style="font-size: 22rpx; color: #482380;">{{ player.nickname }}</text>
-              <text v-if="mainUser.id===player.userId" style="font-size: 20rpx; color: #482380;"><br/>（房主）</text>
+              <Avatar class="h-100"
+                      height-fix
+                      :src="`${imgUri}/avatar/${_player.avatar}.png`"
+                      :vip="_player.vip"
+              />
+              <text style="font-size: 22rpx; color: #482380;">{{ _player.nickname }}</text>
+              <text v-if="mainUser.id===_player.userId" style="font-size: 20rpx; color: #482380;"><br/>（房主）</text>
             </view>
           </view>
         </view>
@@ -414,6 +429,7 @@ const openPayDialog = () => {
                 :src="isEmpty(item?.src) ? '/static/card.png' : imgUri + item.src"
                 :type="isEmpty(item?.src)"
                 :avatar="player.avatar"
+                :vip="player.vip"
                 :nickname="player.nickname"
                 :height="'calc(90vh - 400rpx)'"
                 :show-op="myTurn"

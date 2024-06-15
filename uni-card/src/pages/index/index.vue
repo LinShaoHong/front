@@ -10,7 +10,7 @@ import Background from "@/components/Background.vue";
 import TopTabBar from "@/components/TopTabBar.vue";
 
 const { tabBar } = useTabBar();
-const { onShareAppMessage, onShareTimeline, shareTitle, shareImageUrl } = useShare();
+const { onShareAppMessage, onShareTimeline, shareTitle, shareFunc } = useShare();
 
 const user = useStore('user');
 const config = useStore('config');
@@ -18,6 +18,9 @@ const imgUri = inject('$imgUri');
 const hks = ref(true);
 const showRule = ref(false);
 const showPrompt = ref(false);
+shareFunc.value = () => {
+  shareTitle.value = hks.value ? config.data.value.shareTitle : config.data.value.loverShareTitle;
+};
 
 const card = ref<number | undefined>(0);
 const cards = ref([] as number[]);
@@ -50,9 +53,6 @@ watch(user.items, (n, o) => {
 });
 
 onLoad(async () => {
-  shareTitle.value = config.data.value.shareTitle;
-  shareImageUrl.value = config.data.value.logo;
-
   await delay(500).then(() => {
     if (hks.value) {
       showRule.value = true;

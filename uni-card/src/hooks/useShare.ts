@@ -9,25 +9,28 @@ export function useShare() {
   const user = useStore('user');
   const config = useStore('config');
 
-  const shareTitle = ref(config.data.value.shareTitle);
-  const shareImageUrl = ref(config.data.value.logo as any);
+  const shareFunc = ref(() => {
+  });
+  const shareTitle = ref('');
   const shareUserId = ref('');
   const shareMainUserId = ref('');
   const sharePath = ref('pages/index/index');
 
   onShareAppMessage(async () => {
     await beforeShare();
+    shareFunc.value.apply(null);
     return {
       title: shareTitle.value,
-      imageUrl: shareImageUrl.value,
+      imageUrl: '',
       path: _path.value,
     }
   });
 
   onShareTimeline(() => {
+    shareFunc.value.apply(null);
     return {
       title: shareTitle.value,
-      imageUrl: shareImageUrl.value,
+      imageUrl: '',
       query: '',
     }
   });
@@ -53,17 +56,12 @@ export function useShare() {
   });
 
   const beforeShare = async () => {
-    await config.getConfigInfo().then(async () => {
-      if (shareTitle.value === '') {
+    shareUserId.value = user.data.value.id;
+    if (shareTitle.value === '') {
+      await config.getConfigInfo().then(async () => {
         shareTitle.value = config.data.value.shareTitle;
-      }
-      if (shareImageUrl.value === '') {
-        shareImageUrl.value = config.data.value.logo;
-      }
-      // if (ios()) {
-        shareUserId.value = user.data.value.id;
-      // }
-    }).catch(() => networkError());
+      }).catch(() => networkError());
+    }
   };
 
   const parseShare = async (option) => {
@@ -86,9 +84,9 @@ export function useShare() {
     onShareAppMessage,
     onShareTimeline,
     parseShare,
+    shareFunc,
     sharePath,
     shareTitle,
-    shareImageUrl,
     shareUserId,
     shareMainUserId
   }

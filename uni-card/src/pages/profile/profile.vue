@@ -98,8 +98,11 @@ onShow(() => {
         <van-cell title="头像" is-link center title-style="color: #907BE0"
                   @click="() => {showAvaDialog=true;avaChanged=false;}">
           <slot>
-            <image class="h-120 w-120 mr-10" style="border-radius: 50%" :src="`${imgUri}/avatar/${avatar}.png`"
-                   mode="aspectFill"></image>
+            <Avatar class="mr-10"
+                    width-fix
+                    :src="`${imgUri}/avatar/${avatar}.png`"
+                    :vip="user.data.value.vip"
+            />
           </slot>
         </van-cell>
         <van-cell v-if="config.data.value.game" title="玩家号" center title-style="color: #907BE0">
@@ -188,8 +191,12 @@ onShow(() => {
         <view class="flex flex-wrap gap-15 pb-50">
           <view v-for="invite in invited" class="h-120 w-200 rd-30" style="border: 1rpx solid #c8c7cc;">
             <view class="flex flex-col items-center justify-center h-full w-full pl-10 pr-10">
-              <image style="border-radius: 50%; height: 100rpx;" :src="`${imgUri}/avatar/${invite.avatar}.png`"
-                     mode="heightFix"></image>
+
+              <Avatar class="h-100"
+                      height-fix
+                      :src="`${imgUri}/avatar/${invite.avatar}.png`"
+                      :vip="invite.vip"
+              />
               <text style="font-size: 22rpx; color: #482380;">{{ invite.nickname }}</text>
             </view>
           </view>

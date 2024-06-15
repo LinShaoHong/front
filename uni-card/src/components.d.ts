@@ -9,6 +9,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    Avatar: typeof import('./components/Avatar.vue')['default']
     Background: typeof import('./components/Background.vue')['default']
     CustomCard: typeof import('./components/CustomCard.vue')['default']
     IOSDialog: typeof import('./components/IOSDialog.vue')['default']
