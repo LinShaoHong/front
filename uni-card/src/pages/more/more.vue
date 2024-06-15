@@ -88,7 +88,7 @@ const hasDef = computed(() => {
       </text>
     </view>
   </view>
-  <view v-if="config.data.value.game" class="w-screen relative pt-50 pl-20 pr-20">
+  <view v-if="config.data.value.game && joined.length > 0" class="w-screen relative pt-50 pl-20 pr-20">
     <view class="flex gap-20 pb-10 pl-20 items-center">
       <view :class="['w-5vw', hks? 'title_line':'lover_title_line']"></view>
       <text class="text-white" style="font-size: 32rpx">我参与过的</text>
@@ -106,8 +106,8 @@ const hasDef = computed(() => {
                   :vip="join.vip"
           />
           <view class="relative w-230 h-130 ml-20 flex flex-col">
-            <text class="text-white absolute top-30" style="font-size: 30rpx;">{{ join.nickname }}</text>
-            <text class="text-white absolute bottom-20" style="font-size: 24rpx;">{{ join.time }}</text>
+            <text class="text-white absolute top-30" style="font-size: 26rpx;">{{ join.nickname }}</text>
+            <text class="text-white absolute bottom-20" style="font-size: 22rpx;">{{ join.time }}</text>
           </view>
         </view>
       </view>

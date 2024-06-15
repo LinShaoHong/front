@@ -52,7 +52,7 @@ export default defineStore({
               {
                 name: '谈性99',
                 type: 'hks3',
-                open: false
+                open: true
               }
             ]
           }

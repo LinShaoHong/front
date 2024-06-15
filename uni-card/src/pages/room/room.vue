@@ -336,7 +336,7 @@ const openPayDialog = () => {
     <text class="text-white">{{ config.data.value.roomTitle }}</text>
   </view>
 
-  <view v-if="!hks" class="fixed left-30 top-150 flex flex-col gap-20 z-11">
+  <view v-if="!hks" class="fixed left-30 flex flex-col gap-20 z-11" style="top: 18%">
     <view
         class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
         v-for="_cardType in config.data.value.more.lover.cards.filter(s => s.open && (isMain || loverCardType===s.type))"
