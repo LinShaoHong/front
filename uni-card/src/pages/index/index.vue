@@ -31,10 +31,12 @@ const cardType = computed(() => {
 const cardItems = computed(() => {
   const arr = user.data.value.defs.filter(s => s['name'] === cardType.value);
   if (arr.length > 0) {
-    return arr[0]['items'];
-  } else {
-    return [];
+    const items = arr[0]['items'];
+    if (items !== undefined) {
+      return items.filter(item => item['enable']);
+    }
   }
+  return [];
 });
 
 const card = ref<number | undefined>(0);
