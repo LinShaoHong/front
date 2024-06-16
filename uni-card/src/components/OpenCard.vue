@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const config = useStore('config');
 const props = defineProps({
   src: String,
   hks: {
@@ -12,6 +13,10 @@ const props = defineProps({
   type: {
     type: Boolean,
     default: false
+  },
+  loverCardType: {
+    type: String,
+    default: ''
   },
   title: {
     type: String,
@@ -35,6 +40,11 @@ const props = defineProps({
   }
 });
 
+const loverCardTypeName = computed(() => {
+  const arr = config.data.value.more.lover.cards.filter(s => s.type === props.loverCardType);
+  return arr.length === 0 ? '' : arr[0]['name'];
+});
+
 const contentStyle = computed(() => {
   if (props.content?.length > 50) {
     return null;
@@ -46,6 +56,7 @@ const contentStyle = computed(() => {
     }
   }
 });
+
 
 defineEmits(['close']);
 </script>
@@ -73,6 +84,10 @@ defineEmits(['close']);
           <image src="/static/dot.png" class="w-20 h-20"></image>
           <image src="/static/dot.png" class="w-20 h-20"></image>
         </view>
+        <text style="color: white; font-size: 32rpx; font-weight: bold; letter-spacing: 2rpx;">{{
+            loverCardTypeName
+          }}
+        </text>
         <text style="color: white; font-size: 36rpx; font-weight: bold; margin-right: 30rpx;">{{ '# ' + count }}</text>
       </view>
     </view>

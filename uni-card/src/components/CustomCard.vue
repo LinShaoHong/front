@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const user = useStore('user');
+const config = useStore('config');
 const props = defineProps({
   hks: {
     type: Boolean,
@@ -28,6 +30,10 @@ const props = defineProps({
     type: String,
     default: '/static/card.png'
   },
+  loverCardType: {
+    type: String,
+    default: ''
+  },
   title: {
     type: String,
     default: ''
@@ -36,6 +42,15 @@ const props = defineProps({
     type: String,
     default: ''
   }
+});
+
+const loverCardTypeName = computed(() => {
+  const arr = config.data.value.more.lover.cards.filter(s => s.type === props.loverCardType);
+  return arr.length === 0 ? '' : arr[0]['name'];
+});
+const loverCardVisible = computed(() => {
+  const arr = config.data.value.more.lover.cards.filter(s => s.type === props.loverCardType);
+  return (arr.length === 0 ? true : arr[0]['visible']) || user.data.value.vip > 0;
 });
 
 const contentStyle = computed(() => {
@@ -82,7 +97,11 @@ defineEmits(['close']);
         <image src="/static/dot.png" class="w-10 h-10"></image>
         <image src="/static/dot.png" class="w-10 h-10"></image>
       </view>
-      <text style="color: white; font-size: 32rpx; font-weight: bold; margin-right: 20rpx;">{{ '# ' + count }}</text>
+      <text style="color: white; font-size: 26rpx; font-weight: bold; letter-spacing: 2rpx;">{{
+          loverCardTypeName
+        }}
+      </text>
+      <text style="color: white; font-size: 30rpx; font-weight: bold; margin-right: 20rpx;">{{ '# ' + count }}</text>
     </view>
     <view class="absolute w-full" style="height: 10%; top: 12%;">
       <view class="absolute w-full h-full flex items-center justify-center">
@@ -90,7 +109,7 @@ defineEmits(['close']);
       </view>
     </view>
     <view class="lover_content" :style="contentStyle">
-      <text class="text-black align-center">
+      <text class="text-black align-center" :style="{filter: loverCardVisible?'':'blur(7rpx)'}">
         {{ content }}
       </text>
     </view>

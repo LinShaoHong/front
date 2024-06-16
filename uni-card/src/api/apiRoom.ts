@@ -1,16 +1,18 @@
 import http from '@/utils/request';
 
 const apiRoom = {
-  shuffle: (mainUserId: string, userId: string, hks: boolean) => http.get<any>('/room/shuffle', {
-    mainUserId: mainUserId,
-    userId: userId,
-    hks: hks
-  }),
-
-  open: (mainUserId: string, userId: string, hks: boolean, index: number, music: boolean) => http.get<any>('/room/open', {
+  shuffle: (mainUserId: string, userId: string, hks: boolean, cardType: string) => http.get<any>('/room/shuffle', {
     mainUserId: mainUserId,
     userId: userId,
     hks: hks,
+    cardType: cardType
+  }),
+
+  open: (mainUserId: string, userId: string, hks: boolean, cardType: string, index: number, music: boolean) => http.get<any>('/room/open', {
+    mainUserId: mainUserId,
+    userId: userId,
+    hks: hks,
+    cardType: cardType,
     index: index,
     music: music
   }),

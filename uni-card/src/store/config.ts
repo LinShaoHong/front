@@ -8,6 +8,7 @@ export default defineStore({
       data: {
         avaCount: 40,
         playLimit: 5,
+        loverPlayLimit: 10,
         game: false,
         prompt: false,
         promptText: "",
@@ -42,17 +43,20 @@ export default defineStore({
               {
                 name: '谈爱99',
                 type: 'hks',
-                open: true
+                open: true,
+                visible: false
               },
               {
                 name: '谈家99',
                 type: 'hks2',
-                open: true
+                open: true,
+                visible: true
               },
               {
                 name: '谈性99',
                 type: 'hks3',
-                open: true
+                open: true,
+                visible: false
               }
             ]
           }

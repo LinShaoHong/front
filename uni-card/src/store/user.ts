@@ -13,6 +13,7 @@ export default defineStore({
         avatar: 1,
         nickname: "",
         playCount: 0,
+        loverPlayCount: 0,
         vip: 0,
         defs: []
       }
@@ -50,11 +51,11 @@ export default defineStore({
     setUserInfo(user: User.UserInfo) {
       Object.assign(this.data['value'], user);
     },
-    inc() {
+    inc(hks: boolean) {
       const that = this;
       const userId = this.data['value'].id;
       return new Promise((resolve, reject) => {
-        apiUser.inc(userId).then(() => {
+        apiUser.inc(userId, hks).then(() => {
           that.data['value'].playCount += 1;
         }).catch(err => {
           reject(err);

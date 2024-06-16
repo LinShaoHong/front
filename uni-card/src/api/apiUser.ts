@@ -8,7 +8,7 @@ const apiUser = {
 
   invited: (code: string) => http.get<any>('/account/invited', { code: code }),
 
-  inc: (id: string) => http.get<any>('/account/inc', { id: id }),
+  inc: (id: string, hks: boolean) => http.get<any>('/account/inc', { id: id, hks: hks }),
 
   vip: (id: string, prepayId: string, vip: number) => http.post<any>('/account/vip', {
     id: id,

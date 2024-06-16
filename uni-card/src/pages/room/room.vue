@@ -114,7 +114,9 @@ const listen = (event) => {
 
 const handleShuffleEvent = (event) => {
   total.value = event.total;
-  shuffleAnimate();
+  if (!myTurn.value && total.value > 0) {
+    shuffleAnimate();
+  }
 };
 
 const handleOpenEvent = (event) => {
@@ -159,7 +161,7 @@ const handleNextEvent = (event) => {
 };
 
 const handleChangeCardTypeEvent = (event) => {
-  if(!isMain.value) {
+  if (!isMain.value) {
     loverCardType.value = event.cardType;
   }
 };
@@ -202,10 +204,14 @@ const onShuffle = async () => {
     await message('还没轮到你哦', 3);
     return;
   }
-  apiRoom.shuffle(mainUser.value.id, player.value['userId'], hks.value)
+  apiRoom.shuffle(mainUser.value.id, player.value['userId'], hks.value, cardType.value)
       .then(() => {
         shuffleCards();
-        shuffleAnimate();
+        if (cards.value.length === 0) {
+          message('没有卡牌', 3);
+        } else {
+          shuffleAnimate();
+        }
       }).catch(() => networkError());
 };
 
@@ -239,13 +245,23 @@ const loverCardType = ref(config.data.value.more.lover.cards.filter(s => s.open)
 const cardType = computed(() => {
   return hks.value ? 'hks' : loverCardType.value;
 });
-watch(loverCardType, (n, o) => {
-  apiRoom.changeCardType(mainUser.value.id, n)
-      .catch(() => networkError());
-});
+const onLoverCardType = (t) => {
+  if (loverCardType.value !== t) {
+    loverCardType.value = t;
+    if (!hks.value && isMain) {
+      apiRoom.changeCardType(mainUser.value.id, t)
+          .catch(() => networkError());
+    }
+  }
+};
+
 watch(cardType, () => {
   cards.value = [];
-  shuffleCards();
+  apiRoom.total(mainUser.value.id, cardType.value)
+      .then((r) => {
+        total.value = r.value;
+        shuffleCards();
+      }).catch(() => networkError());
 });
 
 const shuffleCards = () => {
@@ -269,25 +285,54 @@ const doOpen = () => {
   if (cards.value.length === 0) {
     shuffleCards();
   }
-  card.value = cards.value.pop();
-  apiRoom.open(mainUser.value.id, player.value['userId'], hks.value, card.value as number, true)
-      .then(() => {
-        open.value = true;
-        if (!openAudio.src) {
-          openAudio.src = '/static/media/vod2.m4a';
-        }
-        openAudio.play();
-        if (user.data.value.vip < 1) {
-          user.inc().catch(() => {
-          });
-        }
-      })
-      .catch(() => networkError());
+  if (cards.value.length > 0) {
+    card.value = cards.value.pop();
+    apiRoom.open(mainUser.value.id, player.value['userId'], hks.value, cardType.value, card.value as number, true)
+        .then(() => {
+          open.value = true;
+          if (!openAudio.src) {
+            openAudio.src = '/static/media/vod2.m4a';
+          }
+          openAudio.play();
+          if (user.data.value.vip < 1) {
+            user.inc(hks.value).catch(() => {
+            });
+          }
+        })
+        .catch(() => networkError());
+  } else {
+    message('没有卡牌', 3);
+  }
 }
 
-const onOpenCard = () => {
+const loverCardVisible = computed(() => {
+  if (hks.value) {
+    return true;
+  }
+  const arr = config.data.value.more.lover.cards.filter(s => s.type === loverCardType.value);
+  return (arr.length === 0 ? true : arr[0]['visible']) || user.data.value.vip > 0;
+});
+const canOpen = computed(() => {
+  if (user.data.value.vip >= 1) {
+    return true;
+  }
+  if (players.value.some(p => p.vip >= 1)) {
+    return true;
+  }
+  if (hks.value) {
+    return user.data.value.playCount < config.data.value.playLimit;
+  } else {
+    if (loverCardVisible.value) {
+      return user.data.value.loverPlayCount < config.data.value.loverPlayLimit;
+    } else {
+      return false;
+    }
+  }
+});
+
+const onOpenCard = async () => {
   if (!myTurn.value) {
-    message('还没轮到你哦', 3);
+    await message('还没轮到你哦', 3);
     return;
   }
   if (inShuffle.value) return;
@@ -296,25 +341,19 @@ const onOpenCard = () => {
   } else {
     config.getConfigInfo().then(() => {
       user.getUserInfo().then(() => {
-        if (user.data.value.vip >= 1 ||
-            (!ios() && user.data.value.playCount < config.data.value.playLimit) ||
-            (ios() && user.data.value.playCount < config.data.value.iosLimit)) {
-          doOpen();
-        } else {
-          fetchPlayers().then(() => {
-            if (players.value.some(p => p.vip >= 1)) {
-              doOpen();
+        fetchPlayers().then(() => {
+          if (canOpen.value) {
+            doOpen();
+          } else {
+            if (!ios() || config.data.value.iosCanPay) {
+              openPayDialog();
             } else {
-              if (!ios() || config.data.value.iosCanPay) {
-                openPayDialog();
-              } else {
-                showIOSDialog.value = true;
-              }
+              showIOSDialog.value = true;
             }
-          }).catch(() => networkError());
-        }
+          }
+        }).catch(() => networkError());
       }).catch(() => networkError());
-    }).catch(() => networkError())
+    }).catch(() => networkError());
   }
 }
 
@@ -341,7 +380,7 @@ const openPayDialog = () => {
         class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
         v-for="_cardType in config.data.value.more.lover.cards.filter(s => s.open && (isMain || loverCardType===s.type))"
         :style="{'border-radius': '20rpx', 'background-color': loverCardType===_cardType.type? '#FF6110':'#982F06'}"
-        @click="loverCardType=_cardType.type"
+        @click="onLoverCardType(_cardType.type)"
         :key="_cardType.name">
       <text class="text-white">{{ _cardType.name }}</text>
     </view>
@@ -458,6 +497,7 @@ const openPayDialog = () => {
                 :hks="hks"
                 :count="card"
                 :defaulted="item?.defaulted"
+                :lover-card-type="loverCardType"
                 :title="item?.title"
                 :content="item?.content"
                 :src="isEmpty(item?.src) ? '/static/card.png' : imgUri + item.src"

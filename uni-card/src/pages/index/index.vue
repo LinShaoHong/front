@@ -2,7 +2,7 @@
 import { delay } from '@/utils/calls'
 import { networkError } from "@/utils/request";
 import { useShare } from "@/hooks/useShare";
-import { ios } from "@/utils/unis";
+import { ios, message } from "@/utils/unis";
 import PayDialog from "@/components/PayDialog.vue";
 import { useTabBar } from "@/hooks/useTabBar";
 import { isEmpty } from "@/utils/is";
@@ -77,7 +77,6 @@ watch(() => cards.value.length, (n, o) => {
 onLoad(async (option) => {
   if (option !== undefined) {
     const _hks = option['hks'];
-    console.log(_hks,'_hks');
     if (_hks != undefined) {
       hks.value = _hks === 'true';
     }
@@ -123,6 +122,10 @@ const doShuffle = async () => {
 
 const onShuffle = async () => {
   if (inShuffle.value) return;
+  if (cards.value.length === 0) {
+    await message('没有卡牌', 3);
+    return;
+  }
   if (open.value) {
     await delay(100).then(() => open.value = false);
     return;
@@ -157,21 +160,45 @@ const doOpen = () => {
   openAudio.src = '/static/media/vod2.m4a';
   openAudio.play();
   if (user.data.value.vip < 1) {
-    user.inc().catch(() => {
+    user.inc(hks.value).catch(() => {
     });
   }
 }
 
+const loverCardVisible = computed(() => {
+  if (hks.value) {
+    return true;
+  }
+  const arr = config.data.value.more.lover.cards.filter(s => s.type === loverCardType.value);
+  return (arr.length === 0 ? true : arr[0]['visible']) || user.data.value.vip > 0;
+});
+const canOpen = computed(() => {
+  if (user.data.value.vip >= 1) {
+    return true;
+  }
+  if (hks.value) {
+    return user.data.value.playCount < config.data.value.playLimit;
+  } else {
+    if (loverCardVisible.value) {
+      return user.data.value.loverPlayCount < config.data.value.loverPlayLimit;
+    } else {
+      return false;
+    }
+  }
+});
+
 const onOpenCard = () => {
   if (inShuffle.value) return;
+  if (cards.value.length === 0) {
+    message('没有卡牌', 3);
+    return;
+  }
   if (open.value) {
     open.value = false;
   } else {
     config.getConfigInfo().then(() => {
       user.getUserInfo().then(() => {
-        if (user.data.value.vip >= 1 ||
-            (!ios() && user.data.value.playCount < config.data.value.playLimit) ||
-            (ios() && user.data.value.playCount < config.data.value.iosLimit)) {
+        if (canOpen.value) {
           doOpen();
         } else {
           if (!ios() || config.data.value.iosCanPay) {
@@ -294,6 +321,7 @@ const openPayDialog = () => {
               :hks="hks"
               :count="card"
               :defaulted="item?.defaulted"
+              :lover-card-type="loverCardType"
               :title="item?.title"
               :content="item?.content"
               :src="isEmpty(item?.src) ? '/static/card.png' : imgUri + item.src"

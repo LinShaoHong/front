@@ -16,6 +16,30 @@ const imgUri = inject('$imgUri');
 const showEdit = ref(false);
 
 const hks = ref(true);
+const loverCardType = ref(config.data.value.more.lover.cards.filter(s => s.open)[0].type);
+const loverCardTypeName = computed(() => {
+  const arr = config.data.value.more.lover.cards.filter(s => s.type === loverCardType.value);
+  return arr.length === 0 ? '' : arr[0]['name'];
+});
+const loverCardVisible = computed(() => {
+  if(hks.value) {
+    return true;
+  }
+  const arr = config.data.value.more.lover.cards.filter(s => s.type === loverCardType.value);
+  return (arr.length === 0 ? true : arr[0]['visible']) || user.data.value.vip > 0;
+});
+const cardType = computed(() => {
+  return hks.value ? 'hks' : loverCardType.value;
+});
+const cardItems = computed(() => {
+  const arr = user.data.value.defs.filter(s => s['name'] === cardType.value);
+  if (arr.length > 0) {
+    return arr[0]['items'];
+  } else {
+    return [];
+  }
+});
+
 onLoad((option) => {
   if (option !== undefined) {
     hks.value = option['hks'] === 'true';
@@ -158,11 +182,24 @@ const onDelete = (item) => {
 <template>
   <Background :hks="hks"/>
   <view class="h-screen w-screen relative pt-50 pl-20 pr-20 flex flex-col items-center">
-    <!--    <view class="flex gap-20 p-b-30 items-center">-->
-    <!--      <view class="title_line w-20vw"></view>-->
-    <!--      <text class="text-white" style="font-size: 34rpx">海克斯卡牌</text>-->
-    <!--      <view class="title_line w-20vw"></view>-->
-    <!--    </view>-->
+
+    <view v-if="!hks" class="flex gap-20 w-full ml-10">
+      <view
+          class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
+          v-for="_cardType in config.data.value.more.lover.cards.filter(s => s.open)"
+          :style="{'border-radius': '20rpx', 'background-color': loverCardType===_cardType.type? '#FF6110':'#982F06'}"
+          @click="loverCardType=_cardType.type"
+          :key="_cardType.name">
+        <text class="text-white">{{ _cardType.name }}</text>
+      </view>
+    </view>
+    <view v-if="!loverCardVisible"
+          class="relative right-0 pl-10 pr-10 pt-5 pb-5 flex justify-center items-center mt-10"
+          style="background-image: linear-gradient(to right, #FF6110, transparent); border-radius: 30rpx 0 0 30rpx; align-self: flex-end"
+    >
+      <text class="text-white">私密卡牌需解锁后查看</text>
+    </view>
+
     <scroll-view scroll-y>
       <view class="flex flex-wrap justify-between items-center pb-50 p-l-10 p-r-10">
         <view
@@ -171,7 +208,7 @@ const onDelete = (item) => {
           <text class="text-white" style="font-size: 160rpx;">+</text>
         </view>
 
-        <view v-for="(item,index) in user.data.value.defs[0].items"
+        <view v-for="(item,index) in cardItems"
               :class="['w-45vw flex flex-col justify-center items-center mt-30', hks? 'card_box p-t-6':'lover_card_box']"
               :key="item.id">
 
@@ -181,6 +218,7 @@ const onDelete = (item) => {
                       :width="hks? (isEmpty(item.src) ? '45vw' : 45 * 0.96 + 'vw'):'45vw'"
                       :height="'65vw'"
                       :custom="isEmpty(item.src)"
+                      :lover-card-type="loverCardType"
                       :title="item.title"
                       :content="item.content"
                       :src="isEmpty(item.src) ? '/static/card.png' : imgUri + item.src"
@@ -245,7 +283,7 @@ const onDelete = (item) => {
           <view class="w-full mt-20" style="height: 90%">
             <view class="w-full pl-10 mt-10" style="font-size: 24rpx; color:#999;">惩罚内容（50字以内）</view>
             <view class="w-full pl-10" style="border-bottom: 1px solid rgb(235, 237, 240);  height: 90%;">
-              <textarea class="text-left w-70vw" style="font-size: 30rpx;" v-model="content"/>
+              <textarea class="text-left w-70vw" :style="{'font-size': '30rpx', filter: loverCardVisible? '':'blur(7rpx)'}" v-model="content"/>
             </view>
           </view>
         </view>
@@ -280,7 +318,11 @@ const onDelete = (item) => {
                 <image src="/static/dot.png" class="w-20 h-20"></image>
                 <image src="/static/dot.png" class="w-20 h-20"></image>
               </view>
-              <text style="color: white; font-size: 36rpx; font-weight: bold; margin-right: 30rpx;">{{ '# 1' }}</text>
+              <text style="color: white; font-size: 30rpx; font-weight: bold; letter-spacing: 2rpx;">{{
+                  loverCardTypeName
+                }}
+              </text>
+              <text style="color: white; font-size: 34rpx; font-weight: bold; margin-right: 30rpx;">{{ '# 1' }}</text>
             </view>
             <view class="absolute w-full flex items-center justify-center" style="height: 45%; top:55%;">
               <view class="lover_divider" style="left: 0"></view>

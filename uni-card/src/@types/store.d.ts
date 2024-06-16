@@ -7,6 +7,7 @@ declare namespace User {
     avatar: number
     nickname: string
     playCount: number
+    loverPlayCount: number
     vip: number
     defs: object[]
   }
@@ -16,6 +17,7 @@ declare namespace Config {
   interface ConfigInfo {
     avaCount: number
     playLimit: number
+    loverPlayLimit: number
     game: boolean
     prompt: boolean
     promptText: string
@@ -53,6 +55,7 @@ declare namespace Config {
           name: string
           type: string
           open: boolean
+          visible: boolean
         }]
       }
     },
