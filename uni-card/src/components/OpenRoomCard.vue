@@ -193,7 +193,7 @@ defineEmits(['continue', 'reply', 'next']);
       <view v-if="showOp" class="flex items-center justify-center"
             @click="$emit('next')">
         <view class="flex gap-10 lover_btn">
-          <text>给TA抽</text>
+          <text>让TA抽</text>
         </view>
       </view>
     </view>
