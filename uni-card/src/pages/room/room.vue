@@ -169,19 +169,19 @@ const handleChangeCardTypeEvent = (event) => {
 };
 
 const handleReceiveReplyEvent = (event) => {
-  chats.value = event.chats;
-  delay(50).then(() => {
-    if(chats.value.length > 0) {
-      replyBottomId.value = 'replyId:' + chats.value[chats.value.length - 1].id;
-    }
-  });
-  if(event.userId !== null && event.userId !== user.data.value.id) {
+  if (event.userId !== null && event.userId !== user.data.value.id) {
     if (!replyAudio.src) {
       replyAudio.src = '/static/media/chat.wav';
     }
     replyAudio.play();
   }
-  if(!showReply.value) {
+  chats.value = event.chats;
+  delay(50).then(() => {
+    if (chats.value.length > 0) {
+      replyBottomId.value = 'replyId:' + chats.value[chats.value.length - 1].id;
+    }
+  });
+  if (!showReply.value) {
     showReply.value = true;
   }
 };
@@ -392,6 +392,7 @@ const replyMsg = ref('');
 const showReply = ref(false);
 const replyBottomId = ref('');
 const replyAudio = uni.createInnerAudioContext();
+replyAudio.obeyMuteSwitch = false;
 const onReply = () => {
   showReply.value = true;
   if (chats.value.length === 0) {
