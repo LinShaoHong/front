@@ -426,9 +426,16 @@ const withdrawReply = (id) => {
 <template>
   <Background :hks="hks"/>
 
-  <view class="fixed right-0 top-0 flex justify-center items-center pl-10 pr-10 pt-5 pb-5 top-5"
-        :style="{'background-image': 'linear-gradient(to right, '+(hks? '#6D04B5':'#FF6110')+', transparent)', 'border-radius': '30rpx 0 0 30rpx'}">
-    <text class="text-white">{{ config.data.value.roomTitle }}</text>
+  <view class="fixed top-0 w-screen flex flex-col gap-3" style="align-items: flex-end">
+    <view class="flex justify-center items-center pl-10 pr-10 pt-2 pb-2"
+          :style="{'background-image': 'linear-gradient(to right, '+(hks? '#6D04B5':'#FF6110')+', transparent)', 'border-radius': '30rpx 0 0 30rpx'}">
+      <text class="text-white">{{ config.data.value.roomTitle }}</text>
+    </view>
+    <view v-if="!isEmpty(config.data.value.loverPlayTitle) && !hks"
+          class="flex justify-center items-center pl-10 pr-10 pt-2 pb-2"
+          :style="{'background-image': 'linear-gradient(to right, '+(hks? '#6D04B5':'#FF6110')+', transparent)', 'border-radius': '30rpx 0 0 30rpx'}">
+      <text class="text-white">{{ config.data.value.loverPlayTitle }}</text>
+    </view>
   </view>
 
   <view v-if="!hks" class="fixed left-30 flex flex-col gap-20 z-11" style="top: 18%">

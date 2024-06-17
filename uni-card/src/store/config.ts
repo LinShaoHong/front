@@ -20,6 +20,7 @@ export default defineStore({
         loverShareTitle: 'aaaaaaaaaaaa',
         logo: '',
         roomTitle: '房间内有一人解锁即可畅玩',
+        loverPlayTitle: '抽牌方需完成任务或回答问题哦',
         noLover: false,
         partner: "",
         partners: [{}],

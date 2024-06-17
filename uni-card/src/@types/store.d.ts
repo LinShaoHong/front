@@ -29,6 +29,7 @@ declare namespace Config {
     loverShareTitle: string
     logo: string
     roomTitle: string
+    loverPlayTitle: string
     noLover: boolean
     partner: string
     partners: [{
