@@ -410,12 +410,27 @@ const replyFocus = () => {
     });
   }
 };
+const canReply = computed(() => {
+  if (user.data.value.vip >= 1) {
+    return true;
+  }
+  if (players.value.some(p => p.vip >= 1)) {
+    return true;
+  }
+  return chats.value.filter(c => c.userId === user.data.value.id).length <= config.data.value.chatLimit;
+});
 const sendReply = () => {
   if (!isEmpty(replyMsg.value)) {
-    apiRoom.reply(mainUser.value.id, user.data.value.id, replyMsg.value)
-        .then(r => {
-          replyMsg.value = '';
-        }).catch(() => networkError());
+    fetchPlayers().then(() => {
+      if (canReply.value) {
+        apiRoom.reply(mainUser.value.id, user.data.value.id, replyMsg.value)
+            .then(r => {
+              replyMsg.value = '';
+            }).catch(() => networkError());
+      } else {
+        openPayDialog();
+      }
+    }).catch(() => networkError());
   }
 };
 const withdrawReply = (id) => {

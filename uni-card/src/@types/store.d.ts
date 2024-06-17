@@ -18,6 +18,7 @@ declare namespace Config {
     avaCount: number
     playLimit: number
     loverPlayLimit: number
+    chatLimit: number
     game: boolean
     prompt: boolean
     promptText: string

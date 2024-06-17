@@ -9,6 +9,7 @@ export default defineStore({
         avaCount: 40,
         playLimit: 5,
         loverPlayLimit: 10,
+        chatLimit: 5,
         game: false,
         prompt: false,
         promptText: "",
