@@ -66,7 +66,7 @@ const contentStyle = computed(() => {
   }
 });
 
-defineEmits(['continue', 'next']);
+defineEmits(['continue', 'reply', 'next']);
 </script>
 <template>
   <view class="fixed w-100vw h-100vh top-0"
@@ -176,18 +176,25 @@ defineEmits(['continue', 'next']);
         <view class="lover_divider" style="right: 7vw"></view>
       </view>
     </view>
-    <view v-if="showOp" class="absolute bottom-150 right-120 flex items-center justify-center"
-          style="transform: rotateY(180deg); backface-visibility: hidden;"
-          @click="$emit('continue')">
-      <view class="flex gap-10 lover_btn">
-        <text>继续抽</text>
+    <view class="absolute bottom-150 w-full flex justify-center items-center gap-20"
+          style="transform: rotateY(180deg); backface-visibility: hidden;">
+      <view v-if="showOp" class="flex items-center justify-center"
+            @click="$emit('continue')">
+        <view class="flex gap-10 lover_btn">
+          <text>继续抽</text>
+        </view>
       </view>
-    </view>
-    <view v-if="showOp" class="absolute bottom-150 left-120 flex items-center justify-center"
-          style="transform: rotateY(180deg); backface-visibility: hidden;"
-          @click="$emit('next')">
-      <view class="flex gap-10 lover_btn">
-        <text>下一个</text>
+      <view v-if="showOp" class="flex items-center justify-center"
+            @click="$emit('reply')">
+        <view class="flex gap-10 lover_btn">
+          <text>回复TA</text>
+        </view>
+      </view>
+      <view v-if="showOp" class="flex items-center justify-center"
+            @click="$emit('next')">
+        <view class="flex gap-10 lover_btn">
+          <text>给TA抽</text>
+        </view>
       </view>
     </view>
   </view>
@@ -237,7 +244,7 @@ defineEmits(['continue', 'next']);
 }
 
 .lover_btn {
-  width: 28vw;
+  width: 25vw;
   height: 80rpx;
   display: flex;
   justify-content: center;

@@ -109,6 +109,8 @@ const listen = (event) => {
     handleNextEvent(event);
   } else if (name === 'ChangeCardTypeEvent') {
     handleChangeCardTypeEvent(event);
+  } else if (name === 'ReceiveReplyEvent') {
+    handleReceiveReplyEvent(event);
   }
 }
 
@@ -166,6 +168,24 @@ const handleChangeCardTypeEvent = (event) => {
   }
 };
 
+const handleReceiveReplyEvent = (event) => {
+  chats.value = event.chats;
+  delay(50).then(() => {
+    if(chats.value.length > 0) {
+      replyBottomId.value = 'replyId:' + chats.value[chats.value.length - 1].id;
+    }
+  });
+  if(event.userId !== null && event.userId !== user.data.value.id) {
+    if (!replyAudio.src) {
+      replyAudio.src = '/static/media/chat.wav';
+    }
+    replyAudio.play();
+  }
+  if(!showReply.value) {
+    showReply.value = true;
+  }
+};
+
 const onContinue = () => {
   apiRoom.close(mainUser.value.id, hks.value)
       .then(() => {
@@ -199,9 +219,9 @@ const doShuffle = async () => {
   await delay(300).then(() => shuffle.value = false);
 };
 
-const onShuffle = async () => {
+const onShuffle = () => {
   if (!myTurn.value) {
-    await message('还没轮到你哦', 3);
+    message('还没轮到你哦', 3);
     return;
   }
   apiRoom.shuffle(mainUser.value.id, player.value['userId'], hks.value, cardType.value)
@@ -365,6 +385,42 @@ const openPayDialog = () => {
     showPayDialog.value = true;
   }).catch(() => networkError());
 };
+
+//--------------------- reply ----------------------
+const chats = ref([] as any);
+const replyMsg = ref('');
+const showReply = ref(false);
+const replyBottomId = ref('');
+const replyAudio = uni.createInnerAudioContext();
+const onReply = () => {
+  showReply.value = true;
+  if (chats.value.length === 0) {
+    apiRoom.replies(mainUser.value.id)
+        .then(r => {
+          chats.value = r.values;
+        }).catch(() => networkError());
+  }
+};
+const replyFocus = () => {
+  if (chats.value.length > 0) {
+    replyBottomId.value = 'replyId:no';
+    delay(50).then(() => {
+      replyBottomId.value = 'replyId:' + chats.value[chats.value.length - 1].id;
+    });
+  }
+};
+const sendReply = () => {
+  if (!isEmpty(replyMsg.value)) {
+    apiRoom.reply(mainUser.value.id, user.data.value.id, replyMsg.value)
+        .then(r => {
+          replyMsg.value = '';
+        }).catch(() => networkError());
+  }
+};
+const withdrawReply = (id) => {
+  apiRoom.withdrawReply(mainUser.value.id, id)
+      .catch(() => networkError());
+};
 </script>
 
 <template>
@@ -493,6 +549,55 @@ const openPayDialog = () => {
     </view>
   </Popup>
 
+  <Popup :show="showReply" position="bottom" @clickMask="showReply=false">
+    <view class="w-screen h-100 flex justify-center items-center"
+          @click="showReply=false">
+      <uni-icons type="down" size="24" color="#EDEDED"/>
+    </view>
+    <scroll-view :scroll-into-view="replyBottomId"
+                 style="height: 60vh;background-color: #EDEDED; border-radius: 20rpx 20rpx 0 0" scroll-y>
+      <view class="relative flex gap-10 pt-10 pb-10 ml-10 mr-10"
+            :style="{'flex-direction': chat.userId===user.data.value.id? 'row-reverse':'row'}"
+            v-for="chat in chats"
+            :id="'replyId:'+chat.id"
+            :key="chat.id">
+        <Avatar class="h-10vw"
+                height-fix
+                :src="`${imgUri}/avatar/${chat.avatar}.png`"
+                :vip="chat.vip"
+        />
+        <view class="flex flex-col gap-5">
+          <text v-if="chat.userId!==user.data.value.id" style="color: #858585;font-size: 22rpx;">{{
+              chat.nickname
+            }}
+          </text>
+          <view class="relative max-w-70vw rd-10 min-h-10vw flex items-center p-20"
+                :style="{'background-color': chat.userId!==user.data.value.id? 'white':'#FFCBB0','font-size':'32rpx'}">
+            <text>
+              {{ chat.message }}
+            </text>
+            <view v-if="chat.userId===user.data.value.id"
+                  class="absolute left--60 bottom-0">
+              <text style="font-size: 24rpx; color:#858585" @click="withdrawReply(chat.id)">撤回</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+    <view class="w-screen h-120 pb-10 pt-5 flex justify-center items-center"
+          style="background-color: #F7F7F7; gap: 3vw; border-top: 1rpx #D5D5D5 solid">
+      <input class="h-80 pl-10 pr-10 mb-10 w-72vw flex items-center"
+             v-model="replyMsg"
+             @focus="replyFocus"
+             style="background-color: white; border-radius: 10rpx; font-size: 32rpx;"/>
+      <view class="text-white w-15vw h-60 flex items-center justify-center"
+            style="background-color: #FF6110; font-size: 28rpx; border-radius: 6rpx;"
+            @click="sendReply">
+        发送
+      </view>
+    </view>
+  </Popup>
+
   <OpenRoomCard :open="open"
                 :hks="hks"
                 :count="card"
@@ -508,6 +613,7 @@ const openPayDialog = () => {
                 :height="'calc(90vh - 400rpx)'"
                 :show-op="myTurn"
                 @continue="onContinue"
+                @reply="onReply"
                 @next="onNext"/>
 
   <PayDialog :show="showPayDialog"

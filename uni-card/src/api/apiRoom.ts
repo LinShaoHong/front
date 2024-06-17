@@ -45,6 +45,21 @@ const apiRoom = {
     cardType: cardType
   }),
 
+  reply: (mainUserId: string, userId: string, message: string) => http.post<any>('/room/reply', {
+    mainUserId: mainUserId,
+    userId: userId,
+    message: message
+  }),
+
+  withdrawReply: (mainUserId: string, chatId: string) => http.get<any>('/room/withdrawReply', {
+    mainUserId: mainUserId,
+    chatId: chatId
+  }),
+
+  replies: (mainUserId: string) => http.get<any>('/room/replies', {
+    mainUserId: mainUserId
+  }),
+
   players: (mainUserId: string, hks: boolean) => http.get<any>('/room/players', {
     mainUserId: mainUserId,
     hks: hks,
