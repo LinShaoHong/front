@@ -184,7 +184,7 @@ defineEmits(['continue', 'reply', 'next']);
           <text>继续抽</text>
         </view>
       </view>
-      <view v-if="showOp" class="flex items-center justify-center"
+      <view class="flex items-center justify-center"
             @click="$emit('reply')">
         <view class="flex gap-10 lover_btn">
           <text>回复TA</text>

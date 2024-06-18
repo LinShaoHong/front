@@ -394,12 +394,14 @@ const replyBottomId = ref('');
 const replyAudio = uni.createInnerAudioContext();
 replyAudio.obeyMuteSwitch = false;
 const onReply = () => {
-  showReply.value = true;
-  if (chats.value.length === 0) {
-    apiRoom.replies(mainUser.value.id)
-        .then(r => {
-          chats.value = r.values;
-        }).catch(() => networkError());
+  if(!showReply.value) {
+    showReply.value = true;
+    if (chats.value.length === 0) {
+      apiRoom.replies(mainUser.value.id)
+          .then(r => {
+            chats.value = r.values;
+          }).catch(() => networkError());
+    }
   }
 };
 const replyFocus = () => {
@@ -463,6 +465,18 @@ const withdrawReply = (id) => {
         :key="_cardType.name">
       <text class="text-white">{{ _cardType.name }}</text>
     </view>
+  </view>
+
+  <view v-if="!hks"
+          class="fixed right-0 w-180 h-66 z-6 flex items-center"
+          style="top: 18%; background-color: transparent" @click="onReply">
+    <view class="w-full h-full absolute left-0"
+          style="background-image: linear-gradient(to right, #FF6110, transparent); border-radius: 66rpx 0 0 66rpx;"
+    />
+    <image class="ml-15 h-45 z-10" src="/static/reply.png" mode="heightFix"></image>
+    <text class="color-white z-10 ml-10" style="font-size: 24rpx;">
+      回复TA
+    </text>
   </view>
 
   <view class="relative flex flex-col items-center justify-between h-100vh pt-20 pb-30">
