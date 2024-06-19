@@ -51,7 +51,13 @@ const apiRoom = {
     message: message
   }),
 
-  withdrawReply: (mainUserId: string, chatId: string) => http.get<any>('/room/withdrawReply', {
+  withdrawReply: (mainUserId: string, userId: string, chatId: string) => http.get<any>('/room/withdrawReply', {
+    mainUserId: mainUserId,
+    userId: userId,
+    chatId: chatId
+  }),
+
+  byReplyId: (mainUserId: string, chatId: string) => http.get<any>('/room/byReplyId', {
     mainUserId: mainUserId,
     chatId: chatId
   }),

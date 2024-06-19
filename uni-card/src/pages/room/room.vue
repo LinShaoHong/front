@@ -10,6 +10,7 @@ import apiRoom from "@/api/apiRoom";
 import { useShare } from "@/hooks/useShare";
 import { useSSE } from "@/hooks/useSSE";
 import { isEmpty } from "@/utils/is";
+import apiConfig from "@/api/apiConfig";
 
 const hks = ref(true);
 const { sseConnect, sseAbort } = useSSE();
@@ -79,6 +80,8 @@ onLoad(async (option) => {
       }).catch(() => networkError());
     }).catch(() => networkError());
   }).catch(() => networkError());
+
+  listenKeyboard();
 });
 
 onUnload(async () => {
@@ -165,24 +168,6 @@ const handleNextEvent = (event) => {
 const handleChangeCardTypeEvent = (event) => {
   if (!isMain.value) {
     loverCardType.value = event.cardType;
-  }
-};
-
-const handleReceiveReplyEvent = (event) => {
-  if (event.userId !== null && event.userId !== user.data.value.id) {
-    if (!replyAudio.src) {
-      replyAudio.src = '/static/media/chat.wav';
-    }
-    replyAudio.play();
-  }
-  chats.value = event.chats;
-  delay(50).then(() => {
-    if (chats.value.length > 0) {
-      replyBottomId.value = 'replyId:' + chats.value[chats.value.length - 1].id;
-    }
-  });
-  if (!showReply.value) {
-    showReply.value = true;
   }
 };
 
@@ -393,24 +378,34 @@ const showReply = ref(false);
 const replyBottomId = ref('');
 const replyAudio = uni.createInnerAudioContext();
 replyAudio.obeyMuteSwitch = false;
+
+const toReplyBottom = () => {
+  if (chats.value.length > 0) {
+    replyBottomId.value = 'replyId:none';
+    delay(50).then(() => {
+      if (chats.value.length > 0) {
+        replyBottomId.value = 'replyId:' + chats.value[chats.value.length - 1].id;
+      }
+    });
+  }
+}
+
 const onReply = () => {
-  if(!showReply.value) {
+  if (!showReply.value) {
     showReply.value = true;
     if (chats.value.length === 0) {
       apiRoom.replies(mainUser.value.id)
           .then(r => {
             chats.value = r.values;
+            toReplyBottom();
           }).catch(() => networkError());
+    } else {
+      toReplyBottom();
     }
   }
 };
 const replyFocus = () => {
-  if (chats.value.length > 0) {
-    replyBottomId.value = 'replyId:no';
-    delay(50).then(() => {
-      replyBottomId.value = 'replyId:' + chats.value[chats.value.length - 1].id;
-    });
-  }
+  toReplyBottom();
 };
 const canReply = computed(() => {
   if (user.data.value.vip >= 1) {
@@ -425,8 +420,19 @@ const sendReply = () => {
   if (!isEmpty(replyMsg.value)) {
     fetchPlayers().then(() => {
       if (canReply.value) {
-        apiRoom.reply(mainUser.value.id, user.data.value.id, replyMsg.value)
+        apiRoom.reply(mainUser.value.id, user.data.value.id, encodeURIComponent(replyMsg.value))
             .then(r => {
+              if (r.value !== null) {
+                chats.value.push({
+                  id: r.value,
+                  userId: user.data.value.id,
+                  nickname: user.data.value.nickname,
+                  avatar: user.data.value.avatar,
+                  vip: user.data.value.vip,
+                  message: encodeURIComponent(replyMsg.value)
+                });
+                toReplyBottom();
+              }
               replyMsg.value = '';
             }).catch(() => networkError());
       } else {
@@ -436,9 +442,84 @@ const sendReply = () => {
   }
 };
 const withdrawReply = (id) => {
-  apiRoom.withdrawReply(mainUser.value.id, id)
-      .catch(() => networkError());
+  apiRoom.withdrawReply(mainUser.value.id, user.data.value.id, id)
+      .then(() => {
+        chats.value = chats.value.filter(c => c.id !== id);
+      }).catch(() => networkError());
 };
+
+const handleReceiveReplyEvent = (event) => {
+  if (event.userId !== user.data.value.id) {
+    if (event.withdraw) {
+      chats.value = chats.value.filter(c => c.id !== event.chatId);
+    } else {
+      apiRoom.byReplyId(mainUser.value.id, event.chatId)
+          .then(r => {
+            if (!replyAudio.src) {
+              replyAudio.src = '/static/media/chat.wav';
+            }
+            replyAudio.play();
+            const tob = !showReply.value || replyMessageInBottom.value;
+            delay(300).then(() => {
+              chats.value.push(r.value);
+              if (!showReply.value) {
+                showReply.value = true;
+              }
+              if (tob) {
+                toReplyBottom();
+              }
+            });
+          }).catch(() => networkError());
+    }
+  }
+};
+
+const replyInputHeight = ref(0)
+const inputQuery = wx.createSelectorQuery();
+inputQuery.select('#replyInputId').boundingClientRect();
+inputQuery.exec((res) => {
+  replyInputHeight.value = res[0].height;
+});
+const replyInput = (e) => {
+  inputQuery.exec((res) => {
+    replyInputHeight.value = res[0].height;
+  });
+  msgQuery.exec((res) => {
+    replyMessageHeight.value = res[0].height;
+  });
+};
+watch(replyInputHeight, () => {
+  toReplyBottom();
+});
+
+const replyKeyboardHeight = ref(0);
+const listenKeyboard = () => {
+  uni.onKeyboardHeightChange((res) => {
+    replyKeyboardHeight.value = res.height;
+    inputQuery.exec((res) => {
+      replyInputHeight.value = res[0].height;
+    });
+    msgQuery.exec((res) => {
+      replyMessageHeight.value = res[0].height;
+    });
+  })
+};
+
+const msgQuery = wx.createSelectorQuery();
+msgQuery.select('#replyMessageId').boundingClientRect();
+const replyMessageHeight = ref(0);
+msgQuery.exec((res) => {
+  replyMessageHeight.value = res[0].height;
+});
+const replyScrollTop = ref(0);
+const replyScrollHeight = ref(0);
+const replyScroll = (event) => {
+  replyScrollTop.value = event.detail.scrollTop;
+  replyScrollHeight.value = event.detail.scrollHeight;
+};
+const replyMessageInBottom = computed(() => {
+  return replyScrollTop.value + replyMessageHeight.value + 300 >= replyMessageHeight.value;
+})
 </script>
 
 <template>
@@ -468,8 +549,8 @@ const withdrawReply = (id) => {
   </view>
 
   <view v-if="!hks"
-          class="fixed right-0 w-180 h-66 z-6 flex items-center"
-          style="top: 18%; background-color: transparent" @click="onReply">
+        class="fixed right-0 w-180 h-66 z-6 flex items-center"
+        style="top: 18%; background-color: transparent" @click="onReply">
     <view class="w-full h-full absolute left-0"
           style="background-image: linear-gradient(to right, #FF6110, transparent); border-radius: 66rpx 0 0 66rpx;"
     />
@@ -591,9 +672,12 @@ const withdrawReply = (id) => {
           @click="showReply=false">
       <uni-icons type="down" size="24" color="#EDEDED"/>
     </view>
-    <scroll-view :scroll-into-view="replyBottomId"
-                 style="height: 60vh;background-color: #EDEDED; border-radius: 20rpx 20rpx 0 0" scroll-y>
-      <view class="relative flex gap-10 pt-10 pb-10 ml-10 mr-10"
+    <scroll-view id="replyMessageId"
+                 :scroll-into-view="replyBottomId"
+                 :style="{height: replyInputHeight===0? '60vh':('min(60vh, calc(99vh - '+replyKeyboardHeight+'px - '+replyInputHeight+'px))'),'background-color': '#EDEDED', 'border-radius': '20rpx 20rpx 0 0'}"
+                 @scroll="replyScroll"
+                 scroll-y>
+      <view class="relative flex gap-10 pt-20 pb-20 ml-20 mr-20"
             :style="{'flex-direction': chat.userId===user.data.value.id? 'row-reverse':'row'}"
             v-for="chat in chats"
             :id="'replyId:'+chat.id"
@@ -611,7 +695,7 @@ const withdrawReply = (id) => {
           <view class="relative max-w-70vw rd-10 min-h-10vw flex items-center p-20"
                 :style="{'background-color': chat.userId!==user.data.value.id? 'white':'#FFCBB0','font-size':'32rpx'}">
             <text>
-              {{ chat.message }}
+              {{ decodeURIComponent(chat.message) }}
             </text>
             <view v-if="chat.userId===user.data.value.id"
                   class="absolute left--60 bottom-0">
@@ -621,18 +705,29 @@ const withdrawReply = (id) => {
         </view>
       </view>
     </scroll-view>
-    <view class="w-screen h-120 pb-10 pt-5 flex justify-center items-center"
-          style="background-color: #F7F7F7; gap: 3vw; border-top: 1rpx #D5D5D5 solid">
-      <input class="h-80 pl-10 pr-10 mb-10 w-72vw flex items-center"
-             v-model="replyMsg"
-             @focus="replyFocus"
-             style="background-color: white; border-radius: 10rpx; font-size: 32rpx;"/>
-      <view class="text-white w-15vw h-60 flex items-center justify-center"
-            style="background-color: #FF6110; font-size: 28rpx; border-radius: 6rpx;"
+    <view class="w-screen pb-20 pt-20 pl-50 pr-50 flex justify-center" id="replyInputId"
+          style="background-color: #F7F7F7; gap: 3vw; border-top: 1rpx #D5D5D5 solid; align-items: flex-end">
+      <view class="p-20 flex items-center"
+            style="background-color: white; border-radius: 10rpx; flex: 1;">
+        <scroll-view scroll-y class="max-h-280"
+                     style="background-color: white; display: inline-block;overflow: hidden">
+            <textarea class="w-full"
+                      auto-height
+                      maxlength="1000"
+                      :adjust-position="false"
+                      v-model="replyMsg"
+                      @focus="replyFocus"
+                      @input="replyInput"
+                      style="background-color: white; font-size: 32rpx; line-height: 32rpx; resize: none;"/>
+        </scroll-view>
+      </view>
+      <view :class="['text-white h-60 mb-10 flex items-center justify-center', isEmpty(replyMsg)? '0':'w-15vw']"
+            style="background-color: #FF6110; font-size: 28rpx; border-radius: 6rpx; transition: width 2s ease"
             @click="sendReply">
-        发送
+        <text>{{ isEmpty(replyMsg) ? '' : '发送' }}</text>
       </view>
     </view>
+    <view class="w-screen" :style="{height: replyKeyboardHeight+'px', 'background-color':'#F7F7F7'}"></view>
   </Popup>
 
   <OpenRoomCard :open="open"

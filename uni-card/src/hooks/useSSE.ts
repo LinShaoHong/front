@@ -39,7 +39,7 @@ export function useSSE() {
     });
     const callback = data => {
       const decoder = new TextDecoder('utf-8');
-      const ev = decodeURIComponent(decoder.decode(new Uint8Array(data.data)));
+      const ev = decoder.decode(new Uint8Array(data.data));
       const arr = ev.split("\n");
       const e = arr.length > 1 ? arr[1] : arr[0];
       listener(JSON.parse(e.substring(6)));

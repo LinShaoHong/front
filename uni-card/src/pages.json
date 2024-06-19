@@ -42,7 +42,10 @@
           "name": "room",
           "path": "room",
           "style": {
-            "navigationBarTitleText": "云顶对弈"
+            "navigationBarTitleText": "云顶对弈",
+            "app-plus": {
+              "softinputMode": "adjustResize"
+            }
           }
         }
       ]
