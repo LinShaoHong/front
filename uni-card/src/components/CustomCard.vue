@@ -43,7 +43,7 @@ const props = defineProps({
     default: ''
   }
 });
-
+const imgUri = inject('$imgUri');
 const loverCardTypeName = computed(() => {
   const arr = config.data.value.more.lover.cards.filter(s => s.type === props.loverCardType);
   return arr.length === 0 ? '' : arr[0]['name'];
