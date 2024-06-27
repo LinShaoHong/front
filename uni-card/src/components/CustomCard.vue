@@ -73,7 +73,7 @@ defineEmits(['close']);
     <view class="w-full h-full flex flex-col items-center justify-center z-200">
       <view class="absolute w-full top-0" style="height: 65%;">
         <image v-if="custom"
-               src="/static/ct.png"
+               :src="`${imgUri}/ct.png`"
                mode="heightFix"
                class="absolute left-0 right-0" style="top: 35%; height: 50%; margin: auto"/>
         <view class="absolute bottom-25 w-full flex items-center justify-center">

@@ -39,7 +39,7 @@ const props = defineProps({
     default: 'calc(90vh - 300rpx)'
   }
 });
-
+const imgUri = inject('$imgUri');
 const loverCardTypeName = computed(() => {
   const arr = config.data.value.more.lover.cards.filter(s => s.type === props.loverCardType);
   return arr.length === 0 ? '' : arr[0]['name'];
@@ -101,7 +101,7 @@ defineEmits(['close']);
     <view class="card w-full flex flex-col items-center justify-center z-200" :style="{height: height}">
       <view class="absolute w-full top-0" style="height: 65%;">
         <image v-if="!defaulted && type"
-               src="/static/ct.png"
+               :src="`${imgUri}/ct.png`"
                mode="heightFix"
                class="absolute left-0 right-0" style="top: 35%; height: 50%; margin: auto"/>
         <view class="absolute bottom-25 w-full flex items-center justify-center">

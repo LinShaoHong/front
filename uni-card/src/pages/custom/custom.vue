@@ -300,7 +300,7 @@ const onDelete = (item) => {
                  class="absolute h-80 w-80"
                  style="top: 25%; height: 25%"
                  mode="heightFix"
-                 src="/static/ct.png"/>
+                 :src="`${imgUri}/ct.png`"/>
 
           <image v-if="hks" class="rd-20"
                  :src="isEmpty(picPath) ? '/static/card.png' : imgUri + picPath"
