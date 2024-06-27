@@ -9,7 +9,7 @@ onLaunch(async (option) => {
   const config = useStore('config');
   config.getConfigInfo().then(() => {
     config.setPartner(option?.query?.partner);
-    config.setNoLover(option?.query?.noLover);
+    // config.setNoLover(option?.query?.noLover);
     user.getUserInfo(option).then(async () => {
       await user.getDefs().catch(() => networkError());
     }).catch(() => networkError());
