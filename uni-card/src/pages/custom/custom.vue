@@ -16,16 +16,16 @@ const imgUri = inject('$imgUri');
 const showEdit = ref(false);
 
 const hks = ref(true);
-const loverCardType = ref(config.data.value.more.lover.cards.filter(s => s.open)[0].type);
+const loverCardType = ref(config.data.value.loverCards.filter(s => s.open)[0].type);
 const loverCardTypeName = computed(() => {
-  const arr = config.data.value.more.lover.cards.filter(s => s.type === loverCardType.value);
+  const arr = config.data.value.loverCards.filter(s => s.type === loverCardType.value);
   return arr.length === 0 ? '' : arr[0]['name'];
 });
 const loverCardVisible = computed(() => {
   if(hks.value) {
     return true;
   }
-  const arr = config.data.value.more.lover.cards.filter(s => s.type === loverCardType.value);
+  const arr = config.data.value.loverCards.filter(s => s.type === loverCardType.value);
   return (arr.length === 0 ? true : arr[0]['visible']) || user.data.value.vip > 0;
 });
 const cardType = computed(() => {
@@ -40,10 +40,12 @@ const cardItems = computed(() => {
   }
 });
 
+const ready = ref(false);
 onLoad((option) => {
   if (option !== undefined) {
     hks.value = option['hks'] === 'true';
   }
+  ready.value = true;
 });
 shareFunc.value = () => {
   shareTitle.value = hks.value ? config.data.value.shareTitle : config.data.value.loverShareTitle;
@@ -140,7 +142,7 @@ const onEdit = () => {
       }
       if (curr.value == null) {
         loading.value = true;
-        apiUser.addDef(user.data.value.id, title.value, content.value, picPath.value).then(() => {
+        apiUser.addDef(user.data.value.id, title.value, content.value, picPath.value, cardType.value).then(() => {
           user.getDefs();
           loading.value = false;
           showEdit.value = false;
@@ -148,7 +150,7 @@ const onEdit = () => {
         });
       } else {
         loading.value = true;
-        apiUser.editDef(user.data.value.id, curr.value['id'], title.value, content.value, picPath.value).then(() => {
+        apiUser.editDef(user.data.value.id, curr.value['id'], title.value, content.value, picPath.value, cardType.value).then(() => {
           user.getDefs();
           loading.value = false;
           showEdit.value = false;
@@ -160,7 +162,7 @@ const onEdit = () => {
 };
 
 const onEnable = (item) => {
-  apiUser.enableDef(user.data.value.id, item['id'], !item['enable'])
+  apiUser.enableDef(user.data.value.id, item['id'], !item['enable'], cardType.value)
       .then(() => {
         user.getDefs();
         if (item['enable']) {
@@ -171,7 +173,7 @@ const onEnable = (item) => {
 
 const onDelete = (item) => {
   modal('删除后不可恢复，确定要删除？', '', true).then(() => {
-    apiUser.deleteDef(user.data.value.id, item['id']).then(() => {
+    apiUser.deleteDef(user.data.value.id, item['id'], cardType.value).then(() => {
       user.getDefs();
     }).catch(() => networkError());
   });
@@ -180,13 +182,13 @@ const onDelete = (item) => {
 </script>
 
 <template>
-  <Background :hks="hks"/>
-  <view class="h-screen w-screen relative pt-50 pl-20 pr-20 flex flex-col items-center">
+  <Background v-if="ready" :hks="hks"/>
+  <view v-if="ready" class="h-screen w-screen relative pt-50 pl-20 pr-20 flex flex-col items-center">
 
     <view v-if="!hks" class="flex gap-20 w-full ml-10">
       <view
           class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
-          v-for="_cardType in config.data.value.more.lover.cards.filter(s => s.open)"
+          v-for="_cardType in config.data.value.loverCards.filter(s => s.open)"
           :style="{'border-radius': '20rpx', 'background-color': loverCardType===_cardType.type? '#FF6110':'#982F06'}"
           @click="loverCardType=_cardType.type"
           :key="_cardType.name">

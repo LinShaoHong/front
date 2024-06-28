@@ -28,27 +28,34 @@ const apiUser = {
 
   getDefs: (id: string) => http.get<any>('/def/byUserId', { userId: id }),
 
-  addDef: (id: string, title: string, content: string, src: string) => http.post<any>('/def/add', {
+  addDef: (id: string, title: string, content: string, src: string, cardType: string) => http.post<any>('/def/add', {
     userId: id,
     title: title,
     content: content,
-    src: src
+    src: src,
+    cardType: cardType
   }),
 
-  editDef: (id: string, itemId: string, title: string, content: string, src: string) => http.post<any>('/def/edit', {
+  editDef: (id: string, itemId: string, title: string, content: string, src: string, cardType: string) => http.post<any>('/def/edit', {
     userId: id,
     itemId: itemId,
     title: title,
     content: content,
-    src: src
+    src: src,
+    cardType: cardType
   }),
 
-  deleteDef: (id: string, itemId: string) => http.post<any>('/def/delete', { userId: id, itemId: itemId }),
-
-  enableDef: (id: string, itemId: string, enable: boolean) => http.post<any>('/def/enable', {
+  deleteDef: (id: string, itemId: string, cardType: string) => http.post<any>('/def/delete', {
     userId: id,
     itemId: itemId,
-    enable: enable
+    cardType: cardType
+  }),
+
+  enableDef: (id: string, itemId: string, enable: boolean, cardType: string) => http.post<any>('/def/enable', {
+    userId: id,
+    itemId: itemId,
+    enable: enable,
+    cardType: cardType
   }),
 };
 

@@ -41,28 +41,9 @@ export default defineStore({
             defContent: '可添加编辑卡牌，随心畅玩！',
             battleTitle: '情侣格斗',
             battleContent: '可邀请他人同时在线对弈',
-            cards: [
-              {
-                name: '谈爱99',
-                type: 'hks',
-                open: true,
-                visible: false
-              },
-              {
-                name: '谈家99',
-                type: 'hks2',
-                open: true,
-                visible: true
-              },
-              {
-                name: '谈性99',
-                type: 'hks3',
-                open: true,
-                visible: false
-              }
-            ]
           }
         },
+        loverCards: [{}],
         banners: [{}]
       }
     } as { data: Config.ConfigInfo };

@@ -53,14 +53,14 @@ declare namespace Config {
         defContent: string
         battleTitle: string
         battleContent: string
-        cards: [{
-          name: string
-          type: string
-          open: boolean
-          visible: boolean
-        }]
       }
     },
+    loverCards: [{
+      name: string
+      type: string
+      open: boolean
+      visible: boolean
+    }],
     banners: [{
       src: string
       qr: string

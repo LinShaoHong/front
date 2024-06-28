@@ -20,7 +20,7 @@ const user = useStore('user');
 const config = useStore('config');
 const imgUri = inject('$imgUri');
 const hks = ref(true);
-const loverCardType = ref(config.data.value.more.lover.cards.filter(s => s.open)[0].type);
+const loverCardType = ref(config.data.value.loverCards.filter(s => s.open)[0]?.type);
 const showRule = ref(false);
 const showPrompt = ref(false);
 
@@ -89,6 +89,9 @@ onLoad(async (option) => {
     }
   })
   shuffleCards();
+  config.getConfigInfo().then(() => {
+    loverCardType.value = config.data.value.loverCards.filter(s => s.open)[0]?.type;
+  }).catch(() => networkError());
 });
 
 const banner = ref({});
@@ -171,7 +174,7 @@ const loverCardVisible = computed(() => {
   if (hks.value) {
     return true;
   }
-  const arr = config.data.value.more.lover.cards.filter(s => s.type === loverCardType.value);
+  const arr = config.data.value.loverCards.filter(s => s.type === loverCardType.value);
   return (arr.length === 0 ? true : arr[0]['visible']) || user.data.value.vip > 0;
 });
 const canOpen = computed(() => {
@@ -231,7 +234,7 @@ const openPayDialog = () => {
     <view v-if="!hks" class="fixed left-30 w-screen top-150 flex w-full gap-20 z-11">
       <view
           class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
-          v-for="_cardType in config.data.value.more.lover.cards.filter(s => s.open)"
+          v-for="_cardType in config.data.value.loverCards.filter(s => s.open)"
           :style="{'border-radius': '20rpx', 'background-color': loverCardType===_cardType.type? '#FF6110':'#982F06'}"
           @click="loverCardType=_cardType.type"
           :key="_cardType.name">

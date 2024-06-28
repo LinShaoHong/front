@@ -7,7 +7,7 @@ import { isMp } from "@/utils/platform";
 onLaunch(async (option) => {
   const user = useStore('user');
   const config = useStore('config');
-  config.getConfigInfo().then(() => {
+  await config.getConfigInfo().then(() => {
     config.setPartner(option?.query?.partner);
     // config.setNoLover(option?.query?.noLover);
     user.getUserInfo(option).then(async () => {

@@ -10,7 +10,6 @@ import apiRoom from "@/api/apiRoom";
 import { useShare } from "@/hooks/useShare";
 import { useSSE } from "@/hooks/useSSE";
 import { isEmpty } from "@/utils/is";
-import apiConfig from "@/api/apiConfig";
 
 const hks = ref(true);
 const { sseConnect, sseAbort } = useSSE();
@@ -28,7 +27,6 @@ shareFunc.value = () => {
 };
 
 //---------------------------- sse --------------------
-let task = null;
 const mainUser = ref(user.data.value);
 const isMain = computed(() => mainUser.value.id === user.data.value.id);
 const players = ref([] as any[]);
@@ -55,32 +53,33 @@ const onChoosePlayer = () => {
 
 onLoad(async (option) => {
   shuffleCards();
-
-  user.getUserInfo().then(() => {
-    let mainUserId = user.data.value.id;
-    if (option !== undefined) {
-      mainUserId = option['mainUserId'];
-      if (mainUserId === undefined) {
-        mainUserId = user.data.value.id;
+  config.getConfigInfo().then(() => {
+    loverCardType.value = config.data.value.loverCards.filter(s => s.open)[0]?.type;
+    user.getUserInfo().then(() => {
+      let mainUserId = user.data.value.id;
+      if (option !== undefined) {
+        mainUserId = option['mainUserId'];
+        if (mainUserId === undefined) {
+          mainUserId = user.data.value.id;
+        }
+        hks.value = option['hks'] === 'true';
       }
-      hks.value = option['hks'] === 'true';
-    }
 
-    const sys = uni.getSystemInfoSync();
-    apiUser.getById(mainUserId, sys.platform).then(async data => {
-      mainUser.value = data.value;
-      const url = env.apiBaseUrl + '/room/sub?mainUserId=' + mainUser.value.id + '&userId=' + user.data.value.id + '&hks=' + hks.value;
-      await sseConnect(url, listen);
-      apiRoom.player(mainUserId, hks.value).then((data) => {
-        player.value = data.value;
-      }).then(() => {
-        apiRoom.total(mainUserId, cardType.value)
-            .then(r => total.value = r.value)
-            .catch(() => networkError());
+      const sys = uni.getSystemInfoSync();
+      apiUser.getById(mainUserId, sys.platform).then(async data => {
+        mainUser.value = data.value;
+        const url = env.apiBaseUrl + '/room/sub?mainUserId=' + mainUser.value.id + '&userId=' + user.data.value.id + '&hks=' + hks.value;
+        await sseConnect(url, listen);
+        apiRoom.player(mainUserId, hks.value).then((data) => {
+          player.value = data.value;
+        }).then(() => {
+          apiRoom.total(mainUserId, cardType.value)
+              .then(r => total.value = r.value)
+              .catch(() => networkError());
+        }).catch(() => networkError());
       }).catch(() => networkError());
     }).catch(() => networkError());
   }).catch(() => networkError());
-
   listenKeyboard();
 });
 
@@ -246,7 +245,7 @@ const total = ref(1);
 const card = ref<number | undefined>(0);
 const cards = ref([] as number[]);
 const item = ref({});
-const loverCardType = ref(config.data.value.more.lover.cards.filter(s => s.open)[0].type);
+const loverCardType = ref(config.data.value.loverCards.filter(s => s.open)[0].type);
 const cardType = computed(() => {
   return hks.value ? 'hks' : loverCardType.value;
 });
@@ -314,7 +313,7 @@ const loverCardVisible = computed(() => {
   if (hks.value) {
     return true;
   }
-  const arr = config.data.value.more.lover.cards.filter(s => s.type === loverCardType.value);
+  const arr = config.data.value.loverCards.filter(s => s.type === loverCardType.value);
   return (arr.length === 0 ? true : arr[0]['visible']) || user.data.value.vip > 0;
 });
 const canOpen = computed(() => {
@@ -540,7 +539,7 @@ const replyMessageInBottom = computed(() => {
   <view v-if="!hks" class="fixed left-30 flex flex-col gap-20 z-11" style="top: 18%">
     <view
         class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
-        v-for="_cardType in config.data.value.more.lover.cards.filter(s => s.open && (isMain || loverCardType===s.type))"
+        v-for="_cardType in config.data.value.loverCards.filter(s => s.open && (isMain || loverCardType===s.type))"
         :style="{'border-radius': '20rpx', 'background-color': loverCardType===_cardType.type? '#FF6110':'#982F06'}"
         @click="onLoverCardType(_cardType.type)"
         :key="_cardType.name">
