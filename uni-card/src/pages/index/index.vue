@@ -106,7 +106,7 @@ const backCardStyle = computed(() => (index) => {
     transform: 'scale(' + (0.9 + index * 0.03) + ')' + (open.value && index === backCardsCount.value ? 'rotateY(180deg)' : ''),
     'z-index': index + 10,
     transition: 'transform .4s ease',
-    height: '70%'
+    height: '65%'
   }
 });
 
@@ -300,7 +300,7 @@ const openPayDialog = () => {
         <image v-if="!hks" class="absolute top-0 bottom-80" mode="heightFix" style="height: 80%;"
                src="/static/p_bg_lover.png"></image>
 
-        <view :class="['absolute h-full flex items-center justify-center', hks? 'top--50':'top--20']">
+        <view :class="['absolute h-full flex items-center justify-center']">
           <view v-for="index in backCardsCount"
                 :class="['absolute', shuffle && index===backCardsCount && 'swap']"
                 :key="'card-back-' + index"

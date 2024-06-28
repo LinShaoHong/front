@@ -187,7 +187,7 @@ const onNext = () => {
 const backCardsCount = ref(5);
 const backCardStyle = computed(() => (index) => {
   return {
-    top: ((index - 1) * 18) + 'rpx',
+    top: ((index-1) * 18) + 'rpx',
     transform: 'scale(' + (0.9 + index * 0.03) + ')' + (open.value && index === backCardsCount.value ? 'rotateY(180deg)' : ''),
     'z-index': index + 10,
     transition: 'transform .4s ease'
@@ -614,7 +614,7 @@ const replyMessageInBottom = computed(() => {
       <image v-if="!hks" class="absolute top-0 bottom-80" mode="heightFix" style="height: 80%;"
              src="/static/p_bg_lover.png"></image>
 
-      <view :class="['absolute flex items-center justify-center', hks? 'top--50':'top--20']">
+      <view :class="['absolute flex justify-center top-0']" style="background-color: red">
         <view v-for="index in backCardsCount"
               :class="['absolute', shuffle && index===backCardsCount && 'swap']"
               :key="'card-back-' + index"
@@ -623,7 +623,7 @@ const replyMessageInBottom = computed(() => {
           <image :src="hks? '/static/card-back.png':'/static/lover-card-back.jpg'"
                  class="rd-30"
                  mode="heightFix"
-                 :style="{'backface-visibility': index === backCardsCount? 'hidden':'', height: hks? '50vh':'42vh'}"></image>
+                 :style="{'backface-visibility': index === backCardsCount? 'hidden':'', height: hks? '45vh':'42vh'}"></image>
         </view>
       </view>
 
@@ -635,7 +635,7 @@ const replyMessageInBottom = computed(() => {
 
   <Popup :show="showPlayers" position="bottom" @clickMask="showPlayers=false">
     <view v-if="showPlayers" class="p-20 relative h-50vh flex items-center justify-center" style="background: white">
-      <view class="absolute top-20 w-full text-center" style="font-size: 34rpx; color: #907BE0">指定抽牌玩家<br/>（仅房主允许指定）
+      <view class="absolute top-20 w-full text-center" style="font-size: 34rpx; color: black">指定抽牌玩家<br/>（仅房主允许指定）
       </view>
       <button
           v-if="isMain"
@@ -643,14 +643,14 @@ const replyMessageInBottom = computed(() => {
           :disabled="choosePlayerLoading"
           :loading="choosePlayerLoading"
           @tap.stop="onChoosePlayer"
-          :style="{'background-color':'#482380', color: 'white', 'font-size': '26rpx;'}"
+          :style="{'background-color': hks? '#482380':'#FF6110', color: 'white', 'font-size': '26rpx;'}"
       >
         {{ choosePlayerLoading ? '' : '确定' }}
       </button>
       <scroll-view scroll-y class="avatar absolute top-150 w-700">
         <view class="flex flex-wrap gap-15 pb-50">
           <view v-for="_player in players"
-                :class="['ava-item h-120 w-200',_player.userId===choosePlayerId? 'active':'inactive']"
+                :class="['ava-item h-120 w-200',_player.userId===choosePlayerId? (hks? 'active':'lover_active'):'inactive']"
                 @click="choosePlayerId=_player.userId" :key="_player.userId">
             <view class="flex flex-col items-center justify-center h-full w-full pl-10 pr-10">
               <Avatar class="h-100"
@@ -658,8 +658,8 @@ const replyMessageInBottom = computed(() => {
                       :src="`${imgUri}/avatar/${_player.avatar}.png`"
                       :vip="_player.vip"
               />
-              <text style="font-size: 22rpx; color: #482380;">{{ _player.nickname }}</text>
-              <text v-if="mainUser.id===_player.userId" style="font-size: 20rpx; color: #482380;"><br/>（房主）</text>
+              <text style="font-size: 22rpx; color: black;">{{ _player.nickname }}</text>
+              <text v-if="mainUser.id===_player.userId" style="font-size: 20rpx; color: black;"><br/>（房主）</text>
             </view>
           </view>
         </view>
@@ -785,6 +785,10 @@ button:after {
 
   .ava-item.active {
     border: 1rpx solid #482380;
+  }
+
+  .ava-item.lover_active {
+    border: 1rpx solid #FF6110;
   }
 
   .ava-item.inactive {
