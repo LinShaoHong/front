@@ -16,16 +16,16 @@ const imgUri = inject('$imgUri');
 const showEdit = ref(false);
 
 const hks = ref(true);
-const loverCardType = ref(config.data.value.loverCards.filter(s => s.open)[0].type);
+const loverCardType = ref(config.data.value.loverCards.filter(s => s?.open)[0]?.type);
 const loverCardTypeName = computed(() => {
-  const arr = config.data.value.loverCards.filter(s => s.type === loverCardType.value);
+  const arr = config.data.value.loverCards.filter(s => s?.type === loverCardType.value);
   return arr.length === 0 ? '' : arr[0]['name'];
 });
 const loverCardVisible = computed(() => {
   if(hks.value) {
     return true;
   }
-  const arr = config.data.value.loverCards.filter(s => s.type === loverCardType.value);
+  const arr = config.data.value.loverCards.filter(s => s?.type === loverCardType.value);
   return (arr.length === 0 ? true : arr[0]['visible']) || user.data.value.vip > 0;
 });
 const cardType = computed(() => {
@@ -188,7 +188,7 @@ const onDelete = (item) => {
     <view v-if="!hks" class="flex gap-20 w-full ml-10">
       <view
           class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
-          v-for="_cardType in config.data.value.loverCards.filter(s => s.open)"
+          v-for="_cardType in config.data.value.loverCards.filter(s => s?.open)"
           :style="{'border-radius': '20rpx', 'background-color': loverCardType===_cardType.type? '#FF6110':'#982F06'}"
           @click="loverCardType=_cardType.type"
           :key="_cardType.name">
