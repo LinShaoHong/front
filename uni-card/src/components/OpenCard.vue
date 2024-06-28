@@ -133,7 +133,7 @@ defineEmits(['close']);
                  'transform-style': 'preserve-3d',
                  'z-index': open? 102 : -1}">
     <view class="card w-full flex flex-col items-center justify-center z-200" :style="{height: height}">
-      <view class="absolute w-full" style="height: 10%; top: 12%">
+      <view class="absolute w-full" style="height: 15%; top: 12%">
         <view class="absolute w-full h-full flex items-center justify-center">
           <text class="font-bold text-black" style="font-size: 36rpx;">{{ title }}</text>
         </view>
@@ -143,7 +143,7 @@ defineEmits(['close']);
           {{ content }}
         </text>
       </view>
-      <view class="absolute w-full flex items-center justify-center" style="height: 45%; top:55%;">
+      <view class="absolute w-full flex items-center justify-center" style="height: 43%; top:57%;">
         <view class="lover_divider" style="left: 7vw"></view>
         <image :src="!defaulted && type? '/static/lover_ct.png':src"
                :class="!defaulted && !type? 'rd-20':''"
@@ -181,8 +181,8 @@ defineEmits(['close']);
 
 .lover_content {
   width: 80%;
-  height: 33%;
-  top: 22%;
+  height: 30%;
+  top: 27%;
   font-size: 32rpx;
   position: absolute;
   word-break: break-all;

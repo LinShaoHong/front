@@ -81,7 +81,7 @@ const picLoaded = () => {
 const uploadPic = () => {
   if ((curr.value === null || !curr.value['defaulted']) && !picLoading.value) {
     user.getUserInfo().then(() => {
-      const len = user.data.value.defs[0]['items'].filter(v => !v['defaulted']).length;
+      const len = cardItems.value.filter(v => !v['defaulted']).length;
       if ((curr.value == null && len >= 1) && user.data.value.vip < 1) {
         config.getConfigInfo().then(() => {
           showPay.value = true;
@@ -108,7 +108,7 @@ const uploadPic = () => {
 };
 
 const onEdit = () => {
-  const len = user.data.value.defs[0]['items'].filter(v => !v['defaulted']).length;
+  const len = cardItems.value.filter(v => !v['defaulted']).length;
   user.getUserInfo().then(() => {
     let can = true;
     if (user.data.value.vip < 1) {

@@ -113,7 +113,7 @@ defineEmits(['close']);
         {{ content }}
       </text>
     </view>
-    <view class="absolute w-full flex items-center justify-center" style="height: 45%; top:55%;">
+    <view class="absolute w-full flex items-center justify-center" style="height: 43%; top:57%;">
       <view class="lover_divider" style="left: 0"></view>
       <image :src="custom? '/static/lover_ct.png':src"
              :class="!defaulted && !custom? 'rd-20':''"
@@ -136,8 +136,8 @@ defineEmits(['close']);
 
 .lover_content {
   width: 80%;
-  height: 33%;
-  top: 22%;
+  height: 30%;
+  top: 27%;
   font-size: 24rpx;
   position: absolute;
   word-break: break-all;
