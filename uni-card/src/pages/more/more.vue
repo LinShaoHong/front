@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { networkError } from "@/utils/request";
 import { forward } from "@/utils/router";
-import { ios } from "@/utils/unis";
+import { ios, modal } from "@/utils/unis";
 import { useShare } from "@/hooks/useShare";
 import apiRoom from "@/api/apiRoom";
 import { useTabBar } from "@/hooks/useTabBar";
+import apiUser from "@/api/apiUser";
 
 const { tabBar } = useTabBar();
 const { onShareAppMessage, onShareTimeline, shareFunc, shareHks, sharePath, shareTitle } = useShare();
@@ -48,6 +49,17 @@ watch(hks, () => {
     joined.value = data.values;
   });
 });
+
+const remove = (id) => {
+  modal('删除此房间？', '', true).then(() => {
+    apiRoom.remove(id)
+        .then(() => {
+          apiRoom.joined(user.data.value.id, hks.value).then((data) => {
+            joined.value = data.values;
+          }).catch(() => networkError());
+        }).catch(() => networkError());
+  });
+};
 
 const hasDef = computed(() => {
   return !ios() || config.data.value.iosCanPay || user.data.value.vip >= 1;
@@ -99,7 +111,8 @@ const hasDef = computed(() => {
         <view v-for="join in joined" :key="join.mainUserId"
               :style="{'background-color': hks? '#4D0181':'#982F06'}"
               class="w-330 h-130 rd-30 mt-10 p-10 flex justify-center items-center"
-              @click="forward('room', { mainUserId: join.mainUserId, hks:hks })">
+              @click="forward('room', { mainUserId: join.mainUserId, hks:hks })"
+              @longpress="remove(join.id)">
           <Avatar class="h-100"
                   height-fix
                   :src="`${imgUri}/avatar/${join.avatar}.png`"

@@ -68,6 +68,14 @@ const http = {
   post: <T>(api: string, params: any) =>
     baseRequest('POST', api, {
       ...params
+    }) as Http.Response<T>,
+  put: <T>(api: string, params: any) =>
+    baseRequest('PUT', api, {
+      ...params
+    }) as Http.Response<T>,
+  delete: <T>(api: string, params: any) =>
+    baseRequest('DELETE', api, {
+      ...params
     }) as Http.Response<T>
 };
 

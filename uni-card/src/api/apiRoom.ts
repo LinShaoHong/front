@@ -84,6 +84,10 @@ const apiRoom = {
   joined: (userId: string, hks: boolean) => http.get<any>('/room/joined', {
     userId: userId,
     hks: hks,
+  }),
+
+  remove: (id: string) => http.get<any>('/room/remove', {
+    id: id
   })
 };
 
