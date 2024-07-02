@@ -61,6 +61,7 @@ declare namespace Config {
       open: boolean
       visible: boolean
     }],
+    toHks: boolean
     banners: [{
       src: string
       qr: string
