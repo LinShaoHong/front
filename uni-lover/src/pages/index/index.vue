@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Background from "@/components/Background.vue";
 
+//ad8cc12f7ac5a2310be15a6e2413ac2f
 const imgUri = inject('$imgUri');
 const config = useStore('config');
 const hks = ref(false);
@@ -27,6 +28,19 @@ const onShuffle = () => {
 
 <template>
   <Background :hks="hks"/>
+  <button class="fixed right-0 w-200 h-66 z-6"
+          :style="{top: 'calc(20vh - 60rpx)', background: 'transparent'}"
+          openType="contact">
+    <image v-if="hks" class="w-full h-full absolute left-0" src="/static/mask_bg.png"></image>
+    <view v-if="!hks"
+          class="w-full h-full absolute left-0"
+          style="background-image: linear-gradient(to right, #FF6110, transparent); border-radius: 66rpx 0 0 66rpx;"
+    />
+    <image class="w-76 h-66 absolute left-4" src="/static/message.png"></image>
+    <text class="h-full color-white absolute left-80 flex items-center justify-center" style="font-size: 28rpx;">
+      联系客服
+    </text>
+  </button>
   <view class="absolute flex flex-col items-center bottom-50 h-full left-0 right-0" style="height: 70%;">
     <image v-if="hks" class="absolute top-0 bottom-80" mode="heightFix" style="height: 80%;"
            src="/static/p_bg.png"></image>
