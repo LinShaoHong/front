@@ -121,11 +121,11 @@ defineEmits(['continue', 'reply', 'next']);
                mode="heightFix"
                class="absolute left-0 right-0" style="top: 35%; height: 50%; margin: auto"/>
         <view class="absolute bottom-25 w-full flex items-center justify-center">
-          <text class="font-bold text-white" style="font-size: 36rpx;">{{ title }}</text>
+          <text class="font-bold text-white" style="font-size: 38rpx;">{{ title }}</text>
         </view>
       </view>
       <view class="content" :style="contentStyle">
-        <text class="text-white align-center">
+        <text class="text-white align-center font-bold">
           {{ content }}
         </text>
       </view>
@@ -160,11 +160,11 @@ defineEmits(['continue', 'reply', 'next']);
     <view class="card w-full flex flex-col items-center justify-center z-200" :style="{height: height}">
       <view class="absolute w-full" style="height: 15%; top: 12%">
         <view class="absolute w-full h-full flex items-center justify-center">
-          <text class="font-bold text-black" style="font-size: 36rpx;">{{ title }}</text>
+          <text class="font-bold text-black" style="font-size: 38rpx;">{{ title }}</text>
         </view>
       </view>
       <view class="lover_content" :style="contentStyle">
-        <text class="text-black align-center">
+        <text class="text-black align-center font-bold">
           {{ content }}
         </text>
       </view>

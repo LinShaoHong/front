@@ -81,7 +81,7 @@ defineEmits(['close']);
         </view>
       </view>
       <view class="content" :style="contentStyle">
-        <text class="text-white align-center">
+        <text class="text-white align-center font-bold">
           {{ content }}
         </text>
       </view>
@@ -109,7 +109,7 @@ defineEmits(['close']);
       </view>
     </view>
     <view class="lover_content" :style="contentStyle">
-      <text class="text-black align-center" :style="{filter: loverCardVisible?'':'blur(7rpx)'}">
+      <text class="text-black align-center font-bold" :style="{filter: loverCardVisible?'':'blur(7rpx)'}">
         {{ content }}
       </text>
     </view>
