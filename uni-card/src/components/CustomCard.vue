@@ -118,7 +118,7 @@ defineEmits(['close']);
       <view class="lover_divider" style="left: 0"></view>
       <image :src="custom? '/static/lover_ct.png':src"
              :class="!defaulted && !custom? 'rd-20':''"
-             style="width: 54%; max-height: 94%" mode="widthFix"/>
+             :style="{width: '54%', 'max-height': '94%', filter: loverCardVisible? '':'blur(10rpx)'}" mode="widthFix"/>
       <view class="lover_divider" style="right: 0"></view>
     </view>
   </view>
