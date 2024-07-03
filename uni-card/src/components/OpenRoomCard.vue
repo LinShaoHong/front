@@ -166,7 +166,7 @@ defineEmits(['continue', 'reply', 'next']);
       <view class="w-full flex items-center justify-center">
         <view class="absolute flex flex-col items-center justify-center gap-10" style="width: 80%; height: 30%; top:27%;">
           <view class="w-full pl-10">
-            <image class="w-30 h-30" mode="aspectFit" src="/static/quo.png"></image>
+            <image class="w-30 h-30" mode="aspectFit" :src="`${imgUri}/quo.png`"></image>
           </view>
           <view class="lover_content">
             <text class="text-black align-center font-bold">

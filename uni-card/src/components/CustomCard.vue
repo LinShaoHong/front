@@ -111,7 +111,7 @@ defineEmits(['close']);
     <view class="w-full flex items-center justify-center">
       <view class="absolute flex flex-col items-center justify-center gap-6" style="width: 80%; height: 30%; top:22%;">
         <view class="w-full pl-8">
-          <image class="w-20 h-20" mode="aspectFit" src="/static/quo.png"></image>
+          <image class="w-20 h-20" mode="aspectFit" :src="`${imgUri}/quo.png`"></image>
         </view>
         <view class="lover_content" :style="contentStyle">
           <text class="text-black align-center font-bold" :style="{filter: loverCardVisible?'':'blur(7rpx)'}">
