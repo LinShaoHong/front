@@ -138,7 +138,7 @@ defineEmits(['close']);
           <text class="font-bold text-black" style="font-size: 38rpx;">{{ title }}</text>
         </view>
       </view>
-      <image class="absolute w-30" mode="widthFix" src="/static/quo.png" style="top: 27%; left:12%;"></image>
+      <image class="absolute w-30" mode="widthFix" src="/static/quo.png" style="bottom: 73%; left:12%;"></image>
       <view class="w-full flex items-center justify-center">
         <view class="lover_content" :style="contentStyle">
           <text class="text-black align-center font-bold">
