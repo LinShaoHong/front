@@ -108,6 +108,7 @@ defineEmits(['close']);
         <text class="font-bold text-black" style="font-size: 26rpx;">{{ title }}</text>
       </view>
     </view>
+    <image class="absolute w-20" mode="widthFix" src="/static/quo.png" style="top: 22%; left:12%;"></image>
     <view class="lover_content" :style="contentStyle">
       <text class="text-black align-center font-bold" :style="{filter: loverCardVisible?'':'blur(7rpx)'}">
         {{ content }}
@@ -135,7 +136,7 @@ defineEmits(['close']);
 }
 
 .lover_content {
-  width: 80%;
+  width: 70%;
   height: 30%;
   top: 27%;
   font-size: 24rpx;

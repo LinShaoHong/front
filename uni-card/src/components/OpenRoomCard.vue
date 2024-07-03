@@ -157,16 +157,19 @@ defineEmits(['continue', 'reply', 'next']);
                  transition: '.3s linear',
                  'transform-style': 'preserve-3d',
                  'z-index': open? 102 : -1}">
-    <view class="card w-full flex flex-col items-center justify-center z-200" :style="{height: height}">
+    <view class="card w-full z-200" :style="{height: height}">
       <view class="absolute w-full" style="height: 15%; top: 12%">
         <view class="absolute w-full h-full flex items-center justify-center">
           <text class="font-bold text-black" style="font-size: 38rpx;">{{ title }}</text>
         </view>
       </view>
-      <view class="lover_content" :style="contentStyle">
-        <text class="text-black align-center font-bold">
-          {{ content }}
-        </text>
+      <image class="absolute w-30" mode="widthFix" src="/static/quo.png" style="top: 27%; left:12%;"></image>
+      <view class="w-full flex items-center justify-center">
+        <view class="lover_content" :style="contentStyle">
+          <text class="text-black align-center font-bold">
+            {{ content }}
+          </text>
+        </view>
       </view>
       <view class="absolute w-full flex items-center justify-center" style="height: 43%; top:57%;">
         <view class="lover_divider" style="left: 7vw"></view>
@@ -227,7 +230,7 @@ defineEmits(['continue', 'reply', 'next']);
 }
 
 .lover_content {
-  width: 80%;
+  width: 70%;
   height: 30%;
   top: 27%;
   font-size: 32rpx;
