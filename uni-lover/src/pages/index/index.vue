@@ -24,6 +24,22 @@ const onShuffle = () => {
     });
   }
 };
+
+onShareAppMessage(async () => {
+  return {
+    title: config.data.value.cpShareTitle,
+    imageUrl: '',
+    path: 'pages/index/index'
+  }
+});
+
+onShareTimeline(() => {
+  return {
+    title: config.data.value.cpShareTitle,
+    imageUrl: '',
+    query: '',
+  }
+});
 </script>
 
 <template>

@@ -62,6 +62,7 @@ declare namespace Config {
       visible: boolean
     }],
     toHks: boolean
+    cpShareTitle: string
     banners: [{
       src: string
       qr: string

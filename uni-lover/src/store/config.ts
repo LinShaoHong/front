@@ -45,6 +45,7 @@ export default defineStore({
         },
         loverCards: [{}],
         toHks: false,
+        cpShareTitle: '',
         banners: [{}]
       }
     } as { data: Config.ConfigInfo };
