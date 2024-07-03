@@ -163,12 +163,16 @@ defineEmits(['continue', 'reply', 'next']);
           <text class="font-bold text-black" style="font-size: 38rpx;">{{ title }}</text>
         </view>
       </view>
-      <image class="absolute w-30" mode="widthFix" src="/static/quo.png" style="bottom: 73%; left:12%;"></image>
       <view class="w-full flex items-center justify-center">
-        <view class="lover_content" :style="contentStyle">
-          <text class="text-black align-center font-bold">
-            {{ content }}
-          </text>
+        <view class="absolute flex flex-col items-center justify-center gap-10" style="width: 80%; height: 30%; top:27%;">
+          <view class="w-full pl-10">
+            <image class="w-30 h-30" mode="aspectFit" src="/static/quo.png"></image>
+          </view>
+          <view class="lover_content">
+            <text class="text-black align-center font-bold">
+              {{ content }}
+            </text>
+          </view>
         </view>
       </view>
       <view class="absolute w-full flex items-center justify-center" style="height: 43%; top:57%;">
@@ -230,11 +234,8 @@ defineEmits(['continue', 'reply', 'next']);
 }
 
 .lover_content {
-  width: 70%;
-  height: 30%;
-  top: 27%;
+  width:80%;
   font-size: 32rpx;
-  position: absolute;
   word-break: break-all;
   overflow: scroll;
 }

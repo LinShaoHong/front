@@ -108,11 +108,17 @@ defineEmits(['close']);
         <text class="font-bold text-black" style="font-size: 26rpx;">{{ title }}</text>
       </view>
     </view>
-    <image class="absolute w-20" mode="widthFix" src="/static/quo.png" style="bottom: 78%; left:12%;"></image>
-    <view class="lover_content" :style="contentStyle">
-      <text class="text-black align-center font-bold" :style="{filter: loverCardVisible?'':'blur(7rpx)'}">
-        {{ content }}
-      </text>
+    <view class="w-full flex items-center justify-center">
+      <view class="absolute flex flex-col items-center justify-center gap-6" style="width: 80%; height: 30%; top:22%;">
+        <view class="w-full pl-8">
+          <image class="w-20 h-20" mode="aspectFit" src="/static/quo.png"></image>
+        </view>
+        <view class="lover_content" :style="contentStyle">
+          <text class="text-black align-center font-bold" :style="{filter: loverCardVisible?'':'blur(7rpx)'}">
+            {{ content }}
+          </text>
+        </view>
+      </view>
     </view>
     <view class="absolute w-full flex items-center justify-center" style="height: 43%; top:57%;">
       <view class="lover_divider" style="left: 0"></view>
@@ -136,11 +142,8 @@ defineEmits(['close']);
 }
 
 .lover_content {
-  width: 70%;
-  height: 30%;
-  top: 27%;
+  width: 80%;
   font-size: 24rpx;
-  position: absolute;
   word-break: break-all;
   overflow: scroll;
 }
