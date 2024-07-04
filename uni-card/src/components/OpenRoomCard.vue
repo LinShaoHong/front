@@ -51,7 +51,9 @@ const imgUri = inject('$imgUri');
 
 const loverCardTypeName = computed(() => {
   const arr = config.data.value.loverCards.filter(s => s.type === props.loverCardType);
-  return arr.length === 0 ? '' : arr[0]['name'];
+  const name = arr.length === 0 ? '' : arr[0]['name'];
+  const i = name.indexOf("(");
+  return i > 0 ? name.substring(0, i) : name;
 });
 
 const contentStyle = computed(() => {
@@ -164,15 +166,16 @@ defineEmits(['continue', 'reply', 'next']);
         </view>
       </view>
       <view class="w-full flex items-center justify-center">
-        <view class="absolute flex flex-col items-center justify-center gap-10" style="width: 80%; height: 30%; top:27%;">
+        <view class="absolute flex flex-col items-center justify-center gap-10"
+              style="width: 80%; height: 30%; top:27%;">
           <view class="w-full pl-10">
             <image class="w-30 h-30" mode="aspectFit" :src="`${imgUri}/quo.png`"></image>
           </view>
-          <view class="lover_content">
+          <scroll-view class="lover_content" scroll-y :show-scrollbar="false">
             <text class="text-black align-center font-bold">
               {{ content }}
             </text>
-          </view>
+          </scroll-view>
         </view>
       </view>
       <view class="absolute w-full flex items-center justify-center" style="height: 43%; top:57%;">
@@ -234,7 +237,7 @@ defineEmits(['continue', 'reply', 'next']);
 }
 
 .lover_content {
-  width:80%;
+  width: 80%;
   font-size: 32rpx;
   word-break: break-all;
   overflow: scroll;

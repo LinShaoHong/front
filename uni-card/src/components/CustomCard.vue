@@ -46,7 +46,9 @@ const props = defineProps({
 const imgUri = inject('$imgUri');
 const loverCardTypeName = computed(() => {
   const arr = config.data.value.loverCards.filter(s => s.type === props.loverCardType);
-  return arr.length === 0 ? '' : arr[0]['name'];
+  const name = arr.length === 0 ? '' : arr[0]['name'];
+  const i = name.indexOf("(");
+  return i > 0 ? name.substring(0, i) : name;
 });
 const loverCardVisible = computed(() => {
   const arr = config.data.value.loverCards.filter(s => s.type === props.loverCardType);
@@ -113,18 +115,18 @@ defineEmits(['close']);
         <view class="w-full pl-8">
           <image class="w-20 h-20" mode="aspectFit" :src="`${imgUri}/quo.png`"></image>
         </view>
-        <view class="lover_content" :style="contentStyle">
+        <scroll-view class="lover_content" :style="contentStyle" scroll-y :show-scrollbar="false">
           <text class="text-black align-center font-bold" :style="{filter: loverCardVisible?'':'blur(7rpx)'}">
             {{ content }}
           </text>
-        </view>
+        </scroll-view>
       </view>
     </view>
     <view class="absolute w-full flex items-center justify-center" style="height: 43%; top:57%;">
       <view class="lover_divider" style="left: 0"></view>
       <image :src="custom? '/static/lover_ct.png':src"
              :class="!defaulted && !custom? 'rd-20':''"
-             :style="{width: '54%', 'max-height': '94%', filter: loverCardVisible? '':'blur(10rpx)'}" mode="widthFix"/>
+             :style="{width: '54%', 'max-height': '94%', filter: loverCardVisible? '':'blur(14rpx)'}" mode="widthFix"/>
       <view class="lover_divider" style="right: 0"></view>
     </view>
   </view>
