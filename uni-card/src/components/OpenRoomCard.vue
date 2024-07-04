@@ -68,7 +68,27 @@ const contentStyle = computed(() => {
   }
 });
 
-defineEmits(['continue', 'reply', 'next']);
+const emit = defineEmits(['continue', 'reply', 'next']);
+
+const scTop = ref(0);
+const oscTop = ref(0);
+const scroll = (e) => {
+  scTop.value = e.detail.scrollTop;
+};
+const _continue = () => {
+  scTop.value = oscTop.value;
+  nextTick(() => {
+    scTop.value = 0;
+  });
+  emit('continue');
+}
+const _next = () => {
+  scTop.value = oscTop.value;
+  nextTick(() => {
+    scTop.value = 0;
+  });
+  emit('next');
+}
 </script>
 <template>
   <view class="fixed w-100vw h-100vh top-0"
@@ -171,7 +191,7 @@ defineEmits(['continue', 'reply', 'next']);
           <view class="w-full pl-10">
             <image class="w-30 h-30" mode="aspectFit" :src="`${imgUri}/quo.png`"></image>
           </view>
-          <scroll-view class="lover_content" scroll-y :show-scrollbar="false">
+          <scroll-view class="lover_content" scroll-y :show-scrollbar="false" :scroll-top="scTop" @scroll="scroll">
             <text class="text-black align-center font-bold">
               {{ content }}
             </text>
@@ -189,7 +209,7 @@ defineEmits(['continue', 'reply', 'next']);
     <view class="absolute bottom-150 w-full flex justify-center items-center gap-20"
           style="transform: rotateY(180deg); backface-visibility: hidden;">
       <view v-if="showOp" class="flex items-center justify-center"
-            @click="$emit('continue')">
+            @click="_continue">
         <view class="flex gap-10 lover_btn">
           <text>继续抽</text>
         </view>
@@ -201,7 +221,7 @@ defineEmits(['continue', 'reply', 'next']);
         </view>
       </view>
       <view v-if="showOp" class="flex items-center justify-center"
-            @click="$emit('next')">
+            @click="_next">
         <view class="flex gap-10 lover_btn">
           <text>让TA抽</text>
         </view>

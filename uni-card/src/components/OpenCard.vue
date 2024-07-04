@@ -58,9 +58,20 @@ const contentStyle = computed(() => {
     }
   }
 });
+const emit = defineEmits(['close']);
 
-
-defineEmits(['close']);
+const scTop = ref(0);
+const oscTop = ref(0);
+const scroll = (e) => {
+  scTop.value = e.detail.scrollTop;
+};
+const _close = () => {
+  scTop.value = oscTop.value;
+  nextTick(() => {
+    scTop.value = 0;
+  });
+  emit('close');
+}
 </script>
 <template>
   <view class="fixed w-100vw h-100vh top-0"
@@ -146,7 +157,7 @@ defineEmits(['close']);
           <view class="w-full pl-10">
             <image class="w-30 h-30" mode="aspectFit" :src="`${imgUri}/quo.png`"></image>
           </view>
-          <scroll-view class="lover_content" scroll-y :show-scrollbar="false" :scroll-top="0">
+          <scroll-view class="lover_content" scroll-y :show-scrollbar="false" :scroll-top="scTop" @scroll="scroll">
             <text class="text-black align-center font-bold">
               {{ content }}
             </text>
@@ -164,7 +175,7 @@ defineEmits(['close']);
     <view class="absolute bottom-150 flex items-center justify-center"
           style="transform: rotateY(180deg); backface-visibility: hidden;"
           @click="$emit('close')">
-      <view class="flex gap-10 lover_btn" @click="$emit('close')">
+      <view class="flex gap-10 lover_btn" @click="_close">
         <text>完成任务</text>
       </view>
     </view>
