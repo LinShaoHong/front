@@ -53,6 +53,8 @@ declare namespace Config {
         defContent: string
         battleTitle: string
         battleContent: string
+        smsTitle: string
+        smsContent: string
       }
     },
     loverCards: [{

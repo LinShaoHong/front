@@ -49,6 +49,21 @@
           }
         }
       ]
+    },
+    {
+      "root": "pages/sms",
+      "pages": [
+        {
+          "name": "sms",
+          "path": "sms",
+          "style": {
+            "navigationBarTitleText": "匿名信",
+            "app-plus": {
+              "softinputMode": "adjustResize"
+            }
+          }
+        }
+      ]
     }
   ],
   "globalStyle": {

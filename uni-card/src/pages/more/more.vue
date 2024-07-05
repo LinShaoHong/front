@@ -76,7 +76,7 @@ const hasDef = computed(() => {
           :class="['mt-10 h-10vh w-70vw rd-100 flex flex-col items-center justify-center',hks? 'define_box':'lover_define_box']"
           @click="forward('custom', { hks:hks })">
       <view class="w-full h-full flex items-center justify-center gap-10">
-        <image src="/static/define_add.png" class="h-5vh" mode="heightFix">+</image>
+        <image src="/static/define_add.png" class="h-5vh" mode="heightFix"/>
         <text class="text-white" style="font-size: 40rpx">
           {{ hks ? config.data.value.more.hks.defTitle : config.data.value.more.lover.defTitle }}
         </text>
@@ -90,13 +90,27 @@ const hasDef = computed(() => {
         :style="{'margin-top': hasDef? '50rpx' : '10rpx'}"
         @click="forward('room', { hks:hks })">
       <view class="w-full h-full flex items-center justify-center gap-10">
-        <image :src="hks? '/static/battle.png':'/static/lover_battle.png'" class="h-5vh" mode="heightFix">+</image>
+        <image :src="hks? '/static/battle.png':'/static/lover_battle.png'" class="h-5vh" mode="heightFix"/>
         <text class="text-white" style="font-size: 40rpx">
           {{ hks ? config.data.value.more.hks.battleTitle : config.data.value.more.lover.battleTitle }}
         </text>
       </view>
       <text class="text-white mb-10" style="font-size: 26rpx;">
         {{ hks ? config.data.value.more.hks.battleContent : config.data.value.more.lover.battleContent }}
+      </text>
+    </view>
+    <view v-if="!hks"
+        :class="['h-10vh w-70vw rd-100 flex flex-col items-center justify-center lover_sms_box']"
+        :style="{'margin-top': hasDef? '50rpx' : '10rpx'}"
+        @click="forward('sms')">
+      <view class="w-full h-full flex items-center justify-center gap-10">
+        <image :src="`${imgUri}/sms.png`" class="h-5vh" mode="heightFix"/>
+        <text class="text-white" style="font-size: 40rpx">
+          {{ config.data.value.more.lover.smsTitle }}
+        </text>
+      </view>
+      <text class="text-white mb-10" style="font-size: 26rpx;">
+        {{ config.data.value.more.lover.smsContent }}
       </text>
     </view>
   </view>
@@ -153,6 +167,12 @@ const hasDef = computed(() => {
 .lover_battle_box {
   box-sizing: border-box;
   background-image: linear-gradient(to right, #662D8C, #ED1E79);
+  box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.lover_sms_box {
+  box-sizing: border-box;
+  background-image: linear-gradient(to right, #ee0979, #ff6a00);
   box-shadow: rgba(50, 50, 93, 0.25) 0 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
 

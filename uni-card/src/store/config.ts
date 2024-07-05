@@ -41,6 +41,8 @@ export default defineStore({
             defContent: '可添加编辑卡牌，随心畅玩！',
             battleTitle: '情侣格斗',
             battleContent: '可邀请他人同时在线对弈',
+            smsTitle: '自定义',
+            smsContent: '可添加编辑卡牌，随心畅玩！',
           }
         },
         loverCards: [{}],
