@@ -6,6 +6,7 @@ declare namespace User {
     shareCode: string
     avatar: number
     nickname: string
+    phone: string
     playCount: number
     loverPlayCount: number
     vip: number

@@ -3,6 +3,8 @@ import { useWxPay } from "@/hooks/useWxPay";
 import { message, modal } from "@/utils/unis";
 
 const { wxPay } = useWxPay();
+const user = useStore('user');
+const config = useStore('config');
 
 const props = defineProps({
   show: Boolean,
@@ -21,7 +23,8 @@ const props = defineProps({
 const emits = defineEmits(['close']);
 
 const doPay = () => {
-  wxPay(props.vip as number).then(async () => {
+  wxPay(config.data.value.price).then(async (prepayId) => {
+    await user.vip(props.vip as number, prepayId as string);
     await modal('', '解锁成功');
   }).catch(() => {
     message('解锁失败', 4);
@@ -35,7 +38,8 @@ const doPay = () => {
       <text class="font-bold" style="font-size: 36rpx">游戏需知</text>
       <view class="break-all w-full p-20" v-html="html"></view>
       <view v-if="hasPay" class="h-65 w-250 mt-10 rd-40 text-white flex items-center justify-center"
-            :style="{background: hks?'#482380':'#FF6110', 'font-size': '32rpx', 'letter-spacing': '3rpx'}" @click="doPay">立即解锁
+            :style="{background: hks?'#482380':'#FF6110', 'font-size': '32rpx', 'letter-spacing': '3rpx'}"
+            @click="doPay">立即解锁
       </view>
     </view>
   </Popup>

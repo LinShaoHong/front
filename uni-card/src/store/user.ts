@@ -12,6 +12,7 @@ export default defineStore({
         shareCode: "",
         avatar: 1,
         nickname: "",
+        phone: "",
         playCount: 0,
         loverPlayCount: 0,
         vip: 0,

@@ -16,6 +16,7 @@ const { sseConnect, sseAbort } = useSSE();
 const user = useStore('user');
 const config = useStore('config');
 const imgUri = inject('$imgUri');
+const canPopup = ref(false);
 
 //-------------------- share -----------------------
 const { onShareAppMessage, onShareTimeline, sharePath, shareTitle, shareMainUserId, shareHks, shareFunc } = useShare();
@@ -52,6 +53,7 @@ const onChoosePlayer = () => {
 };
 
 onLoad(async (option) => {
+  delay(500).then(() => canPopup.value = true);
   shuffleCards();
   config.getConfigInfo().then(() => {
     loverCardType.value = config.data.value.loverCards.filter(s => s.open)[0]?.type;
@@ -633,83 +635,86 @@ const replyMessageInBottom = computed(() => {
   </view>
 
   <Popup :show="showPlayers" position="bottom" @clickMask="showPlayers=false">
-    <view v-if="showPlayers" class="p-20 relative h-50vh flex items-center justify-center" style="background: white">
-      <view class="absolute top-20 w-full text-center" style="font-size: 34rpx; color: black">指定抽牌玩家<br/>（仅房主允许指定）
-      </view>
-      <button
-          v-if="isMain"
-          class="btn absolute top-10 right-20 w-120 h-70 flex items-center justify-center"
-          :disabled="choosePlayerLoading"
-          :loading="choosePlayerLoading"
-          @tap.stop="onChoosePlayer"
-          :style="{'background-color': hks? '#482380':'#FF6110', color: 'white', 'font-size': '26rpx;'}"
-      >
-        {{ choosePlayerLoading ? '' : '确定' }}
-      </button>
-      <scroll-view scroll-y class="avatar absolute top-150 w-700">
-        <view class="flex flex-wrap gap-15 pb-50">
-          <view v-for="_player in players"
-                :class="['ava-item h-120 w-200',_player.userId===choosePlayerId? (hks? 'active':'lover_active'):'inactive']"
-                @click="choosePlayerId=_player.userId" :key="_player.userId">
-            <view class="flex flex-col items-center justify-center h-full w-full pl-10 pr-10">
-              <Avatar class="h-100"
-                      height-fix
-                      :src="`${imgUri}/avatar/${_player.avatar}.png`"
-                      :vip="_player.vip"
-              />
-              <text style="font-size: 22rpx; color: black;">{{ _player.nickname }}</text>
-              <text v-if="mainUser.id===_player.userId" style="font-size: 20rpx; color: black;"><br/>（房主）</text>
+    <view :class="[canPopup? '':'h-0']">
+      <view v-if="showPlayers" class="p-20 relative h-50vh flex items-center justify-center" style="background: white">
+        <view class="absolute top-20 w-full text-center" style="font-size: 34rpx; color: black">指定抽牌玩家<br/>（仅房主允许指定）
+        </view>
+        <button
+            v-if="isMain"
+            class="btn absolute top-10 right-20 w-120 h-70 flex items-center justify-center"
+            :disabled="choosePlayerLoading"
+            :loading="choosePlayerLoading"
+            @tap.stop="onChoosePlayer"
+            :style="{'background-color': hks? '#482380':'#FF6110', color: 'white', 'font-size': '26rpx;'}"
+        >
+          {{ choosePlayerLoading ? '' : '确定' }}
+        </button>
+        <scroll-view scroll-y class="avatar absolute top-150 w-700">
+          <view class="flex flex-wrap gap-15 pb-50">
+            <view v-for="_player in players"
+                  :class="['ava-item h-120 w-200',_player.userId===choosePlayerId? (hks? 'active':'lover_active'):'inactive']"
+                  @click="choosePlayerId=_player.userId" :key="_player.userId">
+              <view class="flex flex-col items-center justify-center h-full w-full pl-10 pr-10">
+                <Avatar class="h-100"
+                        height-fix
+                        :src="`${imgUri}/avatar/${_player.avatar}.png`"
+                        :vip="_player.vip"
+                />
+                <text style="font-size: 22rpx; color: black;">{{ _player.nickname }}</text>
+                <text v-if="mainUser.id===_player.userId" style="font-size: 20rpx; color: black;"><br/>（房主）</text>
+              </view>
             </view>
           </view>
-        </view>
-      </scroll-view>
+        </scroll-view>
+      </view>
     </view>
   </Popup>
 
   <Popup :show="showReply" position="bottom" @clickMask="showReply=false">
-    <view class="w-screen h-100 flex justify-center items-center"
-          @click="showReply=false">
-      <uni-icons type="down" size="24" color="#EDEDED"/>
-    </view>
-    <scroll-view id="replyMessageId"
-                 :scroll-into-view="replyBottomId"
-                 :style="{height: replyInputHeight===0? '60vh':('min(60vh, calc(99vh - '+replyKeyboardHeight+'px - '+replyInputHeight+'px))'),'background-color': '#EDEDED', 'border-radius': '20rpx 20rpx 0 0'}"
-                 @scroll="replyScroll"
-                 scroll-y>
-      <view class="relative flex gap-10 pt-20 pb-20 ml-20 mr-20"
-            :style="{'flex-direction': chat.userId===user.data.value.id? 'row-reverse':'row'}"
-            v-for="chat in chats"
-            :id="'replyId:'+chat.id"
-            :key="chat.id">
-        <Avatar class="h-10vw"
-                height-fix
-                :src="`${imgUri}/avatar/${chat.avatar}.png`"
-                :vip="chat.vip"
-        />
-        <view class="flex flex-col gap-5">
-          <text v-if="chat.userId!==user.data.value.id" style="color: #858585;font-size: 22rpx;">{{
-              chat.nickname
-            }}
-          </text>
-          <view class="relative max-w-70vw rd-10 min-h-10vw flex items-center p-20"
-                :style="{'background-color': chat.userId!==user.data.value.id? 'white':'#FFCBB0','font-size':'32rpx'}">
-            <text>
-              {{ decodeURIComponent(chat.message) }}
+    <view :class="[canPopup? '':'h-0']">
+      <view class="w-screen h-100 flex justify-center items-center"
+            @click="showReply=false">
+        <uni-icons type="down" size="24" color="#EDEDED"/>
+      </view>
+      <scroll-view id="replyMessageId"
+                   :scroll-into-view="replyBottomId"
+                   :style="{height: replyInputHeight===0? '60vh':('min(60vh, calc(99vh - '+replyKeyboardHeight+'px - '+replyInputHeight+'px))'),'background-color': '#EDEDED', 'border-radius': '20rpx 20rpx 0 0'}"
+                   @scroll="replyScroll"
+                   scroll-y>
+        <view class="relative flex gap-10 pt-20 pb-20 ml-20 mr-20"
+              :style="{'flex-direction': chat.userId===user.data.value.id? 'row-reverse':'row'}"
+              v-for="chat in chats"
+              :id="'replyId:'+chat.id"
+              :key="chat.id">
+          <Avatar class="h-10vw"
+                  height-fix
+                  :src="`${imgUri}/avatar/${chat.avatar}.png`"
+                  :vip="chat.vip"
+          />
+          <view class="flex flex-col gap-5">
+            <text v-if="chat.userId!==user.data.value.id" style="color: #858585;font-size: 22rpx;">{{
+                chat.nickname
+              }}
             </text>
-            <view v-if="chat.userId===user.data.value.id"
-                  class="absolute left--60 bottom-0">
-              <text style="font-size: 24rpx; color:#858585" @click="withdrawReply(chat.id)">撤回</text>
+            <view class="relative max-w-70vw rd-10 min-h-10vw flex items-center p-20"
+                  :style="{'background-color': chat.userId!==user.data.value.id? 'white':'#FFCBB0','font-size':'32rpx'}">
+              <text>
+                {{ decodeURIComponent(chat.message) }}
+              </text>
+              <view v-if="chat.userId===user.data.value.id"
+                    class="absolute left--60 bottom-0">
+                <text style="font-size: 24rpx; color:#858585" @click="withdrawReply(chat.id)">撤回</text>
+              </view>
             </view>
           </view>
         </view>
-      </view>
-    </scroll-view>
-    <view class="w-screen pb-20 pt-20 pl-50 pr-50 flex justify-center" id="replyInputId"
-          style="background-color: #F7F7F7; gap: 3vw; border-top: 1rpx #D5D5D5 solid; align-items: flex-end">
-      <view class="p-20 flex items-center"
-            style="background-color: white; border-radius: 10rpx; flex: 1;">
-        <scroll-view scroll-y class="max-h-280"
-                     style="background-color: white; display: inline-block;overflow: hidden">
+      </scroll-view>
+      <view class="w-screen pb-20 pt-20 pl-50 pr-50 flex justify-center" id="replyInputId"
+            style="background-color: #F7F7F7; gap: 3vw; border-top: 1rpx #D5D5D5 solid; align-items: flex-end">
+        <view class="p-20 flex items-center"
+              style="background-color: white; border-radius: 10rpx; flex: 1;">
+          <scroll-view scroll-y class="max-h-280"
+                       style="background-color: white; display: inline-block;overflow: hidden">
             <textarea class="w-full"
                       auto-height
                       maxlength="1000"
@@ -718,15 +723,16 @@ const replyMessageInBottom = computed(() => {
                       @focus="replyFocus"
                       @input="replyInput"
                       style="background-color: white; font-size: 32rpx; line-height: 32rpx; resize: none;"/>
-        </scroll-view>
+          </scroll-view>
+        </view>
+        <view :class="['text-white h-60 mb-10 flex items-center justify-center', isEmpty(replyMsg)? '0':'w-15vw']"
+              style="background-color: #FF6110; font-size: 28rpx; border-radius: 6rpx; transition: width 2s ease"
+              @click="sendReply">
+          <text>{{ isEmpty(replyMsg) ? '' : '发送' }}</text>
+        </view>
       </view>
-      <view :class="['text-white h-60 mb-10 flex items-center justify-center', isEmpty(replyMsg)? '0':'w-15vw']"
-            style="background-color: #FF6110; font-size: 28rpx; border-radius: 6rpx; transition: width 2s ease"
-            @click="sendReply">
-        <text>{{ isEmpty(replyMsg) ? '' : '发送' }}</text>
-      </view>
+      <view class="w-screen" :style="{height: replyKeyboardHeight+'px', 'background-color':'#F7F7F7'}"></view>
     </view>
-    <view class="w-screen" :style="{height: replyKeyboardHeight+'px', 'background-color':'#F7F7F7'}"></view>
   </Popup>
 
   <OpenRoomCard :open="open"

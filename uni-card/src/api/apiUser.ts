@@ -4,6 +4,8 @@ import LoginReq = User.LoginReq;
 const apiUser = {
   login: (body: LoginReq) => http.post<any>('/account/wx/login', body),
 
+  getPhoneNumber: (id: string, code: string) => http.get<any>('/account/wx/getPhoneNumber', { id: id, code: code }),
+
   getById: (id: string, os: string) => http.get<any>('/account/byId', { id: id, os: os }),
 
   invited: (code: string) => http.get<any>('/account/invited', { code: code }),

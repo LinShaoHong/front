@@ -6,7 +6,6 @@ import { isH5, isMp } from "@/utils/platform";
  * 微信支付
  */
 const user = useStore('user');
-const config = useStore('config');
 
 export function useWxPay() {
   const payLoading = ref(false);
@@ -22,15 +21,15 @@ export function useWxPay() {
     }
   });
 
-  const pay = (vip: number) => {
+  const pay = (price: string) => {
     return new Promise((resolve, reject) => {
-      apiPay.wxPay(config.data.value.price, user.data.value.id, isH5)
+      apiPay.wxPay(price, user.data.value.id, isH5)
         .then((res) => {
           const v = res.value;
           wxPay(v.appId, v.timeStamp, v.nonceStr, v.pkg, v.paySign, v.signType)
             .then(async () => {
               payLoading.value = true;
-              user.vip(vip, v.pkg);
+              resolve(v.pkg);
               payLoading.value = false;
             }).catch(err => {
             reject(err);
