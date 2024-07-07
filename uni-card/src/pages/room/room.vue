@@ -188,7 +188,7 @@ const onNext = () => {
 const backCardsCount = ref(5);
 const backCardStyle = computed(() => (index) => {
   return {
-    top: ((index-1) * 18) + 'rpx',
+    top: ((index - 1) * 18) + 'rpx',
     transform: 'scale(' + (0.9 + index * 0.03) + ')' + (open.value && index === backCardsCount.value ? 'rotateY(180deg)' : ''),
     'z-index': index + 10,
     transition: 'transform .4s ease'
@@ -375,6 +375,11 @@ const openPayDialog = () => {
 //--------------------- reply ----------------------
 const chats = ref([] as any);
 const replyMsg = ref('');
+watch(replyMsg, (n, o) => {
+  if (n.length > 500) {
+    replyMsg.value = n.substring(0, 500);
+  }
+});
 const showReply = ref(false);
 const replyBottomId = ref('');
 const replyAudio = uni.createInnerAudioContext();
@@ -710,14 +715,14 @@ const replyMessageInBottom = computed(() => {
         </view>
       </scroll-view>
       <view class="w-screen pb-20 pt-20 pl-50 pr-50 flex justify-center" id="replyInputId"
-            style="background-color: #F7F7F7; gap: 3vw; border-top: 1rpx #D5D5D5 solid; align-items: flex-end">
+            style="background-color: #F7F7F7; border-top: 1rpx #D5D5D5 solid; align-items: flex-end">
         <view class="p-20 flex items-center"
               style="background-color: white; border-radius: 10rpx; flex: 1;">
           <scroll-view scroll-y class="max-h-280"
                        style="background-color: white; display: inline-block;overflow: hidden">
             <textarea class="w-full"
                       auto-height
-                      maxlength="1000"
+                      :maxlength="500"
                       :adjust-position="false"
                       v-model="replyMsg"
                       @focus="replyFocus"
@@ -725,10 +730,11 @@ const replyMessageInBottom = computed(() => {
                       style="background-color: white; font-size: 32rpx; line-height: 32rpx; resize: none;"/>
           </scroll-view>
         </view>
-        <view :class="['text-white h-60 mb-10 flex items-center justify-center', isEmpty(replyMsg)? '0':'w-15vw']"
-              style="background-color: #FF6110; font-size: 28rpx; border-radius: 6rpx; transition: width 2s ease"
+        <view v-if="!isEmpty(replyMsg)"
+              class="text-white h-60 mb-10 flex items-center justify-center w-15vw"
+              style="background-color: #FF6110; font-size: 28rpx; border-radius: 10rpx; transition: width 2s ease; margin-left: 3vw"
               @click="sendReply">
-          <text>{{ isEmpty(replyMsg) ? '' : '发送' }}</text>
+          <text>发送</text>
         </view>
       </view>
       <view class="w-screen" :style="{height: replyKeyboardHeight+'px', 'background-color':'#F7F7F7'}"></view>
