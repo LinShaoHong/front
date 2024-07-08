@@ -50,6 +50,7 @@ export default defineStore({
         smsUnit: 60,
         smsPrice: 0.75,
         smsPlaceholder: '',
+        smsShareTitle:'',
         smsTemps: [{}],
         banners: [{}]
       }

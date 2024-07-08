@@ -69,6 +69,7 @@ declare namespace Config {
     smsUnit: number
     smsPrice: number
     smsPlaceholder: string
+    smsShareTitle: string
     smsTemps:[{
       type: string,
       name: string

@@ -14,7 +14,7 @@ const { onShareAppMessage, onShareTimeline, sharePath, shareTitle, shareHks, sha
 shareFunc.value = () => {
   sharePath.value = 'pages/sms/sms';
   shareHks.value = hks.value;
-  shareTitle.value = '请接收一封你的匿名信'
+  shareTitle.value = config.data.value.smsShareTitle;
 };
 
 const user = useStore('user');
