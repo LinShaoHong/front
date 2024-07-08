@@ -2,8 +2,8 @@ const apiEnv: ApiEnv = 'prod';
 
 const envMap = {
   dev: {
-    baseUrl: 'http://192.168.10.106',
-    apiBaseUrl: 'http://192.168.10.106:9939/api',
+    baseUrl: 'http://172.20.100.33',
+    apiBaseUrl: 'http://172.20.100.33:9939/api',
   },
   beta: {
     baseUrl: 'http://m.beta.xxx.com',
@@ -14,8 +14,8 @@ const envMap = {
     apiBaseUrl: 'https://gooluky.cn/card/api'
   },
   local: {
-    baseUrl: 'http://192.168.10.106:9939',
-    apiBaseUrl: 'http://192.168.10.106:9939/api',
+    baseUrl: 'http://172.20.100.33:9939',
+    apiBaseUrl: 'http://172.20.100.33:9939/api',
   }
 };
 

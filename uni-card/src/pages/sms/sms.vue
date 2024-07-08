@@ -6,6 +6,8 @@ import apiUser from "@/api/apiUser";
 import { networkError } from "@/utils/request";
 import { isEmpty } from "@/utils/is";
 import { useWxPay } from "@/hooks/useWxPay";
+import apiSms from "@/api/apiSms";
+import { valiPhone } from "@/utils/validator";
 
 const { wxPay } = useWxPay();
 const { onShareAppMessage, onShareTimeline, sharePath, shareTitle, shareHks, shareFunc } = useShare();
@@ -16,11 +18,17 @@ shareFunc.value = () => {
 };
 
 const user = useStore('user');
+const config = useStore('config');
+
 const hks = ref(false);
 const imgUri = inject('$imgUri');
 const canPopup = ref(false);
-onLoad(() => {
-  delay(500).then(() => canPopup.value = true);
+onLoad(async () => {
+  await delay(500).then(() => canPopup.value = true);
+  apiSms.recPhones(user.data.value.id).then((data) => {
+    recPhones.value = data.values;
+  }).catch(() => networkError());
+  fetchTemps();
   listenKeyboard();
 });
 
@@ -36,8 +44,10 @@ const showTemplate = ref(false);
 const showMessages = ref(false);
 const phone = ref('');
 const phoneFocus = ref(false);
-const recPhones = ref(['18772323232', '18672323232', '18672323232']);
-const tempMsgs = ref(['亲爱']);
+const recPhones = ref([] as any);
+
+const tempType = ref(config.data.value.smsTemps[0]?.type);
+const tempMsgs = ref([] as any);
 const copyTemplate = (txt) => {
   uni.setClipboardData({
     data: txt,
@@ -46,36 +56,96 @@ const copyTemplate = (txt) => {
     }
   })
 };
+const fetchTemps = () => {
+  apiSms.getSpecsByType(tempType.value).then((data) => {
+    tempMsgs.value = data.values;
+  }).catch(() => networkError());
+};
+watch(tempType, () => {
+  fetchTemps();
+});
+
 const onGetPhoneNumber = (e) => {
   const { detail: { code } } = e;
   if (isEmpty(code)) {
     return;
   }
-  apiUser.getPhoneNumber(user.data.value.id, code,)
-      .then(data => {
-        user.setUserInfo(data.value);
-        onSend();
-      }).catch(() => networkError());
+  return new Promise((resolve, reject) => {
+    apiUser.getPhoneNumber(user.data.value.id, code,)
+        .then(data => {
+          user.setUserInfo(data.value);
+          resolve(data.value);
+        }).catch(() => networkError());
+  });
 };
-const onSend = () => {
-  wxPay('1.5').then(async (prepayId) => {
-
+const onGetPhoneNumberAndSend = (e) => {
+  onGetPhoneNumber(e)?.then(() => {
+    onSend(phone.value, content.value);
   });
 };
 
+const onSend = (p, m) => {
+  if (isEmpty(user.data.value.phone)) {
+    return;
+  }
+  if (isEmpty(m)) {
+    return message('请输入短信内容', 3);
+  }
+  if (isEmpty(p)) {
+    return message('请输入手机号', 3);
+  }
+  if (!valiPhone(p)) {
+    return message('请输入正确的手机号', 3);
+  }
+
+  const total = Math.ceil(m.length / config.data.value.smsUnit) * config.data.value.smsPrice + '';
+  return new Promise((resolve, reject) => {
+    wxPay(total).then(async () => {
+      apiSms.send({
+        userId: user.data.value.id,
+        fromPhone: user.data.value.phone,
+        toPhone: p,
+        message: m
+      }).then((data) => {
+        message('发送成功', 3);
+        resolve(data);
+      }).catch(() => networkError());
+    }).catch(() => networkError());
+  });
+};
+
+//----------------- records ---------------
+const records = ref([] as any);
+watch(write, (n, o) => {
+  if (!n) {
+    apiSms.records(user.data.value.id)
+        .then((data) => records.value = data.values)
+        .catch(() => networkError());
+  }
+});
+
+const recordPhone = ref('');
+const onRecord = (phone) => {
+  apiSms.chats(user.data.value.id, phone)
+      .then((data) => {
+        chats.value = data.values;
+        recordPhone.value = phone;
+        showMessages.value = true;
+        toReplyBottom();
+      })
+      .catch(() => networkError());
+};
+
 //----------------- chats ---------------
-const chats = ref([{
-  id: '1',
-  time: '2020-12-12 23:32:04',
-  userId: user.data.value.id,
-  message: '我真的是个沙嗲呢，padding 值为高度的一半padding 值为高度的一半padding 值为高度的一半'
-}, {
-  id: '2',
-  time: '2020-12-12 23:32:04',
-  userId: user.data.value.id + '123',
-  message: '我真的是个沙嗲呢，既然把你丢了呢'
-}] as any);
+const chats = ref([] as any);
 const replyMsg = ref('');
+const onReplySend = () => {
+  onSend(recordPhone.value, replyMsg.value)?.then(() => {
+    replyMsg.value = '';
+    onRecord(recordPhone.value);
+  })
+};
+
 watch(replyMsg, (n, o) => {
   if (n.length > 500) {
     replyMsg.value = n.substring(0, 500);
@@ -174,7 +244,7 @@ const replyScroll = (event) => {
         <view class="z-11 w-full flex justify-between mt-120" style="align-items: flex-end;">
           <view class="flex flex-col">
             <text class="text-black" style="font-size: 32rpx">编辑短信</text>
-            <text style="font-size: 24rpx;">(短信发送价格：0.75元/条)</text>
+            <text style="font-size: 24rpx;">{{ '(短信发送价格：' + config.data.value.smsPrice + '元/条)' }}</text>
           </view>
           <view class="h-48 pl-30 pr-30 rd-20 mr-20 flex items-center justify-center bxs"
                 style="background-color: #F87FA8;" @click="showTemplate=true">
@@ -186,7 +256,7 @@ const replyScroll = (event) => {
           <scroll-view scroll-y class="h-500" :show-scrollbar="false"
                        style="background-color: white; display: inline-block;overflow: hidden;">
             <textarea class="w-full h-full rd-20 pl-20 pr-20 pt-20 pb-10"
-                      placeholder="点击输入短信内容(挽回、表白、早晚安、道歉、祝福...)"
+                      :placeholder="config.data.value.smsPlaceholder"
                       placeholder-style="font-size: 28rpx"
                       :maxlength="500"
                       cursor-spacing="10"
@@ -195,7 +265,10 @@ const replyScroll = (event) => {
           </scroll-view>
           <view class="flex flex-col">
             <text style="font-size: 24rpx;">{{ content.length + '/500' }}</text>
-            <text style="font-size: 24rpx; color: #F87FA8">按照60个字1条计算，共0元</text>
+            <text style="font-size: 24rpx; color: #F87FA8">{{
+                '按照' + config.data.value.smsUnit + '个字1条计算，共' + (Math.ceil(content.length / config.data.value.smsUnit) * config.data.value.smsPrice) + '元'
+              }}
+            </text>
           </view>
         </view>
 
@@ -203,8 +276,8 @@ const replyScroll = (event) => {
               style="background-color: #F87FA8;">
           <button :open-type="isEmpty(user.data.value.phone)? 'getPhoneNumber':''"
                   class="w-full h-full flex items-center justify-center"
-                  @click="onSend"
-                  @getphonenumber="onGetPhoneNumber"
+                  @click="onSend(phone,content)"
+                  @getphonenumber="onGetPhoneNumberAndSend"
                   style="color:white; font-size: 32rpx; font-weight: bold; background-color: transparent">
             发送
           </button>
@@ -230,26 +303,37 @@ const replyScroll = (event) => {
       </view>
       <scroll-view scroll-y :show-scrollbar="false" style="height: calc(100% - 45px - 15rpx)">
         <view class="w-full flex flex-col items-center">
-          <view v-for="i in 1"
-                :key="i"
-                @click="showMessages=true"
+          <view v-if="!isEmpty(user.data.value.phone)" v-for="record in records"
+                :key="record.phone"
+                @click="onRecord(record.phone)"
                 class="w-90vw rd-20 mb-10 mt-10 p-20 flex items-center"
                 style="border: 1px solid #E4D6DB">
             <view class="h-60 w-60 flex items-center justify-center"
                   style="border: 1px solid #F87FA8; border-radius: 10rpx;">
-              <image :src="`${imgUri}/send.png`" class="h-40" mode="heightFix"/>
+              <image :src="record.send? `${imgUri}/send.png`:`${imgUri}/receive.png`" class="h-40" mode="heightFix"/>
             </view>
             <view class="h-80 flex flex-col gap-10 ml-30">
-              <text style="font-size: 32rpx; color: black;">187****9729</text>
+              <text style="font-size: 32rpx; color: black;">{{ record.phone }}</text>
               <text style="font-size: 28rpx; color: #858585;">点击查看详细内容>></text>
             </view>
             <view class="h-80 flex justify-end" style="flex: 1;">
-              <text style="color: #858585; font-size: 26rpx;">2022-20-20 10:10:03</text>
+              <text style="color: #858585; font-size: 26rpx;">{{ record.time }}</text>
             </view>
           </view>
         </view>
-        <view class="w-full h-50 flex items-center justify-center">
+        <view v-if="!isEmpty(user.data.value.phone)" class="w-full h-50 flex items-center justify-center">
           <text style="font-size: 24rpx; color: #858585">我也是有底线的~</text>
+        </view>
+        <view v-if="isEmpty(user.data.value.phone)"
+              class="w-full h-100 flex items-center justify-center">
+          <view class="p-10 h-60 rd-10 flex items-center justify-center" style="background-color: #F87FA8;">
+            <button open-type="getPhoneNumber"
+                    @getphonenumber="onGetPhoneNumber"
+                    class="w-full h-full text-white font-bold flex items-center justify-center"
+                    style="background-color: transparent;font-size: 28rpx;"
+            >点击获取
+            </button>
+          </view>
         </view>
       </scroll-view>
     </view>
@@ -282,11 +366,15 @@ const replyScroll = (event) => {
         <scroll-view scroll-x :show-scrollbar="false"
                      style="height: 45px; box-shadow: rgba(99, 99, 99, 0.2) 0 2px 8px 0;">
           <view class="w-100vw h-full flex gap-30 pl-30 pr-30 pb-10" style="align-items: flex-end;">
-            <view v-for="i in 7" class="flex flex-col items-center gap-10" :key="i" @click="sendTab=true">
+            <view v-for="temp in config.data.value.smsTemps"
+                  class="flex flex-col items-center gap-10"
+                  :style="{color: tempType===temp.type? '#F87FA8':'', 'font-weight': tempType===temp.type? 'bold':''}"
+                  :key="temp.type"
+                  @click="tempType=temp.type">
               <view style="white-space: nowrap;">
-                <text>挽回</text>
+                <text>{{ temp.name }}</text>
               </view>
-              <view class="w-50 rd-5 h-8" :style="{'background-color': sendTab? '#F87FA8':'transparent'}"></view>
+              <view class="w-50 rd-5 h-8" :style="{'background-color': tempType===temp.type? '#F87FA8':'transparent'}"></view>
             </view>
           </view>
         </scroll-view>
@@ -328,7 +416,9 @@ const replyScroll = (event) => {
               v-for="chat in chats"
               :id="'replyId:'+chat.id"
               :key="chat.id">
-          <view class="w-full h-60 flex items-center justify-center">{{ chat.time }}</view>
+          <view class="w-full h-60 flex items-center justify-center"
+                style="font-size: 24rpx; color: #858585">{{ chat.time }}
+          </view>
           <view class="w-full flex" :style="{'flex-direction': chat.userId===user.data.value.id? 'row-reverse':''}">
             <view class="max-w-70vw min-h-10vw flex items-center p-20 rd-20"
                   :style="{'background-color': chat.userId!==user.data.value.id? 'white':'#F4CFDC',
@@ -345,7 +435,10 @@ const replyScroll = (event) => {
             style="background-color: #F7F7F7; border-top: 1rpx #D5D5D5 solid;">
         <view class="flex flex-col">
           <text style="font-size: 24rpx;">{{ replyMsg.length + '/500' }}</text>
-          <text style="font-size: 24rpx; color: #F87FA8">按照60个字1条计算，共0元</text>
+          <text style="font-size: 24rpx; color: #F87FA8">{{
+              '按照' + config.data.value.smsUnit + '个字1条计算，共' + (Math.ceil(replyMsg.length / config.data.value.smsUnit) * config.data.value.smsPrice) + '元'
+            }}
+          </text>
         </view>
         <view class="h-48 pl-30 pr-30 rd-10 flex items-center justify-center bxs"
               style="background-color: #F87FA8;" @click="showTemplate=true">
@@ -359,7 +452,7 @@ const replyScroll = (event) => {
           <scroll-view scroll-y class="max-h-280"
                        style="background-color: white; display: inline-block;overflow: hidden">
             <textarea class="w-full"
-                      placeholder="点击输入短信内容"
+                      placeholder="点击回复"
                       placeholder-style="font-size: 32rpx"
                       auto-height
                       :maxlength="500"
@@ -375,7 +468,7 @@ const replyScroll = (event) => {
               style="background-color: #F87FA8; border-radius: 10rpx; transition: width 2s ease; margin-left: 3vw">
           <button :open-type="isEmpty(user.data.value.phone)? 'getPhoneNumber':''"
                   class="w-full h-full flex items-center justify-center"
-                  @click="onSend"
+                  @click="onReplySend"
                   @getphonenumber="onGetPhoneNumber"
                   style="color:white; font-size: 28rpx; background-color: transparent">
             发送

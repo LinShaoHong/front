@@ -27,3 +27,12 @@ declare namespace Pay {
     signType: string
   }
 }
+
+declare namespace Sms {
+  interface SendReq {
+    userId: string
+    fromPhone: string
+    toPhone: string
+    message: string
+  }
+}

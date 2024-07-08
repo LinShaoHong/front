@@ -18,34 +18,38 @@ export default defineStore({
         price: '2.99',
         payText: '',
         shareTitle: '',
-        loverShareTitle: 'aaaaaaaaaaaa',
+        loverShareTitle: '',
         logo: '',
-        roomTitle: '房间内有一人解锁即可畅玩',
-        loverPlayTitle: '抽牌方需完成任务或回答问题哦',
+        roomTitle: '',
+        loverPlayTitle: '',
         noLover: false,
         partner: "",
         partners: [{}],
         topTab: {
-          hks: '海克斯喝酒',
-          lover: '情侣升温',
+          hks: '',
+          lover: '',
         },
         more: {
           hks: {
-            defTitle: '自定义',
-            defContent: '可添加编辑卡牌，随心畅玩！',
-            battleTitle: '云顶对弈',
-            battleContent: '可邀请他人同时在线对弈'
+            defTitle: '',
+            defContent: '',
+            battleTitle: '',
+            battleContent: ''
           },
           lover: {
-            defTitle: '自定义',
-            defContent: '可添加编辑卡牌，随心畅玩！',
-            battleTitle: '情侣格斗',
-            battleContent: '可邀请他人同时在线对弈',
-            smsTitle: '自定义',
-            smsContent: '可添加编辑卡牌，随心畅玩！',
+            defTitle: '',
+            defContent: '',
+            battleTitle: '',
+            battleContent: '',
+            smsTitle: '',
+            smsContent: '',
           }
         },
         loverCards: [{}],
+        smsUnit: 60,
+        smsPrice: 0.75,
+        smsPlaceholder: '',
+        smsTemps: [{}],
         banners: [{}]
       }
     } as { data: Config.ConfigInfo };

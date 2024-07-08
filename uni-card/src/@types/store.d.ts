@@ -64,6 +64,13 @@ declare namespace Config {
       open: boolean
       visible: boolean
     }],
+    smsUnit: number
+    smsPrice: number
+    smsPlaceholder: string
+    smsTemps:[{
+      type: string,
+      name: string
+    }]
     banners: [{
       src: string
       qr: string

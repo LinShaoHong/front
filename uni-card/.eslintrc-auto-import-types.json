@@ -3,6 +3,7 @@
     "Http": true,
     "User": true,
     "Pay": true,
+    "Sms": true,
     "Types": true,
     "Config": true,
     "App": true
