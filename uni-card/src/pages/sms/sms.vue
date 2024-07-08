@@ -57,9 +57,11 @@ const copyTemplate = (txt) => {
   })
 };
 const fetchTemps = () => {
-  apiSms.getSpecsByType(tempType.value).then((data) => {
-    tempMsgs.value = data.values;
-  }).catch(() => networkError());
+  config.getConfigInfo().then(() => {
+    apiSms.getSpecsByType(tempType.value).then((data) => {
+      tempMsgs.value = data.values;
+    }).catch(() => networkError());
+  });
 };
 watch(tempType, () => {
   fetchTemps();
@@ -99,8 +101,23 @@ const onSend = (p, m) => {
   }
 
   const total = Math.ceil(m.length / config.data.value.smsUnit) * config.data.value.smsPrice + '';
-  return new Promise((resolve, reject) => {
-    wxPay(total).then(async () => {
+  if (user.data.value.smsCount <= 0) {
+    return new Promise((resolve, reject) => {
+      wxPay(total).then(async () => {
+        apiSms.send({
+          userId: user.data.value.id,
+          fromPhone: user.data.value.phone,
+          toPhone: p,
+          message: m
+        }).then((data) => {
+          message('发送成功', 3);
+          user.getUserInfo();
+          resolve(data);
+        }).catch(() => networkError());
+      }).catch(() => networkError());
+    });
+  } else {
+    return new Promise((resolve, reject) => {
       apiSms.send({
         userId: user.data.value.id,
         fromPhone: user.data.value.phone,
@@ -108,10 +125,11 @@ const onSend = (p, m) => {
         message: m
       }).then((data) => {
         message('发送成功', 3);
+        user.getUserInfo();
         resolve(data);
       }).catch(() => networkError());
-    }).catch(() => networkError());
-  });
+    });
+  }
 };
 
 //----------------- records ---------------
@@ -266,8 +284,8 @@ const replyScroll = (event) => {
           <view class="flex flex-col">
             <text style="font-size: 24rpx;">{{ content.length + '/500' }}</text>
             <text style="font-size: 24rpx; color: #F87FA8">{{
-                user.data.value.smsCount > 0 ? '你还有' + user.data.value.smsCount + '个信封可使用' :
-                '按照' + config.data.value.smsUnit + '个字1条计算，共' + (Math.ceil(content.length / config.data.value.smsUnit) * config.data.value.smsPrice) + '元'
+                user.data.value.smsCount > 0 ? '你还有' + user.data.value.smsCount + '条短信可使用' :
+                    '按照' + config.data.value.smsUnit + '个字1条计算，共' + (Math.ceil(content.length / config.data.value.smsUnit) * config.data.value.smsPrice) + '元'
               }}
             </text>
           </view>
@@ -438,7 +456,7 @@ const replyScroll = (event) => {
         <view class="flex flex-col">
           <text style="font-size: 24rpx;">{{ replyMsg.length + '/500' }}</text>
           <text style="font-size: 24rpx; color: #F87FA8">{{
-              user.data.value.smsCount > 0 ? '你还有' + user.data.value.smsCount + '个信封可使用' :
+              user.data.value.smsCount > 0 ? '你还有' + user.data.value.smsCount + '条短信可使用' :
                   '按照' + config.data.value.smsUnit + '个字1条计算，共' + (Math.ceil(replyMsg.length / config.data.value.smsUnit) * config.data.value.smsPrice) + '元'
             }}
           </text>
