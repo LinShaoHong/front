@@ -88,14 +88,14 @@ const onSend = (p, m) => {
   if (isEmpty(user.data.value.phone)) {
     return;
   }
-  if (isEmpty(m)) {
-    return message('请输入短信内容', 3);
-  }
   if (isEmpty(p)) {
     return message('请输入手机号', 3);
   }
   if (!valiPhone(p)) {
     return message('请输入正确的手机号', 3);
+  }
+  if (isEmpty(m)) {
+    return message('请输入短信内容', 3);
   }
 
   const total = Math.ceil(m.length / config.data.value.smsUnit) * config.data.value.smsPrice + '';
@@ -266,6 +266,7 @@ const replyScroll = (event) => {
           <view class="flex flex-col">
             <text style="font-size: 24rpx;">{{ content.length + '/500' }}</text>
             <text style="font-size: 24rpx; color: #F87FA8">{{
+                user.data.value.smsCount > 0 ? '你还有' + user.data.value.smsCount + '个信封可使用' :
                 '按照' + config.data.value.smsUnit + '个字1条计算，共' + (Math.ceil(content.length / config.data.value.smsUnit) * config.data.value.smsPrice) + '元'
               }}
             </text>
@@ -374,7 +375,8 @@ const replyScroll = (event) => {
               <view style="white-space: nowrap;">
                 <text>{{ temp.name }}</text>
               </view>
-              <view class="w-50 rd-5 h-8" :style="{'background-color': tempType===temp.type? '#F87FA8':'transparent'}"></view>
+              <view class="w-50 rd-5 h-8"
+                    :style="{'background-color': tempType===temp.type? '#F87FA8':'transparent'}"></view>
             </view>
           </view>
         </scroll-view>
@@ -436,7 +438,8 @@ const replyScroll = (event) => {
         <view class="flex flex-col">
           <text style="font-size: 24rpx;">{{ replyMsg.length + '/500' }}</text>
           <text style="font-size: 24rpx; color: #F87FA8">{{
-              '按照' + config.data.value.smsUnit + '个字1条计算，共' + (Math.ceil(replyMsg.length / config.data.value.smsUnit) * config.data.value.smsPrice) + '元'
+              user.data.value.smsCount > 0 ? '你还有' + user.data.value.smsCount + '个信封可使用' :
+                  '按照' + config.data.value.smsUnit + '个字1条计算，共' + (Math.ceil(replyMsg.length / config.data.value.smsUnit) * config.data.value.smsPrice) + '元'
             }}
           </text>
         </view>

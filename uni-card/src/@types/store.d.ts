@@ -9,6 +9,7 @@ declare namespace User {
     phone: string
     playCount: number
     loverPlayCount: number
+    smsCount: number
     vip: number
     defs: object[]
   }

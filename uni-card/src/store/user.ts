@@ -15,6 +15,7 @@ export default defineStore({
         phone: "",
         playCount: 0,
         loverPlayCount: 0,
+        smsCount: 0,
         vip: 0,
         defs: []
       }
