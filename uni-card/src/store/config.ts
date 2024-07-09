@@ -46,7 +46,7 @@ export default defineStore({
           }
         },
         loverCards: [{}],
-        hasSms: true,
+        sms: true,
         smsUnit: 60,
         smsPrice: 0.75,
         smsPlaceholder: '',

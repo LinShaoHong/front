@@ -65,7 +65,7 @@ declare namespace Config {
       open: boolean
       visible: boolean
     }],
-    hasSms: boolean
+    sms: boolean
     smsUnit: number
     smsPrice: number
     smsPlaceholder: string

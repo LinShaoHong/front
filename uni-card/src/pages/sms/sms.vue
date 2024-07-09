@@ -39,7 +39,7 @@ watch(content, (n, o) => {
     content.value = n.substring(0, 500);
   }
 });
-const sendTab = ref(true);
+const boxTab = ref('send');
 const showTemplate = ref(false);
 const showMessages = ref(false);
 const phone = ref('');
@@ -140,6 +140,11 @@ watch(write, (n, o) => {
         .then((data) => records.value = data.values)
         .catch(() => networkError());
   }
+});
+watch(boxTab, (n, o) => {
+  apiSms.records(user.data.value.id)
+      .then((data) => records.value = data.values)
+      .catch(() => networkError());
 });
 
 const recordPhone = ref('');
@@ -307,43 +312,48 @@ const replyScroll = (event) => {
           class="w-full" style="height: calc(100vh - 50px)">
       <view class="w-full h-full flex justify-around pb-15 mb-15"
             style="height: 45px; box-shadow: rgba(99, 99, 99, 0.2) 0 2px 8px 0; align-items: flex-end;">
-        <view class="h-full w-200 flex flex-col items-center justify-end gap-10" @click="sendTab=true">
-          <text :style="{color: sendTab? '#F87FA8':'', 'font-weight': sendTab?'bold':'', 'font-size':'32rpx'}">
-            短信聊天记录
+        <view class="h-full w-200 flex flex-col items-center justify-end gap-10" @click="boxTab='send'">
+          <text
+              :style="{color: boxTab==='send'? '#F87FA8':'', 'font-weight': boxTab==='send'? 'bold':'', 'font-size':'32rpx'}">
+            我发出的
           </text>
-          <!--          <view class="w-50 rd-5 h-8" :style="{'background-color': sendTab? '#F87FA8':'transparent'}"></view>-->
+          <view class="w-50 rd-5 h-8" :style="{'background-color': boxTab==='send'? '#F87FA8':'transparent'}"></view>
         </view>
-        <!--        <view class="h-full w-200 flex flex-col items-center justify-end gap-10" @click="sendTab=false">-->
-        <!--          <text :style="{color: !sendTab? '#F87FA8':'', 'font-weight': !sendTab?'bold':'', 'font-size':'32rpx'}">-->
-        <!--            我收到的-->
-        <!--          </text>-->
-        <!--          <view class="w-50 rd-5 h-8" :style="{'background-color': !sendTab? '#F87FA8':'transparent'}"></view>-->
-        <!--        </view>-->
+        <view class="h-full w-200 flex flex-col items-center justify-end gap-10" @click="boxTab='receive'">
+          <text
+              :style="{color: boxTab==='receive'? '#F87FA8':'', 'font-weight': boxTab==='receive'?'bold':'', 'font-size':'32rpx'}">
+            我收到的
+          </text>
+          <view class="w-50 rd-5 h-8" :style="{'background-color': boxTab==='receive'? '#F87FA8':'transparent'}"></view>
+        </view>
       </view>
       <scroll-view scroll-y :show-scrollbar="false" style="height: calc(100% - 45px - 15rpx)">
         <view class="w-full flex flex-col items-center">
-          <view v-if="!isEmpty(user.data.value.phone)" v-for="record in records"
+          <view v-if="!isEmpty(user.data.value.phone)"
+                v-for="record in records.filter(v => v.type===boxTab)"
                 :key="record.phone"
                 @click="onRecord(record.phone)"
                 class="w-90vw rd-20 mb-10 mt-10 p-20 flex items-center"
                 style="border: 1px solid #E4D6DB">
             <view class="h-60 w-60 flex items-center justify-center"
                   style="border: 1px solid #F87FA8; border-radius: 10rpx;">
-              <image :src="record.send? `${imgUri}/send.png`:`${imgUri}/receive.png`" class="h-40" mode="heightFix"/>
+              <image :src="`${imgUri}/${boxTab}.png`" class="h-40" mode="heightFix"/>
             </view>
             <view class="h-80 flex flex-col gap-10 ml-30">
-              <text style="font-size: 32rpx; color: black;">{{ record.phone }}</text>
+              <text style="font-size: 32rpx; color: black;">
+                {{ record.phone.substring(0, 3) + '****' + record.phone.substring(7, 11) }}
+              </text>
               <text style="font-size: 28rpx; color: #858585;">点击查看详细内容>></text>
             </view>
             <view class="h-80 flex justify-end" style="flex: 1;">
-              <text style="color: #858585; font-size: 26rpx;">{{ record.time }}</text>
+              <text style="color: #858585; font-size: 28rpx;">{{ record.time }}</text>
             </view>
           </view>
         </view>
         <view v-if="!isEmpty(user.data.value.phone)" class="w-full h-50 flex items-center justify-center">
           <text style="font-size: 24rpx; color: #858585">我也是有底线的~</text>
         </view>
-        <view v-if="isEmpty(user.data.value.phone)"
+        <view v-if="isEmpty(user.data.value.phone) && boxTab==='receive'"
               class="w-full h-100 flex items-center justify-center">
           <view class="p-10 h-60 rd-10 flex items-center justify-center" style="background-color: #F87FA8;">
             <button open-type="getPhoneNumber"
@@ -423,6 +433,10 @@ const replyScroll = (event) => {
 
   <Popup :show="showMessages" position="bottom" @clickMask="showMessages=false">
     <view :class="[canPopup? '':'h-0']">
+      <view class="w-screen flex justify-center items-center"
+            @click="showMessages=false">
+        <text class="text-white" style="font-size: 40rpx;">{{ recordPhone }}</text>
+      </view>
       <view class="w-screen h-100 flex justify-center items-center"
             @click="showMessages=false">
         <uni-icons type="down" size="24" color="#EDEDED"/>
@@ -437,7 +451,7 @@ const replyScroll = (event) => {
               :id="'replyId:'+chat.id"
               :key="chat.id">
           <view class="w-full h-60 flex items-center justify-center"
-                style="font-size: 24rpx; color: #858585">{{ chat.time }}
+                style="font-size: 28rpx; color: #858585">{{ chat.time }}
           </view>
           <view class="w-full flex" :style="{'flex-direction': chat.userId===user.data.value.id? 'row-reverse':''}">
             <view class="max-w-70vw min-h-10vw flex items-center p-20 rd-20"
@@ -463,7 +477,7 @@ const replyScroll = (event) => {
         </view>
         <view class="h-48 pl-30 pr-30 rd-10 flex items-center justify-center bxs"
               style="background-color: #F87FA8;" @click="showTemplate=true">
-          <text class="text-white" style="font-size: 24rpx;">参考模板</text>
+          <text class="text-white" style="font-size: 28rpx;">参考模板</text>
         </view>
       </view>
       <view class="w-screen pb-20 pt-20 pl-50 pr-50 flex justify-center" id="replyInputId"

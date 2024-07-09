@@ -99,7 +99,7 @@ const hasDef = computed(() => {
         {{ hks ? config.data.value.more.hks.battleContent : config.data.value.more.lover.battleContent }}
       </text>
     </view>
-    <view v-if="!hks && config.data.value.hasSms"
+    <view v-if="!hks && config.data.value.sms"
         :class="['h-10vh w-70vw rd-100 flex flex-col items-center justify-center lover_sms_box']"
         :style="{'margin-top': hasDef? '50rpx' : '10rpx'}"
         @click="forward('sms')">
