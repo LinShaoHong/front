@@ -7,12 +7,14 @@ import { isEmpty } from "@/utils/is";
 import { useShare } from "@/hooks/useShare";
 import env from '@/config/env'
 import { forward } from "@/utils/router";
+import { delay } from "@/utils/calls";
 
 const { onShareAppMessage, onShareTimeline, shareTitle, shareFunc } = useShare();
 
 const user = useStore('user');
 const config = useStore('config');
 const imgUri = inject('$imgUri');
+const canPopup = ref(false);
 const showEdit = ref(false);
 
 const hks = ref(true);
@@ -46,6 +48,7 @@ onLoad((option) => {
     hks.value = option['hks'] === 'true';
   }
   ready.value = true;
+  delay(500).then(() => canPopup.value = true);
 });
 shareFunc.value = () => {
   shareTitle.value = hks.value ? config.data.value.shareTitle : config.data.value.loverShareTitle;
@@ -252,7 +255,7 @@ const onDelete = (item) => {
     </scroll-view>
 
     <Popup position="center" :show="showEdit" @clickMask="() => {showEdit=false; editContent=true; picLoading=false;}">
-      <view class="relative w-80vw h-65vh pb-20 rd-30 flex flex-col justify-between gap-20" style="background: white;">
+      <view v-if="canPopup" class="relative w-80vw h-65vh pb-20 rd-30 flex flex-col justify-between gap-20" style="background: white;">
         <view class="flex h-62">
           <view class="flex justify-center items-center"
                 :style="{width: '50%', 'background-color': editContent? (hks? '#482380':'#FF6110') : '', 'border-radius': '30rpx 0 5rpx 0'}"
@@ -351,7 +354,7 @@ const onDelete = (item) => {
       </view>
     </Popup>
 
-    <PayDialog :show="showPay"
+    <PayDialog v-if="canPopup" :show="showPay"
                :hks="hks"
                :html="config.data.value.payText"
                :vip="1"
