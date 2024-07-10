@@ -330,7 +330,7 @@ const onDelete = (item) => {
               <view class="lover_divider" style="left: 0"></view>
               <image :src="isEmpty(picPath)? '/static/lover_ct.png':imgUri + picPath"
                      :class="isEmpty(picPath) || (curr != null && curr.defaulted)? '':'rd-20'"
-                     style="width: 54%; max-height: 94%"
+                     :style="{width: '54%', 'max-height': '94%',filter: loverCardVisible? '':'blur(14rpx)'}"
                      mode="widthFix"
                      @error="picError"
                      @load="picLoaded"/>
