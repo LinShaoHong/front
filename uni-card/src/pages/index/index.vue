@@ -91,6 +91,7 @@ onLoad(async (option) => {
   })
   shuffleCards();
   config.getConfigInfo().then(() => {
+    hksCardType.value = config.data.value.hksCards.filter(s => s.open)[0]?.type;
     loverCardType.value = config.data.value.loverCards.filter(s => s.open)[0]?.type;
   }).catch(() => networkError());
 });

@@ -19,6 +19,20 @@ const showEdit = ref(false);
 
 const hks = ref(true);
 const hksCardType = ref(config.data.value.hksCards.filter(s => s?.open)[0]?.type);
+const hksCover = computed(() => {
+  if (!hks.value) {
+    return false;
+  }
+  const arr = config.data.value.hksCards.filter(s => s.type === hksCardType.value);
+  return arr.length === 0? false : arr[0]['cover'];
+});
+const hksNoAdd = computed(() => {
+  if (!hks.value) {
+    return false;
+  }
+  const arr = config.data.value.hksCards.filter(s => s.type === hksCardType.value);
+  return arr.length === 0? false : arr[0]['noAdd'];
+});
 const loverCardType = ref(config.data.value.loverCards.filter(s => s?.open)[0]?.type);
 const loverCardTypeName = computed(() => {
   const arr = config.data.value.loverCards.filter(s => s?.type === loverCardType.value);
@@ -219,7 +233,7 @@ const onDelete = (item) => {
 
     <scroll-view scroll-y>
       <view class="flex flex-wrap justify-between items-center pb-50 p-l-10 p-r-10">
-        <view
+        <view v-if="!hks || !hksNoAdd"
             :class="['w-45vw h-73vw flex flex-col justify-center items-center mt-30 p-t-6', hks? 'card_box':'lover_card_box']"
             @click="onAdd">
           <text class="text-white" style="font-size: 160rpx;">+</text>

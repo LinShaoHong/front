@@ -63,12 +63,15 @@ declare namespace Config {
       name: string
       type: string
       cover: boolean
+      noAdd: boolean
       open: boolean
       visible: boolean
     }],
     loverCards: [{
       name: string
       type: string
+      cover: boolean
+      noAdd: boolean
       open: boolean
       visible: boolean
     }],

@@ -57,8 +57,8 @@ const hksCover = computed(() => {
   if (!props.hks) {
     return false;
   }
-  const arr = config.data.value.loverCards.filter(s => s.type === props.hksCardType);
-  return arr.length === 0? false : arr['cover'];
+  const arr = config.data.value.hksCards.filter(s => s.type === props.hksCardType);
+  return arr.length === 0? false : arr[0]['cover'];
 });
 
 const loverCardTypeName = computed(() => {
@@ -121,7 +121,7 @@ const _next = () => {
     </view>
     <image v-if="hks"
            class="card"
-           :src="src"
+           :src="hksCover? '/static/card.png':src"
            :style="{height: height, 'width': (defaulted || type)? '' : '86vw', 'border-radius': (defaulted || type)? '' : '30rpx'}"
            :mode="(defaulted || type)? 'heightFix' : 'scaleToFill'"/>
     <view v-if="!hks"
@@ -150,10 +150,10 @@ const _next = () => {
                  'z-index': open? 102 : -1}">
     <view class="card w-full flex fle-col items-center justify-center z-200" :style="{height: height}">
       <view class="absolute w-full top-0" style="height: 65%;">
-        <image v-if="!defaulted && type"
-               :src="`${imgUri}/ct.png`"
+        <image v-if="hksCover || (!defaulted && type)"
+               :src="hksCover? src:`${imgUri}/ct.png`"
                mode="heightFix"
-               class="absolute left-0 right-0" style="top: 35%; height: 50%; margin: auto"/>
+               class="absolute left-0 right-0" style="top: 30%; height: 50%; margin: auto"/>
         <view class="absolute bottom-25 w-full flex items-center justify-center">
           <text class="font-bold text-white" style="font-size: 38rpx;">{{ title }}</text>
         </view>

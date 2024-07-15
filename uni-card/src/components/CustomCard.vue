@@ -53,8 +53,8 @@ const hksCover = computed(() => {
   if (!props.hks) {
     return false;
   }
-  const arr = config.data.value.loverCards.filter(s => s.type === props.hksCardType);
-  return arr.length === 0? false : arr['cover'];
+  const arr = config.data.value.hksCards.filter(s => s.type === props.hksCardType);
+  return arr.length === 0? false : arr[0]['cover'];
 });
 
 const loverCardTypeName = computed(() => {
@@ -84,13 +84,13 @@ defineEmits(['close']);
 </script>
 <template>
   <view v-if="hks" class="relative" :style="{width: width, height: height}">
-    <image class="absolute top-0 rd-20 h-full w-full" :src="src"/>
+    <image class="absolute top-0 rd-20 h-full w-full" :src="hksCover? '/static/card.png':src"/>
     <view class="w-full h-full flex flex-col items-center justify-center z-200">
       <view class="absolute w-full top-0" style="height: 65%;">
-        <image v-if="custom"
-               :src="`${imgUri}/ct.png`"
+        <image v-if="hksCover || custom"
+               :src="hksCover? src:`${imgUri}/ct.png`"
                mode="heightFix"
-               class="absolute left-0 right-0" style="top: 35%; height: 50%; margin: auto"/>
+               class="absolute left-0 right-0" style="top: 26%; height: 50%; margin: auto"/>
         <view class="absolute bottom-25 w-full flex items-center justify-center">
           <text class="font-bold text-white" style="font-size: 26rpx;">{{ title }}</text>
         </view>
