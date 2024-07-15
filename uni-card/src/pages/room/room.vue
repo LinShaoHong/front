@@ -253,11 +253,21 @@ const cardType = computed(() => {
   return hks.value ? hksCardType.value : loverCardType.value;
 });
 const onCardType = (t) => {
-  if (loverCardType.value !== t) {
-    loverCardType.value = t;
-    if (!hks.value && isMain) {
-      apiRoom.changeCardType(mainUser.value.id, t, hks.value)
-          .catch(() => networkError());
+  if(hks.value) {
+    if (hksCardType.value !== t) {
+      hksCardType.value = t;
+      if (isMain) {
+        apiRoom.changeCardType(mainUser.value.id, t, hks.value)
+            .catch(() => networkError());
+      }
+    }
+  } else {
+    if (loverCardType.value !== t) {
+      loverCardType.value = t;
+      if (isMain) {
+        apiRoom.changeCardType(mainUser.value.id, t, hks.value)
+            .catch(() => networkError());
+      }
     }
   }
 };
@@ -566,15 +576,14 @@ const replyMessageInBottom = computed(() => {
     </view>
   </view>
 
-  <view v-if="!hks"
-        class="fixed right-0 w-180 h-66 z-6 flex items-center"
+  <view class="fixed right-0 w-180 h-66 z-6 flex items-center"
         style="top: 18%; background-color: transparent" @click="onReply">
     <view class="w-full h-full absolute left-0"
-          style="background-image: linear-gradient(to right, #FF6110, transparent); border-radius: 66rpx 0 0 66rpx;"
+          :style="{'background-image': 'linear-gradient(to right, '+(hks? '#8606DD':'#FF6110')+', transparent)', 'border-radius': '66rpx 0 0 66rpx'}"
     />
     <image class="ml-15 h-45 z-10" src="/static/reply.png" mode="heightFix"></image>
     <text class="color-white z-10 ml-10" style="font-size: 24rpx;">
-      回复TA
+      {{ hks? '聊一聊':'回复TA' }}
     </text>
   </view>
 
@@ -714,7 +723,7 @@ const replyMessageInBottom = computed(() => {
               }}
             </text>
             <view class="relative max-w-70vw rd-10 min-h-10vw flex items-center p-20"
-                  :style="{'background-color': chat.userId!==user.data.value.id? 'white':'#FFCBB0','font-size':'32rpx'}">
+                  :style="{'background-color': chat.userId!==user.data.value.id? 'white':hks? '#E7D0F6':'#FFCBB0','font-size':'32rpx'}">
               <text>
                 {{ decodeURIComponent(chat.message) }}
               </text>
@@ -744,7 +753,7 @@ const replyMessageInBottom = computed(() => {
         </view>
         <view v-if="!isEmpty(replyMsg)"
               class="text-white h-60 mb-10 flex items-center justify-center w-15vw"
-              style="background-color: #FF6110; font-size: 28rpx; border-radius: 10rpx; transition: width 2s ease; margin-left: 3vw"
+              :style="{'background-color': hks? '#482380':'#FF6110', 'font-size': '28rpx', 'border-radius': '10rpx', 'margin-left': '3vw'}"
               @click="sendReply">
           <text>发送</text>
         </view>
