@@ -142,6 +142,11 @@ const handleCloseEvent = (event) => {
 };
 
 const handleAddEvent = (event) => {
+  if (hks.value) {
+    hksCardType.value = event.cardType;
+  } else {
+    loverCardType.value = event.cardType;
+  }
   fetchPlayers().catch(() => networkError());
 };
 
@@ -253,7 +258,7 @@ const cardType = computed(() => {
   return hks.value ? hksCardType.value : loverCardType.value;
 });
 const onCardType = (t) => {
-  if(hks.value) {
+  if (hks.value) {
     if (hksCardType.value !== t) {
       hksCardType.value = t;
       if (isMain) {
@@ -583,7 +588,7 @@ const replyMessageInBottom = computed(() => {
     />
     <image class="ml-15 h-45 z-10" src="/static/reply.png" mode="heightFix"></image>
     <text class="color-white z-10 ml-10" style="font-size: 24rpx;">
-      {{ hks? '聊一聊':'回复TA' }}
+      {{ hks ? '聊一聊' : '回复TA' }}
     </text>
   </view>
 
