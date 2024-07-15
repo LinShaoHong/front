@@ -14,6 +14,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  hksCardType: {
+    type: String,
+    default: ''
+  },
   loverCardType: {
     type: String,
     default: ''
@@ -48,6 +52,14 @@ const props = defineProps({
 });
 
 const imgUri = inject('$imgUri');
+
+const hksCover = computed(() => {
+  if (!props.hks) {
+    return false;
+  }
+  const arr = config.data.value.loverCards.filter(s => s.type === props.hksCardType);
+  return arr.length === 0? false : arr['cover'];
+});
 
 const loverCardTypeName = computed(() => {
   const arr = config.data.value.loverCards.filter(s => s.type === props.loverCardType);

@@ -235,6 +235,7 @@ const onDelete = (item) => {
                       :width="hks? (isEmpty(item.src) ? '45vw' : 45 * 0.96 + 'vw'):'45vw'"
                       :height="'65vw'"
                       :custom="isEmpty(item.src)"
+                      :hks-card-type="hksCardType"
                       :lover-card-type="loverCardType"
                       :title="item.title"
                       :content="item.content"

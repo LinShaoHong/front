@@ -766,6 +766,7 @@ const replyMessageInBottom = computed(() => {
                 :hks="hks"
                 :count="card"
                 :defaulted="item?.defaulted"
+                :hks-card-type="hksCardType"
                 :lover-card-type="loverCardType"
                 :title="item?.title"
                 :content="item?.content"

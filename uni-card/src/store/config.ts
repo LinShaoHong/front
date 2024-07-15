@@ -45,18 +45,7 @@ export default defineStore({
             smsContent: '',
           }
         },
-        hksCards: [{
-          name: "海克斯",
-          type: "hks",
-          open: true,
-          visible: true
-        },
-          {
-            name: "啤酒令扑克",
-            type: "hks2",
-            open: true,
-            visible: true
-          }],
+        hksCards: [{}],
         loverCards: [{}],
         sms: true,
         smsUnit: 60,

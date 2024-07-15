@@ -62,6 +62,7 @@ declare namespace Config {
     hksCards: [{
       name: string
       type: string
+      cover: boolean
       open: boolean
       visible: boolean
     }],
