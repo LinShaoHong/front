@@ -247,15 +247,16 @@ const total = ref(1);
 const card = ref<number | undefined>(0);
 const cards = ref([] as number[]);
 const item = ref({});
+const hksCardType = ref(config.data.value.hksCards.filter(s => s?.open)[0]?.type);
 const loverCardType = ref(config.data.value.loverCards.filter(s => s?.open)[0]?.type);
 const cardType = computed(() => {
-  return hks.value ? 'hks' : loverCardType.value;
+  return hks.value ? hksCardType.value : loverCardType.value;
 });
-const onLoverCardType = (t) => {
+const onCardType = (t) => {
   if (loverCardType.value !== t) {
     loverCardType.value = t;
     if (!hks.value && isMain) {
-      apiRoom.changeCardType(mainUser.value.id, t)
+      apiRoom.changeCardType(mainUser.value.id, t, hks.value)
           .catch(() => networkError());
     }
   }
@@ -400,7 +401,7 @@ const onReply = () => {
   if (!showReply.value) {
     showReply.value = true;
     if (chats.value.length === 0) {
-      apiRoom.replies(mainUser.value.id)
+      apiRoom.replies(mainUser.value.id, hks.value)
           .then(r => {
             chats.value = r.values;
             toReplyBottom();
@@ -426,7 +427,7 @@ const sendReply = () => {
   if (!isEmpty(replyMsg.value)) {
     fetchPlayers().then(() => {
       if (canReply.value) {
-        apiRoom.reply(mainUser.value.id, user.data.value.id, encodeURIComponent(replyMsg.value))
+        apiRoom.reply(mainUser.value.id, user.data.value.id, encodeURIComponent(replyMsg.value), hks.value)
             .then(r => {
               if (r.value !== null) {
                 chats.value.push({
@@ -448,7 +449,7 @@ const sendReply = () => {
   }
 };
 const withdrawReply = (id) => {
-  apiRoom.withdrawReply(mainUser.value.id, user.data.value.id, id)
+  apiRoom.withdrawReply(mainUser.value.id, user.data.value.id, id, hks.value)
       .then(() => {
         chats.value = chats.value.filter(c => c.id !== id);
       }).catch(() => networkError());
@@ -459,7 +460,7 @@ const handleReceiveReplyEvent = (event) => {
     if (event.withdraw) {
       chats.value = chats.value.filter(c => c.id !== event.chatId);
     } else {
-      apiRoom.byReplyId(mainUser.value.id, event.chatId)
+      apiRoom.byReplyId(mainUser.value.id, event.chatId, hks.value)
           .then(r => {
             if (!replyAudio.src) {
               replyAudio.src = '/static/media/chat.wav';
@@ -543,12 +544,23 @@ const replyMessageInBottom = computed(() => {
     </view>
   </view>
 
+  <view v-if="hks" class="fixed left-30 flex flex-col gap-20 z-11" style="top: 18%">
+    <view
+        class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
+        v-for="_cardType in config.data.value.hksCards.filter(s => s?.open && (isMain || hksCardType===s?.type))"
+        :style="{'border-radius': '20rpx', 'background-color': hksCardType===_cardType.type? '#8606DD':'#5C0498'}"
+        @click="onCardType(_cardType.type)"
+        :key="_cardType.name">
+      <text class="text-white">{{ _cardType.name }}</text>
+    </view>
+  </view>
+
   <view v-if="!hks" class="fixed left-30 flex flex-col gap-20 z-11" style="top: 18%">
     <view
         class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
         v-for="_cardType in config.data.value.loverCards.filter(s => s?.open && (isMain || loverCardType===s?.type))"
         :style="{'border-radius': '20rpx', 'background-color': loverCardType===_cardType.type? '#FF6110':'#982F06'}"
-        @click="onLoverCardType(_cardType.type)"
+        @click="onCardType(_cardType.type)"
         :key="_cardType.name">
       <text class="text-white">{{ _cardType.name }}</text>
     </view>

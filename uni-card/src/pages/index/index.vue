@@ -20,13 +20,14 @@ const user = useStore('user');
 const config = useStore('config');
 const imgUri = inject('$imgUri');
 const hks = ref(true);
+const hksCardType = ref(config.data.value.hksCards.filter(s => s.open)[0]?.type);
 const loverCardType = ref(config.data.value.loverCards.filter(s => s.open)[0]?.type);
 const showRule = ref(false);
 const showPrompt = ref(false);
 
 // -------------- card -----------------
 const cardType = computed(() => {
-  return hks.value ? 'hks' : loverCardType.value;
+  return hks.value ? hksCardType.value : loverCardType.value;
 });
 const cardItems = computed(() => {
   const arr = user.data.value.defs.filter(s => s['name'] === cardType.value);
@@ -231,6 +232,16 @@ const openPayDialog = () => {
     <Logo/>
     <Background :hks="hks"/>
     <TopTabBar :hks="hks" @on-hks="(t) => hks = t"/>
+    <view v-if="hks" class="fixed left-30 w-screen top-150 flex w-full gap-20 z-11">
+      <view
+          class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
+          v-for="_cardType in config.data.value.hksCards.filter(s => s.open)"
+          :style="{'border-radius': '20rpx', 'background-color': hksCardType===_cardType.type? '#8606DD':'#5C0498'}"
+          @click="hksCardType=_cardType.type"
+          :key="_cardType.name">
+        <text class="text-white">{{ _cardType.name }}</text>
+      </view>
+    </view>
     <view v-if="!hks" class="fixed left-30 w-screen top-150 flex w-full gap-20 z-11">
       <view
           class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"

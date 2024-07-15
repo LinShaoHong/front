@@ -40,30 +40,35 @@ const apiRoom = {
     hks: hks,
   }),
 
-  changeCardType: (mainUserId: string, cardType: string) => http.get<any>('/room/changeCardType', {
+  changeCardType: (mainUserId: string, cardType: string, hks: boolean) => http.get<any>('/room/changeCardType', {
     mainUserId: mainUserId,
-    cardType: cardType
+    cardType: cardType,
+    hks: hks
   }),
 
-  reply: (mainUserId: string, userId: string, message: string) => http.post<any>('/room/reply', {
-    mainUserId: mainUserId,
-    userId: userId,
-    message: message
-  }),
-
-  withdrawReply: (mainUserId: string, userId: string, chatId: string) => http.get<any>('/room/withdrawReply', {
+  reply: (mainUserId: string, userId: string, message: string, hks: boolean) => http.post<any>('/room/reply', {
     mainUserId: mainUserId,
     userId: userId,
-    chatId: chatId
+    message: message,
+    hks: hks
   }),
 
-  byReplyId: (mainUserId: string, chatId: string) => http.get<any>('/room/byReplyId', {
+  withdrawReply: (mainUserId: string, userId: string, chatId: string, hks: boolean) => http.get<any>('/room/withdrawReply', {
     mainUserId: mainUserId,
-    chatId: chatId
+    userId: userId,
+    chatId: chatId,
+    hks: hks
   }),
 
-  replies: (mainUserId: string) => http.get<any>('/room/replies', {
-    mainUserId: mainUserId
+  byReplyId: (mainUserId: string, chatId: string, hks: boolean) => http.get<any>('/room/byReplyId', {
+    mainUserId: mainUserId,
+    chatId: chatId,
+    hks: hks
+  }),
+
+  replies: (mainUserId: string, hks: boolean) => http.get<any>('/room/replies', {
+    mainUserId: mainUserId,
+    hks: hks
   }),
 
   players: (mainUserId: string, hks: boolean) => http.get<any>('/room/players', {

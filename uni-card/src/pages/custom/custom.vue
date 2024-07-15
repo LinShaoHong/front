@@ -18,6 +18,7 @@ const canPopup = ref(false);
 const showEdit = ref(false);
 
 const hks = ref(true);
+const hksCardType = ref(config.data.value.hksCards.filter(s => s?.open)[0]?.type);
 const loverCardType = ref(config.data.value.loverCards.filter(s => s?.open)[0]?.type);
 const loverCardTypeName = computed(() => {
   const arr = config.data.value.loverCards.filter(s => s?.type === loverCardType.value);
@@ -31,7 +32,7 @@ const loverCardVisible = computed(() => {
   return (arr.length === 0 ? true : arr[0]['visible']) || user.data.value.vip > 0;
 });
 const cardType = computed(() => {
-  return hks.value ? 'hks' : loverCardType.value;
+  return hks.value ? hksCardType.value : loverCardType.value;
 });
 const cardItems = computed(() => {
   const arr = user.data.value.defs.filter(s => s['name'] === cardType.value);
@@ -187,6 +188,17 @@ const onDelete = (item) => {
 <template>
   <Background v-if="ready" :hks="hks"/>
   <view v-if="ready" class="h-screen w-screen relative pt-50 pl-20 pr-20 flex flex-col items-center">
+
+    <view v-if="hks" class="flex gap-20 w-full ml-10">
+      <view
+          class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
+          v-for="_cardType in config.data.value.hksCards.filter(s => s?.open)"
+          :style="{'border-radius': '20rpx', 'background-color': hksCardType===_cardType.type? '#8606DD':'#5C0498'}"
+          @click="hksCardType=_cardType.type"
+          :key="_cardType.name">
+        <text class="text-white">{{ _cardType.name }}</text>
+      </view>
+    </view>
 
     <view v-if="!hks" class="flex gap-20 w-full ml-10">
       <view

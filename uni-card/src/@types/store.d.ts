@@ -59,6 +59,12 @@ declare namespace Config {
         smsContent: string
       }
     },
+    hksCards: [{
+      name: string
+      type: string
+      open: boolean
+      visible: boolean
+    }],
     loverCards: [{
       name: string
       type: string
