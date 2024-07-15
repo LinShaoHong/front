@@ -233,7 +233,7 @@ const openPayDialog = () => {
     <Logo/>
     <Background :hks="hks"/>
     <TopTabBar :hks="hks" @on-hks="(t) => hks = t"/>
-    <view v-if="hks" class="fixed left-30 w-screen top-150 flex w-full gap-20 z-11">
+    <view v-if="config.data.value.game && hks" class="fixed left-30 w-screen top-150 flex w-full gap-20 z-11">
       <view
           class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
           v-for="_cardType in config.data.value.hksCards.filter(s => s.open)"
