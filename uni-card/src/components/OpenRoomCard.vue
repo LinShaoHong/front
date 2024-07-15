@@ -164,25 +164,35 @@ const _next = () => {
         </text>
       </view>
     </view>
-    <view v-if="showOp" class="absolute bottom-150 right-120 flex items-center justify-center"
-          style="transform: rotateY(180deg); backface-visibility: hidden;"
-          @click="$emit('continue')">
-      <image class="px-10 py-10 w-220 h-100"
-             src="/static/foot_bg.png"
-             mode="scaleToFill"></image>
-      <text class="color-white absolute font-bold" style="font-size: 30rpx;">
-        继续抽
-      </text>
-    </view>
-    <view v-if="showOp" class="absolute bottom-150 left-120 flex items-center justify-center"
-          style="transform: rotateY(180deg); backface-visibility: hidden;"
-          @click="$emit('next')">
-      <image class="px-10 py-10 w-220 h-100"
-             src="/static/foot_bg.png"
-             mode="scaleToFill"></image>
-      <text class="color-white absolute font-bold" style="font-size: 30rpx;">
-        下一个
-      </text>
+    <view class="absolute bottom-150 w-full flex justify-center items-center gap-15"
+          style="transform: rotateY(180deg); backface-visibility: hidden;">
+      <view v-if="showOp" class="relative flex items-center justify-center"
+            @click="$emit('continue')">
+        <image class="px-10 py-10 w-200 h-100"
+               src="/static/foot_bg.png"
+               mode="scaleToFill"></image>
+        <text class="color-white absolute font-bold" style="font-size: 30rpx;">
+          继续抽
+        </text>
+      </view>
+      <view class="relative flex items-center justify-center"
+            @click="$emit('reply')">
+        <image class="px-10 py-10 w-200 h-100"
+               src="/static/foot_bg.png"
+               mode="scaleToFill"></image>
+        <text class="color-white absolute font-bold" style="font-size: 30rpx;">
+          聊一聊
+        </text>
+      </view>
+      <view v-if="showOp" class="relative flex items-center justify-center"
+            @click="$emit('next')">
+        <image class="px-10 py-10 w-200 h-100"
+               src="/static/foot_bg.png"
+               mode="scaleToFill"></image>
+        <text class="color-white absolute font-bold" style="font-size: 30rpx;">
+          下一个
+        </text>
+      </view>
     </view>
   </view>
 
