@@ -592,7 +592,7 @@ const replyMessageInBottom = computed(() => {
           :style="{'background-image': 'linear-gradient(to right, '+(hks? '#8606DD':'#FF6110')+', transparent)', 'border-radius': '66rpx 0 0 66rpx'}"
     />
     <image class="ml-15 h-45 z-10" src="/static/reply.png" mode="heightFix"></image>
-    <text class="color-white z-10 ml-10" style="font-size: 24rpx;">
+    <text class="color-white z-10 ml-10">
       {{ hks ? '聊一聊' : '回复TA' }}
     </text>
   </view>
