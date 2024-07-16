@@ -56,6 +56,7 @@ onLoad(async (option) => {
   delay(500).then(() => canPopup.value = true);
   shuffleCards();
   config.getConfigInfo().then(() => {
+    hksCardType.value = config.data.value.hksCards.filter(s => s.open)[0]?.type;
     loverCardType.value = config.data.value.loverCards.filter(s => s.open)[0]?.type;
     user.getUserInfo().then(() => {
       let mainUserId = user.data.value.id;
@@ -173,7 +174,11 @@ const handleNextEvent = (event) => {
 
 const handleChangeCardTypeEvent = (event) => {
   if (!isMain.value) {
-    loverCardType.value = event.cardType;
+    if(hks.value) {
+      hksCardType.value = event.cardType;
+    } else {
+      loverCardType.value = event.cardType;
+    }
   }
 };
 
