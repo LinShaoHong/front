@@ -207,7 +207,7 @@ const onDelete = (item) => {
       <view
           class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
           v-for="_cardType in config.data.value.hksCards.filter(s => s?.open)"
-          :style="{'border-radius': '20rpx', 'background-color': hksCardType===_cardType.type? '#8606DD':'#5C0498'}"
+          :style="{'border-radius': '20rpx', 'background-color': hksCardType===_cardType.type? '#9516EC':'#570490'}"
           @click="hksCardType=_cardType.type"
           :key="_cardType.name">
         <text class="text-white">{{ _cardType.name }}</text>
