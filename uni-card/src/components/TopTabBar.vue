@@ -12,7 +12,7 @@ defineEmits(['onHks']);
 </script>
 
 <template>
-  <view v-if="config.data.value.game && !config.data.value.noLover" class="fixed w-screen h-100 flex z-10">
+  <view v-if="config.data.value.game && !config.data.value.noLover" class="fixed w-screen h-100 flex z-400">
     <view class="h-full tab_box"
           :style="{'background': hks? 'linear-gradient(to top, transparent, white)':'transparent', 'border-radius': '0 0 10rpx 0'}"
           @click="$emit('onHks', true)">

@@ -200,7 +200,7 @@ const backCardStyle = computed(() => (index) => {
   return {
     top: ((index - 1) * 18) + 'rpx',
     transform: 'scale(' + (0.9 + index * 0.03) + ')' + (open.value && index === backCardsCount.value ? 'rotateY(180deg)' : ''),
-    'z-index': index + 10,
+    'z-index': index + 500,
     transition: 'transform .4s ease'
   }
 });
@@ -564,26 +564,38 @@ const replyMessageInBottom = computed(() => {
     </view>
   </view>
 
-  <view v-if="hks" class="fixed left-30 flex flex-col gap-20 z-11" style="top: 18%">
-    <view
-        class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
-        v-for="_cardType in config.data.value.hksCards.filter(s => s?.open && (isMain || hksCardType===s?.type))"
-        :style="{'border-radius': '20rpx', 'background-color': hksCardType===_cardType.type? '#8606DD':'#5C0498'}"
-        @click="onCardType(_cardType.type)"
-        :key="_cardType.name">
-      <text class="text-white">{{ _cardType.name }}</text>
-    </view>
+  <view v-if="hks" class="absolute flex flex-col pl-30 z-300">
+    <view style="height: 17vh"></view>
+    <scroll-view scroll-y :show-scrollbar="false"
+                 style="height: calc(13vh - 5rpx);">
+      <view class="flex flex-col gap-15" style="overflow-y: auto; align-items: flex-start">
+        <view
+            class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
+            v-for="_cardType in config.data.value.hksCards.filter(s => s?.open && (isMain || hksCardType===s?.type))"
+            :style="{'border-radius': '20rpx', 'background-color': hksCardType===_cardType.type? '#8606DD':'#5C0498'}"
+            @click="onCardType(_cardType.type)"
+            :key="_cardType.name">
+          <text class="text-white">{{ _cardType.name }}</text>
+        </view>
+      </view>
+    </scroll-view>
   </view>
 
-  <view v-if="!hks" class="fixed left-30 flex flex-col gap-20 z-11" style="top: 18%">
-    <view
-        class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
-        v-for="_cardType in config.data.value.loverCards.filter(s => s?.open && (isMain || loverCardType===s?.type))"
-        :style="{'border-radius': '20rpx', 'background-color': loverCardType===_cardType.type? '#FF6110':'#982F06'}"
-        @click="onCardType(_cardType.type)"
-        :key="_cardType.name">
-      <text class="text-white">{{ _cardType.name }}</text>
-    </view>
+  <view v-if="!hks" class="absolute flex flex-col pl-30 z-300">
+    <view style="height: 17vh"></view>
+    <scroll-view scroll-y :show-scrollbar="false"
+                 style="height: calc(13vh - 5rpx);">
+      <view class="flex flex-col gap-15 items-center" style="overflow-y: auto">
+        <view
+            class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
+            v-for="_cardType in config.data.value.loverCards.filter(s => s?.open && (isMain || loverCardType===s?.type))"
+            :style="{'border-radius': '20rpx', 'background-color': loverCardType===_cardType.type? '#FF6110':'#982F06'}"
+            @click="onCardType(_cardType.type)"
+            :key="_cardType.name">
+          <text class="text-white">{{ _cardType.name }}</text>
+        </view>
+      </view>
+    </scroll-view>
   </view>
 
   <view class="fixed right-0 w-180 h-66 z-6 flex items-center"
@@ -597,7 +609,7 @@ const replyMessageInBottom = computed(() => {
     </text>
   </view>
 
-  <view class="relative flex flex-col items-center justify-between h-100vh pt-20 pb-30">
+  <view class="absolute w-screen h-screen flex flex-col items-center justify-between pt-20 pb-30">
 
     <view class="relative w-full flex flex-col justify-center items-center pt-10 pb-10 gap-10" style="height: 30%;">
 
@@ -651,7 +663,7 @@ const replyMessageInBottom = computed(() => {
       <image v-if="!hks" class="absolute top-0 bottom-80" mode="heightFix" style="height: 80%;"
              src="/static/p_bg_lover.png"></image>
 
-      <view :class="['absolute flex justify-center top-0']" style="background-color: red">
+      <view :class="['absolute flex justify-center top-0 z-500']" style="background-color: red">
         <view v-for="index in backCardsCount"
               :class="['absolute', shuffle && index===backCardsCount && 'swap']"
               :key="'card-back-' + index"
@@ -846,7 +858,7 @@ button:after {
   }
   100% {
     transform: scale(0.85);
-    z-index: 10;
+    z-index: 500;
   }
 }
 </style>

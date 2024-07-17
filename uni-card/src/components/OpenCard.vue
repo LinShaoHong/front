@@ -88,12 +88,12 @@ const _close = () => {
 </script>
 <template>
   <view class="fixed w-100vw h-100vh top-0"
-        :style="{'z-index': open? '100': '-1', transition: '.3s linear', background: 'rgba(0, 0, 0, 0.85)'}"></view>
+        :style="{'z-index': open? '999': '-1', transition: '.3s linear', background: 'rgba(0, 0, 0, 0.85)'}"></view>
   <view class="fixed w-100vw h-100vh top-0 flex items-center justify-center"
         :style="{transform: open? 'rotateY(180deg)' : '',
                  transition: '.3s linear',
                  'transform-style': 'preserve-3d',
-                 'z-index': open? 101 : -1}">
+                 'z-index': open? 1000 : -1}">
     <image v-if="hks"
            class="card"
            :src="hksCover? '/static/card.png':src"
@@ -123,7 +123,7 @@ const _close = () => {
         :style="{transform: open? 'rotateY(180deg)' : '',
                  transition: '.3s linear',
                  'transform-style': 'preserve-3d',
-                 'z-index': open? 102 : -1}">
+                 'z-index': open? 1001 : -1}">
     <view class="card w-full flex flex-col items-center justify-center z-200" :style="{height: height}">
       <view class="absolute w-full top-0" style="height: 65%;">
         <image v-if="hksCover || (!defaulted && type)"
@@ -157,7 +157,7 @@ const _close = () => {
         :style="{transform: open? 'rotateY(180deg)' : '',
                  transition: '.3s linear',
                  'transform-style': 'preserve-3d',
-                 'z-index': open? 102 : -1}">
+                 'z-index': open? 1001 : -1}">
     <view class="card w-full z-200" :style="{height: height}">
       <view class="absolute w-full" style="height: 15%; top: 12%">
         <view class="absolute w-full h-full flex items-center justify-center">

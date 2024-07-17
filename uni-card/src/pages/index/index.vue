@@ -109,7 +109,7 @@ const backCardStyle = computed(() => (index) => {
   return {
     top: ((index - 1) * 18) + 'rpx',
     transform: 'scale(' + (0.9 + index * 0.03) + ')' + (open.value && index === backCardsCount.value ? 'rotateY(180deg)' : ''),
-    'z-index': index + 10,
+    'z-index': index + 500,
     transition: 'transform .4s ease',
     height: '65%'
   }
@@ -233,29 +233,40 @@ const openPayDialog = () => {
     <Logo/>
     <Background :hks="hks"/>
     <TopTabBar :hks="hks" @on-hks="(t) => hks = t"/>
+
     <view v-if="config.data.value.game && hks"
-          class="fixed left-30 w-screen top-150 flex w-full gap-15 z-11 flex-wrap"
-          style="width: calc(100vw - 220rpx)">
-      <view
-          class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
-          v-for="_cardType in config.data.value.hksCards.filter(s => s.open)"
-          :style="{'border-radius': '20rpx', 'background-color': hksCardType===_cardType.type? '#8606DD':'#5C0498'}"
-          @click="hksCardType=_cardType.type"
-          :key="_cardType.name">
-        <text class="text-white">{{ _cardType.name }}</text>
-      </view>
+          class="absolute flex flex-col pl-30 z-300">
+      <view class="h-150"></view>
+      <scroll-view scroll-y :show-scrollbar="false"
+                   style="width: calc(100vw - 220rpx); height: calc(30vh - 205rpx);">
+        <view class="flex w-full gap-15 flex-wrap" style="overflow-y: auto">
+          <view
+              class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
+              v-for="_cardType in config.data.value.hksCards.filter(s => s.open)"
+              :style="{'border-radius': '20rpx', 'background-color': hksCardType===_cardType.type? '#8606DD':'#5C0498'}"
+              @click="hksCardType=_cardType.type"
+              :key="_cardType.name">
+            <text class="text-white">{{ _cardType.name }}</text>
+          </view>
+        </view>
+      </scroll-view>
     </view>
-    <view v-if="!hks"
-          class="fixed left-30 w-screen top-150 flex w-full gap-15 z-11 flex-wrap"
-          style="width: calc(100vw - 220rpx)">
-      <view
-          class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
-          v-for="_cardType in config.data.value.loverCards.filter(s => s.open)"
-          :style="{'border-radius': '20rpx', 'background-color': loverCardType===_cardType.type? '#FF6110':'#982F06'}"
-          @click="loverCardType=_cardType.type"
-          :key="_cardType.name">
-        <text class="text-white">{{ _cardType.name }}</text>
-      </view>
+    <view v-if="config.data.value.game && !hks"
+          class="absolute flex flex-col pl-30 z-300">
+      <view class="h-150"></view>
+      <scroll-view scroll-y :show-scrollbar="false"
+                   style="width: calc(100vw - 220rpx); height: calc(30vh - 205rpx);">
+        <view class="flex w-full gap-15 flex-wrap" style="overflow-y: auto">
+          <view
+              class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
+              v-for="_cardType in config.data.value.loverCards.filter(s => s.open)"
+              :style="{'border-radius': '20rpx', 'background-color': loverCardType===_cardType.type? '#FF6110':'#982F06'}"
+              @click="loverCardType=_cardType.type"
+              :key="_cardType.name">
+            <text class="text-white">{{ _cardType.name }}</text>
+          </view>
+        </view>
+      </scroll-view>
     </view>
 
     <Popup v-if="config.data.value.game" position="center" :show="showRule">
@@ -296,7 +307,7 @@ const openPayDialog = () => {
       </text>
     </button>
 
-    <view class="relative flex flex-col items-center h-full">
+    <view class="absolute w-screen h-screen top-0 flex flex-col items-center">
       <view v-if="hasBanner"
             class="w-full px-20 py-10" style="height: 20%">
         <swiper :indicator-dots="false"
@@ -319,7 +330,7 @@ const openPayDialog = () => {
         <image v-if="!hks" class="absolute top-0 bottom-80" mode="heightFix" style="height: 80%;"
                src="/static/p_bg_lover.png"></image>
 
-        <view :class="['absolute h-full flex items-center justify-center']">
+        <view :class="['absolute h-full flex items-center justify-center z-500']">
           <view v-for="index in backCardsCount"
                 :class="['absolute', shuffle && index===backCardsCount && 'swap']"
                 :key="'card-back-' + index"
@@ -380,7 +391,7 @@ const openPayDialog = () => {
   }
   100% {
     transform: scale(0.85);
-    z-index: 10;
+    z-index: 500;
   }
 }
 </style>
