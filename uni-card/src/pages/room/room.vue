@@ -718,7 +718,7 @@ const replyMessageInBottom = computed(() => {
     </view>
   </Popup>
 
-  <Popup :show="showReply" position="bottom" @clickMask="showReply=false">
+  <Popup :show="showReply" :z-index="2000" position="bottom" @clickMask="showReply=false">
     <view :class="[canPopup? '':'h-0']">
       <view class="w-screen h-100 flex justify-center items-center"
             @click="showReply=false">
