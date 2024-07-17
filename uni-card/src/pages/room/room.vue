@@ -585,7 +585,7 @@ const replyMessageInBottom = computed(() => {
     <view style="height: 17vh"></view>
     <scroll-view scroll-y :show-scrollbar="false"
                  style="height: calc(13vh - 5rpx);">
-      <view class="flex flex-col gap-15 items-center" style="overflow-y: auto">
+      <view class="flex flex-col gap-15" style="overflow-y: auto; align-items: flex-start">
         <view
             class="pl-15 pr-15 pt-10 pb-10 flex justify-center items-center"
             v-for="_cardType in config.data.value.loverCards.filter(s => s?.open && (isMain || loverCardType===s?.type))"
