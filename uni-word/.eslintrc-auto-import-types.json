@@ -4,7 +4,6 @@
     "User": true,
     "Pay": true,
     "Types": true,
-    "Config": true,
-    "App": true
+    "Nav": true
   }
 }

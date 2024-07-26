@@ -68,7 +68,9 @@ scroll-view ::-webkit-scrollbar {
 	color:transparent;
 }
 
-.content {
+.container {
 	position: relative;
-	height: calc(100vh - var(--window-bottom));
+	height: calc(100vh - env(safe-area-inset-bottom) - 80px);
+	padding-top: 45px;
+	background-color: #FDFCF5;
 }

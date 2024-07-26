@@ -4,7 +4,7 @@
 // @ts-nocheck
 import type { AutoToRefs, ToRef } from 'vue'
 
-import configStore from '@/store/config'
+import navStore from '@/store/nav'
 
 import store from '@/store'
 
@@ -15,7 +15,7 @@ declare module 'vue' {
 }
 
 const storeExports = {
-  config: configStore,
+  nav: navStore,
 }
 
 export function useStore<T extends keyof typeof storeExports>(storeName: T) {

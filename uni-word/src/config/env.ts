@@ -11,7 +11,7 @@ const envMap = {
   },
   prod: {
     baseUrl: 'https://gooluky.cn',
-    apiBaseUrl: 'https://gooluky.cn/card/api'
+    apiBaseUrl: 'https://gooluky.cn/word/api'
   },
   local: {
     baseUrl: 'http://192.168.10.106:9939',

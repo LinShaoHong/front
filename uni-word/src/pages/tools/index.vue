@@ -4,15 +4,14 @@ import NavigationBar from "@/components/NavigationBar.vue";
 const nav = useStore('nav');
 onShow(() => {
   uni.hideTabBar();
-  nav.setIndex(0);
+  nav.setIndex(3);
 });
-
 </script>
 
 <template>
   <NavigationBar/>
   <view class="container">
-    index
+    tools
   </view>
 </template>
 
