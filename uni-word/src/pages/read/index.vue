@@ -18,12 +18,12 @@ onShow(() => {
         if (isEmpty(date.value)) {
           date.value = stats.value[0].id;
           stat.value = stats.value[0];
-          apiLoader.dicts(date.value)
-              .then(data => dicts.value = data.values)
-              .catch(() => networkError());
         } else {
           stat.value = stats.value.filter(s => s.id = date.value)[0];
         }
+        apiLoader.dicts(date.value)
+            .then(data => dicts.value = data.values)
+            .catch(() => networkError());
       })
       .catch(() => networkError());
 });
@@ -31,6 +31,7 @@ watch(date, (n, o) => {
   apiLoader.stat(n)
       .then((data) => {
         stat.value = data.value;
+        dicts.value = [];
         apiLoader.dicts(date.value)
             .then(data => dicts.value = data.values)
             .catch(() => networkError());
@@ -66,14 +67,7 @@ const icon = (dict) => {
   if (dict.passed) {
     return '/static/passed.png';
   }
-  let loading = false;
-  for (const key in dict.loadState) {
-    if (dict.loadState[key]) {
-      loading = true;
-      break;
-    }
-  }
-  if (loading) {
+  if (isLoading(dict)) {
     return '/static/loading.gif';
   }
   if (dict.viewed) {
@@ -81,6 +75,31 @@ const icon = (dict) => {
   }
   return '/static/waiting.png';
 };
+const isLoading = (dict) => {
+  let loading = false;
+  for (const key in dict.loadState) {
+    if (dict.loadState[key]) {
+      loading = true;
+      break;
+    }
+  }
+  return loading;
+};
+const dictType = ref('all');
+const _dicts = computed(() => {
+  switch (dictType.value) {
+    case 'viewed':
+      return dicts.value.filter(d => d.viewed);
+    case 'waiting':
+      return dicts.value.filter(d => !d.viewed);
+    case 'loading':
+      return dicts.value.filter(d => isLoading(d));
+    case 'passed':
+      return dicts.value.filter(d => d.passed);
+    default:
+      return dicts.value;
+  }
+});
 </script>
 
 <template>
@@ -100,7 +119,7 @@ const icon = (dict) => {
             <view v-for="d in stats" class="w-180 rd-10 flex justify-center items-center p-10"
                   :key="d.id"
                   @click="date=d.id"
-                  :style="{'background-color': date===d.id? '#006E1C':'#EEF0E1'}">
+                  :style="{'background-color': date===d.id? '#006E1C':(d.total===d.passed? '#D9E7C8':'#EEF0E1')}">
               <text :style="{'font-size': '24rpx', color: date===d.id? 'white':'black'}">{{ d.id }}</text>
             </view>
           </view>
@@ -141,19 +160,31 @@ const icon = (dict) => {
         <view class="w-full h-30"></view>
         <view class="w-full flex pl-20 gap-10 h-50">
           <view class="pl-20 pr-20 pt-5 pb-5 rd-10 flex items-center justify-center"
-                style="background-color: #EEF0E1; font-size: 24rpx;">全部</view>
+                @click="dictType='all'"
+                :style="{'background-color': dictType==='all'? '#D9E7C8':'#EEF0E1', 'font-size': '24rpx'}">全部
+          </view>
           <view class="pl-20 pr-20 pt-5 pb-5 rd-10 flex items-center justify-center"
-                style="background-color: #EEF0E1; font-size: 24rpx;">已查看</view>
+                @click="dictType='viewed'"
+                :style="{'background-color': dictType==='viewed'? '#D9E7C8':'#EEF0E1', 'font-size': '24rpx'}">已查看
+          </view>
           <view class="pl-20 pr-20 pt-5 pb-5 rd-10 flex items-center justify-center"
-                style="background-color: #EEF0E1; font-size: 24rpx;">未查看</view>
+                @click="dictType='waiting'"
+                :style="{'background-color': dictType==='waiting'? '#D9E7C8':'#EEF0E1', 'font-size': '24rpx'}">待查看
+          </view>
           <view class="pl-20 pr-20 pt-5 pb-5 rd-10 flex items-center justify-center"
-                style="background-color: #EEF0E1; font-size: 24rpx;">已通过</view>
+                @click="dictType='loading'"
+                :style="{'background-color': dictType==='loading'? '#D9E7C8':'#EEF0E1', 'font-size': '24rpx'}">加载中
+          </view>
+          <view class="pl-20 pr-20 pt-5 pb-5 rd-10 flex items-center justify-center"
+                @click="dictType='passed'"
+                :style="{'background-color': dictType==='passed'? '#D9E7C8':'#EEF0E1', 'font-size': '24rpx'}">已通过
+          </view>
         </view>
         <view class="w-full h-20"></view>
         <scroll-view scroll-y :show-scrollbar="false" style="height: calc(100% - 100rpx)">
-          <view v-for="dict in dicts" class="h-75 w-full pl-20 pr-20 pt-10 pb-10 flex items-center"
+          <view v-for="(dict,i) in _dicts" class="h-75 w-full pl-20 pr-20 pt-10 pb-10 flex items-center"
                 :key="dict.id"
-                :style="{'background-color': (dict.sort%2===0? '#D9E7C8':'#F8FAF0')}">
+                :style="{'background-color': ((i+1)%2===0? '#D9E7C8':'#F8FAF0')}">
             <view class="w-30vw pl-5" @click="toCheck(dict.sort)">
               <text style="font-size: 30rpx;">{{ dict.id }}</text>
             </view>
