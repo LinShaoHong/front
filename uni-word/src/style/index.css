@@ -71,6 +71,5 @@ scroll-view ::-webkit-scrollbar {
 .container {
 	position: relative;
 	height: calc(100vh - env(safe-area-inset-bottom) - 80px);
-	padding-top: 45px;
 	background-color: #F8FAF0;
 }

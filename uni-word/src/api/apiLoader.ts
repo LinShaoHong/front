@@ -13,6 +13,10 @@ const apiLoader = {
 
   stat: (date: string) => http.get<Loader.Stat>('/loader/stat', { date: date }),
 
+  stats: () => http.get<Loader.Stat>('/loader/stats', null),
+
+  dicts: (date: string) => http.get<Word.Dict>('/loader/dicts', { date: date }),
+
   byDate: (date: string, sort: any) => http.get<Word.Dict>('/loader/byDate', { date: date, sort: sort })
 };
 

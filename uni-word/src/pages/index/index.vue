@@ -10,11 +10,6 @@ import { delay } from "@/utils/calls";
 import { formatDate } from "date-fns";
 
 const nav = useStore('nav');
-const dict = ref({} as Word.Dict);
-const stat = ref({} as Loader.Stat);
-const date = ref('');
-const width = ref(0);
-const height = ref(0);
 let interval;
 onShow(() => {
   uni.hideTabBar();
@@ -37,18 +32,11 @@ onShow(() => {
           }).catch(() => networkError());
     }
   }, 1000);
-});
-onHide(() => {
-  if(interval) {
-    clearInterval(interval);
-  }
-});
-onLoad((query) => {
   uni.getSystemInfo().then(rs => {
     width.value = rs.windowWidth;
     height.value = rs.windowHeight;
   });
-  date.value = query?.date;
+  date.value = nav.data.value.date;
   if (isEmpty(date.value)) {
     date.value = formatDate(new Date(), 'yyyy-MM-dd');
   }
@@ -56,10 +44,24 @@ onLoad((query) => {
       .then((data) => {
         stat.value = data.value;
         apiLoader.byDate(date.value, stat.value.sort)
-            .then((data) => dict.value = data.value)
+            .then((data) => {
+              dict.value = data.value;
+              nav.setShow(true);
+            })
             .catch(() => networkError());
       }).catch(() => networkError());
 });
+onHide(() => {
+  console.log('hide');
+  if (interval) {
+    clearInterval(interval);
+  }
+});
+const dict = ref({} as Word.Dict);
+const stat = ref({} as Loader.Stat);
+const date = ref('');
+const width = ref(0);
+const height = ref(0);
 const reload = () => {
   apiDict.byId(dict.value.id).then((data) => {
     dict.value = data.value;
@@ -109,10 +111,10 @@ const loading = computed(() => {
 const move = (i) => {
   const curr = dict.value.sort;
   let next = curr + i;
-  if(next < 1) {
+  if (next < 1) {
     next = stat.value.total;
   }
-  if(next > stat.value.total) {
+  if (next > stat.value.total) {
     next = 1;
   }
   apiLoader.byDate(date.value, next)
@@ -132,8 +134,8 @@ const search = (w) => {
 
 <template>
   <NavigationBar/>
-  <view class="container">
-    <scroll-view class="h-full w-full" scroll-y :show-scrollbar="false">
+  <view class="container" style="padding-top: 45px;">
+    <scroll-view v-if="nav.data.value.show" class="h-full w-full" scroll-y :show-scrollbar="false">
       <view class="w-full flex flex-col items-center gap-10">
         <view class="w-full flex items-center justify-center mt-40">
           <text @click="search(dict.id)" class="font-bold" style="font-size: 52rpx">{{ dict.id }}</text>
@@ -436,22 +438,22 @@ const search = (w) => {
       <view class="w-full h-30"></view>
     </scroll-view>
   </view>
-  <view class="fixed bottom-750 right-60 w-100 h-100 rd-100 flex items-center justify-center"
+  <view v-if="nav.data.value.show" class="fixed bottom-750 right-60 w-100 h-100 rd-100 flex items-center justify-center"
         @click="search(dict.id)"
         style="background-color: #D9E7C8; opacity: .8">
     <uni-icons type="search" size="24" color="black"/>
   </view>
-  <view class="fixed bottom-600 right-60 w-100 h-100 rd-100 flex items-center justify-center"
+  <view v-if="nav.data.value.show" class="fixed bottom-600 right-60 w-100 h-100 rd-100 flex items-center justify-center"
         @click="move(1)"
         style="background-color: #D9E7C8; opacity: .8">
     <uni-icons type="right" size="24" color="black"/>
   </view>
-  <view class="fixed bottom-450 right-60 w-100 h-100 rd-100 flex items-center justify-center"
+  <view v-if="nav.data.value.show" class="fixed bottom-450 right-60 w-100 h-100 rd-100 flex items-center justify-center"
         @click="move(-1)"
         style="background-color: #D9E7C8; opacity: .8">
     <uni-icons type="left" size="24" color="black"/>
   </view>
-  <view class="fixed bottom-300 right-60 w-100 h-100 rd-100 flex items-center justify-center"
+  <view v-if="nav.data.value.show" class="fixed bottom-300 right-60 w-100 h-100 rd-100 flex items-center justify-center"
         @click="pass"
         style="background-color: #D9E7C8; opacity: .8">
     <uni-icons type="checkmarkempty" size="24" color="black"/>
