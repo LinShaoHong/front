@@ -165,9 +165,9 @@ const search = (w) => {
               <text style="color: #858585; font-size: 20rpx;">已查看</text>
               <view class="flex items-center">
                 <view class="h-5"
-                      :style="{'background-color': '#FFA600', width: (160 * stat.viewed / stat.total) + 'rpx'}"></view>
+                      :style="{'background-color': '#FFA600', width: (120 * stat.viewed / stat.total) + 'rpx'}"></view>
                 <view class="h-5"
-                      :style="{'background-color': 'white', width: (160 * (stat.total - stat.viewed) / stat.total) + 'rpx'}"></view>
+                      :style="{'background-color': 'white', width: (120 * (stat.total - stat.viewed) / stat.total) + 'rpx'}"></view>
                 <text class="ml-3" style="color: #858585; font-size: 20rpx;">
                   {{ (Math.round((stat.viewed / stat.total) * 100)) + '%' }}
                 </text>
@@ -177,16 +177,16 @@ const search = (w) => {
               <text style="color: #858585; font-size: 20rpx;">已通过</text>
               <view class="flex items-center">
                 <view class="h-5"
-                      :style="{'background-color': '#006E1C', width: (160 * stat.passed / stat.total) + 'rpx'}"></view>
+                      :style="{'background-color': '#006E1C', width: (120 * stat.passed / stat.total) + 'rpx'}"></view>
                 <view class="h-5"
-                      :style="{'background-color': 'white', width: (160 * (stat.total - stat.passed) / stat.total) + 'rpx'}"></view>
+                      :style="{'background-color': 'white', width: (120 * (stat.total - stat.passed) / stat.total) + 'rpx'}"></view>
                 <text class="ml-3" style="color: #858585; font-size: 20rpx;">
                   {{ (Math.round((stat.passed / stat.total) * 100)) + '%' }}
                 </text>
               </view>
             </view>
           </view>
-          <view class="absolute left-280 flex flex-col h-full justify-around">
+          <view class="flex flex-col h-full justify-around">
             <view class="flex gap-10" style="align-items: flex-end">
               <text style="font-size: 24rpx;">英</text>
               <text style="font-size: 32rpx;">{{ dict?.usTranscription }}</text>
