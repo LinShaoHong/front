@@ -1,8 +1,8 @@
 {
   "globals": {
     "Http": true,
-    "User": true,
-    "Pay": true,
+    "Word": true,
+    "Loader": true,
     "Types": true,
     "Nav": true
   }
