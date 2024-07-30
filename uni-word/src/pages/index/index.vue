@@ -8,6 +8,8 @@ import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue
 import Popup from "@/components/Popup.vue";
 import { delay } from "@/utils/calls";
 import { formatDate } from "date-fns";
+import { useTouch } from "@/hooks/useTouch";
+import { message } from "@/utils/unis";
 
 const nav = useStore('nav');
 let interval;
@@ -53,7 +55,6 @@ onShow(() => {
       }).catch(() => networkError());
 });
 onHide(() => {
-  console.log('hide');
   if (interval) {
     clearInterval(interval);
   }
@@ -63,6 +64,7 @@ const stat = ref({} as Loader.Stat);
 const date = ref('');
 const width = ref(0);
 const height = ref(0);
+const scTop = ref(0);
 const reload = () => {
   apiDict.byId(dict.value.id).then((data) => {
     dict.value = data.value;
@@ -120,7 +122,11 @@ const move = (i) => {
     next = 1;
   }
   apiLoader.byDate(date.value, next)
-      .then((data) => dict.value = data.value)
+      .then((data) => {
+        scTop.value = 0;
+        dict.value = data.value;
+        nextTick(() => scTop.value = 0);
+      })
       .catch(() => networkError());
 };
 //-------------- popup ----------------
@@ -132,6 +138,33 @@ const search = (w) => {
   showSearch.value = true;
   delay(350).then(() => searchHeight.value = height.value - 45);
 };
+const copy = (txt) => {
+  uni.setClipboardData({
+    data: txt,
+    success: () => {
+      message('复制成功', 3);
+    }
+  })
+};
+
+//----------- touch --------------
+const { startX, startY, endX, endY, touchStart, touchEnd } = useTouch();
+watch(endX, (n, o) => {
+  if (Math.abs(startY.value - endY.value) < 30) {
+    if (showSearch.value) {
+      if (endX.value - startX.value > 20) {
+        showSearch.value = false;
+      }
+    } else if (!showRemove.value) {
+      if (endX.value - startX.value > 25) {
+        move(-1);
+      }
+      if (endX.value - startX.value < -25) {
+        move(1);
+      }
+    }
+  }
+});
 </script>
 
 <template>
@@ -146,7 +179,7 @@ const search = (w) => {
             style="color: #858585; font-size: 24rpx;">
         {{ date }}
       </text>
-      <view class="flex gap-40">
+      <view class="flex gap-60">
         <view class="flex flex-col justify-center gap-10"
               style="background-color: #EEF0E1">
           <view class="w-full flex justify-center" style="align-items: flex-end;">
@@ -197,10 +230,17 @@ const search = (w) => {
         </view>
       </view>
     </view>
-    <scroll-view v-if="nav.data.value.show" class="w-full" scroll-y :show-scrollbar="false" style="height: 85%;">
+    <scroll-view v-if="nav.data.value.show" class="w-full"
+                 scroll-y :show-scrollbar="false"
+                 :scroll-top="scTop"
+                 @scroll="e => scTop = e.detail.scrollTop"
+                 @touchstart="touchStart" @touchend="touchEnd"
+                 style="height: 85%;">
       <view class="w-full flex flex-col items-center gap-10">
         <view class="w-full flex items-center justify-center mt-40">
-          <text @click="search(dict.id)" class="font-bold" style="font-size: 52rpx">{{ dict.id }}</text>
+          <text @click="search(dict.id)"
+                @longpress="copy(dict.id)"
+                class="font-bold" style="font-size: 52rpx">{{ dict.id }}</text>
         </view>
         <view class="relative flex flex-col gap-10 mt-20 w-full h-100 items-center">
           <view class="flex flex-col h-full justify-around">
@@ -364,7 +404,9 @@ const search = (w) => {
           <view class="w-full flex flex-col" style="width: calc(100% - 40rpx)">
             <view v-for="(derivative,i) in dict.derivatives" :key="'derivative'+i">
               <view v-if="derivative.index===0" class="flex items-center">
-                <text @click="search(derivative.word)" :class="[derivative.word.includes(dict.id)? 'font-bold':'']"
+                <text @click="search(derivative.word)"
+                      @longpress="copy(derivative.word)"
+                      :class="[derivative.word.includes(dict.id)? 'font-bold':'']"
                       style="font-size: 32rpx;">{{ derivative.word }}
                 </text>
                 <uni-icons @click="onRemovePart('derivatives',derivative.word)" type="close" size="20"
@@ -376,7 +418,9 @@ const search = (w) => {
                 <view v-for="i in derivative.index" :key="'di'+i" class="w-50"
                       style="border-top: 1px solid black"></view>
                 <view class="flex items-center justify-center gap-10">
-                  <text @click="search(derivative.word)" :class="[derivative.word.includes(dict.id)? 'font-bold':'']"
+                  <text @click="search(derivative.word)"
+                        @longpress="copy(derivative.word)"
+                        :class="[derivative.word.includes(dict.id)? 'font-bold':'']"
                         style="font-size: 32rpx; margin-left: 5rpx;">{{ derivative.word }}
                   </text>
                   <uni-icons @click="onRemovePart('derivatives',derivative.word)" type="close" size="20"
@@ -406,6 +450,7 @@ const search = (w) => {
               <view class="flex flex-wrap">
                 <text v-for="synonym in dict.synAnts?.synonyms"
                       @click="search(synonym)"
+                      @longpress="copy(synonym)"
                       style="font-size: 32rpx; margin-left: 20rpx; margin-bottom: 10rpx;">
                   {{ synonym }}
                 </text>
@@ -416,6 +461,7 @@ const search = (w) => {
               <view class="flex flex-wrap">
                 <text v-for="antonym in dict.synAnts?.antonyms"
                       @click="search(antonym)"
+                      @longpress="copy(antonym)"
                       style="font-size: 32rpx; margin-left: 20rpx;">
                   {{ antonym }}
                 </text>
@@ -453,36 +499,34 @@ const search = (w) => {
       <view class="w-full h-30"></view>
     </scroll-view>
   </view>
-  <view v-if="nav.data.value.show" class="fixed bottom-750 right-60 w-100 h-100 rd-100 flex items-center justify-center"
+  <view v-if="nav.data.value.show"
+        class="fixed bottom-750 right-60 w-100 h-100 rd-100 flex items-center justify-center"
         @click="search(dict.id)"
+        @longpress="copy(dict.id)"
         style="background-color: #D9E7C8; opacity: .8">
     <uni-icons type="search" size="24" color="black"/>
   </view>
-  <view v-if="nav.data.value.show" class="fixed bottom-600 right-60 w-100 h-100 rd-100 flex items-center justify-center"
-        @click="move(1)"
-        style="background-color: #D9E7C8; opacity: .8">
-    <uni-icons type="right" size="24" color="black"/>
-  </view>
-  <view v-if="nav.data.value.show" class="fixed bottom-450 right-60 w-100 h-100 rd-100 flex items-center justify-center"
-        @click="move(-1)"
-        style="background-color: #D9E7C8; opacity: .8">
-    <uni-icons type="left" size="24" color="black"/>
-  </view>
-  <view v-if="nav.data.value.show" class="fixed bottom-300 right-60 w-100 h-100 rd-100 flex items-center justify-center"
+  <view v-if="nav.data.value.show"
+        class="fixed bottom-600 right-60 w-100 h-100 rd-100 flex items-center justify-center"
         @click="pass"
         style="background-color: #D9E7C8; opacity: .8">
     <uni-icons type="checkmarkempty" size="24" color="black"/>
   </view>
-  <Popup :show="showSearch" position="right" @clickMask="() => {showSearch=false;searchHeight=0;searchWord=dict.id;}">
-    <view class="relative w-85vw h-100vh pl-20 pr-20" style="background-color: #F8FAF0; padding-top: 45px;">
+  <Popup :show="showSearch" position="right"
+         @touchstart="touchStart" @touchend="touchEnd"
+         @clickMask="() => {showSearch=false;searchHeight=0;searchWord=dict.id;}">
+    <view class="relative w-85vw h-100vh pl-20 pr-20"
+          @touchstart="touchStart" @touchend="touchEnd"
+          style="background-color: #F8FAF0; padding-top: 45px;">
       <web-view v-if="showSearch"
                 :webview-styles="{width: width*0.85, height: searchHeight, left: width*0.15, top:45}"
                 :fullscreen="false"
-                :src="'https://www.iciba.com/word?w='+searchWord">
+                :src="'https://www.xxenglish.com/wd/'+searchWord">
       </web-view>
     </view>
   </Popup>
-  <Popup :show="showRemove" position="center" @clickMask="showRemove=false">
+  <Popup :show="showRemove" position="center"
+         @clickMask="showRemove=false">
     <view class="w-80vw h-12vh rd-30 flex items-center justify-center" style="background-color: #E8EBDA">
       <text class="font-bold" style="font-size: 36rpx;">删除该项？</text>
       <text @click="removePart" class="absolute bottom-30 right-60 font-bold" style="color:#3F6900; font-size: 32rpx;">

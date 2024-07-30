@@ -16,6 +16,23 @@ onShow(() => {
   apiLoader.stats()
       .then((data) => {
         stats.value = data.values;
+      })
+      .catch(() => networkError());
+  if(!isEmpty(date.value)) {
+    apiLoader.stat(date.value)
+        .then((data) => {
+          stat.value = data.value;
+          apiLoader.dicts(date.value)
+              .then(data => dicts.value = data.values)
+              .catch(() => networkError());
+        })
+        .catch(() => networkError());
+  }
+});
+onLoad(() => {
+  apiLoader.stats()
+      .then((data) => {
+        stats.value = data.values;
         if (isEmpty(date.value)) {
           date.value = stats.value[0].id;
           stat.value = stats.value[0];
@@ -32,7 +49,6 @@ watch(date, (n, o) => {
   apiLoader.stat(n)
       .then((data) => {
         stat.value = data.value;
-        dicts.value = [];
         apiLoader.dicts(date.value)
             .then(data => dicts.value = data.values)
             .catch(() => networkError());
@@ -52,16 +68,16 @@ const toCheck = (sort) => {
 };
 const meaning = (dict) => {
   let arr: string[] = []
-  if (!isEmpty(dict.meaning.nouns)) {
+  if (!isEmpty(dict.meaning?.nouns)) {
     arr.push('n. ' + dict.meaning.nouns);
   }
-  if (!isEmpty(dict.meaning.verbs)) {
+  if (!isEmpty(dict.meaning?.verbs)) {
     arr.push('v. ' + dict.meaning.verbs);
   }
-  if (!isEmpty(dict.meaning.adjectives)) {
+  if (!isEmpty(dict.meaning?.adjectives)) {
     arr.push('adj. ' + dict.meaning.adjectives);
   }
-  if (!isEmpty(dict.meaning.adverbs)) {
+  if (!isEmpty(dict.meaning?.adverbs)) {
     arr.push('adv. ' + dict.meaning.adverbs);
   }
   return arr.join(' ');
@@ -88,22 +104,22 @@ const isLoading = (dict) => {
   }
   return loading;
 };
+const searchQ = ref('');
 const dictType = ref('all');
 const _dicts = computed(() => {
   switch (dictType.value) {
     case 'waiting':
-      return dicts.value.filter(d => !d.viewed);
+      return dicts.value.filter(d => !d.viewed && (isEmpty(searchQ.value) || d.id.includes(searchQ.value)));
     case 'loading':
-      return dicts.value.filter(d => isLoading(d));
+      return dicts.value.filter(d => isLoading(d) && (isEmpty(searchQ.value) || d.id.includes(searchQ.value)));
     case 'noPass':
-      return dicts.value.filter(d => !d.passed);
+      return dicts.value.filter(d => !d.passed && (isEmpty(searchQ.value) || d.id.includes(searchQ.value)));
     case 'passed':
-      return dicts.value.filter(d => d.passed);
+      return dicts.value.filter(d => d.passed && (isEmpty(searchQ.value) || d.id.includes(searchQ.value)));
     default:
-      return dicts.value;
+      return dicts.value.filter(d => isEmpty(searchQ.value) || d.id.includes(searchQ.value));
   }
 });
-
 onShareAppMessage(async () => {
   return {
     title: '',
@@ -127,11 +143,14 @@ onShareAppMessage(async () => {
                      style="background-color: white;"
                      class="w-610 h-250 rd-20 p-20">
           <view class="flex flex-wrap gap-15">
-            <view v-for="d in stats" class="w-180 rd-10 flex justify-center items-center p-10"
-                  :key="d.id"
-                  @click="date=d.id"
-                  :style="{'background-color': date===d.id? '#006E1C':(d.total===d.passed? '#D9E7C8':'#EEF0E1')}">
-              <text :style="{'font-size': '24rpx', color: date===d.id? 'white':'black'}">{{ d.id }}</text>
+            <view v-for="sta in stats" class="relative w-180 h-50 rd-5 flex justify-center items-center p-10"
+                  :key="sta.id"
+                  @click="date=sta.id"
+                  :style="{'background-color': date===sta.id? '#006E1C':(sta.total===sta.passed && sta.total > 0? '#D9E7C8':'#EEF0E1')}">
+              <text class="z-100" :style="{'font-size': '24rpx', color: date===sta.id? 'white':'black'}">{{ sta.id }}</text>
+              <view v-if="date!==sta.id && sta.passed!==sta.total" class="absolute h-50 left-0 rd-5"
+                    :style="{width:(180 * sta.passed / sta.total) + 'rpx','background-color': '#D9E7C8'}">
+              </view>
             </view>
           </view>
         </scroll-view>
@@ -192,7 +211,21 @@ onShareAppMessage(async () => {
           </view>
         </view>
         <view class="w-full h-20"></view>
-        <scroll-view scroll-y :show-scrollbar="false" style="height: calc(100% - 100rpx)">
+        <view class="w-78vw h-60 rd-60 p-20 ml-20 flex items-center justify-between" style="background-color: white">
+          <input class="text-left"
+                 :ignore-composition-event="false"
+                 placeholder="search"
+                 placeholder-style="font-size: 28rpx; color:#858585"
+                 type="textarea"
+                 style="font-size: 30rpx; flex:1"
+                 v-model="searchQ"
+                 confirm-type="search"/>
+          <image v-if="!isEmpty(searchQ)"
+                 @click="searchQ=''"
+                 class="w-30 mr-10" mode="widthFix" src="/static/clear.png"></image>
+        </view>
+        <view class="w-full h-20"></view>
+        <scroll-view scroll-y :show-scrollbar="false" style="height: calc(100% - 180rpx)">
           <view v-for="(dict,i) in _dicts" class="h-75 w-full pl-20 pr-20 pt-10 pb-10 flex items-center"
                 :key="dict.id"
                 :style="{'background-color': ((i+1)%2===0? '#D9E7C8':'#F8FAF0')}">
