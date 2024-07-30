@@ -3,6 +3,7 @@ import NavigationBar from "@/components/NavigationBar.vue";
 import { networkError } from "@/utils/request";
 import apiLoader from "@/api/apiLoader";
 import { isEmpty } from "@/utils/is";
+import { delay } from "@/utils/calls";
 
 const nav = useStore('nav');
 const date = ref('');
@@ -41,11 +42,13 @@ watch(date, (n, o) => {
 const toCheck = (sort) => {
   nav.setShow(false);
   nav.setDate(date.value);
-  apiLoader.byDate(date.value, sort).then(() => {
-    uni.switchTab({
-      url: '/pages/index/index'
-    });
-  }).catch(() => networkError());
+  delay(200).then(() => {
+    apiLoader.byDate(date.value, sort).then(() => {
+      uni.switchTab({
+        url: '/pages/index/index'
+      });
+    }).catch(() => networkError());
+  });
 };
 const meaning = (dict) => {
   let arr: string[] = []
@@ -88,16 +91,24 @@ const isLoading = (dict) => {
 const dictType = ref('all');
 const _dicts = computed(() => {
   switch (dictType.value) {
-    case 'viewed':
-      return dicts.value.filter(d => d.viewed);
     case 'waiting':
       return dicts.value.filter(d => !d.viewed);
     case 'loading':
       return dicts.value.filter(d => isLoading(d));
+    case 'noPass':
+      return dicts.value.filter(d => !d.passed);
     case 'passed':
       return dicts.value.filter(d => d.passed);
     default:
       return dicts.value;
+  }
+});
+
+onShareAppMessage(async () => {
+  return {
+    title: '',
+    imageUrl: '',
+    path: 'pages/read/index'
   }
 });
 </script>
@@ -109,7 +120,7 @@ const _dicts = computed(() => {
       <view class="relative w-full p-30 flex flex-col items-center gap-40"
             style="height: 40%;
             background-color: #EEF0E1;
-            padding-top: 45px;
+            padding-top: calc(var(--status-bar-height) + 10px);
             border-radius: 0 0 30rpx 30rpx;
             box-shadow: rgba(0, 0, 0, 0.1) 0 1px 3px 0, rgba(0, 0, 0, 0.06) 0 1px 2px 0;">
         <scroll-view scroll-y :show-scrollbar="false"
@@ -126,25 +137,25 @@ const _dicts = computed(() => {
         </scroll-view>
         <view class="w-610 flex flex-col gap-10">
           <view class="flex flex-col">
-            <text style="color: #858585; font-size: 20rpx;">已查看</text>
+            <text style="color: #858585; font-size: 22rpx;">已查看</text>
             <view class="flex items-center">
-              <view class="h-5"
+              <view class="h-7"
                     :style="{'background-color': '#FFA600', width: (400 * stat.viewed / stat.total) + 'rpx'}"></view>
-              <view class="h-5"
+              <view class="h-7"
                     :style="{'background-color': 'white', width: (400 * (stat.total - stat.viewed) / stat.total) + 'rpx'}"></view>
-              <text class="ml-10" style="color: #858585; font-size: 20rpx;">
+              <text class="ml-10" style="color: #858585; font-size: 22rpx;">
                 {{ stat.viewed + ' / ' + stat.total + ' = ' + (Math.round((stat.viewed / stat.total) * 100)) + '%' }}
               </text>
             </view>
           </view>
           <view class="flex flex-col">
-            <text style="color: #858585; font-size: 20rpx;">已通过</text>
+            <text style="color: #858585; font-size: 22rpx;">已通过</text>
             <view class="flex items-center">
-              <view class="h-5"
+              <view class="h-7"
                     :style="{'background-color': '#006E1C', width: (400 * stat.passed / stat.total) + 'rpx'}"></view>
-              <view class="h-5"
+              <view class="h-7"
                     :style="{'background-color': 'white', width: (400 * (stat.total - stat.passed) / stat.total) + 'rpx'}"></view>
-              <text class="ml-10" style="color: #858585; font-size: 20rpx;">
+              <text class="ml-10" style="color: #858585; font-size: 22rpx;">
                 {{ stat.passed + ' / ' + stat.total + ' = ' + (Math.round((stat.passed / stat.total) * 100)) + '%' }}
               </text>
             </view>
@@ -164,12 +175,12 @@ const _dicts = computed(() => {
                 :style="{'background-color': dictType==='all'? '#D9E7C8':'#EEF0E1', 'font-size': '24rpx'}">全部
           </view>
           <view class="pl-20 pr-20 pt-5 pb-5 rd-10 flex items-center justify-center"
-                @click="dictType='viewed'"
-                :style="{'background-color': dictType==='viewed'? '#D9E7C8':'#EEF0E1', 'font-size': '24rpx'}">已查看
+                @click="dictType='waiting'"
+                :style="{'background-color': dictType==='waiting'? '#D9E7C8':'#EEF0E1', 'font-size': '24rpx'}">未查看
           </view>
           <view class="pl-20 pr-20 pt-5 pb-5 rd-10 flex items-center justify-center"
-                @click="dictType='waiting'"
-                :style="{'background-color': dictType==='waiting'? '#D9E7C8':'#EEF0E1', 'font-size': '24rpx'}">待查看
+                @click="dictType='noPass'"
+                :style="{'background-color': dictType==='noPass'? '#D9E7C8':'#EEF0E1', 'font-size': '24rpx'}">未通过
           </view>
           <view class="pl-20 pr-20 pt-5 pb-5 rd-10 flex items-center justify-center"
                 @click="dictType='loading'"

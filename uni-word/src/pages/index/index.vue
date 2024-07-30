@@ -43,6 +43,7 @@ onShow(() => {
   apiLoader.stat(date.value)
       .then((data) => {
         stat.value = data.value;
+        date.value = stat.value.id;
         apiLoader.byDate(date.value, stat.value.sort)
             .then((data) => {
               dict.value = data.value;
@@ -89,6 +90,7 @@ const onRemovePart = (part, path) => {
 const removePart = () => {
   apiLoader.removePart(dict.value.id, _removePart.value, _removePath.value)
       .then(() => {
+        showRemove.value = false;
         reload();
       }).catch(() => networkError());
 };
@@ -134,60 +136,73 @@ const search = (w) => {
 
 <template>
   <NavigationBar/>
-  <view class="container" style="padding-top: 45px;">
-    <scroll-view v-if="nav.data.value.show" class="h-full w-full" scroll-y :show-scrollbar="false">
+  <view class="container">
+    <view class="relative w-full flex items-center justify-between pl-30 p-30 pb-20"
+          style="background-color: #EEF0E1;
+          height: 15%;
+          padding-top: calc(var(--status-bar-height) + 10px);
+          box-shadow: rgba(0, 0, 0, 0.1) 0 1px 3px 0, rgba(0, 0, 0, 0.06) 0 1px 2px 0;">
+      <text class="absolute left-15 bottom-10"
+            style="color: #858585; font-size: 24rpx;">
+        {{ date }}
+      </text>
+      <view class="flex gap-40">
+        <view class="flex flex-col justify-center gap-10"
+              style="background-color: #EEF0E1">
+          <view class="w-full flex justify-center" style="align-items: flex-end;">
+            <view>
+              <text style="color: #858585; font-size: 40rpx; margin: auto; display: inline-block">
+                {{ dict.sort + ' / ' + stat.total }}
+              </text>
+            </view>
+          </view>
+        </view>
+        <view class="flex flex-col">
+          <view class="flex flex-col mt-10">
+            <text style="color: #858585; font-size: 22rpx;">已查看</text>
+            <view class="flex items-center">
+              <view class="h-5"
+                    :style="{'background-color': '#FFA600', width: (250 * stat.viewed / stat.total) + 'rpx'}"></view>
+              <view class="h-5"
+                    :style="{'background-color': 'white', width: (250 * (stat.total - stat.viewed) / stat.total) + 'rpx'}"></view>
+              <text class="ml-3" style="color: #858585; font-size: 22rpx;">
+                {{ (Math.round((stat.viewed / stat.total) * 100)) + '%' }}
+              </text>
+            </view>
+          </view>
+          <view class="flex flex-col mt-5">
+            <text style="color: #858585; font-size: 22rpx;">已通过</text>
+            <view class="flex items-center">
+              <view class="h-5"
+                    :style="{'background-color': '#006E1C', width: (250 * stat.passed / stat.total) + 'rpx'}"></view>
+              <view class="h-5"
+                    :style="{'background-color': 'white', width: (250 * (stat.total - stat.passed) / stat.total) + 'rpx'}"></view>
+              <text class="ml-3" style="color: #858585; font-size: 22rpx;">
+                {{ (Math.round((stat.passed / stat.total) * 100)) + '%' }}
+              </text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view>
+        <view v-if="dict.passed" class="flex flex-col justify-center items-center gap-10">
+          <image class="w-100" mode="widthFix" src="/static/passed.png"></image>
+          <text style="font-size: 20rpx; color: #858585">{{ formatDate(dict.passTime, 'yyyy-MM-dd') }}</text>
+        </view>
+        <view v-else-if="loading" class="flex flex-col justify-center items-center gap-10">
+          <image class="w-80" mode="widthFix" src="/static/loading.gif"></image>
+        </view>
+        <view v-else class="flex flex-col justify-center items-center gap-10">
+          <image class="w-100" mode="widthFix" src="/static/checking.png"></image>
+        </view>
+      </view>
+    </view>
+    <scroll-view v-if="nav.data.value.show" class="w-full" scroll-y :show-scrollbar="false" style="height: 85%;">
       <view class="w-full flex flex-col items-center gap-10">
         <view class="w-full flex items-center justify-center mt-40">
           <text @click="search(dict.id)" class="font-bold" style="font-size: 52rpx">{{ dict.id }}</text>
-          <view v-if="dict.passed" class="absolute top-35 right-60 flex flex-col justify-center items-center gap-10">
-            <image class="w-100" mode="widthFix" src="/static/passed.png"></image>
-            <text style="font-size: 20rpx; color: #858585">{{ formatDate(dict.passTime, 'yyyy-MM-dd') }}</text>
-          </view>
-          <view v-else-if="loading" class="absolute top-35 right-60 flex flex-col justify-center items-center gap-10">
-            <image class="w-80" mode="widthFix" src="/static/loading.gif"></image>
-          </view>
-          <view v-else class="absolute top-35 right-60 flex flex-col justify-center items-center gap-10">
-            <image class="w-100" mode="widthFix" src="/static/checking.png"></image>
-          </view>
         </view>
         <view class="relative flex flex-col gap-10 mt-20 w-full h-100 items-center">
-          <view class="absolute rd-5 left-30 top--10 flex flex-col justify-around p-10"
-                style="background-color: #EEF0E1">
-            <text class="absolute right-10 top-5" style="color: #858585; font-size: 20rpx;">
-              {{ date }}
-            </text>
-            <view class="h-70 w-full flex justify-center" style="align-items: flex-end;">
-              <view>
-                <text style="color: #858585; font-size: 32rpx; margin: auto; display: inline-block">
-                  {{ dict.sort + ' / ' + stat.total }}
-                </text>
-              </view>
-            </view>
-            <view class="flex flex-col mt-10">
-              <text style="color: #858585; font-size: 20rpx;">已查看</text>
-              <view class="flex items-center">
-                <view class="h-5"
-                      :style="{'background-color': '#FFA600', width: (120 * stat.viewed / stat.total) + 'rpx'}"></view>
-                <view class="h-5"
-                      :style="{'background-color': 'white', width: (120 * (stat.total - stat.viewed) / stat.total) + 'rpx'}"></view>
-                <text class="ml-3" style="color: #858585; font-size: 20rpx;">
-                  {{ (Math.round((stat.viewed / stat.total) * 100)) + '%' }}
-                </text>
-              </view>
-            </view>
-            <view class="flex flex-col mt-5">
-              <text style="color: #858585; font-size: 20rpx;">已通过</text>
-              <view class="flex items-center">
-                <view class="h-5"
-                      :style="{'background-color': '#006E1C', width: (120 * stat.passed / stat.total) + 'rpx'}"></view>
-                <view class="h-5"
-                      :style="{'background-color': 'white', width: (120 * (stat.total - stat.passed) / stat.total) + 'rpx'}"></view>
-                <text class="ml-3" style="color: #858585; font-size: 20rpx;">
-                  {{ (Math.round((stat.passed / stat.total) * 100)) + '%' }}
-                </text>
-              </view>
-            </view>
-          </view>
           <view class="flex flex-col h-full justify-around">
             <view class="flex gap-10" style="align-items: flex-end">
               <text style="font-size: 24rpx;">英</text>
@@ -200,7 +215,7 @@ const search = (w) => {
           </view>
         </view>
 
-        <view class="w-full pl-30 mt-110">
+        <view class="w-full pl-30 mt-30">
           <view class="flex gap-20">
             <view class="w-150 h-50 rd-20 font-bold mb-10 flex items-center justify-center"
                   style="color: white; background-color: black; font-size: 24rpx;">
@@ -467,7 +482,7 @@ const search = (w) => {
       </web-view>
     </view>
   </Popup>
-  <Popup :show="showRemove" position="center" @click="showRemove=false">
+  <Popup :show="showRemove" position="center" @clickMask="showRemove=false">
     <view class="w-80vw h-12vh rd-30 flex items-center justify-center" style="background-color: #E8EBDA">
       <text class="font-bold" style="font-size: 36rpx;">删除该项？</text>
       <text @click="removePart" class="absolute bottom-30 right-60 font-bold" style="color:#3F6900; font-size: 32rpx;">
