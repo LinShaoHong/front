@@ -72,6 +72,7 @@ declare namespace Word {
 declare namespace Loader {
   interface Stat {
     id: string
+    date: string
     sort: number
     passed: number
     viewed: number

@@ -1,23 +1,32 @@
 import http from '@/utils/request';
 
 const apiLoader = {
-  loadPart: (id: string, part: string) => http.get<Word.Dict>('/loader/part', { word: id, part: part }),
-
-  removePart: (id: string, part: string, path: string) => http.get<Word.Dict>('/loader/remove', {
+  loadPart: (id: string, part: string, userId: number) => http.get<Word.Dict>('/loader/part', {
     word: id,
     part: part,
-    path: path
+    userId: userId
+  }),
+
+  removePart: (id: string, part: string, path: string, userId: number) => http.get<Word.Dict>('/loader/remove', {
+    word: id,
+    part: part,
+    path: path,
+    userId: userId
   }),
 
   pass: (id: string) => http.get<Word.Dict>('/loader/pass', { word: id }),
 
-  stat: (date: string) => http.get<Loader.Stat>('/loader/stat', { date: date }),
+  stat: (date: string, userId: number) => http.get<Loader.Stat>('/loader/stat', { date: date, userId: userId }),
 
-  stats: () => http.get<Loader.Stat>('/loader/stats', null),
+  stats: (userId: number) => http.get<Loader.Stat>('/loader/stats', { userId: userId }),
 
   dicts: (date: string) => http.get<Word.Dict>('/loader/dicts', { date: date }),
 
-  byDate: (date: string, sort: any) => http.get<Word.Dict>('/loader/byDate', { date: date, sort: sort })
+  dict: (date: string, sort: any, userId: number) => http.get<Word.Dict>('/loader/dict', {
+    date: date,
+    sort: sort,
+    userId: userId
+  })
 };
 
 export default apiLoader;

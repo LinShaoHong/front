@@ -1,4 +1,4 @@
-const apiEnv: ApiEnv = 'prod';
+const apiEnv: ApiEnv = 'dev';
 
 const envMap = {
   dev: {

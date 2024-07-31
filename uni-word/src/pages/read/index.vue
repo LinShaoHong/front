@@ -6,6 +6,7 @@ import { isEmpty } from "@/utils/is";
 import { delay } from "@/utils/calls";
 
 const nav = useStore('nav');
+const userId = nav.data.value.userId;
 const date = ref('');
 const stats = ref([] as any);
 const dicts = ref([] as any);
@@ -13,13 +14,15 @@ const stat = ref({} as Loader.Stat);
 onShow(() => {
   uni.hideTabBar();
   nav.setIndex(1);
-  apiLoader.stats()
+  apiLoader.stats(userId)
       .then((data) => {
         stats.value = data.values;
       })
       .catch(() => networkError());
-  if(!isEmpty(date.value)) {
-    apiLoader.stat(date.value)
+  date.value = nav.data.value.date;
+  console.log(date.value);
+  if (!isEmpty(date.value)) {
+    apiLoader.stat(date.value, userId)
         .then((data) => {
           stat.value = data.value;
           apiLoader.dicts(date.value)
@@ -30,7 +33,7 @@ onShow(() => {
   }
 });
 onLoad(() => {
-  apiLoader.stats()
+  apiLoader.stats(userId)
       .then((data) => {
         stats.value = data.values;
         if (isEmpty(date.value)) {
@@ -46,7 +49,7 @@ onLoad(() => {
       .catch(() => networkError());
 });
 watch(date, (n, o) => {
-  apiLoader.stat(n)
+  apiLoader.stat(n, userId)
       .then((data) => {
         stat.value = data.value;
         apiLoader.dicts(date.value)
@@ -59,7 +62,7 @@ const toCheck = (sort) => {
   nav.setShow(false);
   nav.setDate(date.value);
   delay(200).then(() => {
-    apiLoader.byDate(date.value, sort).then(() => {
+    apiLoader.dict(date.value, sort, userId).then(() => {
       uni.switchTab({
         url: '/pages/index/index'
       });
@@ -145,10 +148,13 @@ onShareAppMessage(async () => {
           <view class="flex flex-wrap gap-15">
             <view v-for="sta in stats" class="relative w-180 h-50 rd-5 flex justify-center items-center p-10"
                   :key="sta.id"
-                  @click="date=sta.id"
-                  :style="{'background-color': date===sta.id? '#006E1C':(sta.total===sta.passed && sta.total > 0? '#D9E7C8':'#EEF0E1')}">
-              <text class="z-100" :style="{'font-size': '24rpx', color: date===sta.id? 'white':'black'}">{{ sta.id }}</text>
-              <view v-if="date!==sta.id && sta.passed!==sta.total" class="absolute h-50 left-0 rd-5"
+                  @click="date=sta.date"
+                  :style="{'background-color': date===sta.date? '#006E1C':(sta.total===sta.passed && sta.total > 0? '#D9E7C8':'#EEF0E1')}">
+              <text class="z-100" :style="{'font-size': '24rpx', color: date===sta.date? 'white':'black'}">{{
+                  sta.date
+                }}
+              </text>
+              <view v-if="date!==sta.date && sta.passed!==sta.total" class="absolute h-50 left-0 rd-5"
                     :style="{width:(180 * sta.passed / sta.total) + 'rpx','background-color': '#D9E7C8'}">
               </view>
             </view>

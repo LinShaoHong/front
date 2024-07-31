@@ -3,5 +3,6 @@ declare namespace Nav {
     index: number
     date: string
     show: boolean
+    userId: number
   }
 }

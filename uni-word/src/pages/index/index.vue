@@ -12,6 +12,7 @@ import { useTouch } from "@/hooks/useTouch";
 import { message } from "@/utils/unis";
 
 const nav = useStore('nav');
+const userId = nav.data.value.userId;
 let interval;
 onShow(() => {
   uni.hideTabBar();
@@ -28,7 +29,7 @@ onShow(() => {
       reload();
     }
     if (date.value === formatDate(new Date(), 'yyyy-MM-dd')) {
-      apiLoader.stat(date.value)
+      apiLoader.stat(date.value, userId)
           .then((data) => {
             stat.value = data.value;
           }).catch(() => networkError());
@@ -40,25 +41,38 @@ onShow(() => {
   });
   date.value = nav.data.value.date;
   if (isEmpty(date.value)) {
-    date.value = formatDate(new Date(), 'yyyy-MM-dd');
+    apiLoader.dict(date.value, null, userId)
+        .then((data) => {
+          dict.value = data.value;
+          date.value = formatDate(dict.value.loadTime,'yyyy-MM-dd');
+          nav.setDate(date.value);
+          apiLoader.stat(date.value, userId)
+              .then((data) => {
+                stat.value = data.value;
+                nav.setShow(true);
+              }).catch(() => networkError());
+        }).catch(() => networkError());
+  } else {
+    apiLoader.stat(date.value, userId)
+        .then((data) => {
+          stat.value = data.value;
+          date.value = stat.value.date;
+          nav.setDate(date.value);
+          apiLoader.dict(date.value, stat.value.sort, userId)
+              .then((data) => {
+                dict.value = data.value;
+                nav.setShow(true);
+              })
+              .catch(() => networkError());
+        }).catch(() => networkError());
   }
-  apiLoader.stat(date.value)
-      .then((data) => {
-        stat.value = data.value;
-        date.value = stat.value.id;
-        apiLoader.byDate(date.value, stat.value.sort)
-            .then((data) => {
-              dict.value = data.value;
-              nav.setShow(true);
-            })
-            .catch(() => networkError());
-      }).catch(() => networkError());
 });
 onHide(() => {
   if (interval) {
     clearInterval(interval);
   }
 });
+
 const dict = ref({} as Word.Dict);
 const stat = ref({} as Loader.Stat);
 const date = ref('');
@@ -77,7 +91,7 @@ const loadPart = (part) => {
     dict.value.loadState = {} as any;
   }
   dict.value.loadState[part + 'Loading'] = true;
-  apiLoader.loadPart(dict.value.id, part).then(() => {
+  apiLoader.loadPart(dict.value.id, part, userId).then(() => {
     reload();
   }).catch(() => networkError());
 }
@@ -90,7 +104,7 @@ const onRemovePart = (part, path) => {
   showRemove.value = true;
 };
 const removePart = () => {
-  apiLoader.removePart(dict.value.id, _removePart.value, _removePath.value)
+  apiLoader.removePart(dict.value.id, _removePart.value, _removePath.value, userId)
       .then(() => {
         showRemove.value = false;
         reload();
@@ -121,7 +135,7 @@ const move = (i) => {
   if (next > stat.value.total) {
     next = 1;
   }
-  apiLoader.byDate(date.value, next)
+  apiLoader.dict(date.value, next, userId)
       .then((data) => {
         scTop.value = 0;
         dict.value = data.value;
@@ -240,7 +254,8 @@ watch(endX, (n, o) => {
         <view class="w-full flex items-center justify-center mt-40">
           <text @click="search(dict.id)"
                 @longpress="copy(dict.id)"
-                class="font-bold" style="font-size: 52rpx">{{ dict.id }}</text>
+                class="font-bold" style="font-size: 52rpx">{{ dict.id }}
+          </text>
         </view>
         <view class="relative flex flex-col gap-10 mt-20 w-full h-100 items-center">
           <view class="flex flex-col h-full justify-around">
