@@ -20,7 +20,6 @@ onShow(() => {
       })
       .catch(() => networkError());
   date.value = nav.data.value.date;
-  console.log(date.value);
   if (!isEmpty(date.value)) {
     apiLoader.stat(date.value, userId)
         .then((data) => {
@@ -136,15 +135,15 @@ onShareAppMessage(async () => {
   <NavigationBar/>
   <view class="container">
     <view class="h-full">
-      <view class="relative w-full p-30 flex flex-col items-center gap-40"
-            style="height: 40%;
+      <view class="relative w-full p-30 flex flex-col items-center justify-between"
+            style="height: 35%;
             background-color: #EEF0E1;
             padding-top: calc(var(--status-bar-height) + 10px);
             border-radius: 0 0 30rpx 30rpx;
             box-shadow: rgba(0, 0, 0, 0.1) 0 1px 3px 0, rgba(0, 0, 0, 0.06) 0 1px 2px 0;">
         <scroll-view scroll-y :show-scrollbar="false"
                      style="background-color: white;"
-                     class="w-610 h-250 rd-20 p-20">
+                     class="w-610 h-500 rd-20 p-20">
           <view class="flex flex-wrap gap-15">
             <view v-for="sta in stats" class="relative w-180 h-50 rd-5 flex justify-center items-center p-10"
                   :key="sta.id"
@@ -160,7 +159,7 @@ onShareAppMessage(async () => {
             </view>
           </view>
         </scroll-view>
-        <view class="w-610 flex flex-col gap-10">
+        <view class="w-610 mt-20 flex flex-col gap-10">
           <view class="flex flex-col">
             <text style="color: #858585; font-size: 22rpx;">已查看</text>
             <view class="flex items-center">
@@ -186,13 +185,13 @@ onShareAppMessage(async () => {
             </view>
           </view>
         </view>
-        <view class="w-610 rd-40 pt-15 pb-15 flex items-center justify-center"
+        <view class="w-610 rd-40 mt-20 pt-15 pb-15 flex items-center justify-center"
               @click="toCheck(0)"
               style="background-color: #006E1C">
           <text class="font-bold" style="color: white;font-size: 28rpx;">{{ '前往校验（' + date + '）' }}</text>
         </view>
       </view>
-      <view class="w-full" style="height: 60%;">
+      <view class="w-full" style="height: 65%;">
         <view class="w-full h-30"></view>
         <view class="w-full flex pl-20 gap-10 h-50">
           <view class="pl-20 pr-20 pt-5 pb-5 rd-10 flex items-center justify-center"
@@ -217,7 +216,7 @@ onShareAppMessage(async () => {
           </view>
         </view>
         <view class="w-full h-20"></view>
-        <view class="w-78vw h-60 rd-60 p-20 ml-20 flex items-center justify-between" style="background-color: white">
+        <view class="w-78vw h-75 rd-60 p-20 ml-20 flex items-center justify-between" style="background-color: white">
           <input class="text-left"
                  :ignore-composition-event="false"
                  placeholder="search"
@@ -232,15 +231,15 @@ onShareAppMessage(async () => {
         </view>
         <view class="w-full h-20"></view>
         <scroll-view scroll-y :show-scrollbar="false" style="height: calc(100% - 180rpx)">
-          <view v-for="(dict,i) in _dicts" class="h-75 w-full pl-20 pr-20 pt-10 pb-10 flex items-center"
+          <view v-for="(dict,i) in _dicts" class="h-80 w-full pl-20 pr-20 pt-10 pb-10 flex items-center"
                 :key="dict.id"
                 :style="{'background-color': ((i+1)%2===0? '#D9E7C8':'#F8FAF0')}">
             <view class="w-30vw pl-5" @click="toCheck(dict.sort)">
-              <text style="font-size: 30rpx;">{{ dict.id }}</text>
+              <text style="font-size: 32rpx;">{{ dict.id }}</text>
             </view>
             <view class="h-20 w-20 rd-20" style="background-color: #EEF0E1"></view>
             <view class="pl-20 pr-10"
-                  style="flex: 1;text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-size: 30rpx;">
+                  style="flex: 1;text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-size: 32rpx;">
               {{ meaning(dict) }}
             </view>
             <image class="h-40" mode="heightFix" :src="icon(dict)"></image>

@@ -28,12 +28,6 @@ onShow(() => {
     if (loading) {
       reload();
     }
-    if (date.value === formatDate(new Date(), 'yyyy-MM-dd')) {
-      apiLoader.stat(date.value, userId)
-          .then((data) => {
-            stat.value = data.value;
-          }).catch(() => networkError());
-    }
   }, 1000);
   uni.getSystemInfo().then(rs => {
     width.value = rs.windowWidth;
@@ -82,6 +76,10 @@ const scTop = ref(0);
 const reload = () => {
   apiDict.byId(dict.value.id).then((data) => {
     dict.value = data.value;
+    apiLoader.stat(date.value, userId)
+        .then((data) => {
+          stat.value = data.value;
+        }).catch(() => networkError());
   }).catch(() => {
     networkError();
   });
@@ -155,9 +153,7 @@ const search = (w) => {
 const copy = (txt) => {
   uni.setClipboardData({
     data: txt,
-    success: () => {
-      message('复制成功', 3);
-    }
+    showToast: false
   })
 };
 
@@ -521,7 +517,7 @@ watch(endX, (n, o) => {
         style="background-color: #D9E7C8; opacity: .8">
     <uni-icons type="search" size="24" color="black"/>
   </view>
-  <view v-if="nav.data.value.show"
+  <view v-if="nav.data.value.show && !dict.passed"
         class="fixed bottom-600 right-60 w-100 h-100 rd-100 flex items-center justify-center"
         @click="pass"
         style="background-color: #D9E7C8; opacity: .8">
