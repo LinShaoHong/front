@@ -11,8 +11,8 @@ declare namespace Http {
 declare namespace Word {
   interface Dict {
     id: string
-    ukTranscription: string
-    usTranscription: string
+    ukPhonetic: string
+    usPhonetic: string
     meaning: {
       nouns: string
       verbs: string
@@ -49,6 +49,10 @@ declare namespace Word {
       word: string
       index: number
     }]
+    phrases:[{
+      en: string,
+      zh: string
+    }]
     synAnts: {
       synonyms: []
       antonyms: []
@@ -60,6 +64,7 @@ declare namespace Word {
       inflectionLoading: boolean
       structLoading: boolean
       synAntsLoading: boolean
+      phrasesLoading: boolean
       derivativesLoading: boolean
     }
     passed: boolean

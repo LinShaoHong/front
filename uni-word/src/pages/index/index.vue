@@ -38,7 +38,7 @@ onShow(() => {
     apiLoader.dict(date.value, null, userId)
         .then((data) => {
           dict.value = data.value;
-          date.value = formatDate(dict.value.loadTime,'yyyy-MM-dd');
+          date.value = formatDate(dict.value.loadTime, 'yyyy-MM-dd');
           nav.setDate(date.value);
           apiLoader.stat(date.value, userId)
               .then((data) => {
@@ -257,11 +257,11 @@ watch(endX, (n, o) => {
           <view class="flex flex-col h-full justify-around">
             <view class="flex gap-10" style="align-items: flex-end">
               <text style="font-size: 24rpx;">英</text>
-              <text style="font-size: 32rpx;">{{ dict?.usTranscription }}</text>
+              <text style="font-size: 32rpx;">{{ dict?.ukPhonetic }}</text>
             </view>
             <view class="flex gap-10" style="align-items: flex-end">
               <text style="font-size: 24rpx;">美</text>
-              <text style="font-size: 32rpx;">{{ dict?.ukTranscription }}</text>
+              <text style="font-size: 32rpx;">{{ dict?.usPhonetic }}</text>
             </view>
           </view>
         </view>
@@ -437,6 +437,35 @@ watch(endX, (n, o) => {
                   <uni-icons @click="onRemovePart('derivatives',derivative.word)" type="close" size="20"
                              color="#ba1a1a"></uni-icons>
                 </view>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <view class="w-full pl-30 mt-30">
+          <view class="flex gap-20">
+            <view class="w-150 h-50 rd-20 font-bold mb-10 flex items-center justify-center"
+                  style="color: white; background-color: black; font-size: 24rpx;">
+              <text>短语词组</text>
+            </view>
+            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center "
+                  @click="loadPart('phrases')"
+                  style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
+              <image :src="dict.loadState?.phrasesLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
+                     mode="widthFix"></image>
+            </view>
+          </view>
+          <view class="w-full flex flex-col mt-10" style="width: calc(100% - 40rpx)">
+            <view v-for="(phrase,i) in dict.phrases"
+                  :key="'phrase'+i"
+                  class="w-full pl-20 pr-20 pt-10 pb-10 flex flex-col justify-center gap-5">
+              <view class="pl-5 flex items-center gap-5">
+                <text style="font-size: 32rpx;">{{ phrase.en }}</text>
+                <uni-icons @click="onRemovePart('phrases',phrase.en)" type="close" size="20"
+                           color="#ba1a1a"></uni-icons>
+              </view>
+              <view class="pl-5">
+                <text style="font-size: 32rpx; color: #858585">{{ phrase.zh }}</text>
               </view>
             </view>
           </view>
