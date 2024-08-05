@@ -138,6 +138,7 @@ const move = (i) => {
       .then((data) => {
         scTop.value = 0;
         dict.value = data.value;
+        root.value = '';
         nextTick(() => scTop.value = 0);
       })
       .catch(() => networkError());
@@ -288,7 +289,7 @@ watch(endX, (n, o) => {
               <text>中文释义</text>
             </view>
             <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center "
-                  @click="loadPart('examples')"
+                  @click="loadPart('meaning')"
                   style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
               <image :src="dict.loadState?.meaningLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
                      mode="widthFix"></image>
@@ -385,7 +386,10 @@ watch(endX, (n, o) => {
             </view>
             <view class="h-50 pl-10 pr-20 rd-20 font-bold mb-10 flex items-center justify-center "
                   style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
-              <input class="text-left w-200" style="font-size: 28rpx; font-weight: bold;" v-model="root"/>
+              <input class="text-left w-200"
+                     :ignore-composition-event="false"
+                     style="font-size: 28rpx; font-weight: bold;"
+                     v-model="root"/>
               <image :src="dict.loadState?.structLoading? '/static/loading.gif':'/static/get.png'"
                      class="w-25"
                      @click="loadPart('struct',{root: root})"
@@ -433,13 +437,15 @@ watch(endX, (n, o) => {
           </view>
           <view class="w-full flex flex-col" style="width: calc(100% - 40rpx)">
             <view v-for="(derivative,i) in dict.derivatives" :key="'derivative'+i">
-              <view v-if="derivative.index===0" class="flex items-center">
+              <view v-if="derivative.index===0" class="flex items-center gap-10">
                 <text @click="search(derivative.word)"
                       @longpress="copy(derivative.word)"
                       :class="[derivative.word.includes(dict.id)? 'font-bold':'']"
                       style="font-size: 32rpx;">{{ derivative.word }}
                 </text>
                 <uni-icons @click="onRemovePart('derivatives',derivative.word)" type="close" size="20"
+                           color="#ba1a1a"></uni-icons>
+                <uni-icons @click="onRemovePart('derivatives',derivative.word+':sub')" type="clear" size="20"
                            color="#ba1a1a"></uni-icons>
               </view>
               <view v-if="derivative.index>0" class="relative h-60 flex items-center left-10">
@@ -454,6 +460,8 @@ watch(endX, (n, o) => {
                         style="font-size: 32rpx; margin-left: 5rpx;">{{ derivative.word }}
                   </text>
                   <uni-icons @click="onRemovePart('derivatives',derivative.word)" type="close" size="20"
+                             color="#ba1a1a"></uni-icons>
+                  <uni-icons @click="onRemovePart('derivatives',derivative.word+':sub')" type="clear" size="20"
                              color="#ba1a1a"></uni-icons>
                 </view>
               </view>
@@ -485,7 +493,7 @@ watch(endX, (n, o) => {
               </view>
               <view class="flex gap-10 pl-8">
                 <view class="w-5" style="background-color: #D5D5D5"></view>
-                <text style="font-size: 32rpx; color: #858585">{{ phrase.zh }}</text>
+                <text style="font-size: 32rpx; color: #858585; width:80%;">{{ phrase.zh }}</text>
               </view>
             </view>
           </view>
@@ -549,8 +557,8 @@ watch(endX, (n, o) => {
               <view class="flex flex-col gap-10">
                 <text style="font-size: 32rpx; width: 90%">{{ ex.sentence }}</text>
                 <view class="flex gap-10">
-                  <view class="w-5" style="background-color: #D5D5D5"></view>
-                  <text style="font-size: 32rpx; color: #858585; width: 80%">{{ ex.translation }}</text>
+                  <view class="w-5" style="background-color: #D5D5D5;"></view>
+                  <text style="font-size: 32rpx; color: #858585; width: 80%;">{{ ex.translation }}</text>
                 </view>
               </view>
             </view>
