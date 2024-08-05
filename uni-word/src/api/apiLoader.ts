@@ -1,9 +1,10 @@
 import http from '@/utils/request';
 
 const apiLoader = {
-  loadPart: (id: string, part: string, userId: number) => http.get<Word.Dict>('/loader/part', {
+  loadPart: (id: string, part: string, attr: any, userId: number) => http.post<any>('/loader/part', {
     word: id,
     part: part,
+    attr: attr,
     userId: userId
   }),
 

@@ -84,12 +84,13 @@ const reload = () => {
     networkError();
   });
 }
-const loadPart = (part) => {
+const root = ref('');
+const loadPart = (part, attr?) => {
   if (!dict.value.loadState) {
     dict.value.loadState = {} as any;
   }
   dict.value.loadState[part + 'Loading'] = true;
-  apiLoader.loadPart(dict.value.id, part, userId).then(() => {
+  apiLoader.loadPart(dict.value.id, part, attr, userId).then(() => {
     reload();
   }).catch(() => networkError());
 }
@@ -144,11 +145,32 @@ const move = (i) => {
 //-------------- popup ----------------
 const showSearch = ref(false);
 const searchHeight = ref(0);
+const searchType = ref(1);
 const searchWord = ref(dict.value.id);
+const searchSrc = computed(() => {
+  switch (searchType.value) {
+    case 1:
+      return 'https://www.xxenglish.com/wd/' + searchWord.value;
+    case 2:
+      return 'https://dict.youdao.com/result?lang=en&word=' + searchWord.value;
+    case 3:
+      return 'https://www.iciba.com/word?w=' + searchWord.value;
+    case 4:
+      return 'https://www.dictionary.com/browse/' + searchWord.value;
+    case 5:
+      return 'https://www.collinsdictionary.com/dictionary/english/' + searchWord.value;
+    case 6:
+      return 'https://www.oxfordlearnersdictionaries.com/definition/english/' + searchWord.value + '_1?q=' + searchWord.value;
+    case 7:
+      return 'https://www.ldoceonline.com/dictionary/' + searchWord.value;
+    default:
+      return 'https://www.xxenglish.com/wd/' + searchWord.value;
+  }
+});
 const search = (w) => {
   searchWord.value = w;
   showSearch.value = true;
-  delay(350).then(() => searchHeight.value = height.value - 45);
+  delay(350).then(() => searchHeight.value = height.value - 100);
 };
 const copy = (txt) => {
   uni.setClipboardData({
@@ -164,13 +186,6 @@ watch(endX, (n, o) => {
     if (showSearch.value) {
       if (endX.value - startX.value > 20) {
         showSearch.value = false;
-      }
-    } else if (!showRemove.value) {
-      if (endX.value - startX.value > 25) {
-        move(-1);
-      }
-      if (endX.value - startX.value < -25) {
-        move(1);
       }
     }
   }
@@ -368,12 +383,16 @@ watch(endX, (n, o) => {
                   style="color: white; background-color: black; font-size: 24rpx;">
               <text>词根词缀</text>
             </view>
-            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center "
-                  @click="loadPart('struct')"
+            <view class="h-50 pl-10 pr-20 rd-20 font-bold mb-10 flex items-center justify-center "
                   style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
-              <image :src="dict.loadState?.structLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
+              <input class="text-left w-200" style="font-size: 28rpx; font-weight: bold;" v-model="root"/>
+              <image :src="dict.loadState?.structLoading? '/static/loading.gif':'/static/get.png'"
+                     class="w-25"
+                     @click="loadPart('struct',{root: root})"
                      mode="widthFix"></image>
             </view>
+            <uni-icons @click="onRemovePart('struct','')" type="close" size="20"
+                       color="#ba1a1a"></uni-icons>
           </view>
           <view class="w-full pt-10 pb-10 font-bold flex mb-20">
             <text style="font-size: 32rpx; color:#858585">{{ dict.struct?.parts.map(v => v.part).join('') }}</text>
@@ -425,9 +444,9 @@ watch(endX, (n, o) => {
               </view>
               <view v-if="derivative.index>0" class="relative h-60 flex items-center left-10">
                 <view :class="['absolute top-0', i===dict.derivatives.length-1? 'h-30':'h-60']"
-                      style="border-left: 1px solid black"></view>
+                      style="border-left: 1px solid #D5D5D5"></view>
                 <view v-for="i in derivative.index" :key="'di'+i" class="w-50"
-                      style="border-top: 1px solid black"></view>
+                      style="border-top: 1px solid #D5D5D5"></view>
                 <view class="flex items-center justify-center gap-10">
                   <text @click="search(derivative.word)"
                         @longpress="copy(derivative.word)"
@@ -464,7 +483,8 @@ watch(endX, (n, o) => {
                 <uni-icons @click="onRemovePart('phrases',phrase.en)" type="close" size="20"
                            color="#ba1a1a"></uni-icons>
               </view>
-              <view class="pl-5">
+              <view class="flex gap-10 pl-8">
+                <view class="w-5" style="background-color: #D5D5D5"></view>
                 <text style="font-size: 32rpx; color: #858585">{{ phrase.zh }}</text>
               </view>
             </view>
@@ -485,9 +505,9 @@ watch(endX, (n, o) => {
             </view>
           </view>
           <view class="w-full flex flex-col gap-20 mt-10" style="width: calc(100% - 40rpx)">
-            <view class="flex items-center pb-20 pr-20" style="border-bottom: 1px solid #858585;">
-              <view class="font-bold w-120" style="color: #858585;">近义词</view>
-              <view class="flex flex-wrap">
+            <view class="flex items-center pb-20 pr-20" style="border-bottom: 1px solid #D5D5D5;">
+              <view class="font-bold w-120" style="color: #858585; display: inline-block">近义词</view>
+              <view class="flex flex-wrap" style="flex:1">
                 <text v-for="synonym in dict.synAnts?.synonyms"
                       @click="search(synonym)"
                       @longpress="copy(synonym)"
@@ -497,8 +517,8 @@ watch(endX, (n, o) => {
               </view>
             </view>
             <view class="flex items-center pr-20">
-              <view class="font-bold w-120" style="color: #858585;">反义词</view>
-              <view class="flex flex-wrap">
+              <view class="font-bold w-120" style="color: #858585; display: inline-block">反义词</view>
+              <view class="flex flex-wrap" style="flex:1">
                 <text v-for="antonym in dict.synAnts?.antonyms"
                       @click="search(antonym)"
                       @longpress="copy(antonym)"
@@ -525,12 +545,13 @@ watch(endX, (n, o) => {
           </view>
           <view class="flex flex-col gap-30 pl-10 pr-10">
             <view v-for="(ex,i) in dict.examples" :key="'ex'+i"
-                  class="w-full pb-10"
-                  style="border-bottom: 1px solid #858585;"
-            >
+                  class="w-full pb-10">
               <view class="flex flex-col gap-10">
-                <text style="font-size: 32rpx;">{{ ex.sentence }}</text>
-                <text style="font-size: 32rpx;">{{ ex.translation }}</text>
+                <text style="font-size: 32rpx; width: 90%">{{ ex.sentence }}</text>
+                <view class="flex gap-10">
+                  <view class="w-5" style="background-color: #D5D5D5"></view>
+                  <text style="font-size: 32rpx; color: #858585; width: 80%">{{ ex.translation }}</text>
+                </view>
               </view>
             </view>
           </view>
@@ -540,28 +561,74 @@ watch(endX, (n, o) => {
     </scroll-view>
   </view>
   <view v-if="nav.data.value.show"
-        class="fixed bottom-750 right-60 w-100 h-100 rd-100 flex items-center justify-center"
+        class="fixed bottom-900 right-60 w-100 h-100 rd-100 flex items-center justify-center"
         @click="search(dict.id)"
         @longpress="copy(dict.id)"
-        style="background-color: #D9E7C8; opacity: .8">
-    <uni-icons type="search" size="24" color="black"/>
+        style="background-color: #D9E7C8; opacity: .5">
+    <uni-icons type="search" size="24" color="#858585"/>
   </view>
-  <view v-if="nav.data.value.show && !dict.passed"
+  <view v-if="nav.data.value.show"
+        class="fixed bottom-750 right-60 w-100 h-100 rd-100 flex items-center justify-center"
+        @click="move(1)"
+        style="background-color: #D9E7C8; opacity: .5">
+    <uni-icons type="right" size="24" color="#858585"/>
+  </view>
+  <view v-if="nav.data.value.show"
         class="fixed bottom-600 right-60 w-100 h-100 rd-100 flex items-center justify-center"
+        @click="move(-1)"
+        style="background-color: #D9E7C8; opacity: .5">
+    <uni-icons type="left" size="24" color="#858585"/>
+  </view>
+  <view v-if="nav.data.value.show && !dict.passed && !loading"
+        class="fixed bottom-450 right-60 w-100 h-100 rd-100 flex items-center justify-center"
         @click="pass"
-        style="background-color: #D9E7C8; opacity: .8">
-    <uni-icons type="checkmarkempty" size="24" color="black"/>
+        style="background-color: #D9E7C8; opacity: .5">
+    <uni-icons type="checkmarkempty" size="24" color="#858585"/>
   </view>
   <Popup :show="showSearch" position="right"
          @touchstart="touchStart" @touchend="touchEnd"
-         @clickMask="() => {showSearch=false;searchHeight=0;searchWord=dict.id;}">
+         @clickMask="() => {showSearch=false;searchHeight=0;searchWord=dict.id;searchType=1;searchSrc='https://www.xxenglish.com/wd/'+searchWord}">
     <view class="relative w-85vw h-100vh pl-20 pr-20"
           @touchstart="touchStart" @touchend="touchEnd"
           style="background-color: #F8FAF0; padding-top: 45px;">
+      <view class="flex pb-15 flex-wrap gap-15" style="align-items: flex-end; height: 55px;">
+        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000"
+              @click="searchType=1;"
+              :style="{'background-color': searchType===1? '#006E1C':'#D9E7C8',color:searchType===1?'white':'black'}">XX
+        </view>
+        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000"
+              @click="searchType=2;"
+              :style="{'background-color': searchType===2? '#006E1C':'#D9E7C8',color:searchType===2?'white':'black'}">有道
+        </view>
+        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000"
+              @click="searchType=3;"
+              :style="{'background-color': searchType===3? '#006E1C':'#D9E7C8',color:searchType===3?'white':'black'}">金山
+        </view>
+        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000"
+              @click="searchType=4;"
+              :style="{'background-color': searchType===4? '#006E1C':'#D9E7C8',color:searchType===4?'white':'black'}">
+          Dictionary
+        </view>
+        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000"
+              @click="searchType=5;"
+              :style="{'background-color': searchType===5? '#006E1C':'#D9E7C8',color:searchType===5?'white':'black'}">
+          Collins
+        </view>
+        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000"
+              @click="searchType=6;"
+              :style="{'background-color': searchType===6? '#006E1C':'#D9E7C8',color:searchType===6?'white':'black'}">
+          Oxford
+        </view>
+        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000"
+              @click="searchType=7;"
+              :style="{'background-color': searchType===7? '#006E1C':'#D9E7C8',color:searchType===7?'white':'black'}">
+          Longman
+        </view>
+      </view>
       <web-view v-if="showSearch"
-                :webview-styles="{width: width*0.85, height: searchHeight, left: width*0.15, top:45}"
+                :webview-styles="{width: width*0.85, height: searchHeight, left: width*0.15, top:100}"
                 :fullscreen="false"
-                :src="'https://www.xxenglish.com/wd/'+searchWord">
+                :src="searchSrc">
       </web-view>
     </view>
   </Popup>
