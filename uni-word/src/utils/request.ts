@@ -1,6 +1,6 @@
 import { isDevelopment, isH5 } from './platform';
 import env from '@/config/env';
-import { hideLoading, showLoading } from '@/config/serviceLoading';
+import { hideLoading } from '@/config/serviceLoading';
 
 export const networkError = () => {
   uni.showToast({
@@ -12,7 +12,7 @@ export const networkError = () => {
 // h5环境开启代理
 const apiBaseUrl = isH5 && isDevelopment ? '/api' : env.apiBaseUrl;
 
-function baseRequest(
+export function request(
   method:
     | 'OPTIONS'
     | 'GET'
@@ -24,14 +24,12 @@ function baseRequest(
     | 'CONNECT'
     | undefined,
   url: string,
-  data: { isLoading: any }
+  data: any
 ) {
   return new Promise((resolve, reject) => {
-    showLoading(data.isLoading);
-    delete data.isLoading;
     let responseData: unknown;
     uni.request({
-      url: apiBaseUrl + url,
+      url: url.startsWith('http') ? url : apiBaseUrl + url,
       method,
       timeout: 20000,
       header: {
@@ -62,19 +60,19 @@ function baseRequest(
 
 const http = {
   get: <T>(api: string, params: any) =>
-    baseRequest('GET', api, {
+    request('GET', api, {
       ...params
     }) as Http.Response<T>,
   post: <T>(api: string, params: any) =>
-    baseRequest('POST', api, {
+    request('POST', api, {
       ...params
     }) as Http.Response<T>,
   put: <T>(api: string, params: any) =>
-    baseRequest('PUT', api, {
+    request('PUT', api, {
       ...params
     }) as Http.Response<T>,
   delete: <T>(api: string, params: any) =>
-    baseRequest('DELETE', api, {
+    request('DELETE', api, {
       ...params
     }) as Http.Response<T>
 };

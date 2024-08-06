@@ -1,6 +1,11 @@
 import http from '@/utils/request';
 
 const apiLoader = {
+  loadAll: (words: string, userId: number) => http.get<any>('/loader/all', {
+    words: words,
+    userId: userId
+  }),
+
   loadPart: (id: string, part: string, attr: any, userId: number) => http.post<any>('/loader/part', {
     word: id,
     part: part,
@@ -27,6 +32,10 @@ const apiLoader = {
     date: date,
     sort: sort,
     userId: userId
+  }),
+
+  affix: (id: string) => http.get<any>('/loader/affix', {
+    word: id
   })
 };
 

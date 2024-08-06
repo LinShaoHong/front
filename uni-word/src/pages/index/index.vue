@@ -9,7 +9,6 @@ import Popup from "@/components/Popup.vue";
 import { delay } from "@/utils/calls";
 import { formatDate } from "date-fns";
 import { useTouch } from "@/hooks/useTouch";
-import { message } from "@/utils/unis";
 
 const nav = useStore('nav');
 const userId = nav.data.value.userId;
@@ -17,6 +16,7 @@ let interval;
 onShow(() => {
   uni.hideTabBar();
   nav.setIndex(0);
+  root.value = '';
   interval = setInterval(() => {
     let loading = false;
     for (const key in dict.value.loadState) {
@@ -45,6 +45,7 @@ onShow(() => {
                 stat.value = data.value;
                 nav.setShow(true);
               }).catch(() => networkError());
+          apiLoader.affix(dict.value.id).then(data => affix.value = data.value).catch((err) => networkError());
         }).catch(() => networkError());
   } else {
     apiLoader.stat(date.value, userId)
@@ -56,6 +57,7 @@ onShow(() => {
               .then((data) => {
                 dict.value = data.value;
                 nav.setShow(true);
+                apiLoader.affix(dict.value.id).then(data => affix.value = data.value).catch((err) => networkError());
               })
               .catch(() => networkError());
         }).catch(() => networkError());
@@ -68,6 +70,7 @@ onHide(() => {
 });
 
 const dict = ref({} as Word.Dict);
+const affix = ref({} as any);
 const stat = ref({} as Loader.Stat);
 const date = ref('');
 const width = ref(0);
@@ -88,6 +91,9 @@ const root = ref('');
 const loadPart = (part, attr?) => {
   if (!dict.value.loadState) {
     dict.value.loadState = {} as any;
+  }
+  if(dict.value.loadState[part + 'Loading']) {
+    return;
   }
   dict.value.loadState[part + 'Loading'] = true;
   apiLoader.loadPart(dict.value.id, part, attr, userId).then(() => {
@@ -139,6 +145,7 @@ const move = (i) => {
         scTop.value = 0;
         dict.value = data.value;
         root.value = '';
+        apiLoader.affix(dict.value.id).then(data => affix.value = data.value).catch((err) => networkError());
         nextTick(() => scTop.value = 0);
       })
       .catch(() => networkError());
@@ -176,6 +183,13 @@ const search = (w) => {
 const copy = (txt) => {
   uni.setClipboardData({
     data: txt,
+    showToast: false
+  })
+};
+
+const copyAffixAI = (txt) => {
+  uni.setClipboardData({
+    data: '分析下单词' + dict.value.id + "的词根词缀",
     showToast: false
   })
 };
@@ -390,6 +404,9 @@ watch(endX, (n, o) => {
                      :ignore-composition-event="false"
                      style="font-size: 28rpx; font-weight: bold;"
                      v-model="root"/>
+              <image v-if="!isEmpty(root)"
+                     @click="root=''"
+                     class="w-30 mr-10" mode="widthFix" src="/static/clear.png"></image>
               <image :src="dict.loadState?.structLoading? '/static/loading.gif':'/static/get.png'"
                      class="w-25"
                      @click="loadPart('struct',{root: root})"
@@ -398,10 +415,27 @@ watch(endX, (n, o) => {
             <uni-icons @click="onRemovePart('struct','')" type="close" size="20"
                        color="#ba1a1a"></uni-icons>
           </view>
-          <view class="w-full pt-10 pb-10 font-bold flex mb-20">
-            <text style="font-size: 32rpx; color:#858585">{{ dict.struct?.parts.map(v => v.part).join('') }}</text>
+          <view class="w-200 h-50 rd-20 font-bold mb-10 flex items-center justify-center"
+                @click="copyAffixAI"
+                style="color: white; background-color: #006E1C; font-size: 24rpx;">
+            <text>复制AI提示词</text>
           </view>
-          <view class="w-full flex flex-col gap-20">
+          <view v-if="!isEmpty(affix?.root)" class="w-full pt-10 pb-10 flex gap-10 mt-5">
+            <view class="w-5" style="background-color: #D5D5D5;"></view>
+            <text style="font-size: 32rpx; color: #858585; width: 80%;">{{
+                '词根: ' + affix.root + '\n' + affix.rootDesc + '\n' + affix.wordDesc
+              }}
+            </text>
+          </view>
+          <view v-if="!isEmpty(affix?.gptRoot)" class="w-full pt-10 pb-10 flex gap-10 mt-5">
+            <view class="w-5" style="background-color: #D5D5D5;"></view>
+            <text style="font-size: 32rpx; color: #858585; width: 80%;">{{ affix?.gptRoot }}</text>
+          </view>
+          <view v-if="!isEmpty(affix?.gptAffix)" class="w-full pt-10 pb-10 flex gap-10">
+            <view class="w-5" style="background-color: #D5D5D5;"></view>
+            <text style="font-size: 32rpx; color: #858585; width: 80%;">{{ affix?.gptAffix }}</text>
+          </view>
+          <view v-if="dict.struct" class="w-full flex flex-col gap-20 mt-10">
             <view v-for="(part,i) in dict.struct?.parts" :key="'struct'+i">
               <view class="w-full flex items-center" style="width: calc(100% - 40rpx)">
                 <view class="font-bold w-120" style="color: #858585;">
@@ -416,9 +450,6 @@ watch(endX, (n, o) => {
                 </view>
               </view>
             </view>
-          </view>
-          <view class="w-full pt-10 pb-10 font-bold flex mt-20">
-            <text style="font-size: 32rpx; color:#858585">{{ dict.struct?.analysisTrans }}</text>
           </view>
         </view>
 
