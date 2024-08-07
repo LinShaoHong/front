@@ -460,13 +460,23 @@ watch(endX, (n, o) => {
                           style="font-size: 32rpx; resize: none;color: #858585;font-size: 32rpx;flex:1"/>
               </view>
             </view>
-            <view v-if="!isEmpty(dict.struct.analysisTrans)" class="w-full pt-10 pb-10 flex gap-10">
+            <view v-if="!isEmpty(dict.struct.analysis)" class="w-full pt-10 pb-10 flex gap-10">
               <view class="w-5" style="background-color: #D5D5D5;"></view>
               <textarea auto-height
                         @blur="structBlur"
                         :maxlength="500"
                         :adjust-position="false"
-                        v-model="dict.struct.analysisTrans"
+                        v-model="dict.struct.analysis"
+                        class="pr-30"
+                        style="font-size: 32rpx; resize: none;color: #858585;font-size: 32rpx;"/>
+            </view>
+            <view v-if="!isEmpty(dict.struct.history)" class="w-full pt-10 pb-10 flex gap-10">
+              <view class="w-5" style="background-color: #D5D5D5;"></view>
+              <textarea auto-height
+                        @blur="structBlur"
+                        :maxlength="500"
+                        :adjust-position="false"
+                        v-model="dict.struct.history"
                         class="pr-30"
                         style="font-size: 32rpx; resize: none;color: #858585;font-size: 32rpx;"/>
             </view>

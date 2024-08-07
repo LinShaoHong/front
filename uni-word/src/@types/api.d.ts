@@ -34,7 +34,7 @@ declare namespace Word {
         meaningTrans: string
       }]
       analysis: string
-      analysisTrans: string
+      history: string
     }
     inflection: {
       plural: []
@@ -49,7 +49,7 @@ declare namespace Word {
       word: string
       index: number
     }]
-    phrases:[{
+    phrases: [{
       en: string,
       zh: string
     }]
