@@ -437,17 +437,16 @@ watch(endX, (n, o) => {
           </view>
           <view v-if="dict.struct" class="w-full flex flex-col gap-20 mt-10">
             <view v-for="(part,i) in dict.struct?.parts" :key="'struct'+i">
-              <view class="w-full flex items-center" style="width: calc(100% - 40rpx)">
-                <view class="font-bold w-120" style="color: #858585;">
+              <view class="w-full flex" style="width: calc(100% - 40rpx); align-items: flex-start">
+                <text class="font-bold w-120" style="color: #D5D5D5;font-size: 32rpx;">
                   {{
-                    part.root ? '词根' : (part.prefix ? '前缀' : part.infix ? '中缀' : part.suffix ? '后缀' : '')
+                    part.root ? 'root' : (part.prefix ? 'prefix' : part.infix ? 'infix' : part.suffix ? 'suffix' : '')
                   }}
-                </view>
-                <view class="font-bold w-180" style="font-size: 32rpx;">{{ part.part }}</view>
-                <view class="font-bold"
-                      style="color: #858585;font-size: 32rpx; margin-left: 20rpx; flex:1">
+                </text>
+                <text class="font-bold w-180" style="font-size: 32rpx;">{{ part.part }}</text>
+                <text style="color: #858585;font-size: 32rpx; margin-left: 20rpx; flex:1">
                   {{ part.meaningTrans }}
-                </view>
+                </text>
               </view>
             </view>
           </view>

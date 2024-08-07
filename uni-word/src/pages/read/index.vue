@@ -234,7 +234,7 @@ onShareAppMessage(async () => {
           <view v-for="(dict,i) in _dicts" class="h-80 w-full pl-20 pr-20 pt-10 pb-10 flex items-center"
                 :key="dict.id"
                 :style="{'background-color': ((i+1)%2===0? '#D9E7C8':'#F8FAF0')}">
-            <view class="w-30vw pl-5" @click="toCheck(dict.sort)">
+            <view class="min-w-30vw pl-5 pr-10" @click="toCheck(dict.sort)">
               <text style="font-size: 32rpx;">{{ dict.id }}</text>
             </view>
             <view class="h-20 w-20 rd-20" style="background-color: #EEF0E1"></view>

@@ -105,8 +105,9 @@ const changeTime = e => {
           </text>
           <view class="ml-10 mr-5 h-20 w-20 rd-20"
                 :style="{'background-color': user.vip>0? '#006E1C':(isEmpty(user.prepayId)? '#EEF0E1':'red')}"></view>
-          <view class="w-80">
-            <text class="pl-10">{{ isEmpty(user.shareCode) ? '' : '分享' }}</text>
+          <view class="h-full w-80 flex items-center gap-8">
+            <text class="pl-10">{{ user.playCount }}</text>
+            <image v-if="!isEmpty(user.shareCode)" class="w-30"  mode="widthFix" src="/static/share.png"/>
           </view>
           <text class="pl-10 absolute right-20">{{ formatDate(user.createTime, 'HH:mm') }}</text>
         </view>
