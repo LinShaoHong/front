@@ -92,7 +92,7 @@ const loadPart = (part, attr?) => {
   if (!dict.value.loadState) {
     dict.value.loadState = {} as any;
   }
-  if(dict.value.loadState[part + 'Loading']) {
+  if (dict.value.loadState[part + 'Loading']) {
     return;
   }
   dict.value.loadState[part + 'Loading'] = true;
@@ -120,6 +120,9 @@ const pass = () => {
       .then(() => {
         reload();
       }).catch(() => networkError());
+};
+const structBlur = () => {
+  apiLoader.editStruct(dict.value.id, dict.value.struct).catch((err) => console.log(err));
 };
 const loading = computed(() => {
   let ret = false;
@@ -400,7 +403,7 @@ watch(endX, (n, o) => {
             </view>
             <view class="h-50 pl-10 pr-20 rd-20 font-bold mb-10 flex items-center justify-center "
                   style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
-              <input class="text-left w-200"
+              <input class="text-left min-w-100"
                      :ignore-composition-event="false"
                      style="font-size: 28rpx; font-weight: bold;"
                      v-model="root"/>
@@ -438,16 +441,34 @@ watch(endX, (n, o) => {
           <view v-if="dict.struct" class="w-full flex flex-col gap-20 mt-10">
             <view v-for="(part,i) in dict.struct?.parts" :key="'struct'+i">
               <view class="w-full flex" style="width: calc(100% - 40rpx); align-items: flex-start">
-                <text class="font-bold w-120" style="color: #D5D5D5;font-size: 32rpx;">
-                  {{
-                    part.root ? 'root' : (part.prefix ? 'prefix' : part.infix ? 'infix' : part.suffix ? 'suffix' : '')
-                  }}
-                </text>
-                <text class="font-bold w-180" style="font-size: 32rpx;">{{ part.part }}</text>
-                <text style="color: #858585;font-size: 32rpx; margin-left: 20rpx; flex:1">
-                  {{ part.meaningTrans }}
-                </text>
+                <input class="text-left w-120"
+                       readonly
+                       :ignore-composition-event="false"
+                       style="font-size: 32rpx; font-weight: bold;color:#D5D5D5"
+                       :value="part.root ? 'root' : (part.prefix ? 'prefix' : part.infix ? 'infix' : part.suffix ? 'suffix' : '')"/>
+                <input class="text-left w-180"
+                       @blur="structBlur"
+                       :ignore-composition-event="false"
+                       style="font-size: 32rpx; font-weight: bold;"
+                       v-model="dict.struct.parts[i].part"/>
+                <textarea auto-height
+                          @blur="structBlur"
+                          :maxlength="500"
+                          :adjust-position="false"
+                          v-model="part.meaningTrans"
+                          class="pr-30"
+                          style="font-size: 32rpx; resize: none;color: #858585;font-size: 32rpx;flex:1"/>
               </view>
+            </view>
+            <view v-if="!isEmpty(dict.struct.analysisTrans)" class="w-full pt-10 pb-10 flex gap-10">
+              <view class="w-5" style="background-color: #D5D5D5;"></view>
+              <textarea auto-height
+                        @blur="structBlur"
+                        :maxlength="500"
+                        :adjust-position="false"
+                        v-model="dict.struct.analysisTrans"
+                        class="pr-30"
+                        style="font-size: 32rpx; resize: none;color: #858585;font-size: 32rpx;"/>
             </view>
           </view>
         </view>
@@ -546,23 +567,25 @@ watch(endX, (n, o) => {
             <view class="flex items-center pb-20 pr-20" style="border-bottom: 1px solid #D5D5D5;">
               <view class="font-bold w-120" style="color: #858585; display: inline-block">近义词</view>
               <view class="flex flex-wrap" style="flex:1">
-                <text v-for="synonym in dict.synAnts?.synonyms"
-                      @click="search(synonym)"
-                      @longpress="copy(synonym)"
-                      style="font-size: 32rpx; margin-left: 20rpx; margin-bottom: 10rpx;">
-                  {{ synonym }}
-                </text>
+                <div v-for="synonym in dict.synAnts?.synonyms"
+                     class="flex items-center"
+                     style="font-size: 32rpx; margin-left: 20rpx;">
+                  <text @click="search(synonym)" @longpress="copy(synonym)">{{ synonym }}</text>
+                  <uni-icons @click="onRemovePart('synonym',synonym)" type="close" size="20"
+                             color="#ba1a1a"></uni-icons>
+                </div>
               </view>
             </view>
             <view class="flex items-center pr-20">
               <view class="font-bold w-120" style="color: #858585; display: inline-block">反义词</view>
               <view class="flex flex-wrap" style="flex:1">
-                <text v-for="antonym in dict.synAnts?.antonyms"
-                      @click="search(antonym)"
-                      @longpress="copy(antonym)"
+                <div v-for="antonym in dict.synAnts?.antonyms"
+                      class="flex items-center"
                       style="font-size: 32rpx; margin-left: 20rpx;">
-                  {{ antonym }}
-                </text>
+                  <text @click="search(antonym)" @longpress="copy(antonym)">{{ antonym }}</text>
+                  <uni-icons @click="onRemovePart('antonym',antonym)" type="close" size="20"
+                             color="#ba1a1a"></uni-icons>
+                </div>
               </view>
             </view>
           </view>

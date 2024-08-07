@@ -20,6 +20,11 @@ const apiLoader = {
     userId: userId
   }),
 
+  editStruct: (id: string, struct: any) => http.post<any>('/loader/edit/struct', {
+    id: id,
+    struct: struct
+  }),
+
   pass: (id: string) => http.get<Word.Dict>('/loader/pass', { word: id }),
 
   stat: (date: string, userId: number) => http.get<Loader.Stat>('/loader/stat', { date: date, userId: userId }),
