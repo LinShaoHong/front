@@ -122,7 +122,9 @@ const pass = () => {
       }).catch(() => networkError());
 };
 const structBlur = () => {
-  apiLoader.editStruct(dict.value.id, dict.value.struct).catch((err) => console.log(err));
+  apiLoader.editStruct(dict.value.id, dict.value.struct)
+      .then(() => reload())
+      .catch((err) => console.log(err));
 };
 const loading = computed(() => {
   let ret = false;
@@ -439,7 +441,7 @@ watch(endX, (n, o) => {
             <text style="font-size: 32rpx; color: #858585; width: 80%;">{{ affix?.gptAffix }}</text>
           </view>
           <view v-if="dict.struct" class="w-full flex flex-col gap-20 mt-10">
-            <view v-for="(part,i) in dict.struct?.parts.filter(p => !isEmpty(p.part))" :key="'struct'+i">
+            <view v-for="(part,i) in dict.struct?.parts" :key="'struct'+i">
               <view class="w-full flex" style="width: calc(100% - 40rpx); align-items: flex-start">
                 <input class="text-left w-120"
                        readonly
