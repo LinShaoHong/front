@@ -13,12 +13,14 @@ const apiLoader = {
     userId: userId
   }),
 
-  removePart: (id: string, part: string, path: string, userId: number) => http.get<Word.Dict>('/loader/remove', {
+  removePart: (id: string, part: string, path: string, userId: number) => http.get<Word.Dict>('/loader/remove/part', {
     word: id,
     part: part,
     path: path,
     userId: userId
   }),
+
+  remove: (id: string) => http.get<Word.Dict>('/loader/remove', { word: id }),
 
   editStruct: (id: string, struct: any) => http.post<any>('/loader/edit/struct', {
     id: id,

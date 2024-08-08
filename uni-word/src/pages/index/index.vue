@@ -9,6 +9,7 @@ import Popup from "@/components/Popup.vue";
 import { delay } from "@/utils/calls";
 import { formatDate } from "date-fns";
 import { useTouch } from "@/hooks/useTouch";
+import { modal } from "@/utils/unis";
 
 const nav = useStore('nav');
 const userId = nav.data.value.userId;
@@ -107,6 +108,24 @@ const onRemovePart = (part, path) => {
   _removePart.value = part;
   _removePath.value = path;
   showRemove.value = true;
+};
+const remove = () => {
+  modal('删除该单词？', '', true).then(() => {
+    apiLoader.remove(dict.value.id).then((d) => {
+      apiLoader.dict(date.value, d.value, userId)
+          .then((data) => {
+            dict.value = data.value;
+            date.value = formatDate(dict.value.loadTime, 'yyyy-MM-dd');
+            nav.setDate(date.value);
+            apiLoader.stat(date.value, userId)
+                .then((data) => {
+                  stat.value = data.value;
+                  nav.setShow(true);
+                }).catch(() => networkError());
+            apiLoader.affix(dict.value.id).then(data => affix.value = data.value).catch((err) => networkError());
+          }).catch(() => networkError());
+    }).catch((err) => console.log(err));
+  });
 };
 const removePart = () => {
   apiLoader.removePart(dict.value.id, _removePart.value, _removePath.value, userId)
@@ -549,7 +568,10 @@ watch(endX, (n, o) => {
             <view v-for="differ in dict.differs"
                   class="flex flex-col gap-10"
                   :key="'differ'+differ.word">
-              <text @click="search(differ.word)" class="font-bold" style="font-size: 32rpx;">{{ differ.word }}</text>
+              <view class="flex gap-10 pl-12">
+                <text @click="search(differ.word)" class="font-bold" style="font-size: 32rpx;">{{ differ.word }}</text>
+                <uni-icons @click="onRemovePart('differs',differ.word)" type="close" size="20" color="#ba1a1a"></uni-icons>
+              </view>
               <view class="flex gap-10">
                 <div style="font-size: 28rpx; color: #858585">【定义】</div>
                 <text style="font-size: 32rpx;width: 70%">{{ differ.definition }}</text>
@@ -630,8 +652,8 @@ watch(endX, (n, o) => {
               <view class="font-bold w-120" style="color: #858585; display: inline-block">反义词</view>
               <view class="flex flex-wrap" style="flex:1">
                 <div v-for="antonym in dict.synAnts?.antonyms"
-                      class="flex items-center"
-                      style="font-size: 32rpx; margin-left: 20rpx;">
+                     class="flex items-center"
+                     style="font-size: 32rpx; margin-left: 20rpx;">
                   <text @click="search(antonym)" @longpress="copy(antonym)">{{ antonym }}</text>
                   <uni-icons @click="onRemovePart('antonym',antonym)" type="close" size="20"
                              color="#ba1a1a"></uni-icons>
@@ -670,6 +692,12 @@ watch(endX, (n, o) => {
       </view>
       <view class="w-full h-30"></view>
     </scroll-view>
+  </view>
+  <view v-if="nav.data.value.show"
+        class="fixed bottom-1050 right-60 w-100 h-100 rd-100 flex items-center justify-center"
+        @click="remove"
+        style="background-color: #D9E7C8; opacity: .5">
+    <uni-icons type="trash" size="24" color="#858585"/>
   </view>
   <view v-if="nav.data.value.show"
         class="fixed bottom-900 right-60 w-100 h-100 rd-100 flex items-center justify-center"
