@@ -403,13 +403,13 @@ watch(endX, (n, o) => {
             </view>
             <view class="h-50 pl-10 pr-20 rd-20 font-bold mb-10 flex items-center justify-center "
                   style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
-              <input class="text-left min-w-100"
+              <input class="text-left w-120"
                      :ignore-composition-event="false"
                      style="font-size: 28rpx; font-weight: bold;"
                      v-model="root"/>
               <image v-if="!isEmpty(root)"
                      @click="root=''"
-                     class="w-30 mr-10" mode="widthFix" src="/static/clear.png"></image>
+                     class="w-30 mr-20" mode="widthFix" src="/static/clear.png"></image>
               <image :src="dict.loadState?.structLoading? '/static/loading.gif':'/static/get.png'"
                      class="w-25"
                      @click="loadPart('struct',{root: root})"
@@ -439,7 +439,7 @@ watch(endX, (n, o) => {
             <text style="font-size: 32rpx; color: #858585; width: 80%;">{{ affix?.gptAffix }}</text>
           </view>
           <view v-if="dict.struct" class="w-full flex flex-col gap-20 mt-10">
-            <view v-for="(part,i) in dict.struct?.parts" :key="'struct'+i">
+            <view v-for="(part,i) in dict.struct?.parts.filter(p => !isEmpty(p.part))" :key="'struct'+i">
               <view class="w-full flex" style="width: calc(100% - 40rpx); align-items: flex-start">
                 <input class="text-left w-120"
                        readonly
@@ -524,6 +524,44 @@ watch(endX, (n, o) => {
                              color="#ba1a1a"></uni-icons>
                   <uni-icons @click="onRemovePart('derivatives',derivative.word+':sub')" type="clear" size="20"
                              color="#ba1a1a"></uni-icons>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <view class="w-full pl-30 mt-30">
+          <view class="flex gap-20">
+            <view class="w-150 h-50 rd-20 font-bold mb-10 flex items-center justify-center"
+                  style="color: white; background-color: black; font-size: 24rpx;">
+              <text>同义辨析</text>
+            </view>
+            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center "
+                  @click="loadPart('differs')"
+                  style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
+              <image :src="dict.loadState?.differsLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
+                     mode="widthFix"></image>
+            </view>
+          </view>
+          <view class="flex flex-col gap-25">
+            <view v-for="differ in dict.differs"
+                  class="flex flex-col gap-10"
+                  :key="'differ'+differ.word">
+              <text @click="search(differ.word)" class="font-bold" style="font-size: 32rpx;">{{ differ.word }}</text>
+              <view class="flex gap-10">
+                <div style="font-size: 28rpx; color: #858585">【定义】</div>
+                <text style="font-size: 32rpx;width: 70%">{{ differ.definition }}</text>
+              </view>
+              <view class="w-full flex gap-10">
+                <div style="font-size: 28rpx; color: #858585; display: inline-block">【场景】</div>
+                <text style="font-size: 32rpx; width: 70%">{{ differ.scenario }}</text>
+              </view>
+              <div style="font-size: 28rpx; color: #858585; display: inline-block">【例句】</div>
+              <view v-for="ex in differ.examples" class="w-full pl-10 pb-10 mt-10 flex flex-col gap-10">
+                <text class="pl-5" style="font-size: 32rpx; width: 90%;">{{ ex.sentence }}</text>
+                <view class="flex gap-10 pl-8">
+                  <view class="w-5" style="background-color: #D5D5D5"></view>
+                  <text style="font-size: 32rpx; color: #858585; width:80%;">{{ ex.translation }}</text>
                 </view>
               </view>
             </view>

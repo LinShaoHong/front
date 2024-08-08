@@ -49,6 +49,15 @@ declare namespace Word {
       word: string
       index: number
     }]
+    differs: [{
+      word: string
+      definition: string
+      scenario: string
+      examples: [{
+        sentence: string
+        translation: string
+      }]
+    }]
     phrases: [{
       en: string,
       zh: string
@@ -66,6 +75,7 @@ declare namespace Word {
       synAntsLoading: boolean
       phrasesLoading: boolean
       derivativesLoading: boolean
+      differsLoading: boolean
     }
     passed: boolean
     loadTime: any
