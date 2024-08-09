@@ -356,7 +356,7 @@ watch(endX, (n, o) => {
                         :adjust-position="false"
                         v-model="dict.meaning.nouns"
                         class="pr-30"
-                        style="resize: none;font-size: 32rpx;flex:1"/>
+                        style="resize: none;font-size: 32rpx;width: 60%;"/>
               <uni-icons @click="onRemovePart('meaning','nouns')" type="close" size="20" color="#ba1a1a"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.meaning?.verbs)" class="flex gap-10">
@@ -367,7 +367,7 @@ watch(endX, (n, o) => {
                         :adjust-position="false"
                         v-model="dict.meaning.verbs"
                         class="pr-30"
-                        style="resize: none;font-size: 32rpx;flex:1"/>
+                        style="resize: none;font-size: 32rpx;width: 60%;"/>
               <uni-icons @click="onRemovePart('meaning','verbs')" type="close" size="20" color="#ba1a1a"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.meaning?.adverbs)" class="flex gap-10">
@@ -378,7 +378,7 @@ watch(endX, (n, o) => {
                         :adjust-position="false"
                         v-model="dict.meaning.adverbs"
                         class="pr-30"
-                        style="resize: none;font-size: 32rpx;flex:1"/>
+                        style="resize: none;font-size: 32rpx;width: 60%;"/>
               <uni-icons @click="onRemovePart('meaning','adverbs')" type="close" size="20" color="#ba1a1a"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.meaning?.adjectives)" class="flex gap-10">
@@ -389,7 +389,7 @@ watch(endX, (n, o) => {
                         :adjust-position="false"
                         v-model="dict.meaning.adjectives"
                         class="pr-30"
-                        style="resize: none;font-size: 32rpx;flex:1"/>
+                        style="resize: none;font-size: 32rpx;width: 60%;"/>
               <uni-icons @click="onRemovePart('meaning','adjectives')" type="close" size="20"
                          color="#ba1a1a"></uni-icons>
             </view>
