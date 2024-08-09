@@ -27,6 +27,17 @@ const apiLoader = {
     struct: struct
   }),
 
+  editMeaning: (id: string, meaning: any) => http.post<any>('/loader/edit/meaning', {
+    id: id,
+    meaning: meaning
+  }),
+
+  moveDerivative: (id: string, word: string, op: string) => http.get<any>('/loader/move/derivative', {
+    id: id,
+    word: word,
+    op: op
+  }),
+
   pass: (id: string) => http.get<Word.Dict>('/loader/pass', { word: id }),
 
   stat: (date: string, userId: number) => http.get<Loader.Stat>('/loader/stat', { date: date, userId: userId }),

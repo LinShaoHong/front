@@ -143,7 +143,7 @@ onShareAppMessage(async () => {
             box-shadow: rgba(0, 0, 0, 0.1) 0 1px 3px 0, rgba(0, 0, 0, 0.06) 0 1px 2px 0;">
         <scroll-view scroll-y :show-scrollbar="false"
                      style="background-color: white;"
-                     class="w-610 h-500 rd-20 p-20">
+                     class="w-610 h-200 rd-20 p-20">
           <view class="flex flex-wrap gap-15">
             <view v-for="sta in stats" class="relative w-180 h-50 rd-5 flex justify-center items-center p-10"
                   :key="sta.id"
