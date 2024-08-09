@@ -38,6 +38,12 @@ const apiLoader = {
     op: op
   }),
 
+  addDerivative: (id: string, word: string, input: string) => http.get<any>('/loader/add/derivative', {
+    id: id,
+    word: word,
+    input: input
+  }),
+
   pass: (id: string) => http.get<Word.Dict>('/loader/pass', { word: id }),
 
   stat: (date: string, userId: number) => http.get<Loader.Stat>('/loader/stat', { date: date, userId: userId }),

@@ -89,6 +89,8 @@ const reload = () => {
   });
 }
 const root = ref('');
+const derivative = ref('');
+const moveWord = ref('');
 const loadPart = (part, attr?) => {
   if (!dict.value.loadState) {
     dict.value.loadState = {} as any;
@@ -101,11 +103,18 @@ const loadPart = (part, attr?) => {
     reload();
   }).catch(() => networkError());
 }
+const addDerivative = () => {
+  if(!isEmpty(derivative.value)) {
+    apiLoader.addDerivative(dict.value.id, moveWord.value, derivative.value).then(() => {
+      reload();
+    }).catch(() => networkError());
+  }
+};
 const showRemove = ref(false);
 const _removePart = ref('');
 const _removePath = ref('');
 const onRemovePart = (part, path) => {
-  if(part === 'derivatives' && !isEmpty(moveWord.value)) {
+  if(!isEmpty(moveWord.value)) {
     return;
   }
   _removePart.value = part;
@@ -153,7 +162,6 @@ const meaningBlur = () => {
       .then(() => reload())
       .catch(() => networkError());
 };
-const moveWord = ref('');
 const moveDerivative = (op) => {
   apiLoader.moveDerivative(dict.value.id, moveWord.value, op)
       .then(() => reload())
@@ -462,7 +470,7 @@ watch(endX, (n, o) => {
             </view>
             <view class="h-50 pl-10 pr-20 rd-20 font-bold mb-10 flex items-center justify-center "
                   style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
-              <input class="text-left w-120"
+              <input class="text-left w-230"
                      :ignore-composition-event="false"
                      style="font-size: 28rpx; font-weight: bold;"
                      v-model="root"/>
@@ -554,6 +562,17 @@ watch(endX, (n, o) => {
               <image :src="dict.loadState?.derivativesLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
                      mode="widthFix"></image>
             </view>
+          </view>
+          <view class="w-330 h-50 pl-10 pr-20 rd-20 font-bold mb-10 flex items-center justify-between "
+                style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
+            <input class="text-left w-230"
+                   :ignore-composition-event="false"
+                   style="font-size: 28rpx; font-weight: bold;"
+                   v-model="derivative"/>
+            <image v-if="!isEmpty(derivative)"
+                   @click="derivative=''"
+                   class="w-30 mr-20" mode="widthFix" src="/static/clear.png"></image>
+            <uni-icons @click="addDerivative" type="plusempty" size="16" color="black"/>
           </view>
           <view class="w-full flex flex-col" style="width: calc(100% - 40rpx)">
             <view v-for="(derivative,i) in dict.derivatives" :key="'derivative'+i">
