@@ -10,6 +10,7 @@ const userId = nav.data.value.userId;
 const date = ref('');
 const stats = ref([] as any);
 const dicts = ref([] as any);
+const dateId = ref('');
 const stat = ref({} as Loader.Stat);
 onShow(() => {
   uni.hideTabBar();
@@ -17,6 +18,10 @@ onShow(() => {
   apiLoader.stats(userId)
       .then((data) => {
         stats.value = data.values;
+        dateId.value = 'date_none';
+        nextTick(() => {
+          dateId.value = 'date_' + date.value;
+        });
       })
       .catch(() => networkError());
   date.value = nav.data.value.date;
@@ -142,10 +147,12 @@ onShareAppMessage(async () => {
             border-radius: 0 0 30rpx 30rpx;
             box-shadow: rgba(0, 0, 0, 0.1) 0 1px 3px 0, rgba(0, 0, 0, 0.06) 0 1px 2px 0;">
         <scroll-view scroll-y :show-scrollbar="false"
+                     :scroll-into-view="dateId"
                      style="background-color: white;"
                      class="w-610 h-200 rd-20 p-20">
           <view class="flex flex-wrap gap-15">
             <view v-for="sta in stats" class="relative w-180 h-50 rd-5 flex justify-center items-center p-10"
+                  :id="'date_'+sta.date"
                   :key="sta.id"
                   @click="date=sta.date"
                   :style="{'background-color': date===sta.date? '#006E1C':(sta.total===sta.passed && sta.total > 0? '#D9E7C8':'#EEF0E1')}">

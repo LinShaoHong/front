@@ -12,6 +12,7 @@ import { useTouch } from "@/hooks/useTouch";
 import { modal } from "@/utils/unis";
 
 const nav = useStore('nav');
+const mean = useStore('mean');
 const userId = nav.data.value.userId;
 let interval;
 onShow(() => {
@@ -39,6 +40,7 @@ onShow(() => {
     apiLoader.dict(date.value, null, userId)
         .then((data) => {
           dict.value = data.value;
+          loadMean();
           date.value = formatDate(dict.value.loadTime, 'yyyy-MM-dd');
           nav.setDate(date.value);
           apiLoader.stat(date.value, userId)
@@ -57,6 +59,7 @@ onShow(() => {
           apiLoader.dict(date.value, stat.value.sort, userId)
               .then((data) => {
                 dict.value = data.value;
+                loadMean();
                 nav.setShow(true);
                 apiLoader.affix(dict.value.id).then(data => affix.value = data.value).catch((err) => networkError());
               })
@@ -77,9 +80,11 @@ const date = ref('');
 const width = ref(0);
 const height = ref(0);
 const scTop = ref(0);
+const scId = ref('');
 const reload = () => {
   apiDict.byId(dict.value.id).then((data) => {
     dict.value = data.value;
+    loadMean();
     apiLoader.stat(date.value, userId)
         .then((data) => {
           stat.value = data.value;
@@ -88,9 +93,16 @@ const reload = () => {
     networkError();
   });
 }
+const loadMean = () => {
+  dict.value.derivatives.forEach(d => {
+    mean.fetch(d.word);
+  });
+};
 const root = ref('');
 const derivative = ref('');
 const moveWord = ref('');
+const showDerivativeMean = ref(false);
+const derivativesMeans = ref({} as Map<string, boolean>);
 const loadPart = (part, attr?) => {
   if (!dict.value.loadState) {
     dict.value.loadState = {} as any;
@@ -104,7 +116,7 @@ const loadPart = (part, attr?) => {
   }).catch(() => networkError());
 }
 const addDerivative = () => {
-  if(!isEmpty(derivative.value)) {
+  if (!isEmpty(derivative.value)) {
     apiLoader.addDerivative(dict.value.id, moveWord.value, derivative.value).then(() => {
       reload();
     }).catch(() => networkError());
@@ -114,7 +126,7 @@ const showRemove = ref(false);
 const _removePart = ref('');
 const _removePath = ref('');
 const onRemovePart = (part, path) => {
-  if(!isEmpty(moveWord.value)) {
+  if (!isEmpty(moveWord.value)) {
     return;
   }
   _removePart.value = part;
@@ -164,8 +176,31 @@ const meaningBlur = () => {
 };
 const moveDerivative = (op) => {
   apiLoader.moveDerivative(dict.value.id, moveWord.value, op)
-      .then(() => reload())
-      .catch(() => networkError());
+      .then(() => {
+        apiDict.byId(dict.value.id).then((data) => {
+          dict.value = data.value;
+          scId.value = 'derivative_none';
+          nextTick(() => {
+            const query = uni.createSelectorQuery();
+            query.selectViewport().boundingClientRect();
+            query.select(`#derivative_${ moveWord.value }`).boundingClientRect();
+            query.exec(res => {
+              const viewPort = res[0];
+              const itemRect = res[1];
+              console.log(res);
+              if (itemRect.bottom < 150 || itemRect.bottom > viewPort.height - 150) {
+                scId.value = 'derivative_' + moveWord.value;
+                nextTick(() => {
+                  delay(200).then(() => scTop.value = scTop.value - 250);
+                });
+              }
+            });
+          });
+          loadMean();
+        }).catch(() => {
+          networkError();
+        });
+      }).catch(() => networkError());
 }
 const loading = computed(() => {
   let ret = false;
@@ -190,6 +225,8 @@ const move = (i) => {
       .then((data) => {
         scTop.value = 0;
         dict.value = data.value;
+        showDerivativeMean.value = false;
+        loadMean();
         root.value = '';
         apiLoader.affix(dict.value.id).then(data => affix.value = data.value).catch((err) => networkError());
         nextTick(() => scTop.value = 0);
@@ -318,6 +355,7 @@ watch(endX, (n, o) => {
     </view>
     <scroll-view v-if="nav.data.value.show" class="w-full"
                  scroll-y :show-scrollbar="false"
+                 :scroll-into-view="scId"
                  :scroll-top="scTop"
                  @scroll="e => scTop = e.detail.scrollTop"
                  @touchstart="touchStart" @touchend="touchEnd"
@@ -563,76 +601,112 @@ watch(endX, (n, o) => {
                      mode="widthFix"></image>
             </view>
           </view>
-          <view class="w-330 h-50 pl-10 pr-20 rd-20 font-bold mb-10 flex items-center justify-between "
-                style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
-            <input class="text-left w-230"
-                   :ignore-composition-event="false"
-                   style="font-size: 28rpx; font-weight: bold;"
-                   v-model="derivative"/>
-            <image v-if="!isEmpty(derivative)"
-                   @click="derivative=''"
-                   class="w-30 mr-20" mode="widthFix" src="/static/clear.png"></image>
-            <uni-icons @click="addDerivative" type="plusempty" size="16" color="black"/>
+          <view class="flex items-center">
+            <view class="w-330 h-50 pl-10 pr-20 rd-20 font-bold mb-10 flex items-center justify-between "
+                  style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
+              <input class="text-left w-230"
+                     :ignore-composition-event="false"
+                     style="font-size: 28rpx; font-weight: bold;"
+                     v-model="derivative"/>
+              <image v-if="!isEmpty(derivative)"
+                     @click="derivative=''"
+                     class="w-30 mr-20" mode="widthFix" src="/static/clear.png"></image>
+              <uni-icons @click="addDerivative" type="plusempty" size="16" color="black"/>
+            </view>
+            <view class="flex justify-center">
+              <switch v-if="showDerivativeMean" checked :color="'#D9E7C8'" style="transform:scale(0.6);"
+                      @change="() => {showDerivativeMean=false;derivativesMeans={};}"/>
+              <switch v-if="!showDerivativeMean" :color="'#D9E7C8'" style="transform:scale(0.6);"
+                      @change="showDerivativeMean=true"/>
+            </view>
           </view>
           <view class="w-full flex flex-col" style="width: calc(100% - 40rpx)">
-            <view v-for="(derivative,i) in dict.derivatives" :key="'derivative'+i">
+            <view v-for="(derivative,i) in dict.derivatives" :key="'derivative'+i" :id="'derivative_'+derivative.word">
               <view v-if="derivative.index===0" class="flex items-center gap-10">
-                <text @click="search(derivative.word)"
-                      @longpress="copy(derivative.word)"
-                      :class="[derivative.word.includes(dict.id) || moveWord===derivative.word? 'font-bold':'']"
-                      :style="{'font-size': '32rpx', color: moveWord===derivative.word? '#006E1C':''}">{{ derivative.word }}
-                </text>
+                <view class="flex flex-col gap-2">
+                  <text @click="search(derivative.word)"
+                        @longpress="copy(derivative.word)"
+                        :class="[derivative.word.includes(dict.id) || moveWord===derivative.word? 'font-bold':'']"
+                        :style="{'font-size': '32rpx', color: moveWord===derivative.word? '#006E1C':''}">
+                    {{ derivative.word }}
+                  </text>
+                  <view v-if="showDerivativeMean || derivativesMeans[derivative.word]" class="pl-5 max-w-300"
+                        style="color:#858585; font-size:26rpx;text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                    {{ mean.data.value.ws[derivative.word] }}
+                  </view>
+                </view>
                 <uni-icons @click="onRemovePart('derivatives',derivative.word)" type="close" size="20"
                            color="#ba1a1a"></uni-icons>
                 <uni-icons @click="onRemovePart('derivatives',derivative.word+':sub')" type="clear" size="20"
                            color="#ba1a1a"></uni-icons>
-                <image @click="() => {if(isEmpty(moveWord)) {moveWord=derivative.word;}}"
-                       src="/static/move.png" class="w-40" mode="widthFix"></image>
+                <image
+                    @click="() => {derivativesMeans[derivative.word]=!derivativesMeans[derivative.word];
+                      if(moveWord===derivative.word){moveWord=''} else
+                      {derivativesMeans[moveWord]=false;if(isEmpty(moveWord)) {moveWord=derivative.word;}}}"
+                    src="/static/move.png" class="w-40" mode="widthFix"></image>
               </view>
-              <view v-if="derivative.index>0" class="relative h-60 flex items-center left-10">
-                <view :class="['absolute top-0', i===dict.derivatives.length-1? 'h-30':'h-60']"
-                      style="border-left: 1px solid #D5D5D5"></view>
+              <view v-if="derivative.index>0"
+                    :class="['relative flex items-center left-10', showDerivativeMean? 'h-80':'h-60']">
+                <view
+                    :class="['absolute top-0', i===dict.derivatives.length-1? (showDerivativeMean? 'h-40':'h-30'):(showDerivativeMean? 'h-80':'h-60')]"
+                    style="border-left: 1px solid #D5D5D5"></view>
                 <view v-for="i in derivative.index" :key="'di'+i" class="w-50"
                       style="border-top: 1px solid #D5D5D5"></view>
                 <view class="flex items-center justify-center gap-10">
-                  <text @click="search(derivative.word)"
-                        @longpress="copy(derivative.word)"
-                        :class="['ml-5', derivative.word.includes(dict.id) || moveWord===derivative.word? 'font-bold':'']"
-                        :style="{'font-size': '32rpx', color: moveWord===derivative.word? '#006E1C':''}">{{ derivative.word }}
-                  </text>
+                  <view class="flex flex-col gap-2">
+                    <text @click="search(derivative.word)"
+                          @longpress="copy(derivative.word)"
+                          :class="['ml-5', derivative.word.includes(dict.id) || moveWord===derivative.word? 'font-bold':'']"
+                          :style="{'font-size': '32rpx', color: moveWord===derivative.word? '#006E1C':''}">
+                      {{ derivative.word }}
+                    </text>
+                    <view v-if="showDerivativeMean || derivativesMeans[derivative.word]" class="pl-5 max-w-300"
+                          style="color:#858585; font-size:26rpx;text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                      {{
+                        mean.data.value.ws[derivative.word]
+                      }}
+                    </view>
+                  </view>
                   <uni-icons @click="onRemovePart('derivatives',derivative.word)" type="close" size="20"
                              color="#ba1a1a"></uni-icons>
                   <uni-icons @click="onRemovePart('derivatives',derivative.word+':sub')" type="clear" size="20"
                              color="#ba1a1a"></uni-icons>
-                  <image @click="() => {if(isEmpty(moveWord)) {moveWord=derivative.word;}}"
-                         src="/static/move.png" class="w-40" mode="widthFix"></image>
+                  <image
+                      @click="() => {derivativesMeans[derivative.word]=!derivativesMeans[derivative.word];
+                        if(moveWord===derivative.word){moveWord=''} else
+                        {derivativesMeans[moveWord]=false;if(isEmpty(moveWord)) {moveWord=derivative.word;}}}"
+                      src="/static/move.png" class="w-40" mode="widthFix"></image>
                 </view>
               </view>
             </view>
           </view>
 
-          <view v-if="!isEmpty(moveWord)" class="fixed bottom-390 w-100 h-100 rd-100 flex items-center justify-center z-1"
+          <view v-if="!isEmpty(moveWord)"
+                class="fixed bottom-390 w-100 h-100 rd-100 flex items-center justify-center z-1"
                 @click="moveDerivative('up')"
                 style="background-color: #D9E7C8; opacity: .5; left: calc(50vw - 50rpx)">
             <uni-icons type="arrow-up" size="24" color="#433F3F"/>
           </view>
-          <view v-if="!isEmpty(moveWord)" class="fixed bottom-210 w-100 h-100 rd-100 flex items-center justify-center  z-1"
+          <view v-if="!isEmpty(moveWord)"
+                class="fixed bottom-210 w-100 h-100 rd-100 flex items-center justify-center  z-1"
                 @click="moveDerivative('down')"
                 style="background-color: #D9E7C8; opacity: .5; left: calc(50vw - 50rpx)">
             <uni-icons type="arrow-down" size="24" color="#433F3F"/>
           </view>
-          <view v-if="!isEmpty(moveWord)" class="fixed bottom-300 w-100 h-100 rd-100 flex items-center justify-center  z-1"
+          <view v-if="!isEmpty(moveWord)"
+                class="fixed bottom-300 w-100 h-100 rd-100 flex items-center justify-center  z-1"
                 @click="moveDerivative('left')"
                 style="background-color: #D9E7C8; opacity: .5; left: calc(50vw - 160rpx)">
             <uni-icons type="arrow-left" size="24" color="#433F3F"/>
           </view>
-          <view v-if="!isEmpty(moveWord)" class="fixed bottom-300 w-100 h-100 rd-100 flex items-center justify-center  z-1"
+          <view v-if="!isEmpty(moveWord)"
+                class="fixed bottom-300 w-100 h-100 rd-100 flex items-center justify-center  z-1"
                 @click="moveDerivative('right')"
                 style="background-color: #D9E7C8; opacity: .5; right: calc(50vw - 160rpx)">
             <uni-icons type="arrow-right" size="24" color="#433F3F"/>
           </view>
           <view v-if="!isEmpty(moveWord)" class="fixed bottom-320 w-60 h-60 rd-60 flex items-center justify-center  z-1"
-                @click="moveWord=''"
+                @click="() => {if(derivativesMeans[moveWord]) derivativesMeans[moveWord]=false;moveWord='';}"
                 style="background-color: #D9E7C8; opacity: .5; left: calc(50vw - 30rpx)">
             <uni-icons type="checkmarkempty" size="24" color="#433F3F"/>
           </view>
