@@ -244,7 +244,7 @@ onShareAppMessage(async () => {
             <view class="min-w-30vw pl-5 pr-10" @click="toCheck(dict.sort)">
               <text style="font-size: 32rpx;">{{ dict.id }}</text>
             </view>
-            <view class="h-20 w-20 rd-20" style="background-color: #EEF0E1"></view>
+            <view class="h-20 w-20 rd-20" :style="{'background-color': dict.sort===stat.sort? '#006E1C':'#EEF0E1'}"></view>
             <view class="pl-20 pr-10"
                   style="flex: 1;text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-size: 32rpx;">
               {{ meaning(dict) }}
