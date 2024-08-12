@@ -259,9 +259,11 @@ const searchSrc = computed(() => {
   }
 });
 const search = (w) => {
-  searchWord.value = w;
-  showSearch.value = true;
-  delay(350).then(() => searchHeight.value = height.value - 100);
+  if(isEmpty(moveWord)) {
+    searchWord.value = w;
+    showSearch.value = true;
+    delay(350).then(() => searchHeight.value = height.value - 100);
+  }
 };
 const copy = (txt) => {
   uni.setClipboardData({

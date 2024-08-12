@@ -52,6 +52,8 @@ const apiLoader = {
 
   dicts: (date: string) => http.get<Word.Dict>('/loader/dicts', { date: date }),
 
+  search: (q: string) => http.get<Word.Dict>('/loader/search', { q: q }),
+
   dict: (date: string, sort: any, userId: number) => http.get<Word.Dict>('/loader/dict', {
     date: date,
     sort: sort,

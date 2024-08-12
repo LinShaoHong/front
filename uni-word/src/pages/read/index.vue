@@ -4,6 +4,7 @@ import { networkError } from "@/utils/request";
 import apiLoader from "@/api/apiLoader";
 import { isEmpty } from "@/utils/is";
 import { delay } from "@/utils/calls";
+import { formatDate } from "date-fns";
 
 const nav = useStore('nav');
 const userId = nav.data.value.userId;
@@ -12,6 +13,7 @@ const stats = ref([] as any);
 const dicts = ref([] as any);
 const dateId = ref('');
 const stat = ref({} as Loader.Stat);
+const globalQ = ref(false);
 onShow(() => {
   uni.hideTabBar();
   nav.setIndex(1);
@@ -29,9 +31,18 @@ onShow(() => {
     apiLoader.stat(date.value, userId)
         .then((data) => {
           stat.value = data.value;
-          apiLoader.dicts(date.value)
-              .then(data => dicts.value = data.values)
-              .catch(() => networkError());
+          if (globalQ.value) {
+            const n = searchQ.value;
+            if (!isEmpty(n)) {
+              apiLoader.search(n).then(data => dicts.value = data.values).catch(() => networkError());
+            } else {
+              dicts.value = [];
+            }
+          } else {
+            apiLoader.dicts(date.value)
+                .then(data => dicts.value = data.values)
+                .catch(() => networkError());
+          }
         })
         .catch(() => networkError());
   }
@@ -62,9 +73,14 @@ watch(date, (n, o) => {
       })
       .catch(() => networkError());
 });
-const toCheck = (sort) => {
+const toCheck = (d, sort) => {
   nav.setShow(false);
-  nav.setDate(date.value);
+  if (isEmpty(d)) {
+    nav.setDate(date.value);
+  } else {
+    date.value = d;
+    nav.setDate(d);
+  }
   delay(200).then(() => {
     apiLoader.dict(date.value, sort, userId).then(() => {
       uni.switchTab({
@@ -127,6 +143,30 @@ const _dicts = computed(() => {
       return dicts.value.filter(d => isEmpty(searchQ.value) || d.id.includes(searchQ.value));
   }
 });
+watch(searchQ, (n, o) => {
+  if (globalQ.value) {
+    if (!isEmpty(n)) {
+      apiLoader.search(n).then(data => dicts.value = data.values).catch(() => networkError());
+    } else {
+      dicts.value = [];
+    }
+  }
+});
+watch(globalQ, (n, o) => {
+  if (!n) {
+    apiLoader.dicts(date.value)
+        .then(data => dicts.value = data.values)
+        .catch(() => networkError());
+  } else {
+    const n = searchQ.value;
+    if (!isEmpty(n)) {
+      apiLoader.search(n).then(data => dicts.value = data.values).catch(() => networkError());
+    } else {
+      dicts.value = [];
+    }
+  }
+});
+
 onShareAppMessage(async () => {
   return {
     title: '',
@@ -193,7 +233,7 @@ onShareAppMessage(async () => {
           </view>
         </view>
         <view class="w-610 rd-40 mt-20 pt-15 pb-15 flex items-center justify-center"
-              @click="toCheck(0)"
+              @click="toCheck(null,0)"
               style="background-color: #006E1C">
           <text class="font-bold" style="color: white;font-size: 28rpx;">{{ '前往校验（' + date + '）' }}</text>
         </view>
@@ -223,7 +263,8 @@ onShareAppMessage(async () => {
           </view>
         </view>
         <view class="w-full h-20"></view>
-        <view class="w-78vw h-75 rd-60 p-20 ml-20 flex items-center justify-between" style="background-color: white">
+        <view class="w-78vw h-75 rd-60 p-20 pr-0 ml-20 flex items-center justify-between"
+              style="background-color: white">
           <input class="text-left"
                  :ignore-composition-event="false"
                  placeholder="search"
@@ -235,16 +276,21 @@ onShareAppMessage(async () => {
           <image v-if="!isEmpty(searchQ)"
                  @click="searchQ=''"
                  class="w-30 mr-10" mode="widthFix" src="/static/clear.png"></image>
+          <view class="flex justify-center">
+            <switch v-if="globalQ" checked :color="'#006E1C'" style="transform:scale(0.6);" @change="globalQ=!globalQ"/>
+            <switch v-if="!globalQ" :color="'#006E1C'" style="transform:scale(0.6);" @change="globalQ=!globalQ"/>
+          </view>
         </view>
         <view class="w-full h-20"></view>
         <scroll-view scroll-y :show-scrollbar="false" style="height: calc(100% - 180rpx)">
           <view v-for="(dict,i) in _dicts" class="h-80 w-full pl-20 pr-20 pt-10 pb-10 flex items-center"
                 :key="dict.id"
                 :style="{'background-color': ((i+1)%2===0? '#D9E7C8':'#F8FAF0')}">
-            <view class="min-w-30vw pl-5 pr-10" @click="toCheck(dict.sort)">
+            <view class="min-w-30vw pl-5 pr-10" @click="toCheck(formatDate(dict.loadTime,'yyyy-MM-dd'), dict.sort)">
               <text style="font-size: 32rpx;">{{ dict.id }}</text>
             </view>
-            <view class="h-20 w-20 rd-20" :style="{'background-color': dict.sort===stat.sort? '#006E1C':'#EEF0E1'}"></view>
+            <view class="h-20 w-20 rd-20"
+                  :style="{'background-color': dict.sort===stat.sort? '#FFA600':'#EEF0E1'}"></view>
             <view class="pl-20 pr-10"
                   style="flex: 1;text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-size: 32rpx;">
               {{ meaning(dict) }}
