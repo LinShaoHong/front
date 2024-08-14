@@ -37,7 +37,7 @@ onShow(() => {
   });
   date.value = nav.data.value.date;
   if (isEmpty(date.value)) {
-    apiLoader.dict(date.value, null, userId)
+    apiLoader.dict(date.value, '', userId)
         .then((data) => {
           dict.value = data.value;
           loadMean();
@@ -80,6 +80,7 @@ const date = ref('');
 const width = ref(0);
 const height = ref(0);
 const scTop = ref(0);
+const oscTop = ref(0);
 const scId = ref('');
 const reload = () => {
   apiDict.byId(dict.value.id).then((data) => {
@@ -193,10 +194,10 @@ const moveDerivative = (op) => {
               const viewPort = res[0];
               const itemRect = res[1];
               console.log(res);
-              if (itemRect.bottom < 150 || itemRect.bottom > viewPort.height - 150) {
+              if (itemRect.top < 150 || itemRect.top > viewPort.height - 150) {
                 scId.value = 'derivative_' + moveWord.value;
                 nextTick(() => {
-                  delay(200).then(() => scTop.value = scTop.value - 250);
+                  delay(200).then(() => scTop.value = oscTop.value - 250);
                 });
               }
             });
@@ -235,6 +236,7 @@ const move = (i) => {
         loadMean();
         root.value = '';
         apiLoader.affix(dict.value.id).then(data => affix.value = data.value).catch((err) => networkError());
+        scTop.value = oscTop.value;
         nextTick(() => scTop.value = 0);
       })
       .catch(() => networkError());
@@ -402,10 +404,11 @@ watch(endX, (n, o) => {
       </view>
     </view>
     <scroll-view v-if="nav.data.value.show" class="w-full"
-                 scroll-y :show-scrollbar="false"
+                 scroll-y
+                 :show-scrollbar="false"
                  :scroll-into-view="scId"
                  :scroll-top="scTop"
-                 @scroll="e => scTop = e.detail.scrollTop"
+                 @scroll="e => oscTop = e.detail.scrollTop"
                  @touchstart="touchStart" @touchend="touchEnd"
                  style="height: 85%;">
       <view class="w-full flex flex-col items-center gap-10">
@@ -801,7 +804,7 @@ watch(endX, (n, o) => {
                 <text style="font-size: 32rpx; width: 70%">{{ differ.scenario }}</text>
               </view>
               <div style="font-size: 28rpx; color: #858585; display: inline-block">【例句】</div>
-              <view v-for="ex in differ.examples" class="w-full pl-10 pb-10 mt-10 flex flex-col gap-10">
+              <view v-for="(ex,i) in differ.examples" :key="'example'+i" class="w-full pl-10 pb-10 mt-10 flex flex-col gap-10">
                 <text class="pl-5" style="font-size: 32rpx; width: 90%;">{{ ex.sentence }}</text>
                 <view class="flex gap-10 pl-8">
                   <view class="w-5" style="background-color: #D5D5D5"></view>
@@ -859,7 +862,8 @@ watch(endX, (n, o) => {
             <view class="flex items-center pb-20 pr-20" style="border-bottom: 1px solid #D5D5D5;">
               <view class="font-bold w-120" style="color: #858585; display: inline-block">近义词</view>
               <view class="flex flex-wrap" style="flex:1">
-                <div v-for="synonym in dict.synAnts?.synonyms"
+                <div v-for="(synonym,i) in dict.synAnts?.synonyms"
+                     :key="'synonym'+i"
                      class="flex items-center"
                      style="font-size: 32rpx; margin-left: 20rpx;">
                   <text @click="search(synonym)" @longpress="copy(synonym)">{{ synonym }}</text>
@@ -871,7 +875,8 @@ watch(endX, (n, o) => {
             <view class="flex items-center pr-20">
               <view class="font-bold w-120" style="color: #858585; display: inline-block">反义词</view>
               <view class="flex flex-wrap" style="flex:1">
-                <div v-for="antonym in dict.synAnts?.antonyms"
+                <div v-for="(antonym,i) in dict.synAnts?.antonyms"
+                     :key="'antonym'+i"
                      class="flex items-center"
                      style="font-size: 32rpx; margin-left: 20rpx;">
                   <text @click="search(antonym)" @longpress="copy(antonym)">{{ antonym }}</text>
