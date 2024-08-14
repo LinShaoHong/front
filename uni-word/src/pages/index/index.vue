@@ -102,6 +102,7 @@ const root = ref('');
 const derivative = ref('');
 const moveWord = ref('');
 const showDerivativeMean = ref(false);
+const removeDerivativePrompt = ref(true);
 const derivativesMeans = ref({} as Map<string, boolean>);
 const loadPart = (part, attr?) => {
   if (!dict.value.loadState) {
@@ -125,13 +126,17 @@ const addDerivative = () => {
 const showRemove = ref(false);
 const _removePart = ref('');
 const _removePath = ref('');
-const onRemovePart = (part, path) => {
+const onRemovePart = (part, path, prompt?) => {
   if (!isEmpty(moveWord.value)) {
     return;
   }
   _removePart.value = part;
   _removePath.value = path;
-  showRemove.value = true;
+  if(prompt) {
+    showRemove.value = true;
+  } else {
+    removePart();
+  }
 };
 const remove = () => {
   modal('删除该单词？', '', true).then(() => {
@@ -226,6 +231,7 @@ const move = (i) => {
         scTop.value = 0;
         dict.value = data.value;
         showDerivativeMean.value = false;
+        removeDerivativePrompt.value = true;
         loadMean();
         root.value = '';
         apiLoader.affix(dict.value.id).then(data => affix.value = data.value).catch((err) => networkError());
@@ -259,7 +265,7 @@ const searchSrc = computed(() => {
   }
 });
 const search = (w) => {
-  if(isEmpty(moveWord)) {
+  if (isEmpty(moveWord.value)) {
     searchWord.value = w;
     showSearch.value = true;
     delay(350).then(() => searchHeight.value = height.value - 100);
@@ -277,6 +283,46 @@ const copyAffixAI = (txt) => {
     data: '分析下单词' + dict.value.id + "的词根词缀",
     showToast: false
   })
+};
+
+const inSub = (w) => {
+  if(w===dict.value.id) {
+    return true;
+  }
+  const ds = dict.value.derivatives;
+  let j = -1;
+  for (let i = 0; i < ds.length; i++) {
+    if (ds[i].word === dict.value.id) {
+      j = i;
+    }
+    if (j >= 0 && i > j) {
+      if (ds[i].index <= ds[j].index) {
+        return false;
+      } else if (ds[i].word === w) {
+        return true;
+      }
+    }
+  }
+  return false;
+};
+
+const subTotal = (w) => {
+  let r = 0;
+  const ds = dict.value.derivatives;
+  let j = -1;
+  for (let i = 0; i < ds.length; i++) {
+    if (ds[i].word === w) {
+      j = i;
+    }
+    if (j >= 0 && i > j) {
+      if (ds[i].index <= ds[j].index) {
+        break;
+      } else {
+        r += 1;
+      }
+    }
+  }
+  return r;
 };
 
 //----------- touch --------------
@@ -603,8 +649,24 @@ watch(endX, (n, o) => {
                      mode="widthFix"></image>
             </view>
           </view>
-          <view class="flex items-center">
-            <view class="w-330 h-50 pl-10 pr-20 rd-20 font-bold mb-10 flex items-center justify-between "
+          <view class="flex flex-col gap-10 mb-15">
+            <view class="pl-10 flex gap-10 items-center">
+              <text class="mr--25">释义:</text>
+              <view class="flex justify-center">
+                <switch v-if="showDerivativeMean" checked :color="'#D9E7C8'" style="transform:scale(0.6);"
+                        @change="() => {showDerivativeMean=false;derivativesMeans={};}"/>
+                <switch v-if="!showDerivativeMean" :color="'#D9E7C8'" style="transform:scale(0.5);"
+                        @change="showDerivativeMean=true"/>
+              </view>
+              <text class="mr--25">提示删除:</text>
+              <view class="flex justify-center">
+                <switch v-if="removeDerivativePrompt" checked :color="'#D9E7C8'" style="transform:scale(0.6);"
+                        @change="() => {removeDerivativePrompt=false;}"/>
+                <switch v-if="!removeDerivativePrompt" :color="'#D9E7C8'" style="transform:scale(0.5);"
+                        @change="removeDerivativePrompt=true"/>
+              </view>
+            </view>
+            <view class="w-400 h-50 pl-10 pr-20 rd-20 font-bold flex items-center justify-between "
                   style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
               <input class="text-left w-230"
                      :ignore-composition-event="false"
@@ -615,12 +677,6 @@ watch(endX, (n, o) => {
                      class="w-30 mr-20" mode="widthFix" src="/static/clear.png"></image>
               <uni-icons @click="addDerivative" type="plusempty" size="16" color="black"/>
             </view>
-            <view class="flex justify-center">
-              <switch v-if="showDerivativeMean" checked :color="'#D9E7C8'" style="transform:scale(0.6);"
-                      @change="() => {showDerivativeMean=false;derivativesMeans={};}"/>
-              <switch v-if="!showDerivativeMean" :color="'#D9E7C8'" style="transform:scale(0.6);"
-                      @change="showDerivativeMean=true"/>
-            </view>
           </view>
           <view class="w-full flex flex-col" style="width: calc(100% - 40rpx)">
             <view v-for="(derivative,i) in dict.derivatives" :key="'derivative'+i" :id="'derivative_'+derivative.word">
@@ -628,18 +684,18 @@ watch(endX, (n, o) => {
                 <view class="flex flex-col gap-2">
                   <text @click="search(derivative.word)"
                         @longpress="copy(derivative.word)"
-                        :class="[derivative.word.includes(dict.id) || moveWord===derivative.word? 'font-bold':'']"
+                        :class="[inSub(derivative.word) || moveWord===derivative.word? 'font-bold':'']"
                         :style="{'font-size': '32rpx', color: moveWord===derivative.word? '#006E1C':''}">
-                    {{ derivative.word }}
+                    {{ derivative.word + '（'+ subTotal(derivative.word) +'）' }}
                   </text>
                   <view v-if="showDerivativeMean || derivativesMeans[derivative.word]" class="pl-5 max-w-300"
                         style="color:#858585; font-size:26rpx;text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
                     {{ mean.data.value.ws[derivative.word] }}
                   </view>
                 </view>
-                <uni-icons @click="onRemovePart('derivatives',derivative.word)" type="close" size="20"
+                <uni-icons @click="onRemovePart('derivatives',derivative.word,removeDerivativePrompt)" type="close" size="20"
                            color="#ba1a1a"></uni-icons>
-                <uni-icons @click="onRemovePart('derivatives',derivative.word+':sub')" type="clear" size="20"
+                <uni-icons @click="onRemovePart('derivatives',derivative.word+':sub',removeDerivativePrompt)" type="clear" size="20"
                            color="#ba1a1a"></uni-icons>
                 <image
                     @click="() => {derivativesMeans[derivative.word]=!derivativesMeans[derivative.word];
@@ -658,7 +714,7 @@ watch(endX, (n, o) => {
                   <view class="flex flex-col gap-2">
                     <text @click="search(derivative.word)"
                           @longpress="copy(derivative.word)"
-                          :class="['ml-5', derivative.word.includes(dict.id) || moveWord===derivative.word? 'font-bold':'']"
+                          :class="['ml-5', inSub(derivative.word) || moveWord===derivative.word? 'font-bold':'']"
                           :style="{'font-size': '32rpx', color: moveWord===derivative.word? '#006E1C':''}">
                       {{ derivative.word }}
                     </text>
@@ -669,9 +725,9 @@ watch(endX, (n, o) => {
                       }}
                     </view>
                   </view>
-                  <uni-icons @click="onRemovePart('derivatives',derivative.word)" type="close" size="20"
+                  <uni-icons @click="onRemovePart('derivatives',derivative.word,removeDerivativePrompt)" type="close" size="20"
                              color="#ba1a1a"></uni-icons>
-                  <uni-icons @click="onRemovePart('derivatives',derivative.word+':sub')" type="clear" size="20"
+                  <uni-icons @click="onRemovePart('derivatives',derivative.word+':sub',removeDerivativePrompt)" type="clear" size="20"
                              color="#ba1a1a"></uni-icons>
                   <image
                       @click="() => {derivativesMeans[derivative.word]=!derivativesMeans[derivative.word];
@@ -872,15 +928,15 @@ watch(endX, (n, o) => {
   </view>
   <view v-if="nav.data.value.show"
         class="fixed bottom-750 right-60 w-100 h-100 rd-100 flex items-center justify-center"
-        @click="move(1)"
-        style="background-color: #D9E7C8; opacity: .5">
-    <uni-icons type="right" size="24" color="#858585"/>
-  </view>
-  <view v-if="nav.data.value.show"
-        class="fixed bottom-600 right-60 w-100 h-100 rd-100 flex items-center justify-center"
         @click="move(-1)"
         style="background-color: #D9E7C8; opacity: .5">
     <uni-icons type="left" size="24" color="#858585"/>
+  </view>
+  <view v-if="nav.data.value.show"
+        class="fixed bottom-600 right-60 w-100 h-100 rd-100 flex items-center justify-center"
+        @click="move(1)"
+        style="background-color: #D9E7C8; opacity: .5">
+    <uni-icons type="right" size="24" color="#858585"/>
   </view>
   <view v-if="nav.data.value.show && !dict.passed && !loading"
         class="fixed bottom-450 right-60 w-100 h-100 rd-100 flex items-center justify-center"
