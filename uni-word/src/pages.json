@@ -4,44 +4,50 @@
       "name": "index",
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "单词"
+        "navigationBarTitleText": "",
+        "navigationBarBackgroundColor": "#EEF0E1",
+        "navigationStyle": "custom"
       }
     },
     {
       "name": "read",
       "path": "pages/read/index",
       "style": {
-        "navigationBarTitleText": "阅读"
+        "navigationBarTitleText": "",
+        "navigationBarBackgroundColor": "#EEF0E1",
+        "navigationStyle": "custom"
       }
     },
     {
       "name": "search",
       "path": "pages/search/index",
       "style": {
-        "navigationBarTitleText": "搜索"
+        "navigationBarTitleText": "",
+        "navigationBarBackgroundColor": "#F8FAF0",
+        "navigationStyle": "custom"
       }
     },
     {
       "name": "tools",
       "path": "pages/tools/index",
       "style": {
-        "navigationBarTitleText": "工具"
+        "navigationBarTitleText": "",
+        "navigationBarBackgroundColor": "#EEF0E1",
+        "navigationStyle": "custom"
       }
     },
     {
       "name": "mine",
       "path": "pages/mine/index",
       "style": {
-        "navigationBarTitleText": "我的"
+        "navigationBarTitleText": "",
+        "navigationBarBackgroundColor": "#F8FAF0",
+        "navigationStyle": "custom"
       }
     }
   ],
   "subPackages": [],
   "globalStyle": {
-    "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "uni-app",
-    "navigationBarBackgroundColor": "#ffffff",
-    "backgroundColor": "#F2F3F5",
     "usingComponents": {
       "van-cell": "/wxcomponents/vant/cell/index",
       "van-cell-group": "/wxcomponents/vant/cell-group/index"

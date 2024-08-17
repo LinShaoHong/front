@@ -40,7 +40,6 @@ onShow(() => {
     apiLoader.dict(date.value, '', userId)
         .then((data) => {
           dict.value = data.value;
-          loadMean();
           date.value = formatDate(dict.value.loadTime, 'yyyy-MM-dd');
           nav.setDate(date.value);
           apiLoader.stat(date.value, userId)
@@ -59,7 +58,6 @@ onShow(() => {
           apiLoader.dict(date.value, stat.value.sort, userId)
               .then((data) => {
                 dict.value = data.value;
-                loadMean();
                 nav.setShow(true);
                 apiLoader.affix(dict.value.id).then(data => affix.value = data.value).catch((err) => networkError());
               })
@@ -85,7 +83,6 @@ const scId = ref('');
 const reload = () => {
   apiDict.byId(dict.value.id).then((data) => {
     dict.value = data.value;
-    loadMean();
     apiLoader.stat(date.value, userId)
         .then((data) => {
           stat.value = data.value;
@@ -94,17 +91,7 @@ const reload = () => {
     networkError();
   });
 }
-const loadMean = () => {
-  dict.value.derivatives.forEach(d => {
-    mean.fetch(d.word);
-  });
-};
 const root = ref('');
-const derivative = ref('');
-const moveWord = ref('');
-const showDerivativeMean = ref(false);
-const removeDerivativePrompt = ref(true);
-const derivativesMeans = ref({} as Map<string, boolean>);
 const loadPart = (part, attr?) => {
   if (!dict.value.loadState) {
     dict.value.loadState = {} as any;
@@ -117,23 +104,18 @@ const loadPart = (part, attr?) => {
     reload();
   }).catch(() => networkError());
 }
-const addDerivative = () => {
-  if (!isEmpty(derivative.value)) {
-    apiLoader.addDerivative(dict.value.id, moveWord.value, derivative.value).then(() => {
-      reload();
-    }).catch(() => networkError());
-  }
-};
 const showRemove = ref(false);
 const _removePart = ref('');
 const _removePath = ref('');
-const onRemovePart = (part, path, prompt?) => {
+const _removeAttr = ref({});
+const onRemovePart = (part, path, prompt?, attr?) => {
   if (!isEmpty(moveWord.value)) {
     return;
   }
   _removePart.value = part;
   _removePath.value = path;
-  if(prompt) {
+  _removeAttr.value = attr;
+  if (prompt === undefined || prompt) {
     showRemove.value = true;
   } else {
     removePart();
@@ -154,11 +136,11 @@ const remove = () => {
                 }).catch(() => networkError());
             apiLoader.affix(dict.value.id).then(data => affix.value = data.value).catch((err) => networkError());
           }).catch(() => networkError());
-    }).catch((err) => console.log(err));
+    }).catch(() => networkError());
   });
 };
 const removePart = () => {
-  apiLoader.removePart(dict.value.id, _removePart.value, _removePath.value, userId)
+  apiLoader.removePart(dict.value.id, _removePart.value, _removePath.value, _removeAttr.value, userId)
       .then(() => {
         showRemove.value = false;
         reload();
@@ -180,34 +162,6 @@ const meaningBlur = () => {
       .then(() => reload())
       .catch(() => networkError());
 };
-const moveDerivative = (op) => {
-  apiLoader.moveDerivative(dict.value.id, moveWord.value, op)
-      .then(() => {
-        apiDict.byId(dict.value.id).then((data) => {
-          dict.value = data.value;
-          scId.value = 'derivative_none';
-          nextTick(() => {
-            const query = uni.createSelectorQuery();
-            query.selectViewport().boundingClientRect();
-            query.select(`#derivative_${ moveWord.value }`).boundingClientRect();
-            query.exec(res => {
-              const viewPort = res[0];
-              const itemRect = res[1];
-              console.log(res);
-              if (itemRect.top < 150 || itemRect.top > viewPort.height - 150) {
-                scId.value = 'derivative_' + moveWord.value;
-                nextTick(() => {
-                  delay(200).then(() => scTop.value = oscTop.value - 250);
-                });
-              }
-            });
-          });
-          loadMean();
-        }).catch(() => {
-          networkError();
-        });
-      }).catch(() => networkError());
-}
 const loading = computed(() => {
   let ret = false;
   for (const key in dict.value.loadState) {
@@ -233,7 +187,6 @@ const move = (i) => {
         dict.value = data.value;
         showDerivativeMean.value = false;
         removeDerivativePrompt.value = true;
-        loadMean();
         root.value = '';
         apiLoader.affix(dict.value.id).then(data => affix.value = data.value).catch((err) => networkError());
         scTop.value = oscTop.value;
@@ -241,7 +194,165 @@ const move = (i) => {
       })
       .catch(() => networkError());
 };
-//-------------- popup ----------------
+
+//----------------- derivatives ----------------
+const trees = ref([] as Word.Tree[]);
+const tree = ref({} as Word.Tree | null);
+const derivative = ref('');
+const moveWord = ref('');
+const showDerivativeMean = ref(false);
+const removeDerivativePrompt = ref(true);
+const derivativesMeans = ref({} as Map<string, boolean>);
+
+watch(dict, (n, o) => {
+  const arr = n?.struct.parts.filter(d => d.root);
+  if (!isEmpty(arr)) {
+    const root = arr[0].part;
+    apiLoader.trees(root).then(data => {
+      trees.value = data.values;
+      apiLoader.findTree(dict.value.id).then(data => {
+        tree.value = isEmpty(data.values) ? null : data.values[0];
+        if (isEmpty(tree.value) && !isEmpty(trees.value)) {
+          tree.value = trees.value[0];
+        }
+        data.values.forEach(v => {
+          if (trees.value.filter(t => t.id === v.id).length === 0) {
+            trees.value.push(v);
+          }
+        });
+      }).catch(() => networkError());
+    }).catch(() => networkError());
+  }
+});
+
+watch(tree, (n, o) => {
+  tree.value?.derivatives.forEach(d => {
+    mean.fetch(d.word);
+  });
+});
+
+const createTreeLoading = ref(false);
+const createTree = () => {
+  createTreeLoading.value = true;
+  apiLoader.createTree(dict.value.id).then(data => {
+    tree.value = data.value;
+    const arr = dict.value.struct?.parts.filter(d => d.root);
+    if (!isEmpty(arr)) {
+      const root = arr[0].part;
+      apiLoader.trees(root).then(data => {
+        trees.value = data.values;
+        apiLoader.findTree(dict.value.id).then(data => {
+          data.values.forEach(v => {
+            if (trees.value.filter(t => t.id === v.id).length === 0) {
+              trees.value.push(v);
+            }
+          });
+          createTreeLoading.value = false;
+        }).catch(() => networkError());
+      }).catch(() => {
+        createTreeLoading.value = false;
+        networkError();
+      });
+    }
+  }).catch(() => networkError());
+};
+
+const mergeTreeLoading = ref(false);
+const mergeTree = (treeId) => {
+  mergeTreeLoading.value = true;
+  apiLoader.mergeTree(treeId, dict.value.id).then(data => {
+    tree.value = data.value;
+    mergeTreeLoading.value = false;
+  }).catch(() => {
+    mergeTreeLoading.value = false;
+    networkError();
+  });
+};
+
+const addDerivative = () => {
+  if (!isEmpty(derivative.value)) {
+    apiLoader.addDerivative(dict.value.id, moveWord.value, derivative.value).then(() => {
+      reload();
+    }).catch(() => networkError());
+  }
+};
+
+const moveDerivative = (op) => {
+  if (tree.value) {
+    apiLoader.moveDerivative(tree.value.id, tree.value.version, moveWord.value, op)
+        .then(data => {
+          tree.value = data.value;
+        }).catch(() => networkError());
+  }
+};
+
+const inSub = (w) => {
+  if (w === dict.value.id) {
+    return true;
+  }
+  if (tree.value) {
+    const ds = tree.value.derivatives;
+    let j = -1;
+    for (let i = 0; i < ds.length; i++) {
+      if (ds[i].word === dict.value.id) {
+        j = i;
+      }
+      if (j >= 0 && i > j) {
+        if (ds[i].index <= ds[j].index) {
+          return false;
+        } else if (ds[i].word === w) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+};
+
+const subTotal = (w) => {
+  let r = 0;
+  if (tree.value) {
+    const ds = tree.value.derivatives;
+    let j = -1;
+    for (let i = 0; i < ds.length; i++) {
+      if (ds[i].word === w) {
+        j = i;
+      }
+      if (j >= 0 && i > j) {
+        if (ds[i].index <= ds[j].index) {
+          break;
+        } else {
+          r += 1;
+        }
+      }
+    }
+  }
+  return r;
+};
+
+const showEditTree = ref(false);
+const _editTreeId = ref('');
+const _editTreeVersion = ref(0);
+const _editTreeRootDesc = ref('');
+const onEditTree = (t) => {
+  _editTreeId.value = t.id;
+  _editTreeVersion.value = t.version;
+  _editTreeRootDesc.value = t.rootDesc;
+  showEditTree.value = true;
+};
+const editTreeRootDesc = () => {
+  apiLoader.editTreeDesc(_editTreeId.value, _editTreeRootDesc.value, _editTreeVersion.value)
+      .then(() => {
+        showEditTree.value = false;
+        const i = trees.value.findIndex(v => v.id === _editTreeId.value);
+        if (i >= 0) {
+          trees.value[i].rootDesc = _editTreeRootDesc.value;
+        }
+      })
+      .catch(() => networkError());
+};
+
+//-------------- other ----------------
 const showSearch = ref(false);
 const searchHeight = ref(0);
 const searchType = ref(1);
@@ -285,46 +396,6 @@ const copyAffixAI = (txt) => {
     data: '分析下单词' + dict.value.id + "的词根词缀",
     showToast: false
   })
-};
-
-const inSub = (w) => {
-  if(w===dict.value.id) {
-    return true;
-  }
-  const ds = dict.value.derivatives;
-  let j = -1;
-  for (let i = 0; i < ds.length; i++) {
-    if (ds[i].word === dict.value.id) {
-      j = i;
-    }
-    if (j >= 0 && i > j) {
-      if (ds[i].index <= ds[j].index) {
-        return false;
-      } else if (ds[i].word === w) {
-        return true;
-      }
-    }
-  }
-  return false;
-};
-
-const subTotal = (w) => {
-  let r = 0;
-  const ds = dict.value.derivatives;
-  let j = -1;
-  for (let i = 0; i < ds.length; i++) {
-    if (ds[i].word === w) {
-      j = i;
-    }
-    if (j >= 0 && i > j) {
-      if (ds[i].index <= ds[j].index) {
-        break;
-      } else {
-        r += 1;
-      }
-    }
-  }
-  return r;
 };
 
 //----------- touch --------------
@@ -571,7 +642,7 @@ watch(endX, (n, o) => {
                      @click="loadPart('struct',{root: root})"
                      mode="widthFix"></image>
             </view>
-            <uni-icons @click="onRemovePart('struct','')" type="close" size="20"
+            <uni-icons @click="onRemovePart('struct','')" type="trash" size="20"
                        color="#ba1a1a"></uni-icons>
           </view>
           <view class="w-200 h-50 rd-20 font-bold mb-10 flex items-center justify-center"
@@ -645,15 +716,57 @@ watch(endX, (n, o) => {
                   style="color: white; background-color: black; font-size: 24rpx;">
               <text>派生串记</text>
             </view>
-            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center "
-                  @click="loadPart('derivatives')"
-                  style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
-              <image :src="dict.loadState?.derivativesLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
-                     mode="widthFix"></image>
-            </view>
+            <!--            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center "-->
+            <!--                  @click="loadPart('derivatives')"-->
+            <!--                  style="color: black; background-color: #D9E7C8; font-size: 24rpx;">-->
+            <!--              <image :src="dict.loadState?.derivativesLoading? '/static/loading.gif':'/static/get.png'" class="w-25"-->
+            <!--                     mode="widthFix"></image>-->
+            <!--            </view>-->
           </view>
           <view class="flex flex-col gap-10 mb-15">
-            <view class="pl-10 flex gap-10 items-center">
+            <view class="w-400 h-50 pl-10 pr-10 rd-20 font-bold flex items-center justify-between "
+                  style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
+              <input class="text-left w-230"
+                     :ignore-composition-event="false"
+                     style="font-size: 28rpx; font-weight: bold;"
+                     v-model="derivative"/>
+              <image v-if="!isEmpty(derivative)"
+                     @click="derivative=''"
+                     class="w-30 mr-20" mode="widthFix" src="/static/clear.png"></image>
+              <view class="w-40 h-40 rd-50 flex items-center justify-center"
+                    @click="addDerivative"
+                    style="border: 1px solid black">
+                <uni-icons type="plusempty" size="16" color="black"/>
+              </view>
+            </view>
+            <text v-if="!isEmpty(trees)">已有词根：</text>
+            <view v-for="(t,i) in trees" :key="'tree'+i"
+                  @click="tree=t"
+                  class="h-50 flex items-center gap-15">
+              <view class="w-400 pl-10 pr-10 h-full flex gap-10 items-center rd-20"
+                    :style="{'background-color': t.id===tree?.id? '#006E1C':'#D9E7C8'}">
+                <text class="font-bold" :style="{color: t.id===tree?.id? 'white':'black'}">{{ t.root }}</text>
+                <text class="text_wrap flex-1"
+                      :style="{color: t.id===tree?.id? 'white':'black'}">{{ t.rootDesc }}
+                </text>
+                <view class="w-40 h-40 rd-50 flex items-center justify-center font-bold"
+                      :style="{border: t.id===tree?.id? '1px solid white':'1px solid black'}">
+                  <uni-icons v-if="!mergeTreeLoading" @click="mergeTree(t.id)" type="plusempty" size="16"
+                             :color="t.id===tree?.id? 'white':'black'"/>
+                  <image v-if="mergeTreeLoading" src="/static/loading.gif" class="w-25" mode="widthFix"></image>
+                </view>
+              </view>
+              <image src="/static/edit.png" class="w-30" mode="widthFix" @click="onEditTree(t)"></image>
+              <uni-icons @click="onRemovePart('tree',t.id)" type="trash" size="20"
+                         color="#ba1a1a"></uni-icons>
+            </view>
+            <view class="h-50 w-400 rd-20 flex items-center justify-center mt-10"
+                  @click="createTree"
+                  style="background-color: #004210">
+              <text v-if="!createTreeLoading" style="color:white">创建新的词根树</text>
+              <image v-if="createTreeLoading" src="/static/loading.gif" class="w-25" mode="widthFix"></image>
+            </view>
+            <view class="flex gap-10 items-center">
               <text class="mr--25">释义:</text>
               <view class="flex justify-center">
                 <switch v-if="showDerivativeMean" checked :color="'#D9E7C8'" style="transform:scale(0.6);"
@@ -669,37 +782,31 @@ watch(endX, (n, o) => {
                         @change="removeDerivativePrompt=true"/>
               </view>
             </view>
-            <view class="w-400 h-50 pl-10 pr-20 rd-20 font-bold flex items-center justify-between "
-                  style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
-              <input class="text-left w-230"
-                     :ignore-composition-event="false"
-                     style="font-size: 28rpx; font-weight: bold;"
-                     v-model="derivative"/>
-              <image v-if="!isEmpty(derivative)"
-                     @click="derivative=''"
-                     class="w-30 mr-20" mode="widthFix" src="/static/clear.png"></image>
-              <uni-icons @click="addDerivative" type="plusempty" size="16" color="black"/>
-            </view>
           </view>
-          <view class="w-full flex flex-col" style="width: calc(100% - 40rpx)">
-            <view v-for="(derivative,i) in dict.derivatives" :key="'derivative'+i" :id="'derivative_'+derivative.word">
+          <view class="w-full flex flex-col mt-10 pl-10" style="width: calc(100% - 40rpx)">
+            <view v-for="(derivative,i) in tree?.derivatives" :key="'derivative'+i" :id="'derivative_'+derivative.word">
               <view v-if="derivative.index===0" class="flex items-center gap-10">
                 <view class="flex flex-col gap-2">
                   <text @click="search(derivative.word)"
                         @longpress="copy(derivative.word)"
                         :class="[inSub(derivative.word) || moveWord===derivative.word? 'font-bold':'']"
                         :style="{'font-size': '32rpx', color: moveWord===derivative.word? '#006E1C':''}">
-                    {{ derivative.word + '（'+ subTotal(derivative.word) +'）' }}
+                    {{ derivative.word + '（' + subTotal(derivative.word) + '）' }}
                   </text>
                   <view v-if="showDerivativeMean || derivativesMeans[derivative.word]" class="pl-5 max-w-300"
                         style="color:#858585; font-size:26rpx;text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
                     {{ mean.data.value.ws[derivative.word] }}
                   </view>
                 </view>
-                <uni-icons @click="onRemovePart('derivatives',derivative.word,removeDerivativePrompt)" type="close" size="20"
-                           color="#ba1a1a"></uni-icons>
-                <uni-icons @click="onRemovePart('derivatives',derivative.word+':sub',removeDerivativePrompt)" type="clear" size="20"
-                           color="#ba1a1a"></uni-icons>
+                <uni-icons
+                    @click="onRemovePart('derivatives',derivative.word,removeDerivativePrompt,{treeId:tree.id,version:tree.version})"
+                    type="close"
+                    size="20"
+                    color="#ba1a1a"></uni-icons>
+                <uni-icons
+                    @click="onRemovePart('derivatives',derivative.word+':sub',removeDerivativePrompt,{treeId:tree.id,version:tree.version})"
+                    type="clear" size="20"
+                    color="#ba1a1a"></uni-icons>
                 <image
                     @click="() => {derivativesMeans[derivative.word]=!derivativesMeans[derivative.word];
                       if(moveWord===derivative.word){moveWord=''} else
@@ -728,10 +835,15 @@ watch(endX, (n, o) => {
                       }}
                     </view>
                   </view>
-                  <uni-icons @click="onRemovePart('derivatives',derivative.word,removeDerivativePrompt)" type="close" size="20"
-                             color="#ba1a1a"></uni-icons>
-                  <uni-icons @click="onRemovePart('derivatives',derivative.word+':sub',removeDerivativePrompt)" type="clear" size="20"
-                             color="#ba1a1a"></uni-icons>
+                  <uni-icons
+                      @click="onRemovePart('derivatives',derivative.word,removeDerivativePrompt,{treeId:tree.id,version:tree.version})"
+                      type="close"
+                      size="20"
+                      color="#ba1a1a"></uni-icons>
+                  <uni-icons
+                      @click="onRemovePart('derivatives',derivative.word+':sub',removeDerivativePrompt,{treeId:tree.id,version:tree.version})"
+                      type="clear" size="20"
+                      color="#ba1a1a"></uni-icons>
                   <image
                       @click="() => {derivativesMeans[derivative.word]=!derivativesMeans[derivative.word];
                         if(moveWord===derivative.word){moveWord=''} else
@@ -804,7 +916,8 @@ watch(endX, (n, o) => {
                 <text style="font-size: 32rpx; width: 70%">{{ differ.scenario }}</text>
               </view>
               <div style="font-size: 28rpx; color: #858585; display: inline-block">【例句】</div>
-              <view v-for="(ex,i) in differ.examples" :key="'example'+i" class="w-full pl-10 pb-10 mt-10 flex flex-col gap-10">
+              <view v-for="(ex,i) in differ.examples" :key="'example'+i"
+                    class="w-full pl-10 pb-10 mt-10 flex flex-col gap-10">
                 <text class="pl-5" style="font-size: 32rpx; width: 90%;">{{ ex.sentence }}</text>
                 <view class="flex gap-10 pl-8">
                   <view class="w-5" style="background-color: #D5D5D5"></view>
@@ -1005,7 +1118,22 @@ watch(endX, (n, o) => {
       </text>
     </view>
   </Popup>
+  <Popup :show="showEditTree" position="center"
+         @clickMask="showEditTree=false">
+    <view class="w-80vw pl-40 pr-40 pt-40 rd-30 flex items-center justify-center" style="background-color: #E8EBDA">
+      <textarea v-model="_editTreeRootDesc"/>
+      <text @click="editTreeRootDesc" class="absolute bottom-30 right-60 font-bold"
+            style="color:#3F6900; font-size: 32rpx;">
+        确定
+      </text>
+    </view>
+  </Popup>
 </template>
 
 <style scoped lang="scss">
+.text_wrap {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
 </style>

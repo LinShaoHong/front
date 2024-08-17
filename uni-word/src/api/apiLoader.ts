@@ -13,10 +13,11 @@ const apiLoader = {
     userId: userId
   }),
 
-  removePart: (id: string, part: string, path: string, userId: number) => http.get<Word.Dict>('/loader/remove/part', {
+  removePart: (id: string, part: string, path: string, attr: any, userId: number) => http.post<Word.Dict>('/loader/remove/part', {
     word: id,
     part: part,
     path: path,
+    attr: attr,
     userId: userId
   }),
 
@@ -32,8 +33,9 @@ const apiLoader = {
     meaning: meaning
   }),
 
-  moveDerivative: (id: string, word: string, op: string) => http.get<any>('/loader/move/derivative', {
+  moveDerivative: (id: string, version: number, word: string, op: string) => http.get<any>('/loader/move/derivative', {
     id: id,
+    version: version,
     word: word,
     op: op
   }),
@@ -62,6 +64,24 @@ const apiLoader = {
 
   affix: (id: string) => http.get<any>('/loader/affix', {
     word: id
+  }),
+
+  trees: (root: string) => http.get<Word.Tree>('/loader/trees', {
+    root: root
+  }),
+
+  findTree: (word: string) => http.get<Word.Tree>('/loader/findTree', {
+    word: word
+  }),
+
+  createTree: (word: string) => http.get<Word.Tree>('/loader/createTree', { word: word }),
+
+  mergeTree: (treeId: string, word: string) => http.get<Word.Tree>('/loader/mergeTree', { treeId: treeId, word: word }),
+
+  editTreeDesc: (treeId: string, desc: string, version: number) => http.get<Word.Tree>('/loader/editTreeDesc', {
+    treeId: treeId,
+    desc: desc,
+    version: version
   })
 };
 

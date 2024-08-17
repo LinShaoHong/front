@@ -11,4 +11,10 @@ onHide(() => {
 });
 </script>
 
-<style></style>
+<style>
+/* #ifdef H5 */
+.navigation-bar {
+  display: none;
+}
+/* #endif */
+</style>

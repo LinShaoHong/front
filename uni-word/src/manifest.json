@@ -7,14 +7,14 @@
     "transformPx" : false,
     /* 5+App特有相关 */
     "app-plus" : {
-        "compatible":{
-            "ignoreVersion": true
+        "compatible" : {
+            "ignoreVersion" : true
         },
         "usingComponents" : true,
         "nvueStyleCompiler" : "uni-app",
         "compilerVersion" : 3,
-        "softinput": {
-            "mode": "adjustResize"
+        "softinput" : {
+            "mode" : "adjustResize"
         },
         "splashscreen" : {
             "alwaysShowBeforeRender" : true,
@@ -75,5 +75,10 @@
     "uniStatistics" : {
         "enable" : false
     },
-    "vueVersion" : "3"
+    "vueVersion" : "3",
+    "h5" : {
+        "router" : {
+            "base" : "/h5/word/web/"
+        }
+    }
 }

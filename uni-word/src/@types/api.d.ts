@@ -82,6 +82,17 @@ declare namespace Word {
     passTime: any
     sort: number
   }
+
+  interface Tree {
+    id: string
+    root: string
+    rootDesc: string
+    version: number
+    derivatives: [{
+      word: string
+      index: number
+    }]
+  }
 }
 
 declare namespace Loader {
