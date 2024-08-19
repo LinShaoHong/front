@@ -49,15 +49,7 @@ declare namespace Word {
       word: string
       index: number
     }]
-    differs: [{
-      word: string
-      definition: string
-      scenario: string
-      examples: [{
-        sentence: string
-        translation: string
-      }]
-    }]
+    differs: []
     phrases: [{
       en: string,
       zh: string
@@ -91,6 +83,18 @@ declare namespace Word {
     derivatives: [{
       word: string
       index: number
+      version: number
+      merged: boolean
+    }]
+  }
+
+  interface Diff {
+    id: string
+    definition: string
+    scenario: string
+    examples: [{
+      sentence: string
+      translation: string
     }]
   }
 }

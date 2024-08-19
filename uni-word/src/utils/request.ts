@@ -31,7 +31,7 @@ export function request(
     uni.request({
       url: url.startsWith('http') ? url : apiBaseUrl + url,
       method,
-      timeout: 20000,
+      timeout: 200000,
       header: {
         'content-type': 'application/json; charset=utf-8'
       },

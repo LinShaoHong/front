@@ -195,9 +195,15 @@ const move = (i) => {
       .catch(() => networkError());
 };
 
+//----------------- differs ----------------
+const differs = ref([] as Word.Diff[]);
+watch(dict, (n, o) => {
+  apiLoader.differs(dict.value.id).then(data => differs.value = data.values).catch(() => networkError());
+});
+
 //----------------- derivatives ----------------
 const trees = ref([] as Word.Tree[]);
-const tree = ref({} as Word.Tree | null);
+const tree = ref({} as Word.Tree);
 const derivative = ref('');
 const moveWord = ref('');
 const showDerivativeMean = ref(false);
@@ -205,24 +211,7 @@ const removeDerivativePrompt = ref(true);
 const derivativesMeans = ref({} as Map<string, boolean>);
 
 watch(dict, (n, o) => {
-  const arr = n?.struct.parts.filter(d => d.root);
-  if (!isEmpty(arr)) {
-    const root = arr[0].part;
-    apiLoader.trees(root).then(data => {
-      trees.value = data.values;
-      apiLoader.findTree(dict.value.id).then(data => {
-        tree.value = isEmpty(data.values) ? null : data.values[0];
-        if (isEmpty(tree.value) && !isEmpty(trees.value)) {
-          tree.value = trees.value[0];
-        }
-        data.values.forEach(v => {
-          if (trees.value.filter(t => t.id === v.id).length === 0) {
-            trees.value.push(v);
-          }
-        });
-      }).catch(() => networkError());
-    }).catch(() => networkError());
-  }
+  reloadTree();
 });
 
 watch(tree, (n, o) => {
@@ -231,37 +220,71 @@ watch(tree, (n, o) => {
   });
 });
 
-const createTreeLoading = ref(false);
-const createTree = () => {
-  createTreeLoading.value = true;
-  apiLoader.createTree(dict.value.id).then(data => {
-    tree.value = data.value;
-    const arr = dict.value.struct?.parts.filter(d => d.root);
-    if (!isEmpty(arr)) {
-      const root = arr[0].part;
-      apiLoader.trees(root).then(data => {
-        trees.value = data.values;
-        apiLoader.findTree(dict.value.id).then(data => {
-          data.values.forEach(v => {
-            if (trees.value.filter(t => t.id === v.id).length === 0) {
-              trees.value.push(v);
-            }
-          });
-          createTreeLoading.value = false;
-        }).catch(() => networkError());
-      }).catch(() => {
-        createTreeLoading.value = false;
-        networkError();
-      });
+const reloadTreeLoading = ref(false);
+const reloadTree = () => {
+  const ps: Promise<any>[] = [];
+  ps.push(new Promise<any>((resolve, reject) => {
+    apiLoader.findTree(dict.value.id).then(d => {
+      tree.value = d.values[0];
+      resolve(d);
+    }).catch((err) => reject(err));
+  }));
+  let _trees: Word.Tree[] = [];
+  dict.value.struct?.parts.filter(d => d.root).forEach(_d => {
+    ps.push(new Promise<any>((resolve, reject) => {
+      apiLoader.trees(_d.part).then(data => {
+        data.values.forEach(v => {
+          if (_trees.filter(t => t.id === v.id).length === 0) {
+            _trees.push(v);
+          }
+        });
+        resolve(data);
+      }).catch((err) => reject(err));
+    }));
+  });
+  Promise.all(ps).then((rs) => {
+    rs[0].values.forEach(v => {
+      if (_trees.filter(t => t.id === v.id).length === 0) {
+        _trees.push(v);
+      }
+    });
+    if (isEmpty(tree.value) && !isEmpty(_trees)) {
+      tree.value = _trees[0];
     }
-  }).catch(() => networkError());
+    trees.value = _trees;
+    reloadTreeLoading.value = false;
+  }).catch((err) => {
+    reloadTreeLoading.value = false;
+    networkError();
+  })
+};
+
+const createTree = () => {
+  if (reloadTreeLoading.value) {
+    return;
+  }
+  reloadTreeLoading.value = true;
+  apiLoader.createTree(dict.value.id).then(() => {
+    reloadTree();
+  }).catch((err) => {
+    networkError();
+  });
 };
 
 const mergeTreeLoading = ref(false);
+const mergedWords = ref([] as any);
 const mergeTree = (treeId) => {
+  if (mergeTreeLoading.value) {
+    return;
+  }
   mergeTreeLoading.value = true;
   apiLoader.mergeTree(treeId, dict.value.id).then(data => {
     tree.value = data.value;
+    const i = trees.value.map(v => v.id).indexOf(tree.value.id);
+    if (i >= 0) {
+      trees.value[i] = tree.value;
+    }
+    mergedWords.value = tree.value.derivatives.filter(v => v.merged && v.version === tree.value.version).map(v => v.word);
     mergeTreeLoading.value = false;
   }).catch(() => {
     mergeTreeLoading.value = false;
@@ -270,9 +293,13 @@ const mergeTree = (treeId) => {
 };
 
 const addDerivative = () => {
-  if (!isEmpty(derivative.value)) {
-    apiLoader.addDerivative(dict.value.id, moveWord.value, derivative.value).then(() => {
-      reload();
+  if (!isEmpty(derivative.value) && tree.value) {
+    apiLoader.addDerivative(tree.value.id, moveWord.value, derivative.value, tree.value.version).then((data) => {
+      tree.value = data.value;
+      const i = trees.value.map(v => v.id).indexOf(tree.value.id);
+      if (i >= 0) {
+        trees.value[i] = tree.value;
+      }
     }).catch(() => networkError());
   }
 };
@@ -282,8 +309,16 @@ const moveDerivative = (op) => {
     apiLoader.moveDerivative(tree.value.id, tree.value.version, moveWord.value, op)
         .then(data => {
           tree.value = data.value;
+          const i = trees.value.map(v => v.id).indexOf(tree.value.id);
+          if (i >= 0) {
+            trees.value[i] = tree.value;
+          }
         }).catch(() => networkError());
   }
+};
+
+const merged = (d) => {
+  return mergedWords.value.includes(d.word) || (d.merged && d.version === tree.value?.version);
 };
 
 const inSub = (w) => {
@@ -348,8 +383,7 @@ const editTreeRootDesc = () => {
         if (i >= 0) {
           trees.value[i].rootDesc = _editTreeRootDesc.value;
         }
-      })
-      .catch(() => networkError());
+      }).catch(() => networkError());
 };
 
 //-------------- other ----------------
@@ -751,9 +785,10 @@ watch(endX, (n, o) => {
                 </text>
                 <view class="w-40 h-40 rd-50 flex items-center justify-center font-bold"
                       :style="{border: t.id===tree?.id? '1px solid white':'1px solid black'}">
-                  <uni-icons v-if="!mergeTreeLoading" @click="mergeTree(t.id)" type="plusempty" size="16"
+                  <image v-if="mergeTreeLoading && t.id===tree.id" src="/static/loading.gif" class="w-25"
+                         mode="widthFix"></image>
+                  <uni-icons v-else @click="mergeTree(t.id)" type="plusempty" size="16"
                              :color="t.id===tree?.id? 'white':'black'"/>
-                  <image v-if="mergeTreeLoading" src="/static/loading.gif" class="w-25" mode="widthFix"></image>
                 </view>
               </view>
               <image src="/static/edit.png" class="w-30" mode="widthFix" @click="onEditTree(t)"></image>
@@ -763,8 +798,8 @@ watch(endX, (n, o) => {
             <view class="h-50 w-400 rd-20 flex items-center justify-center mt-10"
                   @click="createTree"
                   style="background-color: #004210">
-              <text v-if="!createTreeLoading" style="color:white">创建新的词根树</text>
-              <image v-if="createTreeLoading" src="/static/loading.gif" class="w-25" mode="widthFix"></image>
+              <text v-if="!reloadTreeLoading" style="color:white">创建新的词根树</text>
+              <image v-if="reloadTreeLoading" src="/static/loading.gif" class="w-25" mode="widthFix"></image>
             </view>
             <view class="flex gap-10 items-center">
               <text class="mr--25">释义:</text>
@@ -789,8 +824,8 @@ watch(endX, (n, o) => {
                 <view class="flex flex-col gap-2">
                   <text @click="search(derivative.word)"
                         @longpress="copy(derivative.word)"
-                        :class="[inSub(derivative.word) || moveWord===derivative.word? 'font-bold':'']"
-                        :style="{'font-size': '32rpx', color: moveWord===derivative.word? '#006E1C':''}">
+                        :class="[inSub(derivative.word) || moveWord===derivative.word || merged(derivative)? 'font-bold':'']"
+                        :style="{'font-size': '32rpx', color: moveWord===derivative.word? '#006E1C':(merged(derivative)? '#00658C':'')}">
                     {{ derivative.word + '（' + subTotal(derivative.word) + '）' }}
                   </text>
                   <view v-if="showDerivativeMean || derivativesMeans[derivative.word]" class="pl-5 max-w-300"
@@ -816,7 +851,7 @@ watch(endX, (n, o) => {
               <view v-if="derivative.index>0"
                     :class="['relative flex items-center left-10', showDerivativeMean? 'h-80':'h-60']">
                 <view
-                    :class="['absolute top-0', i===dict.derivatives.length-1? (showDerivativeMean? 'h-40':'h-30'):(showDerivativeMean? 'h-80':'h-60')]"
+                    :class="['absolute top-0', i===tree?.derivatives.length-1? (showDerivativeMean? 'h-40':'h-30'):(showDerivativeMean? 'h-80':'h-60')]"
                     style="border-left: 1px solid #D5D5D5"></view>
                 <view v-for="i in derivative.index" :key="'di'+i" class="w-50"
                       style="border-top: 1px solid #D5D5D5"></view>
@@ -824,8 +859,8 @@ watch(endX, (n, o) => {
                   <view class="flex flex-col gap-2">
                     <text @click="search(derivative.word)"
                           @longpress="copy(derivative.word)"
-                          :class="['ml-5', inSub(derivative.word) || moveWord===derivative.word? 'font-bold':'']"
-                          :style="{'font-size': '32rpx', color: moveWord===derivative.word? '#006E1C':''}">
+                          :class="['ml-5', inSub(derivative.word) || moveWord===derivative.word || merged(derivative)? 'font-bold':'']"
+                          :style="{'font-size': '32rpx', color: moveWord===derivative.word? '#006E1C':(merged(derivative)? '#00658C':'')}">
                       {{ derivative.word }}
                     </text>
                     <view v-if="showDerivativeMean || derivativesMeans[derivative.word]" class="pl-5 max-w-300"
@@ -899,12 +934,12 @@ watch(endX, (n, o) => {
             </view>
           </view>
           <view class="flex flex-col gap-25">
-            <view v-for="differ in dict.differs"
+            <view v-for="differ in differs"
                   class="flex flex-col gap-10"
-                  :key="'differ'+differ.word">
+                  :key="'differ'+differ.id">
               <view class="flex gap-10 pl-12">
-                <text @click="search(differ.word)" class="font-bold" style="font-size: 32rpx;">{{ differ.word }}</text>
-                <uni-icons @click="onRemovePart('differs',differ.word)" type="close" size="20"
+                <text @click="search(differ.id)" class="font-bold" style="font-size: 32rpx;">{{ differ.id }}</text>
+                <uni-icons @click="onRemovePart('differs',differ.id)" type="close" size="20"
                            color="#ba1a1a"></uni-icons>
               </view>
               <view class="flex gap-10">

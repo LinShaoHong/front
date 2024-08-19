@@ -40,10 +40,11 @@ const apiLoader = {
     op: op
   }),
 
-  addDerivative: (id: string, word: string, input: string) => http.get<any>('/loader/add/derivative', {
+  addDerivative: (id: string, word: string, input: string, version: number) => http.get<Word.Tree>('/loader/add/derivative', {
     id: id,
     word: word,
-    input: input
+    input: input,
+    version: version
   }),
 
   pass: (id: string) => http.get<Word.Dict>('/loader/pass', { word: id }),
@@ -63,6 +64,10 @@ const apiLoader = {
   }),
 
   affix: (id: string) => http.get<any>('/loader/affix', {
+    word: id
+  }),
+
+  differs: (id: string) => http.get<Word.Diff>('/loader/differs', {
     word: id
   }),
 
