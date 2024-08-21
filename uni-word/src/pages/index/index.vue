@@ -970,19 +970,44 @@ watch(endX, (n, o) => {
               <text>短语词组</text>
             </view>
             <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center "
-                  @click="loadPart('phrases')"
+                  @click="loadPart('collocation')"
                   style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
-              <image :src="dict.loadState?.phrasesLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
+              <image :src="dict.loadState?.collocationLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
                      mode="widthFix"></image>
             </view>
           </view>
           <view class="w-full flex flex-col mt-10" style="width: calc(100% - 40rpx)">
-            <view v-for="(phrase,i) in dict.phrases"
+            <view v-for="(formula, i) in dict.collocation?.formulas" :key="'formula'+i"
+                  class="w-full pr-20 pt-10 pb-10 flex flex-col justify-center gap-15">
+              <view class="flex gap-10 pl-12 items-center">
+                <text class="font-bold" style="font-size: 32rpx;">{{ formula.en }}</text>
+                <uni-icons @click="onRemovePart('collocation',formula.en)" type="close" size="20"
+                           color="#ba1a1a"></uni-icons>
+              </view>
+              <view class="flex gap-10 pl-15 mt--10">
+                <view class="w-5" style="background-color: #D5D5D5"></view>
+                <text style="font-size: 32rpx; color: #858585; width:80%;">{{ formula.zh }}</text>
+              </view>
+              <div style="font-size: 28rpx; color: #858585" class="mt-5">【例句】</div>
+              <view class="flex flex-col gap-25 pl-15">
+                <view v-for="(ex,j) in formula.examples" :key="'fex'+j" class="flex flex-col gap-10">
+                  <view class="flex items-center">
+                    <text style="font-size: 32rpx;">{{ ex.sentence }}</text>
+                  </view>
+                  <view class="flex gap-10">
+                    <view class="w-5" style="background-color: #D5D5D5"></view>
+                    <text style="font-size: 32rpx; color: #858585; width:80%;">{{ ex.translation }}</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+            <div style="font-size: 28rpx; color: black" class="mt-15 font-bold">【其他短语】</div>
+            <view v-for="(phrase,i) in dict.collocation?.phrases"
                   :key="'phrase'+i"
-                  class="w-full pl-20 pr-20 pt-10 pb-10 flex flex-col justify-center gap-5">
+                  class="w-full pl-12 pr-20 pt-10 pb-10 flex flex-col justify-center gap-5">
               <view class="pl-5 flex items-center gap-5">
                 <text style="font-size: 32rpx;">{{ phrase.en }}</text>
-                <uni-icons @click="onRemovePart('phrases',phrase.en)" type="close" size="20"
+                <uni-icons @click="onRemovePart('collocation',phrase.en+':phrase')" type="close" size="20"
                            color="#ba1a1a"></uni-icons>
               </view>
               <view class="flex gap-10 pl-8">

@@ -50,10 +50,20 @@ declare namespace Word {
       index: number
     }]
     differs: []
-    phrases: [{
-      en: string,
-      zh: string
-    }]
+    collocation: {
+      formulas: [{
+        en: string
+        zh: string
+        examples: [{
+          sentence: string
+          translation: string
+        }]
+      }]
+      phrases: [{
+        en: string
+        zh: string
+      }]
+    }
     synAnts: {
       synonyms: []
       antonyms: []
@@ -65,7 +75,7 @@ declare namespace Word {
       inflectionLoading: boolean
       structLoading: boolean
       synAntsLoading: boolean
-      phrasesLoading: boolean
+      collocationLoading: boolean
       derivativesLoading: boolean
       differsLoading: boolean
     }
