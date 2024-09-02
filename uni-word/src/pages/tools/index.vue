@@ -100,7 +100,7 @@ const changeTime = e => {
           <view class="ml-10 mr-5 h-20 w-20 rd-20"
                 :style="{'background-color': user.vip>0? '#006E1C':(isEmpty(user.prepayId)? '#EEF0E1':'red')}"></view>
           <text class="pl-10 w-250">{{
-              user.location.startsWith('中国') ? user.location.substring(3) : user.location
+              user.location?.startsWith('中国') ? user.location.substring(3) : user.location
             }}
           </text>
           <view class="ml-10 mr-5 h-20 w-20 rd-20"

@@ -6,7 +6,7 @@ export default defineStore({
         index: 0,
         date: '',
         show: true,
-        userId: 1
+        userId: 2
       }
     } as { data: Nav.NavInfo };
   },
