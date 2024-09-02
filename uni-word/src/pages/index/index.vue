@@ -718,7 +718,7 @@ watch(endX, (n, o) => {
                           :adjust-position="false"
                           v-model="part.meaningTrans"
                           class="pr-30"
-                          style="font-size: 32rpx; resize: none;color: #858585;font-size: 32rpx;flex:1"/>
+                          style="font-size: 32rpx; resize: none;color: #858585;flex:1"/>
               </view>
             </view>
             <view v-if="!isEmpty(dict.struct.analysis)" class="w-full pt-10 pb-10 flex gap-10">
@@ -729,7 +729,7 @@ watch(endX, (n, o) => {
                         :adjust-position="false"
                         v-model="dict.struct.analysis"
                         class="pr-30"
-                        style="font-size: 32rpx; resize: none;color: #858585;font-size: 32rpx;"/>
+                        style="font-size: 32rpx; resize: none;color: #858585;"/>
             </view>
             <view v-if="!isEmpty(dict.struct.history)" class="w-full pt-10 pb-10 flex gap-10">
               <view class="w-5" style="background-color: #D5D5D5;"></view>
