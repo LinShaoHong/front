@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { delay } from '@/utils/calls'
-import { networkError } from "@/utils/request";
-import { useShare } from "@/hooks/useShare";
-import { ios, message } from "@/utils/unis";
+import {delay} from '@/utils/calls'
+import {networkError} from "@/utils/request";
+import {useShare} from "@/hooks/useShare";
+import {ios, message} from "@/utils/unis";
 import PayDialog from "@/components/PayDialog.vue";
-import { useTabBar } from "@/hooks/useTabBar";
-import { isEmpty } from "@/utils/is";
+import {useTabBar} from "@/hooks/useTabBar";
+import {isEmpty} from "@/utils/is";
 import Background from "@/components/Background.vue";
 import TopTabBar from "@/components/TopTabBar.vue";
 
-const { tabBar } = useTabBar();
-const { onShareAppMessage, onShareTimeline, shareFunc, shareHks, shareTitle } = useShare();
+const {tabBar} = useTabBar();
+const {onShareAppMessage, onShareTimeline, shareFunc, shareHks, shareTitle} = useShare();
 shareFunc.value = () => {
   shareHks.value = hks.value;
   shareTitle.value = hks.value ? config.data.value.shareTitle : config.data.value.loverShareTitle;

@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { Resp } from "../../../qm-admin/src/api/response";
+import {Resp} from "../../../qm-admin/src/api/response";
 
 export interface UserInfo {
   id: string
@@ -34,4 +34,4 @@ export const deleteAvatar = (data: any): Resp | any =>
   })
 
 const uploadAvatarPath = process.env.VUE_APP_BASE_API + '/v1/qm/user/upload/avatar'
-export { uploadAvatarPath }
+export {uploadAvatarPath}

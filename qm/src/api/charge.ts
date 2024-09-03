@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { Resp, PageResp, ListResp } from './response'
+import {ListResp, PageResp, Resp} from './response'
 
 export const recharge = (data: any): Resp | any =>
   request({

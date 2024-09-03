@@ -5,7 +5,7 @@
   "description": "自定义tabbar，超高还原原生配置模式，一行代码自定义导航，自带tabbar路由守卫功能",
   "keywords": [
     "自定义tabbar,tabbar,自定义标签栏,tabbar路由守卫,零配置tabbar,路由守卫、凸起导航"
-],
+  ],
   "repository": "",
   "engines": {
     "HBuilderX": "^3.5.4"

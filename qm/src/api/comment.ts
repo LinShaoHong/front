@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { Resp, ListResp, PageResp } from './response'
+import {ListResp, PageResp, Resp} from './response'
 
 export const getComments = (params: any): Resp | any =>
   request({

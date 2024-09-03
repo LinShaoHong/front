@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import apiUser from '@/api/apiUser';
 import CustomCard from "@/components/CustomCard.vue";
-import { message, modal } from "@/utils/unis";
-import { networkError } from "@/utils/request";
-import { isEmpty } from "@/utils/is";
-import { useShare } from "@/hooks/useShare";
+import {message, modal} from "@/utils/unis";
+import {networkError} from "@/utils/request";
+import {isEmpty} from "@/utils/is";
+import {useShare} from "@/hooks/useShare";
 import env from '@/config/env'
-import { forward } from "@/utils/router";
-import { delay } from "@/utils/calls";
+import {delay} from "@/utils/calls";
 
-const { onShareAppMessage, onShareTimeline, shareTitle, shareFunc } = useShare();
+const {onShareAppMessage, onShareTimeline, shareTitle, shareFunc} = useShare();
 
 const user = useStore('user');
 const config = useStore('config');
@@ -24,14 +23,14 @@ const hksCover = computed(() => {
     return false;
   }
   const arr = config.data.value.hksCards.filter(s => s.type === hksCardType.value);
-  return arr.length === 0? false : arr[0]['cover'];
+  return arr.length === 0 ? false : arr[0]['cover'];
 });
 const hksNoAdd = computed(() => {
   if (!hks.value) {
     return false;
   }
   const arr = config.data.value.hksCards.filter(s => s.type === hksCardType.value);
-  return arr.length === 0? false : arr[0]['noAdd'];
+  return arr.length === 0 ? false : arr[0]['noAdd'];
 });
 const loverCardType = ref(config.data.value.loverCards.filter(s => s?.open)[0]?.type);
 const loverCardTypeName = computed(() => {
@@ -39,7 +38,7 @@ const loverCardTypeName = computed(() => {
   return arr.length === 0 ? '' : arr[0]['name'];
 });
 const loverCardVisible = computed(() => {
-  if(hks.value) {
+  if (hks.value) {
     return true;
   }
   const arr = config.data.value.loverCards.filter(s => s?.type === loverCardType.value);
@@ -111,7 +110,7 @@ const uploadPic = () => {
             picPath.value = 'NONE';
             picLoading.value = true;
             uni.uploadFile({
-              url: `${ env.apiBaseUrl }/store/put`,
+              url: `${env.apiBaseUrl}/store/put`,
               filePath: tempFilePaths[0],
               name: 'file',
               success: (uploadFileRes) => {
@@ -234,8 +233,8 @@ const onDelete = (item) => {
     <scroll-view scroll-y>
       <view class="flex flex-wrap justify-between items-center pb-50 p-l-10 p-r-10">
         <view v-if="!hks || !hksNoAdd"
-            :class="['w-45vw h-73vw flex flex-col justify-center items-center mt-30 p-t-6', hks? 'card_box':'lover_card_box']"
-            @click="onAdd">
+              :class="['w-45vw h-73vw flex flex-col justify-center items-center mt-30 p-t-6', hks? 'card_box':'lover_card_box']"
+              @click="onAdd">
           <text class="text-white" style="font-size: 160rpx;">+</text>
         </view>
 
@@ -282,7 +281,8 @@ const onDelete = (item) => {
     </scroll-view>
 
     <Popup position="center" :show="showEdit" @clickMask="() => {showEdit=false; editContent=true; picLoading=false;}">
-      <view v-if="canPopup" class="relative w-80vw h-65vh pb-20 rd-30 flex flex-col justify-between gap-20" style="background: white;">
+      <view v-if="canPopup" class="relative w-80vw h-65vh pb-20 rd-30 flex flex-col justify-between gap-20"
+            style="background: white;">
         <view class="flex h-62">
           <view class="flex justify-center items-center"
                 :style="{width: '50%', 'background-color': editContent? (hks? '#482380':'#FF6110') : '', 'border-radius': '30rpx 0 5rpx 0'}"
@@ -315,7 +315,8 @@ const onDelete = (item) => {
           <view class="w-full mt-20" style="height: 90%">
             <view class="w-full pl-10 mt-10" style="font-size: 24rpx; color:#999;">惩罚内容（50字以内）</view>
             <view class="w-full pl-10" style="border-bottom: 1px solid rgb(235, 237, 240);  height: 90%;">
-              <textarea class="text-left w-70vw" :style="{'font-size': '30rpx', filter: loverCardVisible? '':'blur(7rpx)'}" v-model="content"/>
+              <textarea class="text-left w-70vw"
+                        :style="{'font-size': '30rpx', filter: loverCardVisible? '':'blur(7rpx)'}" v-model="content"/>
             </view>
           </view>
         </view>

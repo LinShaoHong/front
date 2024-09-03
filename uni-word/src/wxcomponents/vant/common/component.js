@@ -1,4 +1,5 @@
-import { basic } from '../mixins/basic';
+import {basic} from '../mixins/basic';
+
 function mapKeys(source, target, map) {
     Object.keys(map).forEach((key) => {
         if (source[key]) {
@@ -6,6 +7,7 @@ function mapKeys(source, target, map) {
         }
     });
 }
+
 function VantComponent(vantOptions) {
     const options = {};
     mapKeys(vantOptions, options, {
@@ -27,7 +29,7 @@ function VantComponent(vantOptions) {
     options.behaviors = options.behaviors || [];
     options.behaviors.push(basic);
     // add relations
-    const { relation } = vantOptions;
+    const {relation} = vantOptions;
     if (relation) {
         options.relations = relation.relations;
         options.behaviors.push(relation.mixin);
@@ -43,4 +45,5 @@ function VantComponent(vantOptions) {
     };
     Component(options);
 }
-export { VantComponent };
+
+export {VantComponent};

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useWxPay } from "@/hooks/useWxPay";
-import { message, modal } from "@/utils/unis";
+import {useWxPay} from "@/hooks/useWxPay";
+import {message, modal} from "@/utils/unis";
 
-const { wxPay } = useWxPay();
+const {wxPay} = useWxPay();
 const user = useStore('user');
 const config = useStore('config');
 

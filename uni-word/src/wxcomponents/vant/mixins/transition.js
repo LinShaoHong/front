@@ -1,12 +1,14 @@
 // @ts-nocheck
-import { requestAnimationFrame } from '../common/utils';
-import { isObj } from '../common/validator';
+import {requestAnimationFrame} from '../common/utils';
+import {isObj} from '../common/validator';
+
 const getClassNames = (name) => ({
     enter: `van-${name}-enter van-${name}-enter-active enter-class enter-active-class`,
     'enter-to': `van-${name}-enter-to van-${name}-enter-active enter-to-class enter-active-class`,
     leave: `van-${name}-leave van-${name}-leave-active leave-class leave-active-class`,
     'leave-to': `van-${name}-leave-to van-${name}-leave-active leave-to-class leave-active-class`,
 });
+
 export function transition(showDefaultValue) {
     return Behavior({
         properties: {
@@ -49,7 +51,7 @@ export function transition(showDefaultValue) {
                 if (this.enterFinishedPromise)
                     return;
                 this.enterFinishedPromise = new Promise((resolve) => {
-                    const { duration, name } = this.data;
+                    const {duration, name} = this.data;
                     const classNames = getClassNames(name);
                     const currentDuration = isObj(duration) ? duration.enter : duration;
                     if (this.status === 'enter') {
@@ -73,7 +75,7 @@ export function transition(showDefaultValue) {
                                 return;
                             }
                             this.transitionEnded = false;
-                            this.setData({ classes: classNames['enter-to'] });
+                            this.setData({classes: classNames['enter-to']});
                             resolve();
                         });
                     });
@@ -86,7 +88,7 @@ export function transition(showDefaultValue) {
                     if (!this.data.display) {
                         return;
                     }
-                    const { duration, name } = this.data;
+                    const {duration, name} = this.data;
                     const classNames = getClassNames(name);
                     const currentDuration = isObj(duration) ? duration.leave : duration;
                     this.status = 'leave';
@@ -109,7 +111,7 @@ export function transition(showDefaultValue) {
                                 this.onTransitionEnd();
                                 this.enterFinishedPromise = null;
                             }, currentDuration);
-                            this.setData({ classes: classNames['leave-to'] });
+                            this.setData({classes: classNames['leave-to']});
                         });
                     });
                 });
@@ -120,9 +122,9 @@ export function transition(showDefaultValue) {
                 }
                 this.transitionEnded = true;
                 this.$emit(`after-${this.status}`);
-                const { show, display } = this.data;
+                const {show, display} = this.data;
                 if (!show && display) {
-                    this.setData({ display: false });
+                    this.setData({display: false});
                 }
             },
         },

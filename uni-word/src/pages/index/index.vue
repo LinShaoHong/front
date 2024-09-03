@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import NavigationBar from "@/components/NavigationBar.vue";
-import { isEmpty } from "@/utils/is";
+import {isEmpty} from "@/utils/is";
 import apiDict from "@/api/apiDict";
 import apiLoader from "@/api/apiLoader";
-import { networkError } from "@/utils/request";
+import {networkError} from "@/utils/request";
 import UniIcons from "@/uni_modules/uni-icons/components/uni-icons/uni-icons.vue";
 import Popup from "@/components/Popup.vue";
-import { delay } from "@/utils/calls";
-import { formatDate } from "date-fns";
-import { useTouch } from "@/hooks/useTouch";
-import { modal } from "@/utils/unis";
+import {delay} from "@/utils/calls";
+import {formatDate} from "date-fns";
+import {useTouch} from "@/hooks/useTouch";
+import {modal} from "@/utils/unis";
 
 const nav = useStore('nav');
 const mean = useStore('mean');
@@ -433,7 +433,7 @@ const copyAffixAI = (txt) => {
 };
 
 //----------- touch --------------
-const { startX, startY, endX, endY, touchStart, touchEnd } = useTouch();
+const {startX, startY, endX, endY, touchStart, touchEnd} = useTouch();
 watch(endX, (n, o) => {
   if (Math.abs(startY.value - endY.value) < 30) {
     if (showSearch.value) {

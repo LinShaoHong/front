@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import NavigationBar from "@/components/NavigationBar.vue";
-import { networkError } from "@/utils/request";
+import {networkError} from "@/utils/request";
 import apiLoader from "@/api/apiLoader";
-import { isEmpty } from "@/utils/is";
-import { delay } from "@/utils/calls";
-import { formatDate } from "date-fns";
+import {isEmpty} from "@/utils/is";
+import {delay} from "@/utils/calls";
+import {formatDate} from "date-fns";
 
 const nav = useStore('nav');
 const userId = nav.data.value.userId;

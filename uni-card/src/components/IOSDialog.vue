@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import wxj from 'weixin-js-sdk';
 
 const config = useStore('config');
 const props = defineProps({
@@ -8,17 +7,17 @@ const props = defineProps({
 
 // const share = () => {
 //   console.log('share');
-  // wxj.ready(function () {
-  //   wxj.updateAppMessageShareData({
-  //     title: 'aaa',
-  //     desc: 'bbb',
-  //     link: 'ccc',
-  //     imgUrl: 'ddd',
-  //     success: function () {
-  //       // 设置成功
-  //     }
-  //   })
-  // });
+// wxj.ready(function () {
+//   wxj.updateAppMessageShareData({
+//     title: 'aaa',
+//     desc: 'bbb',
+//     link: 'ccc',
+//     imgUrl: 'ddd',
+//     success: function () {
+//       // 设置成功
+//     }
+//   })
+// });
 // };
 
 </script>

@@ -1,10 +1,12 @@
 let systemInfo;
+
 export function getSystemInfoSync() {
     if (systemInfo == null) {
         systemInfo = wx.getSystemInfoSync();
     }
     return systemInfo;
 }
+
 function compareVersion(v1, v2) {
     v1 = v1.split('.');
     v2 = v2.split('.');
@@ -27,33 +29,40 @@ function compareVersion(v1, v2) {
     }
     return 0;
 }
+
 function gte(version) {
     const system = getSystemInfoSync();
     return compareVersion(system.SDKVersion, version) >= 0;
 }
+
 export function canIUseModel() {
     return gte('2.9.3');
 }
+
 export function canIUseFormFieldButton() {
     return gte('2.10.3');
 }
+
 export function canIUseAnimate() {
     return gte('2.9.0');
 }
+
 export function canIUseGroupSetData() {
     return gte('2.4.0');
 }
+
 export function canIUseNextTick() {
     try {
         return wx.canIUse('nextTick');
-    }
-    catch (e) {
+    } catch (e) {
         return gte('2.7.1');
     }
 }
+
 export function canIUseCanvas2d() {
     return gte('2.9.0');
 }
+
 export function canIUseGetUserProfile() {
     return !!wx.getUserProfile;
 }

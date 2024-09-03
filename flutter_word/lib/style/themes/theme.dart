@@ -14,8 +14,6 @@ class ThemeHolder {
   late final ValueNotifier<ThemeMode> themeMode =
       ValueNotifier<ThemeMode>(ThemeMode.light);
 
-
-
 // final AppTheme defaultTheme = MaterialAppTheme();
 //
 // late final ValueNotifier<AppTheme> theme =

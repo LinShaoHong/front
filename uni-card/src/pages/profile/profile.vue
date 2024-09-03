@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import { isEmpty } from "@/utils/is";
-import { ios, message, setNBT } from "@/utils/unis";
-import { networkError } from "@/utils/request";
-import { onLoad } from "@dcloudio/uni-app";
-import { useShare } from "@/hooks/useShare";
-import { useTabBar } from "@/hooks/useTabBar";
+import {isEmpty} from "@/utils/is";
+import {message, setNBT} from "@/utils/unis";
+import {networkError} from "@/utils/request";
+import {onLoad} from "@dcloudio/uni-app";
+import {useShare} from "@/hooks/useShare";
+import {useTabBar} from "@/hooks/useTabBar";
 import apiUser from "@/api/apiUser";
-import { isMp } from "@/utils/platform";
+import {isMp} from "@/utils/platform";
 
-const { tabBar, tabLen } = useTabBar();
-const { onShareAppMessage, onShareTimeline } = useShare();
+const {tabBar, tabLen} = useTabBar();
+const {onShareAppMessage, onShareTimeline} = useShare();
 
 const user = useStore('user')
 const config = useStore('config')

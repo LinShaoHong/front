@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import NavigationBar from "@/components/NavigationBar.vue";
-import { isEmpty } from "@/utils/is";
+import {isEmpty} from "@/utils/is";
 import apiLoader from "@/api/apiLoader";
-import { networkError } from "@/utils/request";
-import { message } from "@/utils/unis";
+import {networkError} from "@/utils/request";
+import {message} from "@/utils/unis";
 
 const nav = useStore('nav');
 onShow(() => {

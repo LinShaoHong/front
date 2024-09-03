@@ -50,7 +50,7 @@ const hksCover = computed(() => {
     return false;
   }
   const arr = config.data.value.hksCards.filter(s => s.type === props.hksCardType);
-  return arr.length === 0? false : arr[0]['cover'];
+  return arr.length === 0 ? false : arr[0]['cover'];
 });
 
 const loverCardTypeName = computed(() => {

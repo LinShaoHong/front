@@ -1,7 +1,8 @@
-import { isFunction } from '../common/validator';
-import { getCurrentPage, isDef } from '../common/utils';
+import {isFunction} from '../common/validator';
+import {getCurrentPage, isDef} from '../common/utils';
+
 function onPageScroll(event) {
-    const { vanPageScroller = [] } = getCurrentPage();
+    const {vanPageScroller = []} = getCurrentPage();
     vanPageScroller.forEach((scroller) => {
         if (typeof scroller === 'function') {
             // @ts-ignore
@@ -9,6 +10,7 @@ function onPageScroll(event) {
         }
     });
 }
+
 export function pageScrollMixin(scroller) {
     return Behavior({
         attached() {
@@ -17,7 +19,7 @@ export function pageScrollMixin(scroller) {
                 return;
             }
             const _scroller = scroller.bind(this);
-            const { vanPageScroller = [] } = page;
+            const {vanPageScroller = []} = page;
             if (isFunction(page.onPageScroll) && page.onPageScroll !== onPageScroll) {
                 vanPageScroller.push(page.onPageScroll.bind(page));
             }
@@ -31,7 +33,7 @@ export function pageScrollMixin(scroller) {
             if (!isDef(page) || !isDef(page.vanPageScroller)) {
                 return;
             }
-            const { vanPageScroller } = page;
+            const {vanPageScroller} = page;
             const index = vanPageScroller.findIndex((v) => v === this._scroller);
             if (index > -1) {
                 page.vanPageScroller.splice(index, 1);

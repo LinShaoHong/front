@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import NavigationBar from "@/components/NavigationBar.vue";
-import { request } from "@/utils/request";
+import {request} from "@/utils/request";
 import env from "@/config/env";
-import { isEmpty } from "@/utils/is";
-import { formatDate } from "date-fns";
+import {isEmpty} from "@/utils/is";
+import {formatDate} from "date-fns";
 
 const nav = useStore('nav');
 let interval;
@@ -27,7 +27,7 @@ onLoad(() => {
 const imageUri = env.baseUrl + '/image/';
 const users = ref([]);
 const search = () => {
-  request("GET", env.baseUrl + '/card/api/account/byDate', { date: date.value })
+  request("GET", env.baseUrl + '/card/api/account/byDate', {date: date.value})
       .then(data => {
         users.value = data.values;
       }).catch(err => console.log(err));
@@ -38,7 +38,7 @@ const cachedAvatar = (avatar) => {
     return cache;
   }
   uni.getImageInfo({
-    src: `${ imageUri }/avatar/${ avatar }.png`,
+    src: `${imageUri}/avatar/${avatar}.png`,
     success: res => {
       uni.saveFile({
         tempFilePath: res.path,
@@ -50,7 +50,7 @@ const cachedAvatar = (avatar) => {
       });
     }
   });
-  return `${ imageUri }/avatar/${ avatar }.png`;
+  return `${imageUri}/avatar/${avatar}.png`;
 };
 const date = ref(formatDate(new Date(), 'yyyy-MM-dd'));
 const changeTime = e => {
@@ -107,7 +107,7 @@ const changeTime = e => {
                 :style="{'background-color': user.vip>0? '#006E1C':(isEmpty(user.prepayId)? '#EEF0E1':'red')}"></view>
           <view class="h-full w-80 flex items-center gap-8">
             <text class="pl-10">{{ user.playCount }}</text>
-            <image v-if="!isEmpty(user.shareCode)" class="w-30"  mode="widthFix" src="/static/share.png"/>
+            <image v-if="!isEmpty(user.shareCode)" class="w-30" mode="widthFix" src="/static/share.png"/>
           </view>
           <text class="pl-10 absolute right-20">{{ formatDate(user.createTime, 'HH:mm') }}</text>
         </view>

@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import { delay } from '@/utils/calls'
-import { networkError } from "@/utils/request";
-import { ios, message } from "@/utils/unis";
+import {delay} from '@/utils/calls'
+import {networkError} from "@/utils/request";
+import {ios, message} from "@/utils/unis";
 import PayDialog from "@/components/PayDialog.vue";
-import { forward } from "@/utils/router";
+import {forward} from "@/utils/router";
 import env from "@/config/env";
 import apiUser from "@/api/apiUser";
 import apiRoom from "@/api/apiRoom";
-import { useShare } from "@/hooks/useShare";
-import { useSSE } from "@/hooks/useSSE";
-import { isEmpty } from "@/utils/is";
+import {useShare} from "@/hooks/useShare";
+import {useSSE} from "@/hooks/useSSE";
+import {isEmpty} from "@/utils/is";
 
 const hks = ref(true);
-const { sseConnect, sseAbort } = useSSE();
+const {sseConnect, sseAbort} = useSSE();
 const user = useStore('user');
 const config = useStore('config');
 const imgUri = inject('$imgUri');
 const canPopup = ref(false);
 
 //-------------------- share -----------------------
-const { onShareAppMessage, onShareTimeline, sharePath, shareTitle, shareMainUserId, shareHks, shareFunc } = useShare();
+const {onShareAppMessage, onShareTimeline, sharePath, shareTitle, shareMainUserId, shareHks, shareFunc} = useShare();
 shareFunc.value = () => {
   sharePath.value = 'pages/more/more';
   shareHks.value = hks.value;
@@ -174,7 +174,7 @@ const handleNextEvent = (event) => {
 
 const handleChangeCardTypeEvent = (event) => {
   if (!isMain.value) {
-    if(hks.value) {
+    if (hks.value) {
       hksCardType.value = event.cardType;
     } else {
       loverCardType.value = event.cardType;

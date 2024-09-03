@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { Resp, PageResp, ListResp, SingleResp } from './response'
+import {ListResp, PageResp, Resp, SingleResp} from './response'
 
 export const paged = (params: any): PageResp | any =>
   request({

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import {Component, Vue} from 'vue-property-decorator'
 
 @Component({
   name: 'ServiceWorkerUpdatePopup'
@@ -12,7 +12,7 @@ export default class extends Vue {
 
   created() {
     // Listen for swUpdated event and display refresh notification as required.
-    document.addEventListener('swUpdated', this.showRefreshUI, { once: true })
+    document.addEventListener('swUpdated', this.showRefreshUI, {once: true})
     // Refresh all open app tabs when a new service worker is installed.
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       if (this.refreshing) return
@@ -34,7 +34,7 @@ export default class extends Vue {
     this.registration = (e as CustomEvent).detail
     this.$notify.info({
       title: 'Update available',
-      message: h('div', { class: 'sw-update-popup' }, [
+      message: h('div', {class: 'sw-update-popup'}, [
         this.notificationText,
         h('br'),
         h('button', {

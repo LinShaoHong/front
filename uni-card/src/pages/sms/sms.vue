@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { delay } from "@/utils/calls";
-import { useShare } from "@/hooks/useShare";
-import { message } from "@/utils/unis";
+import {delay} from "@/utils/calls";
+import {useShare} from "@/hooks/useShare";
+import {message} from "@/utils/unis";
 import apiUser from "@/api/apiUser";
-import { networkError } from "@/utils/request";
-import { isEmpty } from "@/utils/is";
-import { useWxPay } from "@/hooks/useWxPay";
+import {networkError} from "@/utils/request";
+import {isEmpty} from "@/utils/is";
+import {useWxPay} from "@/hooks/useWxPay";
 import apiSms from "@/api/apiSms";
-import { valiPhone } from "@/utils/validator";
+import {valiPhone} from "@/utils/validator";
 
-const { wxPay } = useWxPay();
-const { onShareAppMessage, onShareTimeline, sharePath, shareTitle, shareHks, shareFunc } = useShare();
+const {wxPay} = useWxPay();
+const {onShareAppMessage, onShareTimeline, sharePath, shareTitle, shareHks, shareFunc} = useShare();
 shareFunc.value = () => {
   sharePath.value = 'pages/sms/sms';
   shareHks.value = hks.value;
@@ -68,7 +68,7 @@ watch(tempType, () => {
 });
 
 const onGetPhoneNumber = (e) => {
-  const { detail: { code } } = e;
+  const {detail: {code}} = e;
   if (isEmpty(code)) {
     return;
   }

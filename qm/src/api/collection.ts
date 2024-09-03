@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { Resp } from './response'
+import {Resp} from './response'
 
 export const getCollections = (params: any): Resp | any =>
   request({

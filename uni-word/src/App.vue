@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onHide, onLaunch, onShow } from '@dcloudio/uni-app';
+import {onHide, onLaunch, onShow} from '@dcloudio/uni-app';
 
 onLaunch(async (option) => {
   console.log('onLaunch....');
@@ -16,5 +16,6 @@ onHide(() => {
 .navigation-bar {
   display: none;
 }
+
 /* #endif */
 </style>

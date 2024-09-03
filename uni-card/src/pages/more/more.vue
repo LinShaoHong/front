@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { networkError } from "@/utils/request";
-import { forward } from "@/utils/router";
-import { ios, modal } from "@/utils/unis";
-import { useShare } from "@/hooks/useShare";
+import {networkError} from "@/utils/request";
+import {forward} from "@/utils/router";
+import {ios, modal} from "@/utils/unis";
+import {useShare} from "@/hooks/useShare";
 import apiRoom from "@/api/apiRoom";
-import { useTabBar } from "@/hooks/useTabBar";
-import apiUser from "@/api/apiUser";
+import {useTabBar} from "@/hooks/useTabBar";
 
-const { tabBar } = useTabBar();
-const { onShareAppMessage, onShareTimeline, shareFunc, shareHks, sharePath, shareTitle } = useShare();
+const {tabBar} = useTabBar();
+const {onShareAppMessage, onShareTimeline, shareFunc, shareHks, sharePath, shareTitle} = useShare();
 
 const hks = ref(true);
 const imgUri = inject('$imgUri');
@@ -29,7 +28,7 @@ onLoad(async (option) => {
       hks.value = _hks === 'true';
     }
     if (mainUserId != undefined && _hks != undefined) {
-      forward('room', { mainUserId: mainUserId, hks: _hks })
+      forward('room', {mainUserId: mainUserId, hks: _hks})
     }
   }
 });
@@ -100,9 +99,9 @@ const hasDef = computed(() => {
       </text>
     </view>
     <view v-if="!hks && config.data.value.sms"
-        :class="['h-10vh w-70vw rd-100 flex flex-col items-center justify-center lover_sms_box']"
-        :style="{'margin-top': hasDef? '50rpx' : '10rpx'}"
-        @click="forward('sms')">
+          :class="['h-10vh w-70vw rd-100 flex flex-col items-center justify-center lover_sms_box']"
+          :style="{'margin-top': hasDef? '50rpx' : '10rpx'}"
+          @click="forward('sms')">
       <view class="w-full h-full flex items-center justify-center gap-10">
         <image :src="`${imgUri}/sms.png`" class="h-5vh" mode="heightFix"/>
         <text class="text-white" style="font-size: 40rpx">

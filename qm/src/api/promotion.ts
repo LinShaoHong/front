@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { Resp, ListResp } from './response'
+import {ListResp, Resp} from './response'
 
 export const getPromotions = (): ListResp | any =>
   request({
