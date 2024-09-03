@@ -12,11 +12,25 @@
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ]
     },
-    "lib": ["esnext", "dom"],
-    "types": ["@dcloudio/types", "pinia-plugin-persist-uni"]
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "types": [
+      "@dcloudio/types",
+      "pinia-plugin-persist-uni"
+    ]
   },
-  "exclude": ["node_modules"],
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue"]
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.vue"
+  ]
 }
