@@ -19,6 +19,7 @@ onShow(() => {
   uni.hideTabBar();
   nav.setIndex(0);
   root.value = '';
+  useMaxModel.value = false;
   interval = setInterval(() => {
     let loading = false;
     for (const key in dict.value.loadState) {
@@ -104,6 +105,7 @@ const loadPart = (part, attr?) => {
     reload();
   }).catch(() => networkError());
 }
+const useMaxModel = ref(false);
 const showRemove = ref(false);
 const _removePart = ref('');
 const _removePath = ref('');
@@ -673,16 +675,25 @@ watch(endX, (n, o) => {
                      class="w-30 mr-20" mode="widthFix" src="/static/clear.png"></image>
               <image :src="dict.loadState?.structLoading? '/static/loading.gif':'/static/get.png'"
                      class="w-25"
-                     @click="loadPart('struct',{root: root})"
+                     @click="loadPart('struct',{root: root, model: useMaxModel? 'qwen-max':''})"
                      mode="widthFix"></image>
             </view>
             <uni-icons @click="onRemovePart('struct','')" type="trash" size="20"
                        color="#ba1a1a"></uni-icons>
           </view>
-          <view class="w-200 h-50 rd-20 font-bold mb-10 flex items-center justify-center"
-                @click="copyAffixAI"
-                style="color: white; background-color: #006E1C; font-size: 24rpx;">
-            <text>复制AI提示词</text>
+          <view class="flex gap-20 items-center mb-10">
+            <view class="w-200 h-50 rd-20 font-bold flex items-center justify-center"
+                  @click="copyAffixAI"
+                  style="color: white; background-color: #006E1C; font-size: 24rpx;">
+              <text>复制AI提示词</text>
+            </view>
+            <text class="mr--35 ml-10">使用Max模型:</text>
+            <view class="flex justify-center">
+              <switch v-if="useMaxModel" checked :color="'#D9E7C8'" style="transform:scale(0.6);"
+                      @change="() => {useMaxModel=false;}"/>
+              <switch v-if="!useMaxModel" :color="'#D9E7C8'" style="transform:scale(0.5);"
+                      @change="useMaxModel=true"/>
+            </view>
           </view>
           <view v-if="!isEmpty(affix?.root)" class="w-full pt-10 pb-10 flex gap-10 mt-5">
             <view class="w-5" style="background-color: #D5D5D5;"></view>
