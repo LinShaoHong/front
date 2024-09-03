@@ -28,7 +28,7 @@ dependencies:
   shared_preferences: ^2.2.2
   desktop_window: ^0.4.0
   flutter_displaymode: ^0.6.0
-  intl: ^0.18.1
+  intl: ^0.19.0
   get_it_mixin: ^4.2.2
   flex_color_scheme: ^7.3.1
   responsive_framework: ^1.4.0
