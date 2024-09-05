@@ -11,7 +11,9 @@ declare namespace Http {
 declare namespace Word {
     interface Dict {
         id: string
+        ukAudioId: string
         ukPhonetic: string
+        usAudioId: string
         usPhonetic: string
         meaning: {
             nouns: string
@@ -20,6 +22,7 @@ declare namespace Word {
             adverbs: string
         }
         examples: [{
+            audioId: string
             sentence: string
             translation: string
         }]
@@ -34,8 +37,8 @@ declare namespace Word {
                 meaningTrans: string
             }]
             analysis: string
-            history: string
         }
+        origin: string
         inflection: {
             plural: []
             progressive: []
@@ -74,6 +77,7 @@ declare namespace Word {
             examplesLoading: boolean
             inflectionLoading: boolean
             structLoading: boolean
+            originLoading: boolean
             synAntsLoading: boolean
             collocationLoading: boolean
             derivativesLoading: boolean
@@ -103,6 +107,7 @@ declare namespace Word {
         definition: string
         scenario: string
         examples: [{
+            audioId: string
             sentence: string
             translation: string
         }]

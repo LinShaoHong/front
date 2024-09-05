@@ -742,16 +742,31 @@ watch(endX, (n, o) => {
                         class="pr-30"
                         style="font-size: 32rpx; resize: none;color: #858585;"/>
             </view>
-            <view v-if="!isEmpty(dict.struct.history)" class="w-full pt-10 pb-10 flex gap-10">
-              <view class="w-5" style="background-color: #D5D5D5;"></view>
-              <textarea auto-height
-                        @blur="structBlur"
-                        :maxlength="500"
-                        :adjust-position="false"
-                        v-model="dict.struct.history"
-                        class="pr-30"
-                        style="font-size: 32rpx; resize: none;color: #858585;font-size: 32rpx;"/>
+          </view>
+        </view>
+
+        <view class="w-full pl-30 mt-30">
+          <view class="flex gap-20">
+            <view class="w-150 h-50 rd-20 font-bold mb-10 flex items-center justify-center"
+                  style="color: white; background-color: black; font-size: 24rpx;">
+              <text>词源历史</text>
             </view>
+            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center "
+                  @click="loadPart('origin')"
+                  style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
+              <image :src="dict.loadState?.originLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
+                     mode="widthFix"></image>
+            </view>
+          </view>
+          <view v-if="dict.origin" class="w-full flex gap-20 mt-10">
+            <view class="w-5" style="background-color: #D5D5D5;"></view>
+            <textarea auto-height
+                      :disabled="true"
+                      :maxlength="500"
+                      :adjust-position="false"
+                      v-model="dict.origin"
+                      class="pr-50"
+                      style="font-size: 32rpx; resize: none;color: #858585;"/>
           </view>
         </view>
 
