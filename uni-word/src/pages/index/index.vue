@@ -527,12 +527,12 @@ watch(endX, (n, o) => {
         </view>
         <view class="relative flex flex-col gap-10 mt-20 w-full h-100 items-center">
           <view class="flex flex-col h-full justify-around">
-            <view class="flex gap-10" style="align-items: flex-end">
+            <view v-if="!isEmpty(dict?.ukPhonetic)" class="flex gap-10" style="align-items: flex-end">
               <text style="font-size: 24rpx;">英</text>
               <text style="font-size: 32rpx;">{{ dict?.ukPhonetic }}</text>
               <uni-icons @click="onRemovePart('phonetic','uk')" type="close" size="20" color="#ba1a1a"></uni-icons>
             </view>
-            <view class="flex gap-10" style="align-items: flex-end">
+            <view v-if="!isEmpty(dict?.usPhonetic)" class="flex gap-10" style="align-items: flex-end">
               <text style="font-size: 24rpx;">美</text>
               <text style="font-size: 32rpx;">{{ dict?.usPhonetic }}</text>
               <uni-icons @click="onRemovePart('phonetic','us')" type="close" size="20" color="#ba1a1a"></uni-icons>
