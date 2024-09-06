@@ -530,10 +530,12 @@ watch(endX, (n, o) => {
             <view class="flex gap-10" style="align-items: flex-end">
               <text style="font-size: 24rpx;">英</text>
               <text style="font-size: 32rpx;">{{ dict?.ukPhonetic }}</text>
+              <uni-icons @click="onRemovePart('phonetic','uk')" type="close" size="20" color="#ba1a1a"></uni-icons>
             </view>
             <view class="flex gap-10" style="align-items: flex-end">
               <text style="font-size: 24rpx;">美</text>
               <text style="font-size: 32rpx;">{{ dict?.usPhonetic }}</text>
+              <uni-icons @click="onRemovePart('phonetic','us')" type="close" size="20" color="#ba1a1a"></uni-icons>
             </view>
           </view>
         </view>

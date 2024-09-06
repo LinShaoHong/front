@@ -16,7 +16,6 @@ const add = () => {
     return;
   }
   let ws: string = words.value;
-  ws = ws.replace(/\s+/g, '');
   ws = ws.replace(/，/g, ',');
   apiLoader.loadAll(ws, nav.data.value.userId)
       .then(() => {
