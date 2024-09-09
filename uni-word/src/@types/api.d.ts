@@ -82,6 +82,8 @@ declare namespace Word {
             collocationLoading: boolean
             derivativesLoading: boolean
             differsLoading: boolean
+            createTreeLoading: boolean
+            mergeTreeLoading: boolean
         }
         passed: boolean
         loadTime: any

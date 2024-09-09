@@ -41,6 +41,7 @@ onShow(() => {
     apiLoader.dict(date.value, '', userId)
         .then((data) => {
           dict.value = data.value;
+          reloadTree();
           date.value = formatDate(dict.value.loadTime, 'yyyy-MM-dd');
           nav.setDate(date.value);
           apiLoader.stat(date.value, userId)
@@ -59,6 +60,7 @@ onShow(() => {
           apiLoader.dict(date.value, stat.value.sort, userId)
               .then((data) => {
                 dict.value = data.value;
+                reloadTree();
                 nav.setShow(true);
                 apiLoader.affix(dict.value.id).then(data => affix.value = data.value).catch((err) => networkError());
               })
@@ -88,6 +90,7 @@ const reload = () => {
         .then((data) => {
           stat.value = data.value;
         }).catch(() => networkError());
+    reloadTree();
   }).catch(() => {
     networkError();
   });
@@ -212,17 +215,12 @@ const showDerivativeMean = ref(false);
 const removeDerivativePrompt = ref(true);
 const derivativesMeans = ref({} as Map<string, boolean>);
 
-watch(dict, (n, o) => {
-  reloadTree();
-});
-
 watch(tree, (n, o) => {
   tree.value?.derivatives.forEach(d => {
     mean.fetch(d.word);
   });
 });
 
-const reloadTreeLoading = ref(false);
 const reloadTree = () => {
   const ps: Promise<any>[] = [];
   ps.push(new Promise<any>((resolve, reject) => {
@@ -254,32 +252,30 @@ const reloadTree = () => {
       tree.value = _trees[0];
     }
     trees.value = _trees;
-    reloadTreeLoading.value = false;
   }).catch((err) => {
-    reloadTreeLoading.value = false;
     networkError();
   })
 };
 
 const createTree = () => {
-  if (reloadTreeLoading.value) {
+  if (dict.value.loadState['createTreeLoading']) {
     return;
   }
-  reloadTreeLoading.value = true;
+  dict.value.loadState['createTreeLoading'] = true;
   apiLoader.createTree(dict.value.id).then(() => {
     reloadTree();
+    dict.value.loadState['createTreeLoading'] = false;
   }).catch((err) => {
     networkError();
   });
 };
 
-const mergeTreeLoading = ref(false);
 const mergedWords = ref([] as any);
 const mergeTree = (treeId) => {
-  if (mergeTreeLoading.value) {
+  if (dict.value.loadState['mergeTreeLoading']) {
     return;
   }
-  mergeTreeLoading.value = true;
+  dict.value.loadState['mergeTreeLoading'] = true;
   apiLoader.mergeTree(treeId, dict.value.id).then(data => {
     tree.value = data.value;
     const i = trees.value.map(v => v.id).indexOf(tree.value.id);
@@ -287,9 +283,8 @@ const mergeTree = (treeId) => {
       trees.value[i] = tree.value;
     }
     mergedWords.value = tree.value.derivatives.filter(v => v.merged && v.version === tree.value.version).map(v => v.word);
-    mergeTreeLoading.value = false;
+    dict.value.loadState['mergeTreeLoading'] = false;
   }).catch(() => {
-    mergeTreeLoading.value = false;
     networkError();
   });
 };
@@ -813,7 +808,7 @@ watch(endX, (n, o) => {
                 </text>
                 <view class="w-40 h-40 rd-50 flex items-center justify-center font-bold"
                       :style="{border: t.id===tree?.id? '1px solid white':'1px solid black'}">
-                  <image v-if="mergeTreeLoading && t.id===tree.id" src="/static/loading.gif" class="w-25"
+                  <image v-if="dict.loadState.mergeTreeLoading && t.id===tree.id" src="/static/loading.gif" class="w-25"
                          mode="widthFix"></image>
                   <uni-icons v-else @click="mergeTree(t.id)" type="plusempty" size="16"
                              :color="t.id===tree?.id? 'white':'black'"/>
@@ -826,8 +821,9 @@ watch(endX, (n, o) => {
             <view class="h-50 w-400 rd-20 flex items-center justify-center mt-10"
                   @click="createTree"
                   style="background-color: #004210">
-              <text v-if="!reloadTreeLoading" style="color:white">创建新的词根树</text>
-              <image v-if="reloadTreeLoading" src="/static/loading.gif" class="w-25" mode="widthFix"></image>
+              <text v-if="!dict.loadState?.createTreeLoading" style="color:white">创建新的词根树</text>
+              <image v-if="dict.loadState?.createTreeLoading" src="/static/loading.gif" class="w-25"
+                     mode="widthFix"></image>
             </view>
             <view class="flex gap-10 items-center">
               <text class="mr--25">释义:</text>
@@ -965,8 +961,10 @@ watch(endX, (n, o) => {
             <view v-for="item in differs" :key="item.meaning">
               <view class="flex flex-col gap-10 gap-10 pl-12 mb-10">
                 <view class="flex items-center">
-                  <text style="font-size: 32rpx; color: black; width:80%; font-weight: bold; text-decoration:underline;">
-                    {{ item.words.map(w => w.word).join("、") }}</text>
+                  <text
+                      style="font-size: 32rpx; color: black; width:80%; font-weight: bold; text-decoration:underline;">
+                    {{ item.words.map(w => w.word).join("、") }}
+                  </text>
                 </view>
                 <view class="flex gap-10">
                   <text style="font-size: 32rpx; color: #858585; width:80%;">{{ item.meaning }}</text>
