@@ -963,17 +963,19 @@ watch(endX, (n, o) => {
           </view>
           <view class="flex flex-col gap-25">
             <view v-for="item in differs" :key="item.meaning">
-              <view class="flex flex-col pl-12 gap-10 gap-10">
-<!--                <text style="font-size: 32rpx; width: 80%">{{ item.words.map(w => w.word).join("、") }}</text>-->
+              <view class="flex flex-col gap-10 gap-10 pl-12 mb-10">
+                <view class="flex items-center">
+                  <text style="font-size: 32rpx; color: black; width:80%; font-weight: bold; text-decoration:underline;">
+                    {{ item.words.map(w => w.word).join("、") }}</text>
+                </view>
                 <view class="flex gap-10">
-                  <view class="w-5" style="background-color: #D5D5D5"></view>
-                  <text style="font-size: 32rpx; color: #858585; width:80%;">{{ item.words.map(w => w.word).join("、") + "\n" +item.meaning }}</text>
+                  <text style="font-size: 32rpx; color: #858585; width:80%;">{{ item.meaning }}</text>
                 </view>
               </view>
               <view v-for="differ in item.words"
                     class="flex flex-col gap-10"
                     :key="'differ'+differ.id">
-                <view class="flex gap-10 pl-12">
+                <view class="flex gap-10 pl-12 mt-10">
                   <text @click="search(differ.word)"
                         class="font-bold"
                         style="font-size: 32rpx;">{{ differ.word }}
@@ -991,7 +993,7 @@ watch(endX, (n, o) => {
                 </view>
                 <div style="font-size: 28rpx; color: #858585; display: inline-block">【例句】</div>
                 <view v-for="(ex,i) in differ.examples" :key="'example'+i"
-                      class="w-full pl-10 pb-10 mt-10 flex flex-col gap-10">
+                      class="w-full pl-10 pb-10 mt-5 flex flex-col gap-10">
                   <text class="pl-5" style="font-size: 32rpx; width: 90%;">{{ ex.sentence }}</text>
                   <view class="flex gap-10 pl-8">
                     <view class="w-5" style="background-color: #D5D5D5"></view>
