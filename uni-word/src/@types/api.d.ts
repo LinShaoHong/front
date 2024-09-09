@@ -103,13 +103,17 @@ declare namespace Word {
     }
 
     interface Diff {
-        id: string
-        definition: string
-        scenario: string
-        examples: [{
-            audioId: string
-            sentence: string
-            translation: string
+        meaning: string
+        words: [{
+            id: string
+            word: string
+            definition: string
+            scenario: string
+            examples: [{
+                audioId: string
+                sentence: string
+                translation: string
+            }]
         }]
     }
 }

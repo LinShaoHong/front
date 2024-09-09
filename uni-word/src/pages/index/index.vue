@@ -962,29 +962,41 @@ watch(endX, (n, o) => {
             </view>
           </view>
           <view class="flex flex-col gap-25">
-            <view v-for="differ in differs"
-                  class="flex flex-col gap-10"
-                  :key="'differ'+differ.id">
-              <view class="flex gap-10 pl-12">
-                <text @click="search(differ.id)" class="font-bold" style="font-size: 32rpx;">{{ differ.id }}</text>
-                <uni-icons @click="onRemovePart('differs',differ.id)" type="close" size="20"
-                           color="#ba1a1a"></uni-icons>
-              </view>
-              <view class="flex gap-10">
-                <div style="font-size: 28rpx; color: #858585">【定义】</div>
-                <text style="font-size: 32rpx;width: 70%">{{ differ.definition }}</text>
-              </view>
-              <view class="w-full flex gap-10">
-                <div style="font-size: 28rpx; color: #858585; display: inline-block">【场景】</div>
-                <text style="font-size: 32rpx; width: 70%">{{ differ.scenario }}</text>
-              </view>
-              <div style="font-size: 28rpx; color: #858585; display: inline-block">【例句】</div>
-              <view v-for="(ex,i) in differ.examples" :key="'example'+i"
-                    class="w-full pl-10 pb-10 mt-10 flex flex-col gap-10">
-                <text class="pl-5" style="font-size: 32rpx; width: 90%;">{{ ex.sentence }}</text>
-                <view class="flex gap-10 pl-8">
+            <view v-for="item in differs" :key="item.meaning">
+              <view class="flex flex-col pl-12 gap-10 gap-10">
+<!--                <text style="font-size: 32rpx; width: 80%">{{ item.words.map(w => w.word).join("、") }}</text>-->
+                <view class="flex gap-10">
                   <view class="w-5" style="background-color: #D5D5D5"></view>
-                  <text style="font-size: 32rpx; color: #858585; width:80%;">{{ ex.translation }}</text>
+                  <text style="font-size: 32rpx; color: #858585; width:80%;">{{ item.words.map(w => w.word).join("、") + "\n" +item.meaning }}</text>
+                </view>
+              </view>
+              <view v-for="differ in item.words"
+                    class="flex flex-col gap-10"
+                    :key="'differ'+differ.id">
+                <view class="flex gap-10 pl-12">
+                  <text @click="search(differ.word)"
+                        class="font-bold"
+                        style="font-size: 32rpx;">{{ differ.word }}
+                  </text>
+                  <uni-icons @click="onRemovePart('differs',differ.id)" type="close" size="20"
+                             color="#ba1a1a"></uni-icons>
+                </view>
+                <view class="flex gap-10">
+                  <div style="font-size: 28rpx; color: #858585">【定义】</div>
+                  <text style="font-size: 32rpx;width: 70%">{{ differ.definition }}</text>
+                </view>
+                <view class="w-full flex gap-10">
+                  <div style="font-size: 28rpx; color: #858585; display: inline-block">【场景】</div>
+                  <text style="font-size: 32rpx; width: 70%">{{ differ.scenario }}</text>
+                </view>
+                <div style="font-size: 28rpx; color: #858585; display: inline-block">【例句】</div>
+                <view v-for="(ex,i) in differ.examples" :key="'example'+i"
+                      class="w-full pl-10 pb-10 mt-10 flex flex-col gap-10">
+                  <text class="pl-5" style="font-size: 32rpx; width: 90%;">{{ ex.sentence }}</text>
+                  <view class="flex gap-10 pl-8">
+                    <view class="w-5" style="background-color: #D5D5D5"></view>
+                    <text style="font-size: 32rpx; color: #858585; width:80%;">{{ ex.translation }}</text>
+                  </view>
                 </view>
               </view>
             </view>
