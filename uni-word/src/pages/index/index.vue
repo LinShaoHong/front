@@ -196,6 +196,7 @@ const move = (i) => {
         apiLoader.affix(dict.value.id).then(data => affix.value = data.value).catch((err) => networkError());
         scTop.value = oscTop.value;
         nextTick(() => scTop.value = 0);
+        reloadTree();
       })
       .catch(() => networkError());
 };
