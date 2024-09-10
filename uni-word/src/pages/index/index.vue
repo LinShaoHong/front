@@ -191,6 +191,7 @@ const move = (i) => {
         scTop.value = 0;
         dict.value = data.value;
         showDerivativeMean.value = false;
+        1
         removeDerivativePrompt.value = true;
         root.value = '';
         apiLoader.affix(dict.value.id).then(data => affix.value = data.value).catch((err) => networkError());
@@ -1017,6 +1018,12 @@ watch(endX, (n, o) => {
                      mode="widthFix"></image>
             </view>
           </view>
+          <view v-if="!isEmpty(dict.collocation?.formulas)"
+                class="w-200 h-50 rd-20 font-bold flex items-center justify-center"
+                @click="onRemovePart('formula','')"
+                style="color: white; background-color: #ba1a1a; font-size: 24rpx;">
+            <text>删除短语公式</text>
+          </view>
           <view class="w-full flex flex-col mt-10" style="width: calc(100% - 40rpx)">
             <view v-for="(formula, i) in dict.collocation?.formulas" :key="'formula'+i"
                   class="w-full pr-20 pt-10 pb-10 flex flex-col justify-center gap-15">
@@ -1042,7 +1049,9 @@ watch(endX, (n, o) => {
                 </view>
               </view>
             </view>
-            <div style="font-size: 28rpx; color: black" class="mt-15 font-bold">【其他短语】</div>
+            <div v-if="!isEmpty(dict.collocation?.formulas)"
+                 style="font-size: 28rpx; color: black"
+                 class="mt-15 font-bold">【其他短语】</div>
             <view v-for="(phrase,i) in dict.collocation?.phrases"
                   :key="'phrase'+i"
                   class="w-full pl-12 pr-20 pt-10 pb-10 flex flex-col justify-center gap-5">
