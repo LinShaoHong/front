@@ -406,6 +406,8 @@ const searchSrc = computed(() => {
       return 'https://www.oxfordlearnersdictionaries.com/definition/english/' + searchWord.value + '_1?q=' + searchWord.value;
     case 7:
       return 'https://www.ldoceonline.com/dictionary/' + searchWord.value;
+    case 8:
+      return 'https://www.merriam-webster.com/dictionary/' + searchWord.value;
     default:
       return 'https://www.xxenglish.com/wd/' + searchWord.value;
   }
@@ -1051,7 +1053,8 @@ watch(endX, (n, o) => {
             </view>
             <div v-if="!isEmpty(dict.collocation?.formulas)"
                  style="font-size: 28rpx; color: black"
-                 class="mt-15 font-bold">【其他短语】</div>
+                 class="mt-15 font-bold">【其他短语】
+            </div>
             <view v-for="(phrase,i) in dict.collocation?.phrases"
                   :key="'phrase'+i"
                   class="w-full pl-12 pr-20 pt-10 pb-10 flex flex-col justify-center gap-5">
@@ -1210,6 +1213,11 @@ watch(endX, (n, o) => {
               @click="searchType=7;"
               :style="{'background-color': searchType===7? '#006E1C':'#D9E7C8',color:searchType===7?'white':'black'}">
           Longman
+        </view>
+        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000"
+              @click="searchType=8;"
+              :style="{'background-color': searchType===8? '#006E1C':'#D9E7C8',color:searchType===8?'white':'black'}">
+          Webster
         </view>
       </view>
       <web-view v-if="showSearch"
