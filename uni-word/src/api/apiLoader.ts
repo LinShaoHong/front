@@ -63,6 +63,10 @@ const apiLoader = {
         userId: userId
     }),
 
+    roots: (root: string) => http.get<any>('/loader/roots', {
+        root: root
+    }),
+
     affix: (id: string) => http.get<any>('/loader/affix', {
         word: id
     }),

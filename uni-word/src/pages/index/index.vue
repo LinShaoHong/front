@@ -42,6 +42,7 @@ onShow(() => {
         .then((data) => {
           dict.value = data.value;
           reloadTree();
+          reloadRoots();
           date.value = formatDate(dict.value.loadTime, 'yyyy-MM-dd');
           nav.setDate(date.value);
           apiLoader.stat(date.value, userId)
@@ -61,6 +62,7 @@ onShow(() => {
               .then((data) => {
                 dict.value = data.value;
                 reloadTree();
+                reloadRoots();
                 nav.setShow(true);
                 apiLoader.affix(dict.value.id).then(data => affix.value = data.value).catch((err) => networkError());
               })
@@ -91,6 +93,7 @@ const reload = () => {
           stat.value = data.value;
         }).catch(() => networkError());
     reloadTree();
+    reloadRoots();
   }).catch(() => {
     networkError();
   });
@@ -198,6 +201,7 @@ const move = (i) => {
         scTop.value = oscTop.value;
         nextTick(() => scTop.value = 0);
         reloadTree();
+        reloadRoots();
       })
       .catch(() => networkError());
 };
@@ -209,6 +213,56 @@ watch(dict, (n, o) => {
 });
 
 //----------------- derivatives ----------------
+const flat = ref(true);
+const flats = ref({} as Map);
+const subFlats = ref({} as Map);
+const onFlat = () => {
+  if (flat.value) {
+    flats.value = {};
+    subFlats.value = {};
+    flat.value = false;
+  } else {
+    flat.value = true;
+  }
+};
+const onFlats = (w) => {
+  let _i = 0;
+  for (let i = 0; i < tree.value.derivatives.length; i++) {
+    if (tree.value.derivatives[i].word === w) {
+      _i = i;
+      break;
+    }
+  }
+  for (let j = _i + 1; j < tree.value.derivatives.length; j++) {
+    if (tree.value.derivatives[j].index > 1) {
+      subFlats.value[tree.value.derivatives[j].word] = !flats.value[w];
+    } else {
+      break;
+    }
+  }
+  flats.value[w] = !flats.value[w];
+};
+const hasFlat = (w) => {
+  let _i = 0;
+  for (let i = 0; i < tree.value.derivatives.length; i++) {
+    if (tree.value.derivatives[i].word === w) {
+      _i = i;
+      break;
+    }
+  }
+  return _i < tree.value.derivatives.length - 1 && tree.value.derivatives[_i + 1].index > 1;
+};
+
+const roots = ref([] as any);
+const reloadRoots = () => {
+  const rs = dict.value.struct?.parts.filter(d => d.root).map(d => d.part).join(",");
+  if (!isEmpty(rs)) {
+    apiLoader.roots(rs).then(data => {
+      roots.value = data.values;
+    }).catch((err) => console.log(err));
+  }
+};
+
 const trees = ref([] as Word.Tree[]);
 const tree = ref({} as Word.Tree);
 const derivative = ref('');
@@ -703,6 +757,20 @@ watch(endX, (n, o) => {
               }}
             </text>
           </view>
+          <view v-if="!isEmpty(roots) && (roots.length>1 || roots[0].roots.length>1)"
+                class="flex flex-col gap-20 mt-10">
+            <view v-for="(r,i) in roots"
+                  :key="'roots'+i"
+                  class="flex flex-col">
+              <view class="flex gap-10">
+                <view class="w-5" style="background-color: #D5D5D5"></view>
+                <text style="font-size: 32rpx; color: #858585; width:80%;">{{
+                    r.roots.join("、") + '\n' + r.desc
+                  }}
+                </text>
+              </view>
+            </view>
+          </view>
           <view v-if="!isEmpty(affix?.gptRoot)" class="w-full pt-10 pb-10 flex gap-10 mt-5">
             <view class="w-5" style="background-color: #D5D5D5;"></view>
             <text style="font-size: 32rpx; color: #858585; width: 80%;">{{ affix?.gptRoot }}</text>
@@ -800,7 +868,7 @@ watch(endX, (n, o) => {
                 <uni-icons type="plusempty" size="16" color="black"/>
               </view>
             </view>
-            <text v-if="!isEmpty(trees)">已有词根：</text>
+            <text v-if="!isEmpty(trees)" class="mt-10">词根树：</text>
             <view v-for="(t,i) in trees" :key="'tree'+i"
                   @click="tree=t"
                   class="h-50 flex items-center gap-15">
@@ -854,7 +922,7 @@ watch(endX, (n, o) => {
                         @longpress="copy(derivative.word)"
                         :class="[inSub(derivative.word) || moveWord===derivative.word || merged(derivative)? 'font-bold':'']"
                         :style="{'font-size': '32rpx', color: moveWord===derivative.word? '#006E1C':(merged(derivative)? '#00658C':'')}">
-                    {{ derivative.word + '（' + subTotal(derivative.word) + '）' }}
+                    {{ derivative.word }}
                   </text>
                   <view v-if="showDerivativeMean || derivativesMeans[derivative.word]" class="pl-5 max-w-300"
                         style="color:#858585; font-size:26rpx;text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
@@ -875,8 +943,12 @@ watch(endX, (n, o) => {
                       if(moveWord===derivative.word){moveWord=''} else
                       {derivativesMeans[moveWord]=false;if(isEmpty(moveWord)) {moveWord=derivative.word;}}}"
                     src="/static/move.png" class="w-40" mode="widthFix"></image>
+                <image @click="onFlat"
+                       :src="flat? '/static/flat.png':'/static/fold.png'"
+                       class="w-30 ml-20" mode="widthFix"></image>
+                <text @click="onFlat">{{ "(" + subTotal(derivative.word) + ")" }}</text>
               </view>
-              <view v-if="derivative.index>0"
+              <view v-else-if="derivative.index===1 || flat || subFlats[derivative.word]"
                     :class="['relative flex items-center left-10', showDerivativeMean? 'h-80':'h-60']">
                 <view
                     :class="['absolute top-0', i===tree?.derivatives.length-1? (showDerivativeMean? 'h-40':'h-30'):(showDerivativeMean? 'h-80':'h-60')]"
@@ -912,6 +984,13 @@ watch(endX, (n, o) => {
                         if(moveWord===derivative.word){moveWord=''} else
                         {derivativesMeans[moveWord]=false;if(isEmpty(moveWord)) {moveWord=derivative.word;}}}"
                       src="/static/move.png" class="w-40" mode="widthFix"></image>
+                  <image v-if="derivative.index===1 && hasFlat(derivative.word)"
+                         @click="onFlats(derivative.word)"
+                         :src="flat || flats[derivative.word]? '/static/flat.png':'/static/fold.png'" class="w-30 ml-20"
+                         mode="widthFix"></image>
+                  <text v-if="derivative.index===1 && hasFlat(derivative.word)"
+                        @click="onFlats(derivative.word)">{{ "(" + subTotal(derivative.word) + ")" }}
+                  </text>
                 </view>
               </view>
             </view>
