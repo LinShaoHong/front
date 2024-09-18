@@ -10,6 +10,7 @@ import {delay} from "@/utils/calls";
 import {formatDate} from "date-fns";
 import {useTouch} from "@/hooks/useTouch";
 import {modal} from "@/utils/unis";
+import {isAPP} from "@/utils/platform";
 
 const nav = useStore('nav');
 const userId = nav.data.value.userId;
@@ -510,8 +511,8 @@ watch(endX, (n, o) => {
 
 <template>
   <NavigationBar/>
-  <view class="container">
-    <view class="relative w-full flex items-center justify-between pl-30 p-30 pb-20"
+  <view class="page_container">
+    <view class="relative w-full flex items-center pb-20 head_body"
           style="background-color: #EEF0E1;
           height: 15%;
           padding-top: calc(var(--status-bar-height) + 10px);
@@ -521,7 +522,7 @@ watch(endX, (n, o) => {
         {{ date }}
       </text>
       <view class="flex gap-60">
-        <view class="flex flex-col justify-center gap-10"
+        <view class="flex flex-col justify-center gap-10 mr-20"
               style="background-color: #EEF0E1">
           <view class="w-full flex justify-center" style="align-items: flex-end;">
             <view>
@@ -536,9 +537,9 @@ watch(endX, (n, o) => {
             <text style="color: #858585; font-size: 22rpx;">已查看</text>
             <view class="flex items-center">
               <view class="h-5"
-                    :style="{'background-color': '#FFA600', width: (250 * stat.viewed / stat.total) + 'rpx'}"></view>
+                    :style="{'background-color': '#FFA600', width: ((isAPP? 250:400) * stat.viewed / stat.total) + (isAPP? 'rpx':'px')}"></view>
               <view class="h-5"
-                    :style="{'background-color': 'white', width: (250 * (stat.total - stat.viewed) / stat.total) + 'rpx'}"></view>
+                    :style="{'background-color': 'white', width: ((isAPP? 250:400) * (stat.total - stat.viewed) / stat.total) + (isAPP? 'rpx':'px')}"></view>
               <text class="ml-3" style="color: #858585; font-size: 22rpx;">
                 {{ (Math.round((stat.viewed / stat.total) * 100)) + '%' }}
               </text>
@@ -548,9 +549,9 @@ watch(endX, (n, o) => {
             <text style="color: #858585; font-size: 22rpx;">已通过</text>
             <view class="flex items-center">
               <view class="h-5"
-                    :style="{'background-color': '#006E1C', width: (250 * stat.passed / stat.total) + 'rpx'}"></view>
+                    :style="{'background-color': '#006E1C', width: ((isAPP? 250:400) * stat.passed / stat.total) + (isAPP? 'rpx':'px')}"></view>
               <view class="h-5"
-                    :style="{'background-color': 'white', width: (250 * (stat.total - stat.passed) / stat.total) + 'rpx'}"></view>
+                    :style="{'background-color': 'white', width: ((isAPP? 250:400) * (stat.total - stat.passed) / stat.total) + (isAPP? 'rpx':'px')}"></view>
               <text class="ml-3" style="color: #858585; font-size: 22rpx;">
                 {{ (Math.round((stat.passed / stat.total) * 100)) + '%' }}
               </text>
@@ -591,12 +592,15 @@ watch(endX, (n, o) => {
             <view v-if="!isEmpty(dict?.ukPhonetic)" class="flex gap-10" style="align-items: flex-end">
               <text style="font-size: 24rpx;">英</text>
               <text style="font-size: 32rpx;">{{ dict?.ukPhonetic }}</text>
-              <uni-icons @click="onRemovePart('phonetic','uk')" type="close" size="20" color="#ba1a1a"></uni-icons>
+              <uni-icons @click="onRemovePart('phonetic','uk')" class="cursor-pointer"
+                         type="close" size="20" color="#ba1a1a"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict?.usPhonetic)" class="flex gap-10" style="align-items: flex-end">
               <text style="font-size: 24rpx;">美</text>
               <text style="font-size: 32rpx;">{{ dict?.usPhonetic }}</text>
-              <uni-icons @click="onRemovePart('phonetic','us')" type="close" size="20" color="#ba1a1a"></uni-icons>
+              <uni-icons @click="onRemovePart('phonetic','us')"
+                         class="cursor-pointer"
+                         type="close" size="20" color="#ba1a1a"></uni-icons>
             </view>
           </view>
         </view>
@@ -607,7 +611,7 @@ watch(endX, (n, o) => {
                   style="color: white; background-color: black; font-size: 24rpx;">
               <text>中文释义</text>
             </view>
-            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center "
+            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
                   @click="loadPart('meaning')"
                   style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
               <image :src="dict.loadState?.meaningLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
@@ -624,7 +628,9 @@ watch(endX, (n, o) => {
                         v-model="dict.meaning.nouns"
                         class="mean_text"
                         style="resize: none;font-size: 32rpx;"/>
-              <uni-icons @click="onRemovePart('meaning','nouns')" type="close" size="20" color="#ba1a1a"></uni-icons>
+              <uni-icons @click="onRemovePart('meaning','nouns')"
+                         class="cursor-pointer"
+                         type="close" size="20" color="#ba1a1a"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.meaning?.verbs)" class="flex gap-10">
               <input class="w-70" disabled style="font-size: 28rpx; color: #858585" value="【动】"/>
@@ -635,7 +641,9 @@ watch(endX, (n, o) => {
                         v-model="dict.meaning.verbs"
                         class="mean_text"
                         style="resize: none;font-size: 32rpx;"/>
-              <uni-icons @click="onRemovePart('meaning','verbs')" type="close" size="20" color="#ba1a1a"></uni-icons>
+              <uni-icons @click="onRemovePart('meaning','verbs')"
+                         class="cursor-pointer"
+                         type="close" size="20" color="#ba1a1a"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.meaning?.adverbs)" class="flex gap-10">
               <input class="w-70" disabled style="font-size: 28rpx; color: #858585" value="【副】"/>
@@ -646,7 +654,9 @@ watch(endX, (n, o) => {
                         v-model="dict.meaning.adverbs"
                         class="mean_text"
                         style="resize: none;font-size: 32rpx;"/>
-              <uni-icons @click="onRemovePart('meaning','adverbs')" type="close" size="20" color="#ba1a1a"></uni-icons>
+              <uni-icons @click="onRemovePart('meaning','adverbs')"
+                         class="cursor-pointer"
+                         type="close" size="20" color="#ba1a1a"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.meaning?.adjectives)" class="flex gap-10">
               <input class="w-70" disabled style="font-size: 28rpx; color: #858585" value="【形】"/>
@@ -658,7 +668,7 @@ watch(endX, (n, o) => {
                         class="mean_text"
                         style="resize: none;font-size: 32rpx;"/>
               <uni-icons @click="onRemovePart('meaning','adjectives')" type="close" size="20"
-                         color="#ba1a1a"></uni-icons>
+                         color="#ba1a1a" class="cursor-pointer"></uni-icons>
             </view>
           </view>
         </view>
@@ -669,7 +679,7 @@ watch(endX, (n, o) => {
                   style="color: white; background-color: black; font-size: 24rpx;">
               <text>单词变形</text>
             </view>
-            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center "
+            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
                   @click="loadPart('inflection')"
                   style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
               <image :src="dict.loadState?.inflectionLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
@@ -681,42 +691,44 @@ watch(endX, (n, o) => {
               <text style="font-size: 28rpx; color: #858585">【复数】</text>
               <text style="font-size: 32rpx;">{{ dict.inflection.plural.join(' ') }}</text>
               <uni-icons @click="onRemovePart('inflection','plural')" type="close" size="20"
-                         color="#ba1a1a"></uni-icons>
+                         color="#ba1a1a" class="cursor-pointer"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.inflection?.thirdPresent)" class="flex gap-10 items-center">
               <text style="font-size: 28rpx; color: #858585">【第三人称单数】</text>
               <text style="font-size: 32rpx;">{{ dict.inflection.thirdPresent.join(' ') }}</text>
               <uni-icons @click="onRemovePart('inflection','thirdPresent')" type="close" size="20"
-                         color="#ba1a1a"></uni-icons>
+                         color="#ba1a1a" class="cursor-pointer"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.inflection?.past)" class="flex gap-10 items-center">
               <text style="font-size: 28rpx; color: #858585">【过去式】</text>
               <text style="font-size: 32rpx;">{{ dict.inflection.past.join(' ') }}</text>
-              <uni-icons @click="onRemovePart('inflection','past')" type="close" size="20" color="#ba1a1a"></uni-icons>
+              <uni-icons @click="onRemovePart('inflection','past')"
+                         class="cursor-pointer"
+                         type="close" size="20" color="#ba1a1a"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.inflection?.perfect)" class="flex gap-10 items-center">
               <text style="font-size: 28rpx; color: #858585">【过去分词】</text>
               <text style="font-size: 32rpx;">{{ dict.inflection.perfect.join(' ') }}</text>
               <uni-icons @click="onRemovePart('inflection','perfect')" type="close" size="20"
-                         color="#ba1a1a"></uni-icons>
+                         color="#ba1a1a" class="cursor-pointer"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.inflection?.progressive)" class="flex gap-10 items-center">
               <text style="font-size: 28rpx; color: #858585">【现在分词】</text>
               <text style="font-size: 32rpx;">{{ dict.inflection.progressive.join(' ') }}</text>
               <uni-icons @click="onRemovePart('inflection','progressive')" type="close" size="20"
-                         color="#ba1a1a"></uni-icons>
+                         color="#ba1a1a" class="cursor-pointer"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.inflection?.comparative)" class="flex gap-10 items-center">
               <text style="font-size: 28rpx; color: #858585">【比较级】</text>
               <text style="font-size: 32rpx;">{{ dict.inflection.comparative.join(' ') }}</text>
               <uni-icons @click="onRemovePart('inflection','comparative')" type="close" size="20"
-                         color="#ba1a1a"></uni-icons>
+                         color="#ba1a1a" class="cursor-pointer"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.inflection?.superlative)" class="flex gap-10 items-center">
               <text style="font-size: 28rpx; color: #858585">【最高级】</text>
               <text style="font-size: 32rpx;">{{ dict.inflection.superlative.join(' ') }}</text>
               <uni-icons @click="onRemovePart('inflection','superlative')" type="close" size="20"
-                         color="#ba1a1a"></uni-icons>
+                         color="#ba1a1a" class="cursor-pointer"></uni-icons>
             </view>
           </view>
         </view>
@@ -735,17 +747,17 @@ watch(endX, (n, o) => {
                      v-model="root"/>
               <image v-if="!isEmpty(root)"
                      @click="root=''"
-                     class="w-30 mr-20" mode="widthFix" src="/static/clear.png"></image>
+                     class="w-30 mr-20 cursor-pointer" mode="widthFix" src="/static/clear.png"></image>
               <image :src="dict.loadState?.structLoading? '/static/loading.gif':'/static/get.png'"
-                     class="w-25"
+                     class="w-25 cursor-pointer"
                      @click="loadPart('struct',{root: root, model: useMaxModel? 'qwen-max':''})"
                      mode="widthFix"></image>
             </view>
             <uni-icons @click="onRemovePart('struct','')" type="trash" size="20"
-                       color="#ba1a1a"></uni-icons>
+                       color="#ba1a1a" class="cursor-pointer"></uni-icons>
           </view>
           <view class="flex gap-20 items-center mb-10">
-            <view class="w-200 h-50 rd-20 font-bold flex items-center justify-center"
+            <view class="w-200 h-50 rd-20 font-bold flex items-center justify-center cursor-pointer"
                   @click="copyAffixAI"
                   style="color: white; background-color: #006E1C; font-size: 24rpx;">
               <text>复制AI提示词</text>
@@ -779,13 +791,13 @@ watch(endX, (n, o) => {
               </view>
             </view>
           </view>
-          <view v-if="!isEmpty(affix?.gptRoot)" class="w-full pt-10 pb-10 flex gap-10 mt-5">
+          <view v-if="!isEmpty(affix?.gptRoot)" :class="['pt-10 pb-10 flex gap-10 mt-5', isAPP? 'w-full':'w-1500']">
             <view class="w-5" style="background-color: #D5D5D5;"></view>
-            <text style="font-size: 32rpx; color: #858585; width: 80%;">{{ affix?.gptRoot }}</text>
+            <text style="font-size: 32rpx; color: #858585; width: 80%; display: inline-block;">{{ affix?.gptRoot }}</text>
           </view>
-          <view v-if="!isEmpty(affix?.gptAffix)" class="w-full pt-10 pb-10 flex gap-10">
+          <view v-if="!isEmpty(affix?.gptAffix)" :class="['pt-10 pb-10 flex gap-10', isAPP? 'w-full':'w-1500']">
             <view class="w-5" style="background-color: #D5D5D5;"></view>
-            <text style="font-size: 32rpx; color: #858585; width: 80%;">{{ affix?.gptAffix }}</text>
+            <text style="font-size: 32rpx; color: #858585; width: 80%; display: inline-block;">{{ affix?.gptAffix }}</text>
           </view>
           <view v-if="dict.struct" class="w-full flex flex-col gap-20 mt-10">
             <view v-for="(part,i) in dict.struct?.parts" :key="'struct'+i">
@@ -816,7 +828,7 @@ watch(endX, (n, o) => {
                         :maxlength="500"
                         :adjust-position="false"
                         v-model="dict.struct.analysis"
-                        class="pr-30"
+                        :class="['pr-30', isAPP? '':'w-1500']"
                         style="font-size: 32rpx; resize: none;color: #858585;"/>
             </view>
           </view>
@@ -828,7 +840,7 @@ watch(endX, (n, o) => {
                   style="color: white; background-color: black; font-size: 24rpx;">
               <text>词源历史</text>
             </view>
-            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center "
+            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
                   @click="loadPart('origin')"
                   style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
               <image :src="dict.loadState?.originLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
@@ -842,7 +854,7 @@ watch(endX, (n, o) => {
                       :maxlength="500"
                       :adjust-position="false"
                       v-model="dict.origin"
-                      class="pr-50"
+                      :class="['pr-50', isAPP? '':'w-1500']"
                       style="font-size: 32rpx; resize: none;color: #858585;"/>
           </view>
         </view>
@@ -869,8 +881,8 @@ watch(endX, (n, o) => {
                      v-model="derivative"/>
               <image v-if="!isEmpty(derivative)"
                      @click="derivative=''"
-                     class="w-30 mr-20" mode="widthFix" src="/static/clear.png"></image>
-              <view class="w-40 h-40 rd-50 flex items-center justify-center"
+                     class="w-30 mr-20 cursor-pointer" mode="widthFix" src="/static/clear.png"></image>
+              <view class="w-40 h-40 rd-50 flex items-center justify-center cursor-pointer"
                     @click="addDerivative"
                     style="border: 1px solid black">
                 <uni-icons type="plusempty" size="16" color="black"/>
@@ -879,7 +891,7 @@ watch(endX, (n, o) => {
             <text v-if="!isEmpty(trees)" class="mt-10">词根树：</text>
             <view v-for="(t,i) in trees" :key="'tree'+i"
                   @click="tree=t"
-                  class="h-50 flex items-center gap-15">
+                  class="h-50 flex items-center gap-15 cursor-pointer">
               <view class="w-400 pl-10 pr-10 h-full flex gap-10 items-center rd-20"
                     :style="{'background-color': t.id===tree?.id? '#006E1C':'#D9E7C8'}">
                 <text class="font-bold" :style="{color: t.id===tree?.id? 'white':'black'}">{{ t.root }}</text>
@@ -890,15 +902,15 @@ watch(endX, (n, o) => {
                       :style="{border: t.id===tree?.id? '1px solid white':'1px solid black'}">
                   <image v-if="dict.loadState.mergeTreeLoading && t.id===tree.id" src="/static/loading.gif" class="w-25"
                          mode="widthFix"></image>
-                  <uni-icons v-else @click="mergeTree(t.id)" type="plusempty" size="16"
+                  <uni-icons v-else @click="mergeTree(t.id)" type="plusempty" size="16" class="cursor-pointer"
                              :color="t.id===tree?.id? 'white':'black'"/>
                 </view>
               </view>
-              <image src="/static/edit.png" class="w-30" mode="widthFix" @click="onEditTree(t)"></image>
+              <image src="/static/edit.png" class="w-30 cursor-pointer" mode="widthFix" @click="onEditTree(t)"></image>
               <uni-icons @click="onRemovePart('tree',t.id)" type="trash" size="20"
-                         color="#ba1a1a"></uni-icons>
+                         color="#ba1a1a" class="cursor-pointer"></uni-icons>
             </view>
-            <view class="h-50 w-400 rd-20 flex items-center justify-center mt-10"
+            <view class="h-50 w-400 rd-20 flex items-center justify-center mt-10 cursor-pointer"
                   @click="createTree"
                   style="background-color: #004210">
               <text v-if="!dict.loadState?.createTreeLoading" style="color:white">创建新的词根树</text>
@@ -928,7 +940,7 @@ watch(endX, (n, o) => {
                 <view class="flex flex-col gap-2">
                   <text @click="search(derivative.word)"
                         @longpress="copy(derivative.word)"
-                        :class="[inSub(derivative.word) || moveWord===derivative.word || merged(derivative)? 'font-bold':'']"
+                        :class="[inSub(derivative.word) || moveWord===derivative.word || merged(derivative)? 'font-bold':'','cursor-pointer']"
                         :style="{'font-size': '32rpx', color: moveWord===derivative.word? '#006E1C':(merged(derivative)? '#00658C':'')}">
                     {{ derivative.word }}
                   </text>
@@ -941,20 +953,20 @@ watch(endX, (n, o) => {
                     @click="onRemovePart('derivatives',derivative.word,removeDerivativePrompt,{treeId:tree.id,version:tree.version})"
                     type="close"
                     size="20"
-                    color="#ba1a1a"></uni-icons>
+                    color="#ba1a1a" class="cursor-pointer"></uni-icons>
                 <uni-icons
                     @click="onRemovePart('derivatives',derivative.word+':sub',removeDerivativePrompt,{treeId:tree.id,version:tree.version})"
                     type="clear" size="20"
-                    color="#ba1a1a"></uni-icons>
+                    color="#ba1a1a" class="cursor-pointer"></uni-icons>
                 <image
                     @click="() => {derivativesMeans[derivative.word]=!derivativesMeans[derivative.word];
                       if(moveWord===derivative.word){moveWord=''} else
                       {derivativesMeans[moveWord]=false;if(isEmpty(moveWord)) {moveWord=derivative.word;}}}"
-                    src="/static/move.png" class="w-40" mode="widthFix"></image>
+                    src="/static/move.png" class="w-40 cursor-pointer" mode="widthFix"></image>
                 <image @click="onFlat"
                        :src="flat? '/static/flat.png':'/static/fold.png'"
-                       class="w-30 ml-20" mode="widthFix"></image>
-                <text @click="onFlat">{{ "(" + subTotal(derivative.word) + ")" }}</text>
+                       class="w-30 ml-20 cursor-pointer" mode="widthFix"></image>
+                <text @click="onFlat" class="cursor-pointer">{{ "(" + subTotal(derivative.word) + ")" }}</text>
               </view>
               <view v-else-if="derivative.index===1 || flat || subFlats[derivative.word]"
                     :class="['relative flex items-center left-10', showDerivativeMean? 'h-80':'h-60']">
@@ -967,7 +979,7 @@ watch(endX, (n, o) => {
                   <view class="flex flex-col gap-2">
                     <text @click="search(derivative.word)"
                           @longpress="copy(derivative.word)"
-                          :class="['ml-5', inSub(derivative.word) || moveWord===derivative.word || merged(derivative)? 'font-bold':'']"
+                          :class="['ml-5', inSub(derivative.word) || moveWord===derivative.word || merged(derivative)? 'font-bold':'','cursor-pointer']"
                           :style="{'font-size': '32rpx', color: moveWord===derivative.word? '#006E1C':(merged(derivative)? '#00658C':'')}">
                       {{ derivative.word }}
                     </text>
@@ -982,22 +994,23 @@ watch(endX, (n, o) => {
                       @click="onRemovePart('derivatives',derivative.word,removeDerivativePrompt,{treeId:tree.id,version:tree.version})"
                       type="close"
                       size="20"
-                      color="#ba1a1a"></uni-icons>
+                      color="#ba1a1a" class="cursor-pointer"></uni-icons>
                   <uni-icons
                       @click="onRemovePart('derivatives',derivative.word+':sub',removeDerivativePrompt,{treeId:tree.id,version:tree.version})"
                       type="clear" size="20"
-                      color="#ba1a1a"></uni-icons>
+                      color="#ba1a1a" class="cursor-pointer"></uni-icons>
                   <image
                       @click="() => {derivativesMeans[derivative.word]=!derivativesMeans[derivative.word];
                         if(moveWord===derivative.word){moveWord=''} else
                         {derivativesMeans[moveWord]=false;if(isEmpty(moveWord)) {moveWord=derivative.word;}}}"
-                      src="/static/move.png" class="w-40" mode="widthFix"></image>
+                      src="/static/move.png" class="w-40 cursor-pointer" mode="widthFix"></image>
                   <image v-if="derivative.index===1 && hasFlat(derivative.word)"
                          @click="onFlats(derivative.word)"
-                         :src="flat || flats[derivative.word]? '/static/flat.png':'/static/fold.png'" class="w-30 ml-20"
+                         :src="flat || flats[derivative.word]? '/static/flat.png':'/static/fold.png'"
+                         class="w-30 ml-20 cursor-pointer"
                          mode="widthFix"></image>
                   <text v-if="derivative.index===1 && hasFlat(derivative.word)"
-                        @click="onFlats(derivative.word)">{{ "(" + subTotal(derivative.word) + ")" }}
+                        @click="onFlats(derivative.word)" class="cursor-pointer">{{ "(" + subTotal(derivative.word) + ")" }}
                   </text>
                 </view>
               </view>
@@ -1005,30 +1018,30 @@ watch(endX, (n, o) => {
           </view>
 
           <view v-if="!isEmpty(moveWord)"
-                class="fixed bottom-390 w-100 h-100 rd-100 flex items-center justify-center z-1"
+                class="fixed bottom-390 w-100 h-100 rd-100 flex items-center justify-center z-1 cursor-pointer"
                 @click="moveDerivative('up')"
                 style="background-color: #D9E7C8; opacity: .5; left: calc(50vw - 50rpx)">
             <uni-icons type="arrow-up" size="24" color="#433F3F"/>
           </view>
           <view v-if="!isEmpty(moveWord)"
-                class="fixed bottom-210 w-100 h-100 rd-100 flex items-center justify-center  z-1"
+                class="fixed bottom-210 w-100 h-100 rd-100 flex items-center justify-center  z-1 cursor-pointer"
                 @click="moveDerivative('down')"
                 style="background-color: #D9E7C8; opacity: .5; left: calc(50vw - 50rpx)">
             <uni-icons type="arrow-down" size="24" color="#433F3F"/>
           </view>
           <view v-if="!isEmpty(moveWord)"
-                class="fixed bottom-300 w-100 h-100 rd-100 flex items-center justify-center  z-1"
+                class="fixed bottom-300 w-100 h-100 rd-100 flex items-center justify-center  z-1 cursor-pointer"
                 @click="moveDerivative('left')"
                 style="background-color: #D9E7C8; opacity: .5; left: calc(50vw - 160rpx)">
             <uni-icons type="arrow-left" size="24" color="#433F3F"/>
           </view>
           <view v-if="!isEmpty(moveWord)"
-                class="fixed bottom-300 w-100 h-100 rd-100 flex items-center justify-center  z-1"
+                class="fixed bottom-300 w-100 h-100 rd-100 flex items-center justify-center  z-1 cursor-pointer"
                 @click="moveDerivative('right')"
                 style="background-color: #D9E7C8; opacity: .5; right: calc(50vw - 160rpx)">
             <uni-icons type="arrow-right" size="24" color="#433F3F"/>
           </view>
-          <view v-if="!isEmpty(moveWord)" class="fixed bottom-320 w-60 h-60 rd-60 flex items-center justify-center  z-1"
+          <view v-if="!isEmpty(moveWord)" class="fixed bottom-320 w-60 h-60 rd-60 flex items-center justify-center z-1 cursor-pointer"
                 @click="() => {if(derivativesMeans[moveWord]) derivativesMeans[moveWord]=false;moveWord='';}"
                 style="background-color: #D9E7C8; opacity: .5; left: calc(50vw - 30rpx)">
             <uni-icons type="checkmarkempty" size="24" color="#433F3F"/>
@@ -1041,7 +1054,7 @@ watch(endX, (n, o) => {
                   style="color: white; background-color: black; font-size: 24rpx;">
               <text>同义辨析</text>
             </view>
-            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center "
+            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
                   @click="loadPart('differs')"
                   style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
               <image :src="dict.loadState?.differsLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
@@ -1070,7 +1083,7 @@ watch(endX, (n, o) => {
                         style="font-size: 32rpx;">{{ differ.word }}
                   </text>
                   <uni-icons @click="onRemovePart('differs',differ.id)" type="close" size="20"
-                             color="#ba1a1a"></uni-icons>
+                             color="#ba1a1a" class="cursor-pointer"></uni-icons>
                 </view>
                 <view class="flex gap-10">
                   <div style="font-size: 28rpx; color: #858585">【定义】</div>
@@ -1100,7 +1113,7 @@ watch(endX, (n, o) => {
                   style="color: white; background-color: black; font-size: 24rpx;">
               <text>短语词组</text>
             </view>
-            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center "
+            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
                   @click="loadPart('collocation')"
                   style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
               <image :src="dict.loadState?.collocationLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
@@ -1108,7 +1121,7 @@ watch(endX, (n, o) => {
             </view>
           </view>
           <view v-if="!isEmpty(dict.collocation?.formulas)"
-                class="w-200 h-50 rd-20 font-bold flex items-center justify-center"
+                class="w-200 h-50 rd-20 font-bold flex items-center justify-center cursor-pointer"
                 @click="onRemovePart('formula','')"
                 style="color: white; background-color: #ba1a1a; font-size: 24rpx;">
             <text>删除短语公式</text>
@@ -1119,7 +1132,7 @@ watch(endX, (n, o) => {
               <view class="flex gap-10 pl-12 items-center">
                 <text class="font-bold" style="font-size: 32rpx;">{{ formula.en }}</text>
                 <uni-icons @click="onRemovePart('collocation',formula.en)" type="close" size="20"
-                           color="#ba1a1a"></uni-icons>
+                           color="#ba1a1a" class="cursor-pointer"></uni-icons>
               </view>
               <view class="flex gap-10 pl-15 mt--10">
                 <view class="w-5" style="background-color: #D5D5D5"></view>
@@ -1148,7 +1161,7 @@ watch(endX, (n, o) => {
               <view class="pl-5 flex items-center gap-5">
                 <text style="font-size: 32rpx;">{{ phrase.en }}</text>
                 <uni-icons @click="onRemovePart('collocation',phrase.en+':phrase')" type="close" size="20"
-                           color="#ba1a1a"></uni-icons>
+                           color="#ba1a1a" class="cursor-pointer"></uni-icons>
               </view>
               <view class="flex gap-10 pl-8">
                 <view class="w-5" style="background-color: #D5D5D5"></view>
@@ -1164,7 +1177,7 @@ watch(endX, (n, o) => {
                   style="color: white; background-color: black; font-size: 24rpx;">
               <text>近反义词</text>
             </view>
-            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center "
+            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
                   @click="loadPart('synAnts')"
                   style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
               <image :src="dict.loadState?.synAntsLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
@@ -1181,7 +1194,7 @@ watch(endX, (n, o) => {
                      style="font-size: 32rpx; margin-left: 20rpx;">
                   <text @click="search(synonym)" @longpress="copy(synonym)">{{ synonym }}</text>
                   <uni-icons @click="onRemovePart('synonym',synonym)" type="close" size="20"
-                             color="#ba1a1a"></uni-icons>
+                             color="#ba1a1a" class="cursor-pointer"></uni-icons>
                 </div>
               </view>
             </view>
@@ -1194,7 +1207,7 @@ watch(endX, (n, o) => {
                      style="font-size: 32rpx; margin-left: 20rpx;">
                   <text @click="search(antonym)" @longpress="copy(antonym)">{{ antonym }}</text>
                   <uni-icons @click="onRemovePart('antonym',antonym)" type="close" size="20"
-                             color="#ba1a1a"></uni-icons>
+                             color="#ba1a1a" class="cursor-pointer"></uni-icons>
                 </div>
               </view>
             </view>
@@ -1207,7 +1220,7 @@ watch(endX, (n, o) => {
                   style="color: white; background-color: black; font-size: 24rpx;">
               <text>相关例句</text>
             </view>
-            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center "
+            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
                   @click="loadPart('examples')"
                   style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
               <image :src="dict.loadState?.examplesLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
@@ -1232,32 +1245,32 @@ watch(endX, (n, o) => {
     </scroll-view>
   </view>
   <view v-if="nav.data.value.show"
-        class="fixed bottom-1050 right-60 w-100 h-100 rd-100 flex items-center justify-center"
+        class="fixed bottom-1050 w-100 h-100 rd-100 flex items-center justify-center cursor-pointer op_item"
         @click="remove"
         style="background-color: #D9E7C8; opacity: .5">
     <uni-icons type="trash" size="24" color="#858585"/>
   </view>
   <view v-if="nav.data.value.show"
-        class="fixed bottom-900 right-60 w-100 h-100 rd-100 flex items-center justify-center"
+        class="fixed bottom-900 w-100 h-100 rd-100 flex items-center justify-center cursor-pointer op_item"
         @click="search(dict.id)"
         @longpress="copy(dict.id)"
         style="background-color: #D9E7C8; opacity: .5">
     <uni-icons type="search" size="24" color="#858585"/>
   </view>
   <view v-if="nav.data.value.show"
-        class="fixed bottom-750 right-60 w-100 h-100 rd-100 flex items-center justify-center"
+        class="fixed bottom-750 w-100 h-100 rd-100 flex items-center justify-center cursor-pointer op_item"
         @click="move(-1)"
         style="background-color: #D9E7C8; opacity: .5">
     <uni-icons type="left" size="24" color="#858585"/>
   </view>
   <view v-if="nav.data.value.show"
-        class="fixed bottom-600 right-60 w-100 h-100 rd-100 flex items-center justify-center"
+        class="fixed bottom-600 w-100 h-100 rd-100 flex items-center justify-center cursor-pointer op_item"
         @click="move(1)"
         style="background-color: #D9E7C8; opacity: .5">
     <uni-icons type="right" size="24" color="#858585"/>
   </view>
   <view v-if="nav.data.value.show && !dict.passed && !loading"
-        class="fixed bottom-450 right-60 w-100 h-100 rd-100 flex items-center justify-center"
+        class="fixed bottom-450 w-100 h-100 rd-100 flex items-center justify-center cursor-pointer op_item"
         @click="pass"
         style="background-color: #D9E7C8; opacity: .5">
     <uni-icons type="checkmarkempty" size="24" color="#858585"/>
@@ -1355,6 +1368,21 @@ watch(endX, (n, o) => {
 /* #endif */
 
 /* #ifdef APP-PLUS */
+.head_body {
+  padding: 30rpx;
+  justify-content: space-between;
+}
+/* #endif */
+
+/* #ifdef H5 */
+.head_body {
+  padding-left: 300px;
+  padding-right: 300px;
+  justify-content: space-between;
+}
+/* #endif */
+
+/* #ifdef APP-PLUS */
 .item_body {
   padding-left: 30rpx;
 }
@@ -1363,6 +1391,18 @@ watch(endX, (n, o) => {
 /* #ifdef H5 */
 .item_body {
   padding-left: 100px;
+}
+/* #endif */
+
+/* #ifdef APP-PLUS */
+.op_item {
+  right: 60rpx;
+}
+/* #endif */
+
+/* #ifdef H5 */
+.op_item {
+  right: 300px;
 }
 /* #endif */
 </style>

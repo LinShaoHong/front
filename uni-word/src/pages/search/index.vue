@@ -26,7 +26,7 @@ const add = () => {
 
 <template>
   <NavigationBar/>
-  <view class="container flex flex-col gap-20 items-center justify-center">
+  <view class="page_container flex flex-col gap-20 items-center justify-center">
     <view class="relative h-20vh rd-30"
           style="width: 80%; background-color: white;box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;">
       <textarea class="w-full h-full rd-20 pl-20 pr-35 pt-35 pb-10"

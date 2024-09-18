@@ -76,6 +76,8 @@ function ifDefPlatform(): EPlatform {
 /** 平台类型 */
 export const platform: EPlatform = ifDefPlatform();
 
+/** APP */
+export const isAPP = platform === EPlatform.AppPlus;
 /** H5 */
 export const isH5 = platform === EPlatform.H5;
 /** 微信小程序 */

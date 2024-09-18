@@ -178,7 +178,7 @@ onShareAppMessage(async () => {
 
 <template>
   <NavigationBar/>
-  <view class="container">
+  <view class="page_container">
     <view class="h-full">
       <view class="relative w-full p-30 flex flex-col items-center justify-between"
             style="height: 35%;

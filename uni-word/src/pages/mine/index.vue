@@ -10,7 +10,7 @@ onShow(() => {
 
 <template>
   <NavigationBar/>
-  <view class="container">
+  <view class="page_container">
     mine
   </view>
 </template>
