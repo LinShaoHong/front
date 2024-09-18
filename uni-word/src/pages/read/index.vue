@@ -243,29 +243,29 @@ onShareAppMessage(async () => {
       <view class="w-full" :style="{height: isAPP? '65%':'55%'}">
         <view class="w-full h-30"></view>
         <view class="w-full flex pl-20 gap-10 h-50">
-          <view class="pl-20 pr-20 pt-5 pb-5 rd-10 flex items-center justify-center"
+          <view class="pl-20 pr-20 pt-5 pb-5 rd-10 flex items-center justify-center cursor-pointer"
                 @click="dictType='all'"
                 :style="{'background-color': dictType==='all'? '#D9E7C8':'#EEF0E1', 'font-size': '24rpx'}">全部
           </view>
-          <view class="pl-20 pr-20 pt-5 pb-5 rd-10 flex items-center justify-center"
+          <view class="pl-20 pr-20 pt-5 pb-5 rd-10 flex items-center justify-center cursor-pointer"
                 @click="dictType='waiting'"
                 :style="{'background-color': dictType==='waiting'? '#D9E7C8':'#EEF0E1', 'font-size': '24rpx'}">未查看
           </view>
-          <view class="pl-20 pr-20 pt-5 pb-5 rd-10 flex items-center justify-center"
+          <view class="pl-20 pr-20 pt-5 pb-5 rd-10 flex items-center justify-center cursor-pointer"
                 @click="dictType='noPass'"
                 :style="{'background-color': dictType==='noPass'? '#D9E7C8':'#EEF0E1', 'font-size': '24rpx'}">未通过
           </view>
-          <view class="pl-20 pr-20 pt-5 pb-5 rd-10 flex items-center justify-center"
+          <view class="pl-20 pr-20 pt-5 pb-5 rd-10 flex items-center justify-center cursor-pointer"
                 @click="dictType='loading'"
                 :style="{'background-color': dictType==='loading'? '#D9E7C8':'#EEF0E1', 'font-size': '24rpx'}">加载中
           </view>
-          <view class="pl-20 pr-20 pt-5 pb-5 rd-10 flex items-center justify-center"
+          <view class="pl-20 pr-20 pt-5 pb-5 rd-10 flex items-center justify-center cursor-pointer"
                 @click="dictType='passed'"
                 :style="{'background-color': dictType==='passed'? '#D9E7C8':'#EEF0E1', 'font-size': '24rpx'}">已通过
           </view>
         </view>
         <view class="w-full h-20"></view>
-        <view class="w-78vw h-75 rd-60 p-20 pr-0 ml-20 flex items-center justify-between"
+        <view :class="['h-75 rd-60 p-20 pr-0 ml-20 flex items-center justify-between', isAPP?'w-78vw':'w-50vw']"
               style="background-color: white">
           <input class="text-left"
                  :ignore-composition-event="false"
@@ -277,7 +277,7 @@ onShareAppMessage(async () => {
                  confirm-type="search"/>
           <image v-if="!isEmpty(searchQ)"
                  @click="searchQ=''"
-                 class="w-30 mr-10" mode="widthFix" src="/static/clear.png"></image>
+                 class="w-30 mr-10 cursor-pointer" mode="widthFix" src="/static/clear.png"></image>
           <view class="flex justify-center">
             <switch v-if="globalQ" checked :color="'#006E1C'" style="transform:scale(0.6);" @change="globalQ=!globalQ"/>
             <switch v-if="!globalQ" :color="'#006E1C'" style="transform:scale(0.6);" @change="globalQ=!globalQ"/>
@@ -288,7 +288,8 @@ onShareAppMessage(async () => {
           <view v-for="(dict,i) in _dicts" class="h-80 w-full pl-20 pr-20 pt-10 pb-10 flex items-center"
                 :key="dict.id"
                 :style="{'background-color': ((i+1)%2===0? '#D9E7C8':'#F8FAF0')}">
-            <view class="min-w-30vw pl-5 pr-10 cursor-pointer" @click="toCheck(formatDate(dict.loadTime,'yyyy-MM-dd'), dict.sort)">
+            <view :class="['pl-5 pr-10 cursor-pointer', isAPP? 'min-w-30vw':'min-w-10vw']"
+                  @click="toCheck(formatDate(dict.loadTime,'yyyy-MM-dd'), dict.sort)">
               <text style="font-size: 32rpx;">{{ dict.id }}</text>
             </view>
             <view class="h-20 w-20 rd-20"
