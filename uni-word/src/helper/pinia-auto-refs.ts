@@ -4,7 +4,6 @@
 // @ts-nocheck
 import type { AutoToRefs, ToRef } from 'vue'
 
-import meanStore from '@/store/mean'
 import navStore from '@/store/nav'
 
 import store from '@/store'
@@ -16,7 +15,6 @@ declare module 'vue' {
 }
 
 const storeExports = {
-  mean: meanStore,
   nav: navStore,
 }
 

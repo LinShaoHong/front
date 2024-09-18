@@ -91,7 +91,9 @@ const apiLoader = {
         treeId: treeId,
         desc: desc,
         version: version
-    })
+    }),
+
+    suggest: (word: string) => http.get<any>('/loader/suggest', {w: word})
 };
 
 export default apiLoader;

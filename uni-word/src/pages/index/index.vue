@@ -12,7 +12,6 @@ import {useTouch} from "@/hooks/useTouch";
 import {modal} from "@/utils/unis";
 
 const nav = useStore('nav');
-const mean = useStore('mean');
 const userId = nav.data.value.userId;
 let interval;
 onShow(() => {
@@ -194,7 +193,6 @@ const move = (i) => {
         scTop.value = 0;
         dict.value = data.value;
         showDerivativeMean.value = false;
-        1
         removeDerivativePrompt.value = true;
         root.value = '';
         apiLoader.affix(dict.value.id).then(data => affix.value = data.value).catch((err) => networkError());
@@ -271,9 +269,19 @@ const showDerivativeMean = ref(false);
 const removeDerivativePrompt = ref(true);
 const derivativesMeans = ref({} as Map<string, boolean>);
 
+const means = ref({} as Map<String, String>)
 watch(tree, (n, o) => {
   tree.value?.derivatives.forEach(d => {
-    mean.fetch(d.word);
+    const m = means.value[d.word];
+    if (isEmpty(m)) {
+      apiLoader.suggest(d.word).then(r => {
+        const data = JSON.parse(r.value);
+        const _m = data?.['data']?.entries[0]?.explain;
+        if (!isEmpty(_m)) {
+          means.value[d.word] = _m;
+        }
+      });
+    }
   });
 });
 
@@ -926,7 +934,7 @@ watch(endX, (n, o) => {
                   </text>
                   <view v-if="showDerivativeMean || derivativesMeans[derivative.word]" class="pl-5 max-w-300"
                         style="color:#858585; font-size:26rpx;text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-                    {{ mean.data.value.ws[derivative.word] }}
+                    {{ means[derivative.word] }}
                   </view>
                 </view>
                 <uni-icons
@@ -966,7 +974,7 @@ watch(endX, (n, o) => {
                     <view v-if="showDerivativeMean || derivativesMeans[derivative.word]" class="pl-5 max-w-300"
                           style="color:#858585; font-size:26rpx;text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
                       {{
-                        mean.data.value.ws[derivative.word]
+                        means[derivative.word]
                       }}
                     </view>
                   </view>
