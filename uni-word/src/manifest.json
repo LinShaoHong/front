@@ -78,7 +78,7 @@
   "vueVersion": "3",
   "h5": {
     "router": {
-      "base": "/h5/word/web/"
+      "base": "/h5/word/lin/web/"
     }
   }
 }

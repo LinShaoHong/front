@@ -601,7 +601,7 @@ watch(endX, (n, o) => {
           </view>
         </view>
 
-        <view class="w-full pl-30 mt-30">
+        <view class="w-full mt-30 item_body">
           <view class="flex gap-20">
             <view class="w-150 h-50 rd-20 font-bold mb-10 flex items-center justify-center"
                   style="color: white; background-color: black; font-size: 24rpx;">
@@ -622,8 +622,8 @@ watch(endX, (n, o) => {
                         :maxlength="500"
                         :adjust-position="false"
                         v-model="dict.meaning.nouns"
-                        class="pr-30"
-                        style="resize: none;font-size: 32rpx;width: 60%;"/>
+                        class="mean_text"
+                        style="resize: none;font-size: 32rpx;"/>
               <uni-icons @click="onRemovePart('meaning','nouns')" type="close" size="20" color="#ba1a1a"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.meaning?.verbs)" class="flex gap-10">
@@ -633,8 +633,8 @@ watch(endX, (n, o) => {
                         :maxlength="500"
                         :adjust-position="false"
                         v-model="dict.meaning.verbs"
-                        class="pr-30"
-                        style="resize: none;font-size: 32rpx;width: 60%;"/>
+                        class="mean_text"
+                        style="resize: none;font-size: 32rpx;"/>
               <uni-icons @click="onRemovePart('meaning','verbs')" type="close" size="20" color="#ba1a1a"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.meaning?.adverbs)" class="flex gap-10">
@@ -644,8 +644,8 @@ watch(endX, (n, o) => {
                         :maxlength="500"
                         :adjust-position="false"
                         v-model="dict.meaning.adverbs"
-                        class="pr-30"
-                        style="resize: none;font-size: 32rpx;width: 60%;"/>
+                        class="mean_text"
+                        style="resize: none;font-size: 32rpx;"/>
               <uni-icons @click="onRemovePart('meaning','adverbs')" type="close" size="20" color="#ba1a1a"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.meaning?.adjectives)" class="flex gap-10">
@@ -655,15 +655,15 @@ watch(endX, (n, o) => {
                         :maxlength="500"
                         :adjust-position="false"
                         v-model="dict.meaning.adjectives"
-                        class="pr-30"
-                        style="resize: none;font-size: 32rpx;width: 60%;"/>
+                        class="mean_text"
+                        style="resize: none;font-size: 32rpx;"/>
               <uni-icons @click="onRemovePart('meaning','adjectives')" type="close" size="20"
                          color="#ba1a1a"></uni-icons>
             </view>
           </view>
         </view>
 
-        <view class="w-full pl-30 mt-30">
+        <view class="w-full mt-30 item_body">
           <view class="flex gap-20">
             <view class="w-150 h-50 rd-20 font-bold mb-10 flex items-center justify-center"
                   style="color: white; background-color: black; font-size: 24rpx;">
@@ -721,7 +721,7 @@ watch(endX, (n, o) => {
           </view>
         </view>
 
-        <view class="w-full pl-30 mt-30">
+        <view class="w-full mt-30 item_body">
           <view class="flex gap-20">
             <view class="w-150 h-50 rd-20 font-bold mb-10 flex items-center justify-center"
                   style="color: white; background-color: black; font-size: 24rpx;">
@@ -822,7 +822,7 @@ watch(endX, (n, o) => {
           </view>
         </view>
 
-        <view class="w-full pl-30 mt-30">
+        <view class="w-full mt-30 item_body">
           <view class="flex gap-20">
             <view class="w-150 h-50 rd-20 font-bold mb-10 flex items-center justify-center"
                   style="color: white; background-color: black; font-size: 24rpx;">
@@ -847,7 +847,7 @@ watch(endX, (n, o) => {
           </view>
         </view>
 
-        <view class="w-full pl-30 mt-30">
+        <view class="w-full mt-30 item_body">
           <view class="flex gap-20">
             <view class="w-150 h-50 rd-20 font-bold mb-10 flex items-center justify-center"
                   style="color: white; background-color: black; font-size: 24rpx;">
@@ -1035,7 +1035,7 @@ watch(endX, (n, o) => {
           </view>
         </view>
 
-        <view class="w-full pl-30 mt-30">
+        <view class="w-full mt-30 item_body">
           <view class="flex gap-20">
             <view class="w-150 h-50 rd-20 font-bold mb-10 flex items-center justify-center"
                   style="color: white; background-color: black; font-size: 24rpx;">
@@ -1094,7 +1094,7 @@ watch(endX, (n, o) => {
           </view>
         </view>
 
-        <view class="w-full pl-30 mt-30">
+        <view class="w-full mt-30 item_body">
           <view class="flex gap-20">
             <view class="w-150 h-50 rd-20 font-bold mb-10 flex items-center justify-center"
                   style="color: white; background-color: black; font-size: 24rpx;">
@@ -1158,7 +1158,7 @@ watch(endX, (n, o) => {
           </view>
         </view>
 
-        <view class="w-full pl-30 mt-30">
+        <view class="w-full mt-30 item_body">
           <view class="flex gap-20">
             <view class="w-150 h-50 rd-20 font-bold mb-10 flex items-center justify-center"
                   style="color: white; background-color: black; font-size: 24rpx;">
@@ -1201,7 +1201,7 @@ watch(endX, (n, o) => {
           </view>
         </view>
 
-        <view class="w-full pl-30 mt-30">
+        <view class="w-full mt-30 item_body">
           <view class="flex gap-20">
             <view class="w-150 h-50 rd-20 font-bold mb-10 flex items-center justify-center"
                   style="color: white; background-color: black; font-size: 24rpx;">
@@ -1341,4 +1341,28 @@ watch(endX, (n, o) => {
   overflow: hidden;
   white-space: nowrap;
 }
+
+/* #ifdef APP-PLUS */
+.mean_text {
+  width: 300rpx;
+}
+/* #endif */
+
+/* #ifdef H5 */
+.mean_text {
+  width: 300px;
+}
+/* #endif */
+
+/* #ifdef APP-PLUS */
+.item_body {
+  padding-left: 30rpx;
+}
+/* #endif */
+
+/* #ifdef H5 */
+.item_body {
+  padding-left: 100px;
+}
+/* #endif */
 </style>
