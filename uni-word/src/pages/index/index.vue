@@ -10,7 +10,7 @@ import {delay} from "@/utils/calls";
 import {formatDate} from "date-fns";
 import {useTouch} from "@/hooks/useTouch";
 import {modal} from "@/utils/unis";
-import {isAPP} from "@/utils/platform";
+import {isAPP, isH5} from "@/utils/platform";
 
 const nav = useStore('nav');
 const userId = nav.data.value.userId;
@@ -18,6 +18,9 @@ let interval;
 onShow(() => {
   uni.hideTabBar();
   nav.setIndex(0);
+  if (isH5) {
+    document.onkeydown = onKeyDown;
+  }
   root.value = '';
   useMaxModel.value = false;
   interval = setInterval(() => {
@@ -180,6 +183,8 @@ const loading = computed(() => {
   }
   return ret;
 });
+
+const dictLoading = ref(false);
 const move = (i) => {
   const curr = dict.value.sort;
   let next = curr + i;
@@ -189,8 +194,10 @@ const move = (i) => {
   if (next > stat.value.total) {
     next = 1;
   }
+  dictLoading.value = true;
   apiLoader.dict(date.value, next, userId)
       .then((data) => {
+        dictLoading.value = true.false;
         scTop.value = 0;
         dict.value = data.value;
         showDerivativeMean.value = false;
@@ -202,7 +209,10 @@ const move = (i) => {
         reloadTree();
         reloadRoots();
       })
-      .catch(() => networkError());
+      .catch(() => {
+        dictLoading.value = true.false;
+        networkError();
+      });
 };
 
 //----------------- differs ----------------
@@ -454,26 +464,40 @@ const searchHeight = ref(0);
 const searchType = ref(1);
 const searchWord = ref(dict.value.id);
 const searchSrc = computed(() => {
+  let src = 'https://www.xxenglish.com/wd/' + searchWord.value;
   switch (searchType.value) {
     case 1:
-      return 'https://www.xxenglish.com/wd/' + searchWord.value;
+      src = 'https://www.xxenglish.com/wd/' + searchWord.value;
+      break;
     case 2:
-      return 'https://dict.youdao.com/result?lang=en&word=' + searchWord.value;
+      src = 'https://dict.youdao.com/result?lang=en&word=' + searchWord.value;
+      break;
     case 3:
-      return 'https://www.iciba.com/word?w=' + searchWord.value;
+      src = 'https://www.iciba.com/word?w=' + searchWord.value;
+      break;
     case 4:
-      return 'https://www.dictionary.com/browse/' + searchWord.value;
+      src = 'https://www.dictionary.com/browse/' + searchWord.value;
+      break;
     case 5:
-      return 'https://www.collinsdictionary.com/dictionary/english/' + searchWord.value;
+      src = 'https://www.collinsdictionary.com/dictionary/english/' + searchWord.value;
+      break;
     case 6:
-      return 'https://www.oxfordlearnersdictionaries.com/definition/english/' + searchWord.value + '_1?q=' + searchWord.value;
+      src = 'https://www.oxfordlearnersdictionaries.com/definition/english/' + searchWord.value + '_1?q=' + searchWord.value;
+      break;
     case 7:
-      return 'https://www.ldoceonline.com/dictionary/' + searchWord.value;
+      src = 'https://www.ldoceonline.com/dictionary/' + searchWord.value;
+      break;
     case 8:
-      return 'https://www.merriam-webster.com/dictionary/' + searchWord.value;
+      src = 'https://www.merriam-webster.com/dictionary/' + searchWord.value;
+      break;
     default:
-      return 'https://www.xxenglish.com/wd/' + searchWord.value;
+      src = 'https://www.xxenglish.com/wd/' + searchWord.value;
+      break;
   }
+  if (isH5) {
+    window.open(src);
+  }
+  return src;
 });
 const search = (w) => {
   if (isEmpty(moveWord.value)) {
@@ -507,6 +531,48 @@ watch(endX, (n, o) => {
     }
   }
 });
+
+const onKeyDown = e => {
+  if (nav.data.value.index === 0) {
+    let moving = !isEmpty(moveWord.value);
+    switch (e.key) {
+      case 'ArrowUp':
+        if (moving) {
+          moveDerivative('up');
+        }
+        break;
+      case 'ArrowRight':
+        if (moving) {
+          moveDerivative('right');
+        } else {
+          move(1);
+        }
+        break;
+      case 'ArrowLeft':
+        if (moving) {
+          moveDerivative('left');
+        } else {
+          move(-1);
+        }
+        break;
+      case 'ArrowDown':
+        if (moving) {
+          moveDerivative('down');
+        }
+        break;
+      case 'Enter':
+        if (moving) {
+          if (derivativesMeans.value[moveWord.value]) {
+            derivativesMeans.value[moveWord.value] = false;
+            moveWord.value = '';
+          }
+        }
+        break;
+      default:
+        break;
+    }
+  }
+};
 </script>
 
 <template>
@@ -572,7 +638,7 @@ watch(endX, (n, o) => {
         </view>
       </view>
     </view>
-    <scroll-view v-if="nav.data.value.show" class="w-full"
+    <scroll-view v-if="nav.data.value.show && !dictLoading" class="w-full"
                  scroll-y
                  :show-scrollbar="false"
                  :scroll-into-view="scId"
@@ -793,11 +859,17 @@ watch(endX, (n, o) => {
           </view>
           <view v-if="!isEmpty(affix?.gptRoot)" :class="['pt-10 pb-10 flex gap-10 mt-5', isAPP? 'w-full':'w-1500']">
             <view class="w-5" style="background-color: #D5D5D5;"></view>
-            <text style="font-size: 32rpx; color: #858585; width: 80%; display: inline-block;">{{ affix?.gptRoot }}</text>
+            <text style="font-size: 32rpx; color: #858585; width: 80%; display: inline-block;">{{
+                affix?.gptRoot
+              }}
+            </text>
           </view>
           <view v-if="!isEmpty(affix?.gptAffix)" :class="['pt-10 pb-10 flex gap-10', isAPP? 'w-full':'w-1500']">
             <view class="w-5" style="background-color: #D5D5D5;"></view>
-            <text style="font-size: 32rpx; color: #858585; width: 80%; display: inline-block;">{{ affix?.gptAffix }}</text>
+            <text style="font-size: 32rpx; color: #858585; width: 80%; display: inline-block;">{{
+                affix?.gptAffix
+              }}
+            </text>
           </view>
           <view v-if="dict.struct" class="w-full flex flex-col gap-20 mt-10">
             <view v-for="(part,i) in dict.struct?.parts" :key="'struct'+i">
@@ -1010,7 +1082,8 @@ watch(endX, (n, o) => {
                          class="w-30 ml-20 cursor-pointer"
                          mode="widthFix"></image>
                   <text v-if="derivative.index===1 && hasFlat(derivative.word)"
-                        @click="onFlats(derivative.word)" class="cursor-pointer">{{ "(" + subTotal(derivative.word) + ")" }}
+                        @click="onFlats(derivative.word)" class="cursor-pointer">
+                    {{ "(" + subTotal(derivative.word) + ")" }}
                   </text>
                 </view>
               </view>
@@ -1041,7 +1114,8 @@ watch(endX, (n, o) => {
                 style="background-color: #D9E7C8; opacity: .5; right: calc(50vw - 160rpx)">
             <uni-icons type="arrow-right" size="24" color="#433F3F"/>
           </view>
-          <view v-if="!isEmpty(moveWord)" class="fixed bottom-320 w-60 h-60 rd-60 flex items-center justify-center z-1 cursor-pointer"
+          <view v-if="!isEmpty(moveWord)"
+                class="fixed bottom-320 w-60 h-60 rd-60 flex items-center justify-center z-1 cursor-pointer"
                 @click="() => {if(derivativesMeans[moveWord]) derivativesMeans[moveWord]=false;moveWord='';}"
                 style="background-color: #D9E7C8; opacity: .5; left: calc(50vw - 30rpx)">
             <uni-icons type="checkmarkempty" size="24" color="#433F3F"/>
@@ -1282,46 +1356,46 @@ watch(endX, (n, o) => {
           @touchstart="touchStart" @touchend="touchEnd"
           style="background-color: #F8FAF0; padding-top: 45px;">
       <view class="flex pb-15 flex-wrap gap-15" style="align-items: flex-end; height: 55px;">
-        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000"
+        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000 cursor-pointer"
               @click="searchType=1;"
               :style="{'background-color': searchType===1? '#006E1C':'#D9E7C8',color:searchType===1?'white':'black'}">XX
         </view>
-        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000"
+        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000 cursor-pointer"
               @click="searchType=2;"
               :style="{'background-color': searchType===2? '#006E1C':'#D9E7C8',color:searchType===2?'white':'black'}">有道
         </view>
-        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000"
+        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000 cursor-pointer"
               @click="searchType=3;"
               :style="{'background-color': searchType===3? '#006E1C':'#D9E7C8',color:searchType===3?'white':'black'}">金山
         </view>
-        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000"
+        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000 cursor-pointer"
               @click="searchType=4;"
               :style="{'background-color': searchType===4? '#006E1C':'#D9E7C8',color:searchType===4?'white':'black'}">
           Dictionary
         </view>
-        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000"
+        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000 cursor-pointer"
               @click="searchType=5;"
               :style="{'background-color': searchType===5? '#006E1C':'#D9E7C8',color:searchType===5?'white':'black'}">
           Collins
         </view>
-        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000"
+        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000 cursor-pointer"
               @click="searchType=6;"
               :style="{'background-color': searchType===6? '#006E1C':'#D9E7C8',color:searchType===6?'white':'black'}">
           Oxford
         </view>
-        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000"
+        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000 cursor-pointer"
               @click="searchType=7;"
               :style="{'background-color': searchType===7? '#006E1C':'#D9E7C8',color:searchType===7?'white':'black'}">
           Longman
         </view>
-        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000"
+        <view class="pl-10 pr-10 pt-5 pb-5 rd-10 z-1000 cursor-pointer"
               @click="searchType=8;"
               :style="{'background-color': searchType===8? '#006E1C':'#D9E7C8',color:searchType===8?'white':'black'}">
           Webster
         </view>
       </view>
       <web-view v-if="showSearch"
-                :webview-styles="{width: width*0.85, height: searchHeight, left: width*0.15, top:100}"
+                :webview-styles="{width: isAPP? width*0.85:1000, height: isAPP? searchHeight:2000, left: width*0.15, top:100}"
                 :fullscreen="false"
                 :src="searchSrc">
       </web-view>
@@ -1329,7 +1403,8 @@ watch(endX, (n, o) => {
   </Popup>
   <Popup :show="showRemove" position="center"
          @clickMask="showRemove=false">
-    <view class="w-80vw h-12vh rd-30 flex items-center justify-center" style="background-color: #E8EBDA">
+    <view :class="['rd-30 flex items-center justify-center', isAPP? 'w-80vw h-12vh':'w-30vw h-20vh']"
+          style="background-color: #E8EBDA">
       <text class="font-bold" style="font-size: 36rpx;">删除该项？</text>
       <text @click="removePart" class="absolute bottom-30 right-60 font-bold" style="color:#3F6900; font-size: 32rpx;">
         确定
@@ -1338,7 +1413,8 @@ watch(endX, (n, o) => {
   </Popup>
   <Popup :show="showEditTree" position="center"
          @clickMask="showEditTree=false">
-    <view class="w-80vw pl-40 pr-40 pt-40 rd-30 flex items-center justify-center" style="background-color: #E8EBDA">
+    <view :class="['pl-40 pr-40 pt-40 rd-30 flex items-center justify-center', isAPP? 'w-80vw':'w-30vw']"
+          style="background-color: #E8EBDA">
       <textarea v-model="_editTreeRootDesc"/>
       <text @click="editTreeRootDesc" class="absolute bottom-30 right-60 font-bold"
             style="color:#3F6900; font-size: 32rpx;">
@@ -1359,12 +1435,14 @@ watch(endX, (n, o) => {
 .mean_text {
   width: 300rpx;
 }
+
 /* #endif */
 
 /* #ifdef H5 */
 .mean_text {
   width: 300px;
 }
+
 /* #endif */
 
 /* #ifdef APP-PLUS */
@@ -1372,6 +1450,7 @@ watch(endX, (n, o) => {
   padding: 30rpx;
   justify-content: space-between;
 }
+
 /* #endif */
 
 /* #ifdef H5 */
@@ -1380,29 +1459,34 @@ watch(endX, (n, o) => {
   padding-right: 300px;
   justify-content: space-between;
 }
+
 /* #endif */
 
 /* #ifdef APP-PLUS */
 .item_body {
   padding-left: 30rpx;
 }
+
 /* #endif */
 
 /* #ifdef H5 */
 .item_body {
   padding-left: 100px;
 }
+
 /* #endif */
 
 /* #ifdef APP-PLUS */
 .op_item {
   right: 60rpx;
 }
+
 /* #endif */
 
 /* #ifdef H5 */
 .op_item {
   right: 300px;
 }
+
 /* #endif */
 </style>

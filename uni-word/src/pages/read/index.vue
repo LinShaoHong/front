@@ -5,6 +5,7 @@ import apiLoader from "@/api/apiLoader";
 import {isEmpty} from "@/utils/is";
 import {delay} from "@/utils/calls";
 import {formatDate} from "date-fns";
+import {isAPP, isH5} from "@/utils/platform";
 
 const nav = useStore('nav');
 const userId = nav.data.value.userId;
@@ -181,17 +182,18 @@ onShareAppMessage(async () => {
   <view class="page_container">
     <view class="h-full">
       <view class="relative w-full p-30 flex flex-col items-center justify-between"
-            style="height: 35%;
-            background-color: #EEF0E1;
-            padding-top: calc(var(--status-bar-height) + 10px);
-            border-radius: 0 0 30rpx 30rpx;
-            box-shadow: rgba(0, 0, 0, 0.1) 0 1px 3px 0, rgba(0, 0, 0, 0.06) 0 1px 2px 0;">
+            :style="{height: isAPP? '35%':'45%',
+            'background-color': '#EEF0E1',
+            'padding-top': 'calc(var(--status-bar-height) + 10px)',
+            'border-radius': '0 0 30rpx 30rpx',
+            'box-shadow': 'rgba(0, 0, 0, 0.1) 0 1px 3px 0, rgba(0, 0, 0, 0.06) 0 1px 2px 0'}">
         <scroll-view scroll-y :show-scrollbar="false"
                      :scroll-into-view="dateId"
                      style="background-color: white;"
-                     class="w-610 h-200 rd-20 p-20">
+                     :class="['h-200 rd-10 p-20', isAPP? 'w-610':'w-1195']">
           <view class="flex flex-wrap gap-15">
-            <view v-for="sta in stats" class="relative w-180 h-50 rd-5 flex justify-center items-center p-10"
+            <view v-for="sta in stats"
+                  class="relative w-180 h-50 rd-5 flex justify-center items-center p-10 cursor-pointer"
                   :id="'date_'+sta.date"
                   :key="sta.id"
                   @click="date=sta.date"
@@ -206,7 +208,7 @@ onShareAppMessage(async () => {
             </view>
           </view>
         </scroll-view>
-        <view class="w-610 mt-20 flex flex-col gap-10">
+        <view :class="['mt-20 flex flex-col gap-10', isAPP? 'w-610':'w-1195']">
           <view class="flex flex-col">
             <text style="color: #858585; font-size: 22rpx;">已查看</text>
             <view class="flex items-center">
@@ -232,13 +234,13 @@ onShareAppMessage(async () => {
             </view>
           </view>
         </view>
-        <view class="w-610 rd-40 mt-20 pt-15 pb-15 flex items-center justify-center"
+        <view :class="['rd-40 mt-20 pt-15 pb-15 flex items-center justify-center cursor-pointer', isAPP? 'w-610':'w-1195']"
               @click="toCheck(null,0)"
               style="background-color: #006E1C">
           <text class="font-bold" style="color: white;font-size: 28rpx;">{{ '前往校验（' + date + '）' }}</text>
         </view>
       </view>
-      <view class="w-full" style="height: 65%;">
+      <view class="w-full" :style="{height: isAPP? '65%':'55%'}">
         <view class="w-full h-30"></view>
         <view class="w-full flex pl-20 gap-10 h-50">
           <view class="pl-20 pr-20 pt-5 pb-5 rd-10 flex items-center justify-center"
@@ -286,7 +288,7 @@ onShareAppMessage(async () => {
           <view v-for="(dict,i) in _dicts" class="h-80 w-full pl-20 pr-20 pt-10 pb-10 flex items-center"
                 :key="dict.id"
                 :style="{'background-color': ((i+1)%2===0? '#D9E7C8':'#F8FAF0')}">
-            <view class="min-w-30vw pl-5 pr-10" @click="toCheck(formatDate(dict.loadTime,'yyyy-MM-dd'), dict.sort)">
+            <view class="min-w-30vw pl-5 pr-10 cursor-pointer" @click="toCheck(formatDate(dict.loadTime,'yyyy-MM-dd'), dict.sort)">
               <text style="font-size: 32rpx;">{{ dict.id }}</text>
             </view>
             <view class="h-20 w-20 rd-20"

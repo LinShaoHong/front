@@ -40,7 +40,7 @@ const add = () => {
              @click="words=''"
              class="absolute top-5 right-10 w-30" mode="widthFix" src="/static/clear.png"></image>
     </view>
-    <view class="rd-30 pt-15 pb-15 flex items-center justify-center"
+    <view class="rd-30 pt-15 pb-15 flex items-center justify-center cursor-pointer"
           @click="add"
           style="width: 80%; background-color: #006E1C;box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;">
       <text style="font-weight: bold; color:white">添加</text>
