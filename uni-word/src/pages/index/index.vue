@@ -1352,7 +1352,7 @@ const onKeyDown = e => {
   <Popup :show="showSearch" position="right"
          @touchstart="touchStart" @touchend="touchEnd"
          @clickMask="() => {showSearch=false;searchHeight=0;searchWord=dict.id;searchType=1;searchSrc='https://www.xxenglish.com/wd/'+searchWord}">
-    <view class="relative w-85vw h-100vh pl-20 pr-20"
+    <view :class="['relative h-100vh pl-20 pr-20', isAPP? 'w-85vw':'w-30vw']"
           @touchstart="touchStart" @touchend="touchEnd"
           style="background-color: #F8FAF0; padding-top: 45px;">
       <view class="flex pb-15 flex-wrap gap-15" style="align-items: flex-end; height: 55px;">
