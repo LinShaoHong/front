@@ -1259,7 +1259,7 @@ const onKeyDown = e => {
             </view>
           </view>
           <view class="w-full flex flex-col gap-20 mt-10" style="width: calc(100% - 40rpx)">
-            <view class="flex items-center pb-20 pr-20" style="border-bottom: 1px solid #D5D5D5;">
+            <view class="flex items-center pb-20 pr-20" :style="{'border-bottom': isAPP? '1px solid #D5D5D5':''}">
               <view class="font-bold w-120" style="color: #858585; display: inline-block">近义词</view>
               <view class="flex flex-wrap" style="flex:1">
                 <div v-for="(synonym,i) in dict.synAnts?.synonyms"
