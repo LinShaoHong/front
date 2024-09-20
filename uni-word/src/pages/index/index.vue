@@ -1035,10 +1035,11 @@ const onKeyDown = e => {
                       if(moveWord===derivative.word){moveWord=''} else
                       {derivativesMeans[moveWord]=false;if(isEmpty(moveWord)) {moveWord=derivative.word;}}}"
                     src="/static/move.png" class="w-40 cursor-pointer" mode="widthFix"></image>
-                <image @click="onFlat"
-                       :src="flat? '/static/flat.png':'/static/fold.png'"
-                       class="w-30 ml-20 cursor-pointer" mode="widthFix"></image>
-                <text @click="onFlat" class="cursor-pointer">{{ "(" + subTotal(derivative.word) + ")" }}</text>
+                <view class="flex gap-5 items-center cursor-pointer" @click="onFlat">
+                  <image :src="flat? '/static/flat.png':'/static/fold.png'"
+                         class="w-30 ml-20 " mode="widthFix"></image>
+                  <text>{{ "(" + subTotal(derivative.word) + ")" }}</text>
+                </view>
               </view>
               <view v-else-if="derivative.index===1 || flat || subFlats[derivative.word]"
                     :class="['relative flex items-center left-10', showDerivativeMean? 'h-80':'h-60']">
@@ -1076,15 +1077,14 @@ const onKeyDown = e => {
                         if(moveWord===derivative.word){moveWord=''} else
                         {derivativesMeans[moveWord]=false;if(isEmpty(moveWord)) {moveWord=derivative.word;}}}"
                       src="/static/move.png" class="w-40 cursor-pointer" mode="widthFix"></image>
-                  <image v-if="derivative.index===1 && hasFlat(derivative.word)"
-                         @click="onFlats(derivative.word)"
-                         :src="flat || flats[derivative.word]? '/static/flat.png':'/static/fold.png'"
-                         class="w-30 ml-20 cursor-pointer"
-                         mode="widthFix"></image>
-                  <text v-if="derivative.index===1 && hasFlat(derivative.word)"
-                        @click="onFlats(derivative.word)" class="cursor-pointer">
-                    {{ "(" + subTotal(derivative.word) + ")" }}
-                  </text>
+                  <view v-if="derivative.index===1 && hasFlat(derivative.word)"
+                        class="flex gap-5 items-center cursor-pointer"
+                        @click="onFlats(derivative.word)">
+                    <image :src="flat || flats[derivative.word]? '/static/flat.png':'/static/fold.png'"
+                           mode="widthFix"
+                           class="w-30 ml-20 cursor-pointer"></image>
+                    <text>{{ "(" + subTotal(derivative.word) + ")" }}</text>
+                  </view>
                 </view>
               </view>
             </view>
