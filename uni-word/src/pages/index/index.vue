@@ -409,14 +409,15 @@ const inSub = (w) => {
     }
     if (j >= 0) {
       //prev
-      for (let i = j - 1; i >= 1; i--) {
-        if (ds[i].index == 1) {
-          if (ds[i].word === w) {
-            return true;
-          } else {
+      if (ds[j].index > 1) {
+        const arr = [];
+        for (let i = j - 1; i >= 1; i--) {
+          arr.push(ds[i].word);
+          if (ds[i].index == 1) {
             break;
           }
-        } else if (ds[i].word === w) {
+        }
+        if(arr.includes(w)) {
           return true;
         }
       }
@@ -655,8 +656,8 @@ const onKeyDown = e => {
         </view>
       </view>
     </view>
-    <view v-if="dictLoading" class="h-full w-full items-center justify-center">
-      <image class="w-180" mode="widthFix" src="/static/loading.gif"></image>
+    <view v-if="dictLoading" class="relative w-full flex items-center justify-center" style="height: calc(80% - 80px)">
+      <image :class="[isAPP? 'w-80':'w-150']" mode="widthFix" src="/static/loading.gif"></image>
     </view>
     <scroll-view v-if="nav.data.value.show && !dictLoading" class="w-full"
                  scroll-y
