@@ -404,10 +404,26 @@ const inSub = (w) => {
     for (let i = 0; i < ds.length; i++) {
       if (ds[i].word === dict.value.id) {
         j = i;
+        break;
       }
-      if (j >= 0 && i > j) {
+    }
+    if (j >= 0) {
+      //prev
+      for (let i = j - 1; i >= 1; i--) {
+        if (ds[i].index == 1) {
+          if (ds[i].word === w) {
+            return true;
+          } else {
+            break;
+          }
+        } else if (ds[i].word === w) {
+          return true;
+        }
+      }
+      //next
+      for (let i = j + 1; i < ds.length; i++) {
         if (ds[i].index <= ds[j].index) {
-          return false;
+          break;
         } else if (ds[i].word === w) {
           return true;
         }
