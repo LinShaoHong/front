@@ -385,6 +385,7 @@ const moveDerivative = (op) => {
           if (i >= 0) {
             trees.value[i] = tree.value;
           }
+          subFlats.value[moveWord.value] = true;
         }).catch(() => networkError());
   }
 };
