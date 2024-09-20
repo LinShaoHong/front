@@ -655,6 +655,9 @@ const onKeyDown = e => {
         </view>
       </view>
     </view>
+    <view v-if="dictLoading" class="h-full w-full items-center justify-center">
+      <image class="w-180" mode="widthFix" src="/static/loading.gif"></image>
+    </view>
     <scroll-view v-if="nav.data.value.show && !dictLoading" class="w-full"
                  scroll-y
                  :show-scrollbar="false"
@@ -667,7 +670,7 @@ const onKeyDown = e => {
         <view class="w-full flex items-center justify-center mt-40">
           <text @click="search(dict.id)"
                 @longpress="copy(dict.id)"
-                class="font-bold" style="font-size: 52rpx">{{ dict.id }}
+                class="font-bold cursor-pointer" style="font-size: 52rpx">{{ dict.id }}
           </text>
         </view>
         <view class="relative flex flex-col gap-10 mt-20 w-full h-100 items-center">
@@ -1335,33 +1338,33 @@ const onKeyDown = e => {
       <view class="w-full h-30"></view>
     </scroll-view>
   </view>
-  <view v-if="nav.data.value.show"
+  <view v-if="nav.data.value.show && !dictLoading"
         class="fixed bottom-1050 w-100 h-100 rd-100 flex items-center justify-center cursor-pointer op_item"
         @click="remove"
         style="background-color: #D9E7C8; opacity: .5">
     <uni-icons type="trash" size="24" color="#858585"/>
   </view>
-  <view v-if="nav.data.value.show"
+  <view v-if="nav.data.value.show && isAPP && !dictLoading"
         class="fixed bottom-900 w-100 h-100 rd-100 flex items-center justify-center cursor-pointer op_item"
         @click="search(dict.id)"
         @longpress="copy(dict.id)"
         style="background-color: #D9E7C8; opacity: .5">
     <uni-icons type="search" size="24" color="#858585"/>
   </view>
-  <view v-if="nav.data.value.show"
+  <view v-if="nav.data.value.show && isAPP && !dictLoading"
         class="fixed bottom-750 w-100 h-100 rd-100 flex items-center justify-center cursor-pointer op_item"
         @click="move(-1)"
         style="background-color: #D9E7C8; opacity: .5">
     <uni-icons type="left" size="24" color="#858585"/>
   </view>
-  <view v-if="nav.data.value.show"
+  <view v-if="nav.data.value.show && isAPP && !dictLoading"
         class="fixed bottom-600 w-100 h-100 rd-100 flex items-center justify-center cursor-pointer op_item"
         @click="move(1)"
         style="background-color: #D9E7C8; opacity: .5">
     <uni-icons type="right" size="24" color="#858585"/>
   </view>
-  <view v-if="nav.data.value.show && !dict.passed && !loading"
-        class="fixed bottom-450 w-100 h-100 rd-100 flex items-center justify-center cursor-pointer op_item"
+  <view v-if="nav.data.value.show && !dict.passed && !loading && !dictLoading"
+        :class="['fixed w-100 h-100 rd-100 flex items-center justify-center cursor-pointer op_item',isAPP?'bottom-450':'bottom-900']"
         @click="pass"
         style="background-color: #D9E7C8; opacity: .5">
     <uni-icons type="checkmarkempty" size="24" color="#858585"/>
