@@ -20,6 +20,7 @@ onShow(() => {
   nav.setIndex(0);
   if (isH5) {
     document.onkeydown = onKeyDown;
+    document.onkeyup = onKeyUp;
   }
   root.value = '';
   useMaxModel.value = false;
@@ -412,12 +413,14 @@ const inSub = (w) => {
       if (ds[j].index > 1) {
         const arr = [];
         for (let i = j - 1; i >= 1; i--) {
-          arr.push(ds[i].word);
-          if (ds[i].index == 1) {
+          if (ds[i].index === 1) {
+            arr.push(ds[i].word);
             break;
+          } else if (ds[i].index < ds[j].index) {
+            arr.push(ds[i].word);
           }
         }
-        if(arr.includes(w)) {
+        if (arr.includes(w)) {
           return true;
         }
       }
@@ -550,44 +553,54 @@ watch(endX, (n, o) => {
   }
 });
 
+const pressedKeys = ref([] as any);
+const onKeyUp = e => {
+  pressedKeys.value = [];
+};
+
 const onKeyDown = e => {
+  pressedKeys.value.push(e.key);
   if (nav.data.value.index === 0) {
-    let moving = !isEmpty(moveWord.value);
-    switch (e.key) {
-      case 'ArrowUp':
-        if (moving) {
-          moveDerivative('up');
-        }
-        break;
-      case 'ArrowRight':
-        if (moving) {
-          moveDerivative('right');
-        } else {
-          move(1);
-        }
-        break;
-      case 'ArrowLeft':
-        if (moving) {
-          moveDerivative('left');
-        } else {
-          move(-1);
-        }
-        break;
-      case 'ArrowDown':
-        if (moving) {
-          moveDerivative('down');
-        }
-        break;
-      case 'Enter':
-        if (moving) {
-          if (derivativesMeans.value[moveWord.value]) {
-            derivativesMeans.value[moveWord.value] = false;
-            moveWord.value = '';
+    if(pressedKeys.value.includes('Shift') && pressedKeys.value.includes("Enter")) {
+      pass();
+    } else {
+      const moving = !isEmpty(moveWord.value);
+      switch (e.key) {
+        case 'ArrowUp':
+          if (moving) {
+            moveDerivative('up');
           }
-        }
-        break;
-      default:
-        break;
+          break;
+        case 'ArrowRight':
+          if (moving) {
+            moveDerivative('right');
+          } else {
+            move(1);
+          }
+          break;
+        case 'ArrowLeft':
+          if (moving) {
+            moveDerivative('left');
+          } else {
+            move(-1);
+          }
+          break;
+        case 'ArrowDown':
+          if (moving) {
+            moveDerivative('down');
+          }
+          break;
+        case 'Enter':
+          if (moving) {
+            if (derivativesMeans.value[moveWord.value]) {
+              derivativesMeans.value[moveWord.value] = false;
+              moveWord.value = '';
+            }
+          }
+          break;
+        default:
+          break;
+      }
     }
   }
 };
