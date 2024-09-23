@@ -5,7 +5,7 @@ import apiLoader from "@/api/apiLoader";
 import {isEmpty} from "@/utils/is";
 import {delay} from "@/utils/calls";
 import {formatDate} from "date-fns";
-import {isAPP, isH5} from "@/utils/platform";
+import {isAPP} from "@/utils/platform";
 
 const nav = useStore('nav');
 const userId = nav.data.value.userId;
@@ -92,17 +92,50 @@ const toCheck = (d, sort) => {
 };
 const meaning = (dict) => {
   let arr: string[] = []
-  if (!isEmpty(dict.meaning?.nouns)) {
-    arr.push('n. ' + dict.meaning.nouns);
+  if (!isEmpty(dict.meaning?.noun)) {
+    arr.push('n. ' + dict.meaning.noun);
   }
-  if (!isEmpty(dict.meaning?.verbs)) {
-    arr.push('v. ' + dict.meaning.verbs);
+  if (!isEmpty(dict.meaning?.verb)) {
+    arr.push('v. ' + dict.meaning.verb);
   }
-  if (!isEmpty(dict.meaning?.adjectives)) {
-    arr.push('adj. ' + dict.meaning.adjectives);
+  if (!isEmpty(dict.meaning?.adjective)) {
+    arr.push('adj. ' + dict.meaning.adjective);
   }
-  if (!isEmpty(dict.meaning?.adverbs)) {
-    arr.push('adv. ' + dict.meaning.adverbs);
+  if (!isEmpty(dict.meaning?.adverb)) {
+    arr.push('adv. ' + dict.meaning.adverb);
+  }
+  if (!isEmpty(dict.meaning?.transitiveVerb)) {
+    arr.push('vt. ' + dict.meaning.transitiveVerb);
+  }
+  if (!isEmpty(dict.meaning?.intransitiveVerb)) {
+    arr.push('vi. ' + dict.meaning.intransitiveVerb);
+  }
+  if (!isEmpty(dict.meaning?.auxiliaryVerb)) {
+    arr.push('aux. ' + dict.meaning.auxiliaryVerb);
+  }
+  if (!isEmpty(dict.meaning?.modalVerb)) {
+    arr.push('modal. ' + dict.meaning.modalVerb);
+  }
+  if (!isEmpty(dict.meaning?.preposition)) {
+    arr.push('prep. ' + dict.meaning.preposition);
+  }
+  if (!isEmpty(dict.meaning?.pronoun)) {
+    arr.push('pron. ' + dict.meaning.pronoun);
+  }
+  if (!isEmpty(dict.meaning?.conjunction)) {
+    arr.push('conj. ' + dict.meaning.conjunction);
+  }
+  if (!isEmpty(dict.meaning?.article)) {
+    arr.push('art. ' + dict.meaning.article);
+  }
+  if (!isEmpty(dict.meaning?.interjection)) {
+    arr.push('int. ' + dict.meaning.interjection);
+  }
+  if (!isEmpty(dict.meaning?.numeral)) {
+    arr.push('num. ' + dict.meaning.numeral);
+  }
+  if (!isEmpty(dict.meaning?.determiner)) {
+    arr.push('det. ' + dict.meaning.determiner);
   }
   return arr.join(' ');
 };
@@ -234,9 +267,10 @@ onShareAppMessage(async () => {
             </view>
           </view>
         </view>
-        <view :class="['rd-40 mt-20 pt-15 pb-15 flex items-center justify-center cursor-pointer', isAPP? 'w-610':'w-1195']"
-              @click="toCheck(null,0)"
-              style="background-color: #006E1C">
+        <view
+            :class="['rd-40 mt-20 pt-15 pb-15 flex items-center justify-center cursor-pointer', isAPP? 'w-610':'w-1195']"
+            @click="toCheck(null,0)"
+            style="background-color: #006E1C">
           <text class="font-bold" style="color: white;font-size: 28rpx;">{{ '前往校验（' + date + '）' }}</text>
         </view>
       </view>
