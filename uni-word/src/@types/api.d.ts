@@ -16,10 +16,21 @@ declare namespace Word {
         usAudioId: string
         usPhonetic: string
         meaning: {
-            nouns: string
-            verbs: string
-            adjectives: string
-            adverbs: string
+            noun: string
+            verb: string
+            transitiveVerb: string
+            intransitiveVerb: string
+            auxiliaryVerb: string
+            modalVerb: string
+            adverb: string
+            adjective: string
+            preposition: string
+            pronoun: string
+            conjunction: string
+            article: string
+            interjection: string
+            numeral: string
+            determiner: string
         }
         examples: [{
             audioId: string
