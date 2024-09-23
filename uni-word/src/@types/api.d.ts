@@ -31,11 +31,15 @@ declare namespace Word {
             interjection: string
             numeral: string
             determiner: string
+            sorts: []
         }
         examples: [{
-            audioId: string
-            sentence: string
-            translation: string
+            speech: string
+            sentences: {
+                audioId: string
+                sentence: string
+                translation: string
+            }
         }]
         struct: {
             parts: [{

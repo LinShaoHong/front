@@ -412,12 +412,14 @@ const inSub = (w) => {
       //prev
       if (ds[j].index > 1) {
         const arr = [];
+        const vis = [];
         for (let i = j - 1; i >= 1; i--) {
           if (ds[i].index === 1) {
             arr.push(ds[i].word);
             break;
-          } else if (ds[i].index < ds[j].index) {
+          } else if (ds[i].index < ds[j].index && !vis.includes(ds[i].index)) {
             arr.push(ds[i].word);
+            vis.push(ds[i].index);
           }
         }
         if (arr.includes(w)) {
@@ -604,6 +606,101 @@ const onKeyDown = e => {
     }
   }
 };
+
+const mean = sp => {
+  if (sp === 'noun') {
+    return 'n.';
+  }
+  if (sp === 'verb') {
+    return "v.";
+  }
+  if (sp === 'adjective') {
+    return "adj.";
+  }
+  if (sp === 'adverb') {
+    return "adv.";
+  }
+  if (sp === 'transitiveVerb') {
+    return "vt.";
+  }
+  if (sp === 'intransitiveVerb') {
+    return "vi.";
+  }
+  if (sp === 'auxiliaryVerb') {
+    return "aux.";
+  }
+  if (sp === 'modalVerb') {
+    return "modal.";
+  }
+  if (sp === 'preposition') {
+    return "prep.";
+  }
+  if (sp === 'pronoun') {
+    return "pron.";
+  }
+  if (sp === 'conjunction') {
+    return "conj.";
+  }
+  if (sp === 'article') {
+    return "art.";
+  }
+  if (sp === 'interjection') {
+    return "int.";
+  }
+  if (sp === 'numeral') {
+    return "num.";
+  }
+  if (sp === 'determiner') {
+    return "det.";
+  }
+};
+const speech = sp => {
+  if (sp === 'noun') {
+    return 'Noun';
+  }
+  if (sp === 'verb') {
+    return "Verb";
+  }
+  if (sp === 'adjective') {
+    return "Adjective";
+  }
+  if (sp === 'adverb') {
+    return "Adverb";
+  }
+  if (sp === 'transitiveVerb') {
+    return "Vt";
+  }
+  if (sp === 'intransitiveVerb') {
+    return "Vi";
+  }
+  if (sp === 'auxiliaryVerb') {
+    return "Aux";
+  }
+  if (sp === 'modalVerb') {
+    return "Modal";
+  }
+  if (sp === 'preposition') {
+    return "Prep";
+  }
+  if (sp === 'pronoun') {
+    return "Pron";
+  }
+  if (sp === 'conjunction') {
+    return "Conj";
+  }
+  if (sp === 'article') {
+    return "Art";
+  }
+  if (sp === 'interjection') {
+    return "Int";
+  }
+  if (sp === 'numeral') {
+    return "Num";
+  }
+  if (sp === 'determiner') {
+    return "Det";
+  }
+};
 </script>
 
 <template>
@@ -719,188 +816,20 @@ const onKeyDown = e => {
             </view>
           </view>
           <view class="w-full pr-30 flex flex-col gap-10">
-            <view v-if="!isEmpty(dict.meaning?.noun)" class="flex gap-10">
-              <text style="font-size: 32rpx; color: #858585">【名】</text>
-              <textarea auto-height
-                        @blur="meaningBlur"
-                        :maxlength="500"
-                        :adjust-position="false"
-                        v-model="dict.meaning.noun"
-                        class="mean_text"
-                        style="resize: none;font-size: 32rpx;"/>
-              <uni-icons @click="onRemovePart('meaning','noun')"
-                         class="cursor-pointer"
-                         type="close" size="20" color="#ba1a1a"></uni-icons>
-            </view>
-            <view v-if="!isEmpty(dict.meaning?.verb)" class="flex gap-10">
-              <text style="font-size: 32rpx; color: #858585">【动】</text>
-              <textarea auto-height
-                        @blur="meaningBlur"
-                        :maxlength="500"
-                        :adjust-position="false"
-                        v-model="dict.meaning.verb"
-                        class="mean_text"
-                        style="resize: none;font-size: 32rpx;"/>
-              <uni-icons @click="onRemovePart('meaning','verb')"
-                         class="cursor-pointer"
-                         type="close" size="20" color="#ba1a1a"></uni-icons>
-            </view>
-            <view v-if="!isEmpty(dict.meaning?.transitiveVerb)" class="flex gap-10">
-              <text style="font-size: 32rpx; color: #858585">【动-及物】</text>
-              <textarea auto-height
-                        @blur="meaningBlur"
-                        :maxlength="500"
-                        :adjust-position="false"
-                        v-model="dict.meaning.transitiveVerb"
-                        class="mean_text"
-                        style="resize: none;font-size: 32rpx;"/>
-              <uni-icons @click="onRemovePart('meaning','transitiveVerb')" type="close" size="20"
-                         color="#ba1a1a" class="cursor-pointer"></uni-icons>
-            </view>
-            <view v-if="!isEmpty(dict.meaning?.intransitiveVerb)" class="flex gap-10">
-              <text style="font-size: 32rpx; color: #858585">【动-不及物】</text>
-              <textarea auto-height
-                        @blur="meaningBlur"
-                        :maxlength="500"
-                        :adjust-position="false"
-                        v-model="dict.meaning.intransitiveVerb"
-                        class="mean_text"
-                        style="resize: none;font-size: 32rpx;"/>
-              <uni-icons @click="onRemovePart('meaning','intransitiveVerb')" type="close" size="20"
-                         color="#ba1a1a" class="cursor-pointer"></uni-icons>
-            </view>
-            <view v-if="!isEmpty(dict.meaning?.auxiliaryVerb)" class="flex gap-10">
-              <text style="font-size: 32rpx; color: #858585">【动-助】</text>
-              <textarea auto-height
-                        @blur="meaningBlur"
-                        :maxlength="500"
-                        :adjust-position="false"
-                        v-model="dict.meaning.auxiliaryVerb"
-                        class="mean_text"
-                        style="resize: none;font-size: 32rpx;"/>
-              <uni-icons @click="onRemovePart('meaning','auxiliaryVerb')" type="close" size="20"
-                         color="#ba1a1a" class="cursor-pointer"></uni-icons>
-            </view>
-            <view v-if="!isEmpty(dict.meaning?.modalVerb)" class="flex gap-10">
-              <text style="font-size: 32rpx; color: #858585">【动-情态】</text>
-              <textarea auto-height
-                        @blur="meaningBlur"
-                        :maxlength="500"
-                        :adjust-position="false"
-                        v-model="dict.meaning.modalVerb"
-                        class="mean_text"
-                        style="resize: none;font-size: 32rpx;"/>
-              <uni-icons @click="onRemovePart('meaning','modalVerb')" type="close" size="20"
-                         color="#ba1a1a" class="cursor-pointer"></uni-icons>
-            </view>
-            <view v-if="!isEmpty(dict.meaning?.adverb)" class="flex gap-10">
-              <text style="font-size: 32rpx; color: #858585">【副】</text>
-              <textarea auto-height
-                        @blur="meaningBlur"
-                        :maxlength="500"
-                        :adjust-position="false"
-                        v-model="dict.meaning.adverb"
-                        class="mean_text"
-                        style="resize: none;font-size: 32rpx;"/>
-              <uni-icons @click="onRemovePart('meaning','adverb')"
-                         class="cursor-pointer"
-                         type="close" size="20" color="#ba1a1a"></uni-icons>
-            </view>
-            <view v-if="!isEmpty(dict.meaning?.adjective)" class="flex gap-10">
-              <text style="font-size: 32rpx; color: #858585">【形】</text>
-              <textarea auto-height
-                        @blur="meaningBlur"
-                        :maxlength="500"
-                        :adjust-position="false"
-                        v-model="dict.meaning.adjective"
-                        class="mean_text"
-                        style="resize: none;font-size: 32rpx;"/>
-              <uni-icons @click="onRemovePart('meaning','adjective')" type="close" size="20"
-                         color="#ba1a1a" class="cursor-pointer"></uni-icons>
-            </view>
-            <view v-if="!isEmpty(dict.meaning?.preposition)" class="flex gap-10">
-              <text style="font-size: 32rpx; color: #858585">【介】</text>
-              <textarea auto-height
-                        @blur="meaningBlur"
-                        :maxlength="500"
-                        :adjust-position="false"
-                        v-model="dict.meaning.preposition"
-                        class="mean_text"
-                        style="resize: none;font-size: 32rpx;"/>
-              <uni-icons @click="onRemovePart('meaning','preposition')" type="close" size="20"
-                         color="#ba1a1a" class="cursor-pointer"></uni-icons>
-            </view>
-            <view v-if="!isEmpty(dict.meaning?.pronoun)" class="flex gap-10">
-              <text style="font-size: 32rpx; color: #858585">【代】</text>
-              <textarea auto-height
-                        @blur="meaningBlur"
-                        :maxlength="500"
-                        :adjust-position="false"
-                        v-model="dict.meaning.pronoun"
-                        class="mean_text"
-                        style="resize: none;font-size: 32rpx;"/>
-              <uni-icons @click="onRemovePart('meaning','pronoun')" type="close" size="20"
-                         color="#ba1a1a" class="cursor-pointer"></uni-icons>
-            </view>
-            <view v-if="!isEmpty(dict.meaning?.conjunction)" class="flex gap-10">
-              <text style="font-size: 32rpx; color: #858585">【连】</text>
-              <textarea auto-height
-                        @blur="meaningBlur"
-                        :maxlength="500"
-                        :adjust-position="false"
-                        v-model="dict.meaning.conjunction"
-                        class="mean_text"
-                        style="resize: none;font-size: 32rpx;"/>
-              <uni-icons @click="onRemovePart('meaning','conjunction')" type="close" size="20"
-                         color="#ba1a1a" class="cursor-pointer"></uni-icons>
-            </view>
-            <view v-if="!isEmpty(dict.meaning?.article)" class="flex gap-10">
-              <text style="font-size: 32rpx; color: #858585">【冠】</text>
-              <textarea auto-height
-                        @blur="meaningBlur"
-                        :maxlength="500"
-                        :adjust-position="false"
-                        v-model="dict.meaning.article"
-                        class="mean_text"
-                        style="resize: none;font-size: 32rpx;"/>
-              <uni-icons @click="onRemovePart('meaning','article')" type="close" size="20"
-                         color="#ba1a1a" class="cursor-pointer"></uni-icons>
-            </view>
-            <view v-if="!isEmpty(dict.meaning?.interjection)" class="flex gap-10">
-              <text style="font-size: 32rpx; color: #858585">【叹】</text>
-              <textarea auto-height
-                        @blur="meaningBlur"
-                        :maxlength="500"
-                        :adjust-position="false"
-                        v-model="dict.meaning.interjection"
-                        class="mean_text"
-                        style="resize: none;font-size: 32rpx;"/>
-              <uni-icons @click="onRemovePart('meaning','interjection')" type="close" size="20"
-                         color="#ba1a1a" class="cursor-pointer"></uni-icons>
-            </view>
-            <view v-if="!isEmpty(dict.meaning?.numeral)" class="flex gap-10">
-              <text style="font-size: 32rpx; color: #858585">【数】</text>
-              <textarea auto-height
-                        @blur="meaningBlur"
-                        :maxlength="500"
-                        :adjust-position="false"
-                        v-model="dict.meaning.numeral"
-                        class="mean_text"
-                        style="resize: none;font-size: 32rpx;"/>
-              <uni-icons @click="onRemovePart('meaning','numeral')" type="close" size="20"
-                         color="#ba1a1a" class="cursor-pointer"></uni-icons>
-            </view>
-            <view v-if="!isEmpty(dict.meaning?.determiner)" class="flex gap-10">
-              <text style="font-size: 32rpx; color: #858585">【限】</text>
-              <textarea auto-height
-                        @blur="meaningBlur"
-                        :maxlength="500"
-                        :adjust-position="false"
-                        v-model="dict.meaning.determiner"
-                        class="mean_text"
-                        style="resize: none;font-size: 32rpx;"/>
-              <uni-icons @click="onRemovePart('meaning','determiner')" type="close" size="20"
-                         color="#ba1a1a" class="cursor-pointer"></uni-icons>
+            <view v-for="(m,i) in dict.meaning?.sorts" :key="'mn'+i">
+              <view v-if="!isEmpty(dict.meaning[m])" class="flex gap-10">
+                <text class="text-right" style="font-size: 32rpx; color: #858585; width:70rpx;">{{ mean(m) }}</text>
+                <textarea auto-height
+                          @blur="meaningBlur"
+                          :maxlength="500"
+                          :adjust-position="false"
+                          v-model="dict.meaning[m]"
+                          class="mean_text"
+                          style="resize: none;font-size: 32rpx;"/>
+                <uni-icons @click="onRemovePart('meaning',m)"
+                           class="cursor-pointer"
+                           type="close" size="20" color="#ba1a1a"></uni-icons>
+              </view>
             </view>
           </view>
         </view>
@@ -921,44 +850,44 @@ const onKeyDown = e => {
           <view class="flex flex-col gap-10">
             <view v-if="!isEmpty(dict.inflection?.plural)" class="flex gap-10 items-center">
               <text style="font-size: 28rpx; color: #858585">【复数】</text>
-              <text style="font-size: 32rpx;">{{ dict.inflection.plural.join(' ') }}</text>
+              <text style="font-size: 32rpx;">{{ dict.inflection.plural.join('、') }}</text>
               <uni-icons @click="onRemovePart('inflection','plural')" type="close" size="20"
                          color="#ba1a1a" class="cursor-pointer"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.inflection?.thirdPresent)" class="flex gap-10 items-center">
               <text style="font-size: 28rpx; color: #858585">【第三人称单数】</text>
-              <text style="font-size: 32rpx;">{{ dict.inflection.thirdPresent.join(' ') }}</text>
+              <text style="font-size: 32rpx;">{{ dict.inflection.thirdPresent.join('、') }}</text>
               <uni-icons @click="onRemovePart('inflection','thirdPresent')" type="close" size="20"
                          color="#ba1a1a" class="cursor-pointer"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.inflection?.past)" class="flex gap-10 items-center">
               <text style="font-size: 28rpx; color: #858585">【过去式】</text>
-              <text style="font-size: 32rpx;">{{ dict.inflection.past.join(' ') }}</text>
+              <text style="font-size: 32rpx;">{{ dict.inflection.past.join('、') }}</text>
               <uni-icons @click="onRemovePart('inflection','past')"
                          class="cursor-pointer"
                          type="close" size="20" color="#ba1a1a"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.inflection?.perfect)" class="flex gap-10 items-center">
               <text style="font-size: 28rpx; color: #858585">【过去分词】</text>
-              <text style="font-size: 32rpx;">{{ dict.inflection.perfect.join(' ') }}</text>
+              <text style="font-size: 32rpx;">{{ dict.inflection.perfect.join('、') }}</text>
               <uni-icons @click="onRemovePart('inflection','perfect')" type="close" size="20"
                          color="#ba1a1a" class="cursor-pointer"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.inflection?.progressive)" class="flex gap-10 items-center">
               <text style="font-size: 28rpx; color: #858585">【现在分词】</text>
-              <text style="font-size: 32rpx;">{{ dict.inflection.progressive.join(' ') }}</text>
+              <text style="font-size: 32rpx;">{{ dict.inflection.progressive.join('、') }}</text>
               <uni-icons @click="onRemovePart('inflection','progressive')" type="close" size="20"
                          color="#ba1a1a" class="cursor-pointer"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.inflection?.comparative)" class="flex gap-10 items-center">
               <text style="font-size: 28rpx; color: #858585">【比较级】</text>
-              <text style="font-size: 32rpx;">{{ dict.inflection.comparative.join(' ') }}</text>
+              <text style="font-size: 32rpx;">{{ dict.inflection.comparative.join('、') }}</text>
               <uni-icons @click="onRemovePart('inflection','comparative')" type="close" size="20"
                          color="#ba1a1a" class="cursor-pointer"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.inflection?.superlative)" class="flex gap-10 items-center">
               <text style="font-size: 28rpx; color: #858585">【最高级】</text>
-              <text style="font-size: 32rpx;">{{ dict.inflection.superlative.join(' ') }}</text>
+              <text style="font-size: 32rpx;">{{ dict.inflection.superlative.join('、') }}</text>
               <uni-icons @click="onRemovePart('inflection','superlative')" type="close" size="20"
                          color="#ba1a1a" class="cursor-pointer"></uni-icons>
             </view>
@@ -1467,14 +1396,19 @@ const onKeyDown = e => {
                      mode="widthFix"></image>
             </view>
           </view>
-          <view class="flex flex-col gap-30 pl-10 pr-10">
-            <view v-for="(ex,i) in dict.examples" :key="'ex'+i"
-                  class="w-full pb-10">
-              <view class="flex flex-col gap-10">
-                <text style="font-size: 32rpx; width: 90%">{{ ex.sentence }}</text>
-                <view class="flex gap-10">
-                  <view class="w-5" style="background-color: #D5D5D5;"></view>
-                  <text style="font-size: 32rpx; color: #858585; width: 80%;">{{ ex.translation }}</text>
+          <view class="flex flex-col gap-30 mt-10">
+            <view v-for="(ex,i) in dict.examples" :key="'ex'+i" class="flex flex-col gap-20">
+              <text class="pl-10" style="font-size: 36rpx; color: rgba(0, 0, 0, .45)">{{ speech(ex.speech) }}</text>
+              <view class="flex flex-col gap-30 pl-10 pr-10">
+                <view v-for="(st,j) in ex.sentences" :key="'st'+j"
+                      class="w-full pb-10">
+                  <view class="flex flex-col gap-10">
+                    <text style="font-size: 32rpx; width: 90%">{{ st.sentence }}</text>
+                    <view class="flex gap-10">
+                      <view class="w-5" style="background-color: #D5D5D5;"></view>
+                      <text style="font-size: 32rpx; color: #858585; width: 80%;">{{ st.translation }}</text>
+                    </view>
+                  </view>
                 </view>
               </view>
             </view>
