@@ -867,7 +867,7 @@ const onKeyDown = e => {
                          color="#ba1a1a" class="cursor-pointer"></uni-icons>
             </view>
             <view v-if="!isEmpty(dict.meaning?.interjection)" class="flex gap-10">
-              <text style="font-size: 32rpx; color: #858585">【感】</text>
+              <text style="font-size: 32rpx; color: #858585">【叹】</text>
               <textarea auto-height
                         @blur="meaningBlur"
                         :maxlength="500"
