@@ -366,15 +366,24 @@ const mergeTree = (treeId) => {
   });
 };
 
+const addTreeLoading = ref(false);
 const addDerivative = () => {
+  if (addTreeLoading.value) {
+    return;
+  }
   if (!isEmpty(derivative.value) && tree.value) {
-    apiLoader.addDerivative(tree.value.id, moveWord.value, derivative.value, tree.value.version).then((data) => {
+    addTreeLoading.value = true;
+    apiLoader.addDerivative(tree.value.id, dict.value.id, derivative.value).then((data) => {
       tree.value = data.value;
       const i = trees.value.map(v => v.id).indexOf(tree.value.id);
       if (i >= 0) {
         trees.value[i] = tree.value;
       }
-    }).catch(() => networkError());
+      addTreeLoading.value = false;
+    }).catch(() => {
+      addTreeLoading.value = false;
+      networkError();
+    });
   }
 };
 
@@ -1067,7 +1076,8 @@ const speech = sp => {
               <view class="w-40 h-40 rd-50 flex items-center justify-center cursor-pointer"
                     @click="addDerivative"
                     style="border: 1px solid black">
-                <uni-icons type="plusempty" size="16" color="black"/>
+                <image v-if="addTreeLoading" src="/static/loading.gif" class="w-25" mode="widthFix"></image>
+                <uni-icons v-else type="plusempty" size="16" color="black"/>
               </view>
             </view>
             <text v-if="!isEmpty(trees)" class="mt-10">词根树：</text>
