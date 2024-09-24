@@ -11,6 +11,7 @@ import {formatDate} from "date-fns";
 import {useTouch} from "@/hooks/useTouch";
 import {modal} from "@/utils/unis";
 import {isAPP, isH5} from "@/utils/platform";
+import UniTooltip from "@/uni_modules/uni-tooltip/components/uni-tooltip/uni-tooltip.vue";
 
 const nav = useStore('nav');
 const userId = nav.data.value.userId;
@@ -1127,7 +1128,9 @@ const speech = sp => {
             </view>
           </view>
           <view class="w-full flex flex-col mt-10 pl-10" style="width: calc(100% - 40rpx)">
-            <view v-for="(derivative,i) in tree?.derivatives" :key="'derivative'+i" :id="'derivative_'+derivative.word">
+            <view v-for="(derivative,i) in tree?.derivatives"
+                  :key="'derivative'+i"
+                  :id="'derivative_'+derivative.word">
               <view v-if="derivative.index===0" class="flex items-center gap-10">
                 <view class="flex flex-col gap-2">
                   <text @click="search(derivative.word)"
@@ -1170,12 +1173,17 @@ const speech = sp => {
                       style="border-top: 1px solid #D5D5D5"></view>
                 <view class="flex items-center justify-center gap-10">
                   <view class="flex flex-col gap-2">
-                    <text @click="search(derivative.word)"
-                          @longpress="copy(derivative.word)"
-                          :class="['ml-5', inSub(derivative.word) || moveWord===derivative.word || merged(derivative)? 'font-bold':'','cursor-pointer']"
-                          :style="{'font-size': '32rpx', color: moveWord===derivative.word? '#006E1C':(merged(derivative)? '#00658C':'')}">
-                      {{ derivative.word }}
-                    </text>
+                    <uni-tooltip>
+                      <template v-if="!isAPP" v-slot:content>
+                        <text style="font-size: 28rpx;">{{ derivative.word + '\n\n' + means[derivative.word] }}</text>
+                      </template>
+                      <text @click="search(derivative.word)"
+                            @longpress="copy(derivative.word)"
+                            :class="['ml-5', inSub(derivative.word) || moveWord===derivative.word || merged(derivative)? 'font-bold':'','cursor-pointer']"
+                            :style="{'font-size': '32rpx', color: moveWord===derivative.word? '#006E1C':(merged(derivative)? '#00658C':'')}">
+                        {{ derivative.word }}
+                      </text>
+                    </uni-tooltip>
                     <view v-if="showDerivativeMean || derivativesMeans[derivative.word]" class="pl-5 max-w-300"
                           style="color:#858585; font-size:26rpx;text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
                       {{
