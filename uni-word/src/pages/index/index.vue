@@ -1361,7 +1361,7 @@ const speech = sp => {
                      :key="'synonym'+i"
                      class="flex items-center"
                      style="font-size: 32rpx; margin-left: 20rpx;">
-                  <text @click="search(synonym)" @longpress="copy(synonym)">{{ synonym }}</text>
+                  <text @click="search(synonym)" @longpress="copy(synonym)" class="cursor-pointer">{{ synonym }}</text>
                   <uni-icons @click="onRemovePart('synonym',synonym)" type="close" size="20"
                              color="#ba1a1a" class="cursor-pointer"></uni-icons>
                 </div>
@@ -1374,7 +1374,7 @@ const speech = sp => {
                      :key="'antonym'+i"
                      class="flex items-center"
                      style="font-size: 32rpx; margin-left: 20rpx;">
-                  <text @click="search(antonym)" @longpress="copy(antonym)">{{ antonym }}</text>
+                  <text @click="search(antonym)" @longpress="copy(antonym)" class="cursor-pointer">{{ antonym }}</text>
                   <uni-icons @click="onRemovePart('antonym',antonym)" type="close" size="20"
                              color="#ba1a1a" class="cursor-pointer"></uni-icons>
                 </div>
