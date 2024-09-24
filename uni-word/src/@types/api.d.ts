@@ -31,6 +31,7 @@ declare namespace Word {
             interjection: string
             numeral: string
             determiner: string
+            abbreviation: string
             sorts: []
         }
         examples: [{

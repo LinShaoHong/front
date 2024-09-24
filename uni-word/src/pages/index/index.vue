@@ -165,11 +165,13 @@ const pass = () => {
       }).catch(() => networkError());
 };
 const structBlur = () => {
+  focusing.value = false;
   apiLoader.editStruct(dict.value.id, dict.value.struct)
       .then(() => reload())
       .catch(() => networkError());
 };
 const meaningBlur = () => {
+  focusing.value = false;
   apiLoader.editMeaning(dict.value.id, dict.value.meaning)
       .then(() => reload())
       .catch(() => networkError());
@@ -185,6 +187,7 @@ const loading = computed(() => {
   return ret;
 });
 
+const focusing = ref(false);
 const dictLoading = ref(false);
 const move = (i) => {
   const curr = dict.value.sort;
@@ -287,10 +290,8 @@ watch(tree, (n, o) => {
     const m = means.value[d.word];
     if (isEmpty(m)) {
       apiLoader.suggest(d.word).then(r => {
-        const data = JSON.parse(r.value);
-        const _m = data?.['data']?.entries[0]?.explain;
-        if (!isEmpty(_m)) {
-          means.value[d.word] = _m;
+        if (!isEmpty(r.value)) {
+          means.value[d.word] = r.value;
         }
       });
     }
@@ -566,6 +567,9 @@ const onKeyDown = e => {
     if (pressedKeys.value.includes('Shift') && pressedKeys.value.includes("Enter")) {
       pass();
     } else {
+      if (focusing.value) {
+        return;
+      }
       const moving = !isEmpty(moveWord.value);
       switch (e.key) {
         case 'ArrowUp':
@@ -652,6 +656,9 @@ const mean = sp => {
   }
   if (sp === 'determiner') {
     return "det.";
+  }
+  if (sp === 'abbreviation') {
+    return "abbr.";
   }
 };
 const speech = sp => {
@@ -821,6 +828,7 @@ const speech = sp => {
                 <text class="text-right" style="font-size: 32rpx; color: #858585; width:70rpx;">{{ mean(m) }}</text>
                 <textarea auto-height
                           @blur="meaningBlur"
+                          @focus="focusing=true"
                           :maxlength="500"
                           :adjust-position="false"
                           v-model="dict.meaning[m]"
@@ -903,6 +911,8 @@ const speech = sp => {
             <view class="h-50 pl-10 pr-20 rd-20 font-bold mb-10 flex items-center justify-center "
                   style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
               <input class="text-left w-230"
+                     @focus="focusing=true"
+                     @blur="focusing=false"
                      :ignore-composition-event="false"
                      style="font-size: 28rpx; font-weight: bold;"
                      v-model="root"/>
@@ -976,11 +986,13 @@ const speech = sp => {
                        :value="part.root ? 'root' : (part.prefix ? 'prefix' : part.infix ? 'infix' : part.suffix ? 'suffix' : '')"/>
                 <input class="text-left w-180"
                        @blur="structBlur"
+                       @focus="focusing=true"
                        :ignore-composition-event="false"
                        style="font-size: 32rpx; font-weight: bold;"
                        v-model="dict.struct.parts[i].part"/>
                 <textarea auto-height
                           @blur="structBlur"
+                          @focus="focusing=true"
                           :maxlength="500"
                           :adjust-position="false"
                           v-model="part.meaningTrans"
@@ -992,6 +1004,7 @@ const speech = sp => {
               <view class="w-5" style="background-color: #D5D5D5;"></view>
               <textarea auto-height
                         @blur="structBlur"
+                        @focus="focusing=true"
                         :maxlength="500"
                         :adjust-position="false"
                         v-model="dict.struct.analysis"
@@ -1043,6 +1056,8 @@ const speech = sp => {
             <view class="w-400 h-50 pl-10 pr-10 rd-20 font-bold flex items-center justify-between "
                   style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
               <input class="text-left w-230"
+                     @focus="focusing=true"
+                     @blur="focusing=false"
                      :ignore-composition-event="false"
                      style="font-size: 28rpx; font-weight: bold;"
                      v-model="derivative"/>
@@ -1515,7 +1530,7 @@ const speech = sp => {
          @clickMask="showEditTree=false">
     <view :class="['pl-40 pr-40 pt-40 rd-30 flex items-center justify-center', isAPP? 'w-80vw':'w-30vw']"
           style="background-color: #E8EBDA">
-      <textarea v-model="_editTreeRootDesc"/>
+      <textarea v-model="_editTreeRootDesc" @focus="focusing=true" @blur="focusing=false"/>
       <text @click="editTreeRootDesc" class="absolute bottom-30 right-60 font-bold"
             style="color:#3F6900; font-size: 32rpx;">
         确定
@@ -1540,7 +1555,7 @@ const speech = sp => {
 
 /* #ifdef H5 */
 .mean_text {
-  width: 300px;
+  width: 350px;
 }
 
 /* #endif */

@@ -137,6 +137,9 @@ const meaning = (dict) => {
   if (!isEmpty(dict.meaning?.determiner)) {
     arr.push('det. ' + dict.meaning.determiner);
   }
+  if (!isEmpty(dict.meaning?.abbreviation)) {
+    arr.push('abbr. ' + dict.meaning.abbreviation);
+  }
   return arr.join(' ');
 };
 const icon = (dict) => {
