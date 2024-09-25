@@ -1298,7 +1298,7 @@ const speech = sp => {
                 <div style="font-size: 28rpx; color: #858585; display: inline-block">【例句】</div>
                 <view v-for="(ex,i) in differ.examples" :key="'example'+i"
                       class="w-full pl-10 pb-10 mt-5 flex flex-col gap-10">
-                  <text class="pl-5" style="font-size: 32rpx; width: 90%;">{{ ex.sentence }}</text>
+                  <text selectable class="pl-5" style="font-size: 32rpx; width: 90%;">{{ ex.sentence }}</text>
                   <view class="flex gap-10 pl-8">
                     <view class="w-5" style="background-color: #D5D5D5"></view>
                     <text style="font-size: 32rpx; color: #858585; width:80%;">{{ ex.translation }}</text>
@@ -1344,7 +1344,7 @@ const speech = sp => {
               <view class="flex flex-col gap-25 pl-15">
                 <view v-for="(ex,j) in formula.examples" :key="'fex'+j" class="flex flex-col gap-10">
                   <view class="flex items-center">
-                    <text style="font-size: 32rpx;">{{ ex.sentence }}</text>
+                    <text selectable style="font-size: 32rpx;">{{ ex.sentence }}</text>
                   </view>
                   <view class="flex gap-10">
                     <view class="w-5" style="background-color: #D5D5D5"></view>
@@ -1436,7 +1436,7 @@ const speech = sp => {
                 <view v-for="(st,j) in ex.sentences" :key="'st'+j"
                       class="w-full pb-10">
                   <view class="flex flex-col gap-10">
-                    <text style="font-size: 32rpx; width: 90%">{{ st.sentence }}</text>
+                    <text selectable style="font-size: 32rpx; width: 90%">{{ st.sentence }}</text>
                     <view class="flex gap-10">
                       <view class="w-5" style="background-color: #D5D5D5;"></view>
                       <text style="font-size: 32rpx; color: #858585; width: 80%;">{{ st.translation }}</text>
