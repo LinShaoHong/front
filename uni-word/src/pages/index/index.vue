@@ -224,6 +224,24 @@ const move = (i) => {
 const differs = ref([] as Word.Diff[]);
 watch(dict, (n, o) => {
   apiLoader.differs(dict.value.id).then(data => differs.value = data.values).catch(() => networkError());
+  dict.value.synAnts?.synonyms?.forEach(w => {
+    if (isEmpty(means.value[w])) {
+      apiLoader.suggest(w).then(r => {
+        if (!isEmpty(r.value)) {
+          means.value[w] = r.value;
+        }
+      });
+    }
+  });
+  dict.value.synAnts?.antonyms?.forEach(w => {
+    if (isEmpty(means.value[w])) {
+      apiLoader.suggest(w).then(r => {
+        if (!isEmpty(r.value)) {
+          means.value[w] = r.value;
+        }
+      });
+    }
+  });
 });
 
 //----------------- derivatives ----------------
@@ -1394,7 +1412,12 @@ const speech = sp => {
                      :key="'synonym'+i"
                      class="flex items-center"
                      style="font-size: 32rpx; margin-left: 20rpx;">
-                  <text @click="search(synonym)" @longpress="copy(synonym)" class="cursor-pointer">{{ synonym }}</text>
+                  <uni-tooltip>
+                    <template v-if="!isAPP" v-slot:content>
+                      <text style="font-size: 28rpx;">{{ synonym + '\n\n' + means[synonym] }}</text>
+                    </template>
+                    <text @click="search(synonym)" @longpress="copy(synonym)" class="cursor-pointer">{{ synonym }}</text>
+                  </uni-tooltip>
                   <uni-icons @click="onRemovePart('synonym',synonym)" type="close" size="20"
                              color="#ba1a1a" class="cursor-pointer"></uni-icons>
                 </div>
@@ -1407,7 +1430,12 @@ const speech = sp => {
                      :key="'antonym'+i"
                      class="flex items-center"
                      style="font-size: 32rpx; margin-left: 20rpx;">
-                  <text @click="search(antonym)" @longpress="copy(antonym)" class="cursor-pointer">{{ antonym }}</text>
+                  <uni-tooltip>
+                    <template v-if="!isAPP" v-slot:content>
+                      <text style="font-size: 28rpx;">{{ antonym + '\n\n' + means[antonym] }}</text>
+                    </template>
+                    <text @click="search(antonym)" @longpress="copy(synonym)" class="cursor-pointer">{{ antonym }}</text>
+                  </uni-tooltip>
                   <uni-icons @click="onRemovePart('antonym',antonym)" type="close" size="20"
                              color="#ba1a1a" class="cursor-pointer"></uni-icons>
                 </div>
