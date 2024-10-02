@@ -66,10 +66,11 @@ class IntroScreen extends StatelessWidget {
 }
 
 class _TokenWidget extends StatefulWidget {
-  const _TokenWidget(
-      {required this.maxHeight,
-      required this.viewportHeight,
-      required this.token});
+  const _TokenWidget({
+    required this.maxHeight,
+    required this.viewportHeight,
+    required this.token,
+  });
 
   final double maxHeight;
   final double viewportHeight;
@@ -322,8 +323,12 @@ class _OverlayPainter extends CustomPainter {
     path.lineTo(pos + len / 2, down ? len : size.height - len);
     path.lineTo(size.width, down ? len : size.height - len);
     path.arcTo(
-      Rect.fromLTWH(size.width - radius,
-          down ? len : size.height - len - radius, radius, radius),
+      Rect.fromLTWH(
+        size.width - radius,
+        down ? len : size.height - len - radius,
+        radius,
+        radius,
+      ),
       down ? 1.5 * pi : 0.5 * pi,
       down ? 0.5 * pi : -0.5 * pi,
       false,
@@ -331,7 +336,11 @@ class _OverlayPainter extends CustomPainter {
     path.lineTo(size.width, down ? size.height : 0);
     path.arcTo(
       Rect.fromLTWH(
-          size.width - radius, down ? size.height - radius : 0, radius, radius),
+        size.width - radius,
+        down ? size.height - radius : 0,
+        radius,
+        radius,
+      ),
       0,
       down ? 0.5 * pi : -0.5 * pi,
       false,
