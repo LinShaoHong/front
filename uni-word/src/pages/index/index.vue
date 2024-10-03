@@ -1468,7 +1468,7 @@ const speech = sp => {
                   :style="{color: 'black', 'font-size': '24rpx', 'background-color': dict.fromModel?.synAnts==='qwen'? '#D9E7C8':'#EEF0E1'}">
               <text class="mr-10">Ali</text>
               <image
-                  :src="dict.loadState?.collocationLoading && dict.fromModel?.synAnts==='qwen'? '/static/loading.gif':'/static/get.png'"
+                  :src="dict.loadState?.synAntsLoading && dict.fromModel?.synAnts==='qwen'? '/static/loading.gif':'/static/get.png'"
                   class="w-25"
                   mode="widthFix"></image>
             </view>
@@ -1477,7 +1477,7 @@ const speech = sp => {
                   :style="{color: 'black', 'font-size': '24rpx', 'background-color': dict.fromModel?.synAnts==='doubao'? '#D9E7C8':'#EEF0E1'}">
               <text class="mr-10">Dou</text>
               <image
-                  :src="dict.loadState?.collocationLoading && dict.fromModel?.synAnts==='doubao'? '/static/loading.gif':'/static/get.png'"
+                  :src="dict.loadState?.synAntsLoading && dict.fromModel?.synAnts==='doubao'? '/static/loading.gif':'/static/get.png'"
                   class="w-25"
                   mode="widthFix"></image>
             </view>
@@ -1539,7 +1539,7 @@ const speech = sp => {
                   :style="{color: 'black', 'font-size': '24rpx', 'background-color': dict.fromModel?.examples==='qwen'? '#D9E7C8':'#EEF0E1'}">
               <text class="mr-10">Ali</text>
               <image
-                  :src="dict.loadState?.collocationLoading && dict.fromModel?.examples==='qwen'? '/static/loading.gif':'/static/get.png'"
+                  :src="dict.loadState?.examplesLoading && dict.fromModel?.examples==='qwen'? '/static/loading.gif':'/static/get.png'"
                   class="w-25"
                   mode="widthFix"></image>
             </view>
@@ -1548,7 +1548,7 @@ const speech = sp => {
                   :style="{color: 'black', 'font-size': '24rpx', 'background-color': dict.fromModel?.examples==='doubao'? '#D9E7C8':'#EEF0E1'}">
               <text class="mr-10">Dou</text>
               <image
-                  :src="dict.loadState?.collocationLoading && dict.fromModel?.examples==='doubao'? '/static/loading.gif':'/static/get.png'"
+                  :src="dict.loadState?.examplesLoading && dict.fromModel?.examples==='doubao'? '/static/loading.gif':'/static/get.png'"
                   class="w-25"
                   mode="widthFix"></image>
             </view>
