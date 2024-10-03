@@ -23,8 +23,6 @@ onShow(() => {
     document.onkeydown = onKeyDown;
     document.onkeyup = onKeyUp;
   }
-  root.value = '';
-  useMaxModel.value = false;
   interval = setInterval(() => {
     let loading = false;
     for (const key in dict.value.loadState) {
@@ -104,7 +102,8 @@ const reload = () => {
   });
 }
 const root = ref('');
-const loadPart = (part, attr?) => {
+const dRoot = ref('');
+const loadPart = (part, attr) => {
   if (!dict.value.loadState) {
     dict.value.loadState = {} as any;
   }
@@ -112,11 +111,12 @@ const loadPart = (part, attr?) => {
     return;
   }
   dict.value.loadState[part + 'Loading'] = true;
+  console.log(part,attr['$name']);
+  dict.value.fromModel[part] = attr['$name'];
   apiLoader.loadPart(dict.value.id, part, attr, userId).then(() => {
-    reload();
+    delay(1000).then(() => reload());
   }).catch(() => networkError());
 }
-const useMaxModel = ref(false);
 const showRemove = ref(false);
 const _removePart = ref('');
 const _removePath = ref('');
@@ -208,6 +208,7 @@ const move = (i) => {
         showDerivativeMean.value = false;
         removeDerivativePrompt.value = true;
         root.value = '';
+        dRoot.value = '';
         apiLoader.affix(dict.value.id).then(data => affix.value = data.value).catch((err) => networkError());
         scTop.value = oscTop.value;
         nextTick(() => scTop.value = 0);
@@ -843,11 +844,24 @@ const speech = sp => {
                   style="color: white; background-color: black; font-size: 24rpx;">
               <text>中文释义</text>
             </view>
-            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
-                  @click="loadPart('meaning')"
-                  style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
-              <image :src="dict.loadState?.meaningLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
-                     mode="widthFix"></image>
+            <view class="h-50 pl-10 pr-10 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
+                  @click="loadPart('meaning', {$name:'qwen'})"
+                  :style="{color: 'black', 'font-size': '24rpx', 'background-color': dict.fromModel?.meaning==='qwen'? '#D9E7C8':'#EEF0E1'}">
+              <text class="mr-10">Ali</text>
+              <image
+                  :src="dict.loadState?.meaningLoading && dict.fromModel?.meaning==='qwen'? '/static/loading.gif':'/static/get.png'"
+                  class="w-25"
+                  mode="widthFix"></image>
+            </view>
+
+            <view class="h-50 pl-10 pr-10 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
+                  @click="loadPart('meaning', {$name:'doubao'})"
+                  :style="{color: 'black', 'font-size': '24rpx', 'background-color': dict.fromModel?.meaning==='doubao'? '#D9E7C8':'#EEF0E1'}">
+              <text class="mr-10">Dou</text>
+              <image
+                  :src="dict.loadState?.meaningLoading && dict.fromModel?.meaning==='doubao'? '/static/loading.gif':'/static/get.png'"
+                  class="w-25"
+                  mode="widthFix"></image>
             </view>
           </view>
           <view class="w-full pr-30 flex flex-col gap-10">
@@ -936,37 +950,55 @@ const speech = sp => {
                   style="color: white; background-color: black; font-size: 24rpx;">
               <text>词根词缀</text>
             </view>
-            <view class="h-50 pl-10 pr-20 rd-20 font-bold mb-10 flex items-center justify-center "
-                  style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
-              <input class="text-left w-230"
-                     @focus="focusing=true"
-                     @blur="focusing=false"
-                     :ignore-composition-event="false"
-                     style="font-size: 28rpx; font-weight: bold;"
-                     v-model="root"/>
-              <image v-if="!isEmpty(root)"
-                     @click="root=''"
-                     class="w-30 mr-20 cursor-pointer" mode="widthFix" src="/static/clear.png"></image>
-              <image :src="dict.loadState?.structLoading? '/static/loading.gif':'/static/get.png'"
-                     class="w-25 cursor-pointer"
-                     @click="loadPart('struct',{root: root, model: useMaxModel? 'qwen-max':''})"
-                     mode="widthFix"></image>
-            </view>
-            <uni-icons @click="onRemovePart('struct','')" type="trash" size="20"
-                       color="#ba1a1a" class="cursor-pointer"></uni-icons>
-          </view>
-          <view class="flex gap-20 items-center mb-10">
+
             <view class="w-200 h-50 rd-20 font-bold flex items-center justify-center cursor-pointer"
                   @click="copyAffixAI"
                   style="color: white; background-color: #006E1C; font-size: 24rpx;">
               <text>复制AI提示词</text>
             </view>
-            <text class="mr--35 ml-10">使用Max模型:</text>
-            <view class="flex justify-center">
-              <switch v-if="useMaxModel" checked :color="'#D9E7C8'" style="transform:scale(0.6);"
-                      @change="() => {useMaxModel=false;}"/>
-              <switch v-if="!useMaxModel" :color="'#D9E7C8'" style="transform:scale(0.5);"
-                      @change="useMaxModel=true"/>
+
+            <uni-icons @click="onRemovePart('struct','')" type="trash" size="20"
+                       color="#ba1a1a" class="cursor-pointer"></uni-icons>
+          </view>
+          <view class="flex flex-col gap-10 mt-10">
+            <view class="flex">
+              <view class="h-50 pl-10 pr-20 rd-20 font-bold mb-10 flex items-center"
+                    :style="{color: 'black', 'font-size': '24rpx', 'background-color': dict.fromModel?.struct==='qwen'? '#D9E7C8':'#EEF0E1'}">
+                <input class="text-left w-230"
+                       @focus="focusing=true"
+                       @blur="focusing=false"
+                       :ignore-composition-event="false"
+                       style="font-size: 28rpx; font-weight: bold;"
+                       v-model="root"/>
+                <image v-if="!isEmpty(root)"
+                       @click="root=''"
+                       class="w-30 mr-20 cursor-pointer" mode="widthFix" src="/static/clear.png"></image>
+                <text class="mr-5">Ali</text>
+                <image :src="dict.loadState?.structLoading && dict.fromModel?.struct==='qwen'? '/static/loading.gif':'/static/get.png'"
+                       class="w-25 cursor-pointer"
+                       @click="loadPart('struct',{$name: 'qwen', root: root})"
+                       mode="widthFix"></image>
+              </view>
+            </view>
+
+            <view class="flex">
+              <view class="h-50 pl-10 pr-20 rd-20 font-bold mb-10 flex items-center"
+                    :style="{color: 'black', 'font-size': '24rpx', 'background-color': dict.fromModel?.struct==='doubao'? '#D9E7C8':'#EEF0E1'}">
+                <input class="text-left w-230"
+                       @focus="focusing=true"
+                       @blur="focusing=false"
+                       :ignore-composition-event="false"
+                       style="font-size: 28rpx; font-weight: bold;"
+                       v-model="dRoot"/>
+                <image v-if="!isEmpty(dRoot)"
+                       @click="dRoot=''"
+                       class="w-30 mr-20 cursor-pointer" mode="widthFix" src="/static/clear.png"></image>
+                <text class="mr-5">Dou</text>
+                <image :src="dict.loadState?.structLoading && dict.fromModel?.struct==='doubao'? '/static/loading.gif':'/static/get.png'"
+                       class="w-25 cursor-pointer"
+                       @click="loadPart('struct',{$name: 'doubao', root: dRoot})"
+                       mode="widthFix"></image>
+              </view>
             </view>
           </view>
           <view v-if="!isEmpty(affix?.root)" class="w-full pt-10 pb-10 flex gap-10 mt-5">
@@ -1048,11 +1080,23 @@ const speech = sp => {
                   style="color: white; background-color: black; font-size: 24rpx;">
               <text>词源历史</text>
             </view>
-            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
-                  @click="loadPart('origin')"
-                  style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
-              <image :src="dict.loadState?.originLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
-                     mode="widthFix"></image>
+            <view class="h-50 pl-10 pr-10 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
+                  @click="loadPart('origin', {$name:'qwen'})"
+                  :style="{color: 'black', 'font-size': '24rpx', 'background-color': dict.fromModel?.origin==='qwen'? '#D9E7C8':'#EEF0E1'}">
+              <text class="mr-10">Ali</text>
+              <image
+                  :src="dict.loadState?.originLoading && dict.fromModel?.origin==='qwen'? '/static/loading.gif':'/static/get.png'"
+                  class="w-25"
+                  mode="widthFix"></image>
+            </view>
+            <view class="h-50 pl-10 pr-10 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
+                  @click="loadPart('origin', {$name:'doubao'})"
+                  :style="{color: 'black', 'font-size': '24rpx', 'background-color': dict.fromModel?.origin==='doubao'? '#D9E7C8':'#EEF0E1'}">
+              <text class="mr-10">Dou</text>
+              <image
+                  :src="dict.loadState?.originLoading && dict.fromModel?.origin==='doubao'? '/static/loading.gif':'/static/get.png'"
+                  class="w-25"
+                  mode="widthFix"></image>
             </view>
           </view>
           <view v-if="dict.origin" class="w-full flex gap-20 mt-10">
@@ -1274,11 +1318,23 @@ const speech = sp => {
                   style="color: white; background-color: black; font-size: 24rpx;">
               <text>同义辨析</text>
             </view>
-            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
-                  @click="loadPart('differs')"
-                  style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
-              <image :src="dict.loadState?.differsLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
-                     mode="widthFix"></image>
+            <view class="h-50 pl-10 pr-10 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
+                  @click="loadPart('differs', {$name:'qwen'})"
+                  :style="{color: 'black', 'font-size': '24rpx', 'background-color': dict.fromModel?.differs==='qwen'? '#D9E7C8':'#EEF0E1'}">
+              <text class="mr-10">Ali</text>
+              <image
+                  :src="dict.loadState?.differsLoading && dict.fromModel?.differs==='qwen'? '/static/loading.gif':'/static/get.png'"
+                  class="w-25"
+                  mode="widthFix"></image>
+            </view>
+            <view class="h-50 pl-10 pr-10 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
+                  @click="loadPart('differs', {$name:'doubao'})"
+                  :style="{color: 'black', 'font-size': '24rpx', 'background-color': dict.fromModel?.differs==='doubao'? '#D9E7C8':'#EEF0E1'}">
+              <text class="mr-10">Dou</text>
+              <image
+                  :src="dict.loadState?.differsLoading && dict.fromModel?.differs==='doubao'? '/static/loading.gif':'/static/get.png'"
+                  class="w-25"
+                  mode="widthFix"></image>
             </view>
           </view>
           <view class="flex flex-col gap-25">
@@ -1333,11 +1389,23 @@ const speech = sp => {
                   style="color: white; background-color: black; font-size: 24rpx;">
               <text>短语词组</text>
             </view>
-            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
-                  @click="loadPart('collocation')"
-                  style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
-              <image :src="dict.loadState?.collocationLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
-                     mode="widthFix"></image>
+            <view class="h-50 pl-10 pr-10 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
+                  @click="loadPart('collocation',{$name:'qwen'})"
+                  :style="{color: 'black', 'font-size': '24rpx', 'background-color': dict.fromModel?.collocation==='qwen'? '#D9E7C8':'#EEF0E1'}">
+              <text class="mr-10">Ali</text>
+              <image
+                  :src="dict.loadState?.collocationLoading && dict.fromModel?.collocation==='qwen'? '/static/loading.gif':'/static/get.png'"
+                  class="w-25"
+                  mode="widthFix"></image>
+            </view>
+            <view class="h-50 pl-10 pr-10 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
+                  @click="loadPart('collocation',{$name:'doubao'})"
+                  :style="{color: 'black', 'font-size': '24rpx', 'background-color': dict.fromModel?.collocation==='doubao'? '#D9E7C8':'#EEF0E1'}">
+              <text class="mr-10">Dou</text>
+              <image
+                  :src="dict.loadState?.collocationLoading && dict.fromModel?.collocation==='doubao'? '/static/loading.gif':'/static/get.png'"
+                  class="w-25"
+                  mode="widthFix"></image>
             </view>
           </view>
           <view v-if="!isEmpty(dict.collocation?.formulas)"
@@ -1397,11 +1465,23 @@ const speech = sp => {
                   style="color: white; background-color: black; font-size: 24rpx;">
               <text>近反义词</text>
             </view>
-            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
-                  @click="loadPart('synAnts')"
-                  style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
-              <image :src="dict.loadState?.synAntsLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
-                     mode="widthFix"></image>
+            <view class="h-50 pl-10 pr-10 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
+                  @click="loadPart('synAnts',{$name:'qwen'})"
+                  :style="{color: 'black', 'font-size': '24rpx', 'background-color': dict.fromModel?.synAnts==='qwen'? '#D9E7C8':'#EEF0E1'}">
+              <text class="mr-10">Ali</text>
+              <image
+                  :src="dict.loadState?.collocationLoading && dict.fromModel?.synAnts==='qwen'? '/static/loading.gif':'/static/get.png'"
+                  class="w-25"
+                  mode="widthFix"></image>
+            </view>
+            <view class="h-50 pl-10 pr-10 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
+                  @click="loadPart('synAnts',{$name:'doubao'})"
+                  :style="{color: 'black', 'font-size': '24rpx', 'background-color': dict.fromModel?.synAnts==='doubao'? '#D9E7C8':'#EEF0E1'}">
+              <text class="mr-10">Dou</text>
+              <image
+                  :src="dict.loadState?.collocationLoading && dict.fromModel?.synAnts==='doubao'? '/static/loading.gif':'/static/get.png'"
+                  class="w-25"
+                  mode="widthFix"></image>
             </view>
           </view>
           <view class="w-full flex flex-col gap-20 mt-10" style="width: calc(100% - 40rpx)">
@@ -1416,7 +1496,10 @@ const speech = sp => {
                     <template v-if="!isAPP" v-slot:content>
                       <text style="font-size: 28rpx;">{{ synonym + '\n\n' + means[synonym] }}</text>
                     </template>
-                    <text @click="search(synonym)" @longpress="copy(synonym)" class="cursor-pointer">{{ synonym }}</text>
+                    <text @click="search(synonym)" @longpress="copy(synonym)" class="cursor-pointer">{{
+                        synonym
+                      }}
+                    </text>
                   </uni-tooltip>
                   <uni-icons @click="onRemovePart('synonym',synonym)" type="close" size="20"
                              color="#ba1a1a" class="cursor-pointer"></uni-icons>
@@ -1434,7 +1517,10 @@ const speech = sp => {
                     <template v-if="!isAPP" v-slot:content>
                       <text style="font-size: 28rpx;">{{ antonym + '\n\n' + means[antonym] }}</text>
                     </template>
-                    <text @click="search(antonym)" @longpress="copy(synonym)" class="cursor-pointer">{{ antonym }}</text>
+                    <text @click="search(antonym)" @longpress="copy(synonym)" class="cursor-pointer">{{
+                        antonym
+                      }}
+                    </text>
                   </uni-tooltip>
                   <uni-icons @click="onRemovePart('antonym',antonym)" type="close" size="20"
                              color="#ba1a1a" class="cursor-pointer"></uni-icons>
@@ -1450,11 +1536,23 @@ const speech = sp => {
                   style="color: white; background-color: black; font-size: 24rpx;">
               <text>相关例句</text>
             </view>
-            <view class="h-50 w-80 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
-                  @click="loadPart('examples')"
-                  style="color: black; background-color: #D9E7C8; font-size: 24rpx;">
-              <image :src="dict.loadState?.examplesLoading? '/static/loading.gif':'/static/get.png'" class="w-25"
-                     mode="widthFix"></image>
+            <view class="h-50 pl-10 pr-10 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
+                  @click="loadPart('examples',{$name:'qwen'})"
+                  :style="{color: 'black', 'font-size': '24rpx', 'background-color': dict.fromModel?.examples==='qwen'? '#D9E7C8':'#EEF0E1'}">
+              <text class="mr-10">Ali</text>
+              <image
+                  :src="dict.loadState?.collocationLoading && dict.fromModel?.examples==='qwen'? '/static/loading.gif':'/static/get.png'"
+                  class="w-25"
+                  mode="widthFix"></image>
+            </view>
+            <view class="h-50 pl-10 pr-10 rd-20 font-bold mb-10 flex items-center justify-center cursor-pointer"
+                  @click="loadPart('examples',{$name:'doubao'})"
+                  :style="{color: 'black', 'font-size': '24rpx', 'background-color': dict.fromModel?.examples==='doubao'? '#D9E7C8':'#EEF0E1'}">
+              <text class="mr-10">Dou</text>
+              <image
+                  :src="dict.loadState?.collocationLoading && dict.fromModel?.examples==='doubao'? '/static/loading.gif':'/static/get.png'"
+                  class="w-25"
+                  mode="widthFix"></image>
             </view>
           </view>
           <view class="flex flex-col gap-30 mt-10">

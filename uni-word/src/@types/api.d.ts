@@ -101,6 +101,15 @@ declare namespace Word {
             createTreeLoading: boolean
             mergeTreeLoading: boolean
         }
+        fromModel: {
+            meaning: string
+            examples: string
+            struct: string
+            origin: string
+            synAnts: string
+            differs: string
+            collocation: string
+        }
         passed: boolean
         loadTime: any
         passTime: any
