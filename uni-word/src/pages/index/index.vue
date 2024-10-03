@@ -102,7 +102,6 @@ const reload = () => {
   });
 }
 const root = ref('');
-const dRoot = ref('');
 const loadPart = (part, attr) => {
   if (!dict.value.loadState) {
     dict.value.loadState = {} as any;
@@ -208,7 +207,6 @@ const move = (i) => {
         showDerivativeMean.value = false;
         removeDerivativePrompt.value = true;
         root.value = '';
-        dRoot.value = '';
         apiLoader.affix(dict.value.id).then(data => affix.value = data.value).catch((err) => networkError());
         scTop.value = oscTop.value;
         nextTick(() => scTop.value = 0);
@@ -989,14 +987,14 @@ const speech = sp => {
                        @blur="focusing=false"
                        :ignore-composition-event="false"
                        style="font-size: 28rpx; font-weight: bold;"
-                       v-model="dRoot"/>
-                <image v-if="!isEmpty(dRoot)"
-                       @click="dRoot=''"
+                       v-model="root"/>
+                <image v-if="!isEmpty(root)"
+                       @click="root=''"
                        class="w-30 mr-20 cursor-pointer" mode="widthFix" src="/static/clear.png"></image>
                 <text class="mr-5">Dou</text>
                 <image :src="dict.loadState?.structLoading && dict.fromModel?.struct==='doubao'? '/static/loading.gif':'/static/get.png'"
                        class="w-25 cursor-pointer"
-                       @click="loadPart('struct',{$name: 'doubao', root: dRoot})"
+                       @click="loadPart('struct',{$name: 'doubao', root: root})"
                        mode="widthFix"></image>
               </view>
             </view>
