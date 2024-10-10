@@ -110,7 +110,7 @@ const loadPart = (part, attr) => {
     return;
   }
   dict.value.loadState[part + 'Loading'] = true;
-  console.log(part,attr['$name']);
+  console.log(part, attr['$name']);
   dict.value.fromModel[part] = attr['$name'];
   apiLoader.loadPart(dict.value.id, part, attr, userId).then(() => {
     delay(1000).then(() => reload());
@@ -201,7 +201,7 @@ const move = (i) => {
   dictLoading.value = true;
   apiLoader.dict(date.value, next, userId)
       .then((data) => {
-        dictLoading.value = true.false;
+        dictLoading.value = false;
         scTop.value = 0;
         dict.value = data.value;
         showDerivativeMean.value = false;
@@ -214,7 +214,7 @@ const move = (i) => {
         reloadRoots();
       })
       .catch(() => {
-        dictLoading.value = true.false;
+        dictLoading.value = false;
         networkError();
       });
 };
@@ -245,8 +245,8 @@ watch(dict, (n, o) => {
 
 //----------------- derivatives ----------------
 const flat = ref(true);
-const flats = ref({} as Map);
-const subFlats = ref({} as Map);
+const flats = ref(new Map());
+const subFlats = ref(new Map());
 const onFlat = () => {
   if (flat.value) {
     flats.value = {};
@@ -972,10 +972,11 @@ const speech = sp => {
                        @click="root=''"
                        class="w-30 mr-20 cursor-pointer" mode="widthFix" src="/static/clear.png"></image>
                 <text class="mr-5">Ali</text>
-                <image :src="dict.loadState?.structLoading && dict.fromModel?.struct==='qwen'? '/static/loading.gif':'/static/get.png'"
-                       class="w-25 cursor-pointer"
-                       @click="loadPart('struct',{$name: 'qwen', root: root})"
-                       mode="widthFix"></image>
+                <image
+                    :src="dict.loadState?.structLoading && dict.fromModel?.struct==='qwen'? '/static/loading.gif':'/static/get.png'"
+                    class="w-25 cursor-pointer"
+                    @click="loadPart('struct',{$name: 'qwen', root: root})"
+                    mode="widthFix"></image>
               </view>
             </view>
 
@@ -992,10 +993,11 @@ const speech = sp => {
                        @click="root=''"
                        class="w-30 mr-20 cursor-pointer" mode="widthFix" src="/static/clear.png"></image>
                 <text class="mr-5">Dou</text>
-                <image :src="dict.loadState?.structLoading && dict.fromModel?.struct==='doubao'? '/static/loading.gif':'/static/get.png'"
-                       class="w-25 cursor-pointer"
-                       @click="loadPart('struct',{$name: 'doubao', root: root})"
-                       mode="widthFix"></image>
+                <image
+                    :src="dict.loadState?.structLoading && dict.fromModel?.struct==='doubao'? '/static/loading.gif':'/static/get.png'"
+                    class="w-25 cursor-pointer"
+                    @click="loadPart('struct',{$name: 'doubao', root: root})"
+                    mode="widthFix"></image>
               </view>
             </view>
           </view>
